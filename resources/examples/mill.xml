@@ -4,17 +4,17 @@
     sinceApiVersion="1.0"
     defaultApiVersion="1.1"
     latestApiVersion="1.2"
-    bootstrap="../../../vendor/autoload.php"
+    bootstrap="../../vendor/autoload.php"
 >
     <controllers>
         <filter>
-            <directory name="Controllers/" suffix=".php" />
+            <directory name="Showtimes/Controllers/" suffix=".php" />
         </filter>
     </controllers>
 
     <representations>
         <filter>
-            <directory name="Representations/" method="create" suffix=".php"  />
+            <directory name="Showtimes/Representations/" method="create" suffix=".php"  />
 
             <class name="\Mill\Examples\Showtimes\Representations\Representation" noMethod="true" />
 
