@@ -1,0 +1,52 @@
+{
+    "name": "vimeo/mill",
+    "description": "A PHP library for documenting a REST API with a small annotation DSL.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Aaron Hedges",
+            "email": "aaron@dashron.com"
+        },
+        {
+            "name": "Jon Ursenbach",
+            "email": "jon@ursenba.ch"
+        }
+    ],
+    "minimum-stability": "stable",
+    "bin": ["bin/mill"],
+    "require": {
+        "php": ">=5.4.0",
+        "ext-xml": "*",
+        "dflydev/dot-access-data": "^1.0",
+        "symfony/console": "^2.8",
+        "pimple/pimple": "^3.0",
+        "league/flysystem": "^1.0"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^2.7",
+        "phpunit/phpunit": "^5.5",
+        "vimeo/psalm": "^0.2",
+        "league/flysystem-memory": "^1.0"
+    },
+    "suggest": {
+        "ext-xml": "Required for config file processing."
+    },
+    "autoload": {
+        "psr-4": {
+            "Mill\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Mill\\Examples\\": "resources/examples",
+            "Mill\\Tests\\": "tests/",
+            "Mill\\Tests\\Fixtures\\": "tests/_fixtures"
+        }
+    },
+    "scripts": {
+        "coverage": "phpunit --coverage-html reports/",
+        "psalm": "psalm",
+        "standards": "phpcs --standard=PSR2 src/ tests/",
+        "tests": "phpunit"
+    }
+}

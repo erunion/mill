@@ -1,0 +1,22 @@
+#!/usr/bin/env php
+<?php
+
+// Ignore any user application issues with classes that they have that aren't strictly handled.
+error_reporting(E_ALL & ~E_STRICT);
+
+foreach ([__DIR__ . '/../../../autoload.php', __DIR__ . '/../vendor/autoload.php'] as $file) {
+    if (file_exists($file)) {
+        require $file;
+        break;
+    }
+}
+
+use Symfony\Component\Console\Application;
+
+$application = new Application();
+$application->setName('Mill');
+$application->setVersion('1.0.0');
+
+$application->add(new Vimeo\Mill\Command\Generate);
+
+$application->run();

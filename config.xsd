@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xs:element name="mill" type="MillType" />
+
+    <xs:complexType name="MillType">
+        <xs:group ref="group.config"/>
+        <xs:attributeGroup ref="group.config.attribute"/>
+    </xs:complexType>
+
+    <xs:attributeGroup name="group.config.attribute">
+        <xs:attribute name="name" type="xs:string" />
+        <xs:attribute name="sinceApiVersion" type="xs:string" use="required" />
+        <xs:attribute name="defaultApiVersion" type="xs:string" />
+        <xs:attribute name="latestApiVersion" type="xs:string" />
+        <xs:attribute name="bootstrap" type="xs:string" use="required" />
+    </xs:attributeGroup>
+
+    <xs:group name="group.config">
+        <xs:all>
+            <xs:element name="controllers" type="controllers" minOccurs="1" maxOccurs="1" />
+            <xs:element name="representations" type="representations" minOccurs="1" maxOccurs="1" />
+
+            <xs:element name="capabilities" type="capabilities" minOccurs="0" maxOccurs="1" />
+            <xs:element name="scopes" type="scopes" minOccurs="0" maxOccurs="1" />
+            <xs:element name="parameterTokens" type="parametertokens" minOccurs="0" maxOccurs="1" />
+            <xs:element name="uriSegments" type="urisegments" minOccurs="0" maxOccurs="1" />
+        </xs:all>
+    </xs:group>
+
+    <xs:complexType name="controllers">
+        <xs:choice>
+            <xs:element name="filter">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="directory" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:attribute name="name" type="xs:string" use="required" />
+                                <xs:attribute name="suffix" type="xs:string" default=".php" />
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="class" minOccurs="0" maxOccurs="unbounded" >
+                            <xs:complexType>
+                                <xs:attribute name="name" type="xs:string" use="required" />
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="exclude" type="common.excludes" minOccurs="0" maxOccurs="unbounded" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="representations">
+        <xs:sequence>
+            <xs:element name="filter">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="directory" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:attribute name="name" type="xs:string" use="required" />
+                                <xs:attribute name="method" type="xs:string" use="required" />
+                                <xs:attribute name="suffix" type="xs:string" default=".php" />
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="class" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:attribute name="name" type="xs:string" use="required" />
+                                <xs:attribute name="method" type="xs:string" use="optional" />
+                                <xs:attribute name="noMethod" type="xs:boolean" use="optional" />
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="exclude" type="common.excludes" minOccurs="0" maxOccurs="unbounded" />
+                        <xs:element name="ignores" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="ignore" minOccurs="1" maxOccurs="unbounded">
+                                        <xs:complexType>
+                                            <xs:attribute name="name" type="xs:string" use="required" />
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="errors" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="class" minOccurs="1" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:attribute name="name" type="xs:string" use="required" />
+                                <xs:attribute name="needsErrorCode" type="xs:boolean" use="required" />
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="capabilities">
+        <xs:choice>
+            <xs:element name="capability" minOccurs="1" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:attribute name="name" type="xs:string" use="required" />
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="scopes">
+        <xs:choice>
+            <xs:element name="scope" minOccurs="1" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:attribute name="name" type="xs:string" use="required" />
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="parametertokens">
+        <xs:choice>
+            <xs:element name="token" minOccurs="1" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="name" type="xs:string" use="required" />
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="urisegments">
+        <xs:sequence>
+            <xs:element name="translations">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="translation" minOccurs="1" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:attribute name="from" type="xs:string" use="required" />
+                                <xs:attribute name="to" type="xs:string" use="required" />
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="common.excludes">
+        <xs:sequence>
+            <xs:element name="class" minOccurs="1" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:attribute name="name" type="xs:string" use="required" />
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

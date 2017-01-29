@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mill
+    name="Mill unit test API, Showtimes"
+    sinceApiVersion="1.0"
+    defaultApiVersion="1.1"
+    latestApiVersion="1.2"
+    bootstrap="vendor/autoload.php"
+>
+    <controllers>
+        <filter>
+            <directory name="resources/examples/Showtimes/Controllers/" suffix=".php" />
+        </filter>
+    </controllers>
+
+    <representations>
+        <filter>
+            <directory name="resources/examples/Showtimes/Representations/" method="create" suffix=".php"  />
+
+            <class name="\Mill\Examples\Showtimes\Representations\Representation" noMethod="true" />
+
+            <exclude>
+                <class name="\Mill\Examples\Showtimes\Representations\Error" />
+                <class name="\Mill\Examples\Showtimes\Representations\CodedError" />
+            </exclude>
+
+            <ignores>
+                <ignore name="string" />
+            </ignores>
+        </filter>
+
+        <errors>
+            <class name="\Mill\Examples\Showtimes\Representations\Error" needsErrorCode="false" />
+            <class name="\Mill\Examples\Showtimes\Representations\CodedError" needsErrorCode="true" />
+        </errors>
+    </representations>
+
+    <scopes>
+        <scope name="create" />
+        <scope name="delete" />
+        <scope name="edit" />
+        <scope name="public" />
+    </scopes>
+
+    <capabilities>
+        <capability name="BUY_TICKETS" />
+        <capability name="MOVIE_RATINGS" />
+        <capability name="NONE" />
+    </capabilities>
+
+    <parameterTokens>
+        <token name="page">{int} page (optional) The page number to show.</token>
+        <token name="per_page">{int} per_page (optional) Number of items to show on each page. Max 100.</token>
+        <token name="filter">{string} filter (optional) Filter to apply to the results.</token>
+    </parameterTokens>
+</mill>

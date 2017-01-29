@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<psalm
+    stopOnFirstError="false"
+    useDocblockTypes="true"
+>
+    <projectFiles>
+        <directory name="src" />
+        <directory name="tests/" />
+    </projectFiles>
+
+    <fileExtensions>
+        <extension name=".php" />
+    </fileExtensions>
+
+    <issueHandlers>
+        <InvalidArgument>
+            <errorLevel type="suppress">
+                <!-- Masking errors where we're passing methods that return mixed data into test assertions. -->
+                <directory name="tests/" />
+            </errorLevel>
+        </InvalidArgument>
+
+        <InvalidScalarArgument>
+            <errorLevel type="suppress">
+                <!-- Masking errors where we're passing methods that return string|bool into test assertions. -->
+                <directory name="tests/" />
+            </errorLevel>
+        </InvalidScalarArgument>
+
+        <MissingClosureReturnType errorLevel="suppress" />
+        <MissingConstructor errorLevel="suppress" />
+
+        <MissingReturnType>
+            <errorLevel type="suppress">
+                <directory name="tests/" />
+            </errorLevel>
+        </MissingReturnType>
+    </issueHandlers>
+</psalm>

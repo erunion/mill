@@ -1,0 +1,17 @@
+<?php
+namespace Mill\Tests\Provider;
+
+use Mill\Provider\Filesystem;
+use Pimple\Container;
+
+class FilesystemTest extends \PHPUnit_Framework_TestCase
+{
+    public function testRegister()
+    {
+        $container = new Container;
+        $filesystem = new Filesystem;
+        $filesystem->register($container);
+
+        $this->assertInstanceOf('League\Flysystem\Filesystem', $container['filesystem']);
+    }
+}

@@ -1,0 +1,127 @@
+FORMAT: 1A
+
+# Movies
+## Movies [/movies/{id}]
+
+### Get a single movie. [GET]
+This action requires a bearer token with `public` scope.
+
++ Parameters
+    + `id` (integer, required) - Movie ID
++ Response 200 (application/json)
+    + Attributes
+        - `cast` (array) - Cast
+        - `content_rating` (enum[string]) - MPAA rating
+            + Members
+                + `G`
+                + `PG`
+                + `PG-13`
+                + `R`
+                + `NC-17`
+                + `X`
+                + `NR`
+                + `UR`
+        - `description` (string) - Description
+        - `director` (string) - Director
+        - `genres` (array) - Genres
+        - `id` (number) - Unique ID
+        - `name` (string) - Name
+        - `runtime` (string) - Runtime
+        - `showtimes` (array) - Non-theater specific showtimes
+        - `theaters` (array) - Theaters the movie is currently showing in
+        - `urls` (object) - External URLs
+            - `imdb` (string) - IMDB URL
+            - `tickets` (string) - Tickets URL
+            - `trailer` (string) - Trailer URL
++ Response 404 (application/json)
+
+### Delete a movie. [DELETE]
+This action requires a bearer token with `delete` scope.
+
++ Parameters
+    + `id` (integer, required) - Movie ID
++ Response 204 (application/json)
++ Response 404 (application/json)
+
+## Movies [/movies]
+
+### Get movies. [GET]
+This action requires a bearer token with `public` scope.
+
++ Request
+    + Attributes
+        - `location` (string, required) - Location you want movies for.
++ Response 200 (application/json)
+    + Attributes
+        - `cast` (array) - Cast
+        - `content_rating` (enum[string]) - MPAA rating
+            + Members
+                + `G`
+                + `PG`
+                + `PG-13`
+                + `R`
+                + `NC-17`
+                + `X`
+                + `NR`
+                + `UR`
+        - `description` (string) - Description
+        - `director` (string) - Director
+        - `genres` (array) - Genres
+        - `id` (number) - Unique ID
+        - `name` (string) - Name
+        - `runtime` (string) - Runtime
+        - `showtimes` (array) - Non-theater specific showtimes
+        - `theaters` (array) - Theaters the movie is currently showing in
+        - `urls` (object) - External URLs
+            - `imdb` (string) - IMDB URL
+            - `tickets` (string) - Tickets URL
+            - `trailer` (string) - Trailer URL
++ Response 400 (application/json)
+
+### Create a movie. [POST]
+This action requires a bearer token with `create` scope.
+
++ Request
+    + Attributes
+        - `name` (string, required) - Name of the movie.
+        - `description` (string, required) - Description, or tagline, for the movie.
+        - `runtime` (string) - Movie runtime, in `HHhr MMmin` format.
+        - `content_rating` (enum[string]) - MPAA rating
+            + Members
+                + `G`
+                + `PG`
+                + `PG-13`
+                + `R`
+                + `NC-17`
+                + `X`
+                + `NR`
+                + `UR`
+        - `genres` (string) - Array of movie genres.
+        - `director` (string) - Name of the director.
+        - `cast` (string) - Array of names of the cast.
++ Response 200 (application/json)
+    + Attributes
+        - `cast` (array) - Cast
+        - `content_rating` (enum[string]) - MPAA rating
+            + Members
+                + `G`
+                + `PG`
+                + `PG-13`
+                + `R`
+                + `NC-17`
+                + `X`
+                + `NR`
+                + `UR`
+        - `description` (string) - Description
+        - `director` (string) - Director
+        - `genres` (array) - Genres
+        - `id` (number) - Unique ID
+        - `name` (string) - Name
+        - `runtime` (string) - Runtime
+        - `showtimes` (array) - Non-theater specific showtimes
+        - `theaters` (array) - Theaters the movie is currently showing in
+        - `urls` (object) - External URLs
+            - `imdb` (string) - IMDB URL
+            - `tickets` (string) - Tickets URL
+            - `trailer` (string) - Trailer URL
++ Response 400 (application/json)
