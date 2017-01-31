@@ -1,0 +1,6 @@
+preset: psr2
+
+finder:
+  name:
+    - "*.php"
+    - "bin/mill"
