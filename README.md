@@ -22,5 +22,3 @@ composer require vimeo/mill
 * [Configuration](https://github.com/vimeo/mill/wiki/Configuration)
 * [Language Syntax](https://github.com/vimeo/mill/wiki/Language Syntax)
 * [Generating Documentation](https://github.com/vimeo/mill/wiki/Generating Documentation)
-
-<img src="https://raw.githubusercontent.com/wiki/vimeo/mill/images/basic-example.png" />
