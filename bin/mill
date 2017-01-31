@@ -17,6 +17,6 @@ $application = new Application();
 $application->setName('Mill');
 $application->setVersion('1.0.0');
 
-$application->add(new Vimeo\Mill\Command\Generate);
+$application->add(new Mill\Command\Generate);
 
 $application->run();
