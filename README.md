@@ -18,7 +18,9 @@ composer require vimeo/mill
 ```
 
 ### Resources
-* Getting Started
-* Usage
-* Language Syntax
-* Contributing
+* [Getting Started](https://github.com/vimeo/mill/wiki/Getting Started)
+* [Configuration](https://github.com/vimeo/mill/wiki/Configuration)
+* [Language Syntax](https://github.com/vimeo/mill/wiki/Language Syntax)
+* [Generating Documentation](https://github.com/vimeo/mill/wiki/Generating Documentation)
+
+<img src="https://raw.githubusercontent.com/wiki/vimeo/mill/images/basic-example.png" />
