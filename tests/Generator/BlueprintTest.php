@@ -15,7 +15,7 @@ class BlueprintTest extends TestCase
 
         foreach ($generated as $version => $groups) {
             foreach ($groups as $group => $content) {
-                $file = $dir . $version . DIRECTORY_SEPARATOR . str_replace('\\', '-', strtolower($group)) . '.apib';
+                $file = $dir . $version . DIRECTORY_SEPARATOR . str_replace('\\', '-', ucwords($group)) . '.apib';
                 $expected = file_get_contents($file);
 
                 $this->assertSame(
