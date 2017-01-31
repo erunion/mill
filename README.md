@@ -2,6 +2,7 @@ Mill
 ===
 
 [![Travis CI](http://img.shields.io/travis/vimeo/mill.svg?style=flat)](https://travis-ci.org/vimeo/mill)
+[![StyleCI](https://styleci.io/repos/78773473/shield)](https://styleci.io/repos/78773473/)
 
 ### What is Mill?
 Mill is a PHP library for documenting a REST API with a small annotation DSL.
