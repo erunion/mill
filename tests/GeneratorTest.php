@@ -90,6 +90,9 @@ class GeneratorTest extends TestCase
          * Verify representations
          */
         $representations = $generator->getRepresentations();
+        $this->assertArrayHasKey($version, $representations);
+
+        $representations = $representations[$version];
         $this->assertCount(count($expected_representations), $representations);
 
         foreach ($expected_representations as $name => $data) {
@@ -133,7 +136,7 @@ class GeneratorTest extends TestCase
                     '\Mill\Examples\Showtimes\Representations\Theater' => [
                         'label' => 'Theater',
                         'description.length' => 0,
-                        'content.size' => 6
+                        'content.size' => 7
                     ]
                 ],
                 'expected.resources' => [
