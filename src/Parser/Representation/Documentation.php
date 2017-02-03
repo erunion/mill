@@ -101,6 +101,29 @@ class Documentation
     }
 
     /**
+     * Filter down, and return, all annotations on this representation to a specific version.
+     *
+     * @param string $version
+     * @return array
+     */
+    public function filterRepresentationForVersion($version)
+    {
+        /** @var Parser\Annotation $annotation */
+        foreach ($this->representation as $name => $annotation) {
+            // If this annotation has a set version, but that version doesn't match what we're looking for, filter it
+            // out.
+            $annotation_version = $annotation->getVersion();
+            if ($annotation_version) {
+                if (!$annotation_version->matches($version)) {
+                    unset($this->representation[$name]);
+                }
+            }
+        }
+
+        return $this->representation;
+    }
+
+    /**
      * Get the representation class that we're parsing.
      *
      * @return string

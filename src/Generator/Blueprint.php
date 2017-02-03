@@ -301,10 +301,10 @@ class Blueprint extends Generator
         /** @var ReturnAnnotation|ThrowsAnnotation $response */
         $response = array_shift($responses);
         $representation = $response->getRepresentation();
-        $representations = $this->getRepresentations();
+        $representations = $this->getRepresentations($this->version);
 
-        // There's rare, and highly discouraged, instances where you might be using a representation that hasn't been
-        // configured, and is devoid of any documentation; like "string".
+        // There's rare, and highly discouraged, instances where you might be using a representation that is being
+        // ignored, and is devoid of any documentation; like `@api-return:public {200} string`
         if (!isset($representations[$representation])) {
             return $blueprint;
         }

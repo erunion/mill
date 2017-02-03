@@ -40,6 +40,14 @@ class Theater extends Representation
             'phone_number' => $this->theater->phone_number,
 
             /**
+             * @api-label Website
+             * @api-field website
+             * @api-type string
+             * @api-version <1.1
+             */
+            'website' => $this->theater->website,
+
+            /**
              * @api-label Movies currently playing
              * @api-field movies
              * @api-type array

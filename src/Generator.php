@@ -23,6 +23,11 @@ class Generator
     protected $version = null;
 
     /**
+     * @var array
+     */
+    protected $supported_versions = [];
+
+    /**
      * Compiled documentation.
      *
      * @var array
@@ -62,7 +67,6 @@ class Generator
      */
     private function compileResources()
     {
-        $supported_versions = [];
         $since_version = $this->config->getSinceApiVersion();
 
         // Run through configured controllers and calculate the supported API versions across their application.
@@ -73,8 +77,8 @@ class Generator
 
             /** @var \Mill\Parser\Resource\Action\Documentation $method */
             foreach ($methods as $method) {
-                $supported_versions = array_merge(
-                    $supported_versions,
+                $this->supported_versions = array_merge(
+                    $this->supported_versions,
                     $method->getSupportedVersions($since_version)
                 );
             }
@@ -82,8 +86,8 @@ class Generator
             $controllers[] = $docs;
         }
 
-        $supported_versions = array_unique($supported_versions);
-        sort($supported_versions);
+        $this->supported_versions = array_unique($this->supported_versions);
+        sort($this->supported_versions);
 
         // Run through parsed controllers, and now generate a versioned array of parseable resource action
         // documentation.
@@ -110,7 +114,7 @@ class Generator
                         }
                     }
 
-                    foreach ($supported_versions as $version) {
+                    foreach ($this->supported_versions as $version) {
                         // If we're generating documentation for a specific version range, and this doesn't fall in
                         // that, then skip it.
                         if ($this->version && !$this->version->matches($version)) {
@@ -175,44 +179,82 @@ class Generator
      */
     private function compileRepresentations()
     {
+        $representations = [];
+
         /** @var array $representation */
         foreach ($this->config->getRepresentations() as $representation) {
             $class = $representation['class'];
 
-            // If this method has been configured as having no method, then it doesn't have any annotations to parse.
-            if (isset($representation['no_method'])) {
-                $docs = null;
-            } elseif ($this->config->isRepresentationIgnored($class)) {
-                // If the representation is being ignored, then don't set it up for compilation.
+            // If the representation is being ignored, then don't set it up for compilation.
+            if ($this->config->isRepresentationIgnored($class)) {
                 continue;
-            } else {
-                $docs = (new Representation\Documentation(
-                    $class,
-                    $representation['method']
-                ))->parse();
             }
 
-            $this->compiled['representations'][$class] = $docs;
+            $docs = null;
+            if (!isset($representation['no_method'])) {
+                $docs = (new Representation\Documentation($class, $representation['method']))->parse();
+            }
+
+            foreach ($this->supported_versions as $version) {
+                // If we're generating documentation for a specific version range, and this doesn't fall in
+                // that, then skip it.
+                if ($this->version && !$this->version->matches($version)) {
+                    continue;
+                }
+
+                // If this method has been configured as having no method, then it doesn't have any annotations to
+                // parse.
+                if (isset($representation['no_method'])) {
+                    $representations[$version][$class] = $docs;
+                    continue;
+                }
+
+                // Filter down the annotations on this action for just those of the current version we're
+                // generating documentation for.
+                $cloned = clone $docs;
+                $cloned->filterRepresentationForVersion($version);
+
+                $representations[$version][$class] = $cloned;
+            }
         }
+
+        // Alphabetize the versioned representations!
+        foreach ($representations as $version => $data) {
+            uksort($representations[$version], function ($a, $b) {
+                return ($a > $b) ? 1 : -1;
+            });
+        }
+
+        $this->compiled['representations'] = $representations;
     }
 
     /**
      * Get compiled representations.
      *
+     * @param string|null $version
      * @return array
      */
-    public function getRepresentations()
+    public function getRepresentations($version = null)
     {
-        return $this->compiled['representations'];
+        if (empty($version)) {
+            return $this->compiled['representations'];
+        }
+
+        return $this->compiled['representations'][$version];
     }
 
     /**
      * Get compiled resources.
      *
+     * @param string|null $version
      * @return array
      */
-    public function getResources()
+    public function getResources($version = null)
     {
-        return $this->compiled['resources'];
+        if (empty($version)) {
+            return $this->compiled['resources'];
+        }
+
+        return $this->compiled['resources'][$version];
     }
 }
