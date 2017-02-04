@@ -363,6 +363,7 @@ class Config
 
         // Keep things tidy.
         $this->controllers = array_unique($this->controllers);
+        sort($this->controllers);
 
         if (empty($this->controllers)) {
             throw new InvalidArgumentException('Mill requires a set of controllers to parse for documentation.');
@@ -464,6 +465,9 @@ class Config
                 $this->addRepresentation($class, $method);
             }
         }
+
+        // Keep things tidy
+        ksort($this->representations);
 
         if (empty($this->representations)) {
             throw new InvalidArgumentException('Mill requires a set of representations to parse for documentation.');
