@@ -190,22 +190,12 @@ class Generator
                 continue;
             }
 
-            $docs = null;
-            if (!isset($representation['no_method'])) {
-                $docs = (new Representation\Documentation($class, $representation['method']))->parse();
-            }
+            $docs = (new Representation\Documentation($class, $representation['method']))->parse();
 
             foreach ($this->supported_versions as $version) {
                 // If we're generating documentation for a specific version range, and this doesn't fall in
                 // that, then skip it.
                 if ($this->version && !$this->version->matches($version)) {
-                    continue;
-                }
-
-                // If this method has been configured as having no method, then it doesn't have any annotations to
-                // parse.
-                if (isset($representation['no_method'])) {
-                    $representations[$version][$class] = $docs;
                     continue;
                 }
 

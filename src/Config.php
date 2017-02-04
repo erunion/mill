@@ -363,6 +363,7 @@ class Config
 
         // Keep things tidy.
         $this->controllers = array_unique($this->controllers);
+        sort($this->controllers);
 
         if (empty($this->controllers)) {
             throw new InvalidArgumentException('Mill requires a set of controllers to parse for documentation.');
@@ -396,7 +397,7 @@ class Config
      * @param SimpleXMLElement $representations
      * @return void
      * @throws UncallableRepresentationException If a configured representation does not exist.
-     * @throws InvalidArgumentException If a representation is configured without a `method` or `noMethod` attribute.
+     * @throws InvalidArgumentException If a representation is configured without a `method` attribute.
      * @throws InvalidArgumentException If a directory configured does not exist.
      * @throws InvalidArgumentException If no representations were detected.
      */
@@ -426,9 +427,8 @@ class Config
          */
         foreach ($filters->class as $class) {
             $class_name = (string) $class['name'];
-            $no_method = isset($class['noMethod']) ? true : false;
             $method = (string) $class['method'] ?: null;
-            if (empty($method) && !$no_method) {
+            if (empty($method)) {
                 throw new InvalidArgumentException(
                     sprintf(
                         'The `%s` representation class declaration is missing a `method` attribute.',
@@ -437,7 +437,7 @@ class Config
                 );
             }
 
-            $this->addRepresentation($class_name, $method, $no_method);
+            $this->addRepresentation($class_name, $method);
         }
 
         /**
@@ -466,6 +466,9 @@ class Config
             }
         }
 
+        // Keep things tidy
+        ksort($this->representations);
+
         if (empty($this->representations)) {
             throw new InvalidArgumentException('Mill requires a set of representations to parse for documentation.');
         }
@@ -476,25 +479,19 @@ class Config
      *
      * @param string $class
      * @param string|null $method
-     * @param bool $no_method
      * @return void
      * @throws UncallableRepresentationException If the representation is uncallable.
      */
-    public function addRepresentation($class, $method = null, $no_method = false)
+    public function addRepresentation($class, $method = null)
     {
         if (!class_exists($class)) {
             throw UncallableRepresentationException::create($class);
         }
 
         $this->representations[$class] = [
-            'class' => $class
+            'class' => $class,
+            'method' => $method
         ];
-
-        if ($no_method) {
-            $this->representations[$class]['no_method'] = true;
-        } else {
-            $this->representations[$class]['method'] = $method;
-        }
     }
 
     /**

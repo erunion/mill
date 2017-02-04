@@ -34,10 +34,6 @@ class ConfigTest extends TestCase
         ], $config->getControllers());
 
         $this->assertSame([
-            '\Mill\Examples\Showtimes\Representations\Representation' => [
-                'class' => '\Mill\Examples\Showtimes\Representations\Representation',
-                'no_method' => true
-            ],
             '\Mill\Examples\Showtimes\Representations\Movie' => [
                 'class' => '\Mill\Examples\Showtimes\Representations\Movie',
                 'method' => 'create'
@@ -62,7 +58,7 @@ class ConfigTest extends TestCase
         $this->assertSame([
             '\Mill\Examples\Showtimes\Representations\Error',
             '\Mill\Examples\Showtimes\Representations\CodedError',
-            'string'
+            '\Mill\Examples\Showtimes\Representations\Representation'
         ], $config->getExcludedRepresentations());
 
         $this->assertEmpty($config->getUriSegmentTranslations());
@@ -252,7 +248,7 @@ XML
                 'xml' => <<<XML
 <representations>
     <filter>
-        <class name="\Mill\Tests\Stubs\Representations\RepresentationStub" />
+        <class name="\Mill\Tests\Stubs\Representations\RepresentationStub" method="" />
     </filter>
 </representations>
 XML

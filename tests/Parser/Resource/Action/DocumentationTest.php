@@ -349,7 +349,7 @@ class DocumentationTest extends TestCase
                             [
                                 'description' => false,
                                 'http_code' => '204 No Content',
-                                'representation' => '\Mill\Examples\Showtimes\Representations\Representation',
+                                'representation' => false,
                                 'type' => 'deleted',
                                 'version' => false
                             ]

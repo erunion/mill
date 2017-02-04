@@ -70,7 +70,7 @@ class Movie
      * @api-contentType application/json
      * @api-scope delete
      *
-     * @api-return:private {deleted} \Mill\Examples\Showtimes\Representations\Representation
+     * @api-return:private {deleted}
      *
      * @api-throws:private {404} \Mill\Examples\Showtimes\Representations\Error If the movie could not be found.
      */

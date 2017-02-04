@@ -123,11 +123,6 @@ class GeneratorTest extends TestCase
             'version-1.0' => [
                 'version' => '1.0',
                 'expected.representations' => [
-                    '\Mill\Examples\Showtimes\Representations\Representation' => [
-                        'label' => 'Representation',
-                        'description.length' => 0,
-                        'content.size' => 0
-                    ],
                     '\Mill\Examples\Showtimes\Representations\Movie' => [
                         'label' => 'Movie',
                         'description.length' => 12,
@@ -259,11 +254,6 @@ class GeneratorTest extends TestCase
             'version-1.1' => [
                 'version' => '1.1',
                 'expected.representations' => [
-                    '\Mill\Examples\Showtimes\Representations\Representation' => [
-                        'label' => 'Representation',
-                        'description.length' => 0,
-                        'content.size' => 0
-                    ],
                     '\Mill\Examples\Showtimes\Representations\Movie' => [
                         'label' => 'Movie',
                         'description.length' => 12,
