@@ -65,8 +65,7 @@
                         <xs:element name="class" minOccurs="0" maxOccurs="unbounded">
                             <xs:complexType>
                                 <xs:attribute name="name" type="xs:string" use="required" />
-                                <xs:attribute name="method" type="xs:string" use="optional" />
-                                <xs:attribute name="noMethod" type="xs:boolean" use="optional" />
+                                <xs:attribute name="method" type="xs:string" use="required" />
                             </xs:complexType>
                         </xs:element>
                         <xs:element name="excludes" type="common.excludes" minOccurs="0" maxOccurs="unbounded" />

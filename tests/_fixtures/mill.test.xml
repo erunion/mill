@@ -16,11 +16,10 @@
         <filter>
             <directory name="resources/examples/Showtimes/Representations/" method="create" suffix=".php"  />
 
-            <class name="\Mill\Examples\Showtimes\Representations\Representation" noMethod="true" />
-
             <excludes>
                 <exclude name="\Mill\Examples\Showtimes\Representations\Error" />
                 <exclude name="\Mill\Examples\Showtimes\Representations\CodedError" />
+                <exclude name="\Mill\Examples\Showtimes\Representations\Representation" />
                 <exclude name="string" />
             </excludes>
         </filter>
