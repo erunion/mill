@@ -324,12 +324,12 @@ class Config
         $controllers = $controllers->filter;
 
         $excludes = [];
-        if (isset($controllers->excludes) && isset($controllers->excludes->exclude)) {
+        if (isset($controllers->excludes)) {
             /** @var SimpleXMLElement $exclude_config */
             $exclude_config = $controllers->excludes;
 
-            /** @var SimpleXMLElement $class */
-            foreach ($exclude_config->name as $exclude) {
+            /** @var SimpleXMLElement $exclude */
+            foreach ($exclude_config->exclude as $exclude) {
                 $excludes[] = (string) $exclude['name'];
             }
 
