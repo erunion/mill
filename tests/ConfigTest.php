@@ -60,8 +60,10 @@ class ConfigTest extends TestCase
         ], $config->getErrorRepresentations());
 
         $this->assertSame([
+            '\Mill\Examples\Showtimes\Representations\Error',
+            '\Mill\Examples\Showtimes\Representations\CodedError',
             'string'
-        ], $config->getIgnoredRepresentations());
+        ], $config->getExcludedRepresentations());
 
         $this->assertEmpty($config->getUriSegmentTranslations());
     }
@@ -237,23 +239,6 @@ XML
 <representations>
     <filter>
         <directory name="resources/examples/Showtimes/Representations" suffix=".phps" method="create" />
-    </filter>
-</representations>
-XML
-            ],
-
-            'representations.exclude.uncallable' => [
-                'includes' => ['controllers'],
-                'exception' => [
-                    'exception' => '\Mill\Exceptions\Config\UncallableRepresentationException'
-                ],
-                'xml' => <<<XML
-<representations>
-    <filter>
-        <class name="\Mill\Examples\Showtimes\Representations\Movie" method="create" />
-        <exclude>
-            <class name="\UncallableClass" />
-        </exclude>
     </filter>
 </representations>
 XML

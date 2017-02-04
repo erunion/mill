@@ -18,14 +18,11 @@
 
             <class name="\Mill\Examples\Showtimes\Representations\Representation" noMethod="true" />
 
-            <exclude>
-                <class name="\Mill\Examples\Showtimes\Representations\Error" />
-                <class name="\Mill\Examples\Showtimes\Representations\CodedError" />
-            </exclude>
-
-            <ignores>
-                <ignore name="string" />
-            </ignores>
+            <excludes>
+                <exclude name="\Mill\Examples\Showtimes\Representations\Error" />
+                <exclude name="\Mill\Examples\Showtimes\Representations\CodedError" />
+                <exclude name="string" />
+            </excludes>
         </filter>
 
         <errors>

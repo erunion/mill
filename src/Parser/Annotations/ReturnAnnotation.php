@@ -74,7 +74,7 @@ class ReturnAnnotation extends Annotation
         $representation = array_shift($parts);
         $description = trim(implode(' ', $parts));
 
-        // Verify that the supplied representation class exists. If it's being ignored, we can just go ahead and set it
+        // Verify that the supplied representation class exists. If it's being excluded, we can just go ahead and set it
         // here anyways, as we'll be looking further up the stack to determine if we should actually parse it for
         // documentation.
         //

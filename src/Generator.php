@@ -185,8 +185,8 @@ class Generator
         foreach ($this->config->getRepresentations() as $representation) {
             $class = $representation['class'];
 
-            // If the representation is being ignored, then don't set it up for compilation.
-            if ($this->config->isRepresentationIgnored($class)) {
+            // If the representation is being excluded, then don't set it up for compilation.
+            if ($this->config->isRepresentationExcluded($class)) {
                 continue;
             }
 
