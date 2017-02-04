@@ -36,11 +36,47 @@ class ReturnAnnotationTest extends AnnotationTest
     public function annotationProvider()
     {
         return [
+            'with-no-representation' => [
+                'param' => '{deleted}',
+                'version' => null,
+                'expected' => [
+                    'description' => false,
+                    'http_code' => '204 No Content',
+                    'representation' => false,
+                    'type' => 'deleted',
+                    'version' => false
+                ]
+            ],
+            'with-no-representation-and-a-description' => [
+                'param' => '{notmodified} If no data has been changed.',
+                'version' => null,
+                'expected' => [
+                    'description' => 'If no data has been changed.',
+                    'http_code' => '304 Not Modified',
+                    'representation' => false,
+                    'type' => 'notmodified',
+                    'version' => false
+                ]
+            ],
             'versioned' => [
                 'param' => '{collection} \Mill\Examples\Showtimes\Representations\Movie',
                 'version' => new Version('3.2', __CLASS__, __METHOD__),
                 'expected' => [
                     'description' => false,
+                    'http_code' => '200 OK',
+                    'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
+                    'type' => 'collection',
+                    'version' => [
+                        'start' => '3.2',
+                        'end' => '3.2'
+                    ]
+                ]
+            ],
+            '_complete' => [
+                'param' => '{collection} \Mill\Examples\Showtimes\Representations\Movie A collection of movies.',
+                'version' => new Version('3.2', __CLASS__, __METHOD__),
+                'expected' => [
+                    'description' => 'A collection of movies.',
                     'http_code' => '200 OK',
                     'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
                     'type' => 'collection',
@@ -92,17 +128,6 @@ class ReturnAnnotationTest extends AnnotationTest
                     'description' => false,
                     'http_code' => '200 OK',
                     'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
-                    'type' => 'ok',
-                    'version' => false
-                ]
-            ],
-            'string' => [
-                'param' => '{ok} string',
-                'version' => null,
-                'expected' => [
-                    'description' => false,
-                    'http_code' => '200 OK',
-                    'representation' => 'string',
                     'type' => 'ok',
                     'version' => false
                 ]

@@ -303,8 +303,6 @@ class Blueprint extends Generator
         $representation = $response->getRepresentation();
         $representations = $this->getRepresentations($this->version);
 
-        // There's rare, and highly discouraged, instances where you might be using a representation that is being
-        // excluded, and is devoid of any documentation; like `@api-return:public {200} string`
         if (!isset($representations[$representation])) {
             return $blueprint;
         }

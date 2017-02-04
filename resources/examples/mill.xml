@@ -20,7 +20,6 @@
                 <exclude name="\Mill\Examples\Showtimes\Representations\Error" />
                 <exclude name="\Mill\Examples\Showtimes\Representations\CodedError" />
                 <exclude name="\Mill\Examples\Showtimes\Representations\Representation" />
-                <exclude name="string" />
             </exclude>
         </filter>
 

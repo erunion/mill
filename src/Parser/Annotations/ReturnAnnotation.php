@@ -74,15 +74,24 @@ class ReturnAnnotation extends Annotation
         $representation = array_shift($parts);
         $description = trim(implode(' ', $parts));
 
-        // Verify that the supplied representation class exists. If it's being excluded, we can just go ahead and set it
-        // here anyways, as we'll be looking further up the stack to determine if we should actually parse it for
-        // documentation.
-        //
-        // If the class doesn't exist, this method call will throw an exception back out.
-        try {
-            Container::getConfig()->doesRepresentationExist($representation);
-        } catch (UnconfiguredRepresentationException $e) {
-            throw UnknownRepresentationException::create($representation, $this->controller, $this->method);
+        if (!empty($representation)) {
+            // If the supplied representation /looks/ like a PHP FQN, then treat it as such, and verify that it's been
+            // either configured or ignored.
+            if (preg_match('/\\\([\\w]+)/', $representation)) {
+                // Verify that the supplied representation class exists. If it's being excluded, we can just go ahead
+                // and set it here anyways, as we'll be looking further up the stack to determine if we should actually
+                // parse it for documentation.
+                //
+                // If the class doesn't exist, this method call will throw an exception back out.
+                try {
+                    Container::getConfig()->doesRepresentationExist($representation);
+                } catch (UnconfiguredRepresentationException $e) {
+                    throw UnknownRepresentationException::create($representation, $this->controller, $this->method);
+                }
+            } else {
+                $description = trim($representation . ' ' . $description);
+                $representation = false;
+            }
         }
 
         $parsed['representation'] = $representation;
@@ -103,7 +112,7 @@ class ReturnAnnotation extends Annotation
     {
         $this->http_code = $this->required('http_code');
         $this->description = $this->optional('description');
-        $this->representation = $this->required('representation');
+        $this->representation = $this->optional('representation');
         $this->type = $this->required('type');
     }
 
@@ -121,7 +130,6 @@ class ReturnAnnotation extends Annotation
             case 'directory':
             case 'object':
             case 'ok':
-            case 'string':
                 return 200;
 
             case 'created':

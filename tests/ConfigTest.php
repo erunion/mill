@@ -58,8 +58,7 @@ class ConfigTest extends TestCase
         $this->assertSame([
             '\Mill\Examples\Showtimes\Representations\Error',
             '\Mill\Examples\Showtimes\Representations\CodedError',
-            '\Mill\Examples\Showtimes\Representations\Representation',
-            'string'
+            '\Mill\Examples\Showtimes\Representations\Representation'
         ], $config->getExcludedRepresentations());
 
         $this->assertEmpty($config->getUriSegmentTranslations());
