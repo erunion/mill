@@ -15,7 +15,7 @@ class UnconfiguredRepresentationException extends \Exception
     public static function create($representation)
     {
         $message = sprintf(
-            'The `%s` representation is being used, but has not been configured for use (or ignored).',
+            'The `%s` representation is being used, but has not been configured for use (or excluded).',
             $representation
         );
 

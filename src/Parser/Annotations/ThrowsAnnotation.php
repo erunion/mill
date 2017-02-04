@@ -97,7 +97,7 @@ class ThrowsAnnotation extends Annotation
         if (!empty($parsed['representation'])) {
             $representation = $parsed['representation'];
 
-            // Verify that the supplied representation class exists. If it's being ignored, we can just go ahead and
+            // Verify that the supplied representation class exists. If it's being excluded, we can just go ahead and
             // set it here anyways, as we'll be looking further up the stack to determine if we should actually parse it
             // for documentation.
             //

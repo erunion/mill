@@ -43,7 +43,7 @@
                                 <xs:attribute name="name" type="xs:string" use="required" />
                             </xs:complexType>
                         </xs:element>
-                        <xs:element name="exclude" type="common.excludes" minOccurs="0" maxOccurs="unbounded" />
+                        <xs:element name="excludes" type="common.excludes" minOccurs="0" maxOccurs="unbounded" />
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -69,18 +69,7 @@
                                 <xs:attribute name="noMethod" type="xs:boolean" use="optional" />
                             </xs:complexType>
                         </xs:element>
-                        <xs:element name="exclude" type="common.excludes" minOccurs="0" maxOccurs="unbounded" />
-                        <xs:element name="ignores" minOccurs="0" maxOccurs="unbounded">
-                            <xs:complexType>
-                                <xs:sequence>
-                                    <xs:element name="ignore" minOccurs="1" maxOccurs="unbounded">
-                                        <xs:complexType>
-                                            <xs:attribute name="name" type="xs:string" use="required" />
-                                        </xs:complexType>
-                                    </xs:element>
-                                </xs:sequence>
-                            </xs:complexType>
-                        </xs:element>
+                        <xs:element name="excludes" type="common.excludes" minOccurs="0" maxOccurs="unbounded" />
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -153,7 +142,7 @@
 
     <xs:complexType name="common.excludes">
         <xs:sequence>
-            <xs:element name="class" minOccurs="1" maxOccurs="unbounded">
+            <xs:element name="exclude" minOccurs="1" maxOccurs="unbounded">
                 <xs:complexType>
                     <xs:attribute name="name" type="xs:string" use="required" />
                 </xs:complexType>

@@ -82,13 +82,13 @@ class Config
     protected $error_representations = [];
 
     /**
-     * Array of ignored application representations.
+     * Array of excluded application representations.
      *
      * These are representations that you have, but, for whatever reason, don't want to be parsed for documentation.
      *
      * @var array
      */
-    protected $ignored_representations = [];
+    protected $excluded_representations = [];
 
     /**
      * Array of URI segment translations. (Like translating `+clip_id` to `+video_id`.)
@@ -194,10 +194,9 @@ class Config
 
         $config->representations = [];
         $config->error_representations = [];
-        $config->ignored_representations = [];
+        $config->excluded_representations = [];
         $config->loadRepresentations($xml->representations);
         $config->loadErrorRepresentations($xml->representations);
-        $config->loadIgnoredRepresentations($xml->representations);
 
         return $config;
     }
@@ -325,13 +324,13 @@ class Config
         $controllers = $controllers->filter;
 
         $excludes = [];
-        if (isset($controllers->exclude) && isset($controllers->exclude->class)) {
+        if (isset($controllers->excludes)) {
             /** @var SimpleXMLElement $exclude_config */
-            $exclude_config = $controllers->exclude;
+            $exclude_config = $controllers->excludes;
 
-            /** @var SimpleXMLElement $class */
-            foreach ($exclude_config->class as $class) {
-                $excludes[] = (string) $class['name'];
+            /** @var SimpleXMLElement $exclude */
+            foreach ($exclude_config->exclude as $exclude) {
+                $excludes[] = (string) $exclude['name'];
             }
 
             // Keep things tidy.
@@ -403,28 +402,21 @@ class Config
      */
     protected function loadRepresentations(SimpleXMLElement $representations)
     {
-        $excludes = [];
-
         /** @var SimpleXMLElement $filters */
         $filters = $representations->filter;
 
         // Process excludes.
-        if (isset($filters->exclude) && isset($filters->exclude->class)) {
+        if (isset($filters->excludes)) {
             /** @var SimpleXMLElement $exclude_config */
-            $exclude_config = $filters->exclude;
+            $exclude_config = $filters->excludes;
 
-            /** @var SimpleXMLElement $class */
-            foreach ($exclude_config->class as $class) {
-                $class = (string) $class['name'];
-                if (!class_exists($class)) {
-                    throw UncallableRepresentationException::create($class);
-                }
-
-                $excludes[] = $class;
+            /** @var SimpleXMLElement $exclude */
+            foreach ($exclude_config->exclude as $exclude) {
+                $this->excluded_representations[] = (string) $exclude['name'];
             }
 
             // Keep things tidy.
-            $excludes = array_unique($excludes);
+            $this->excluded_representations = array_unique($this->excluded_representations);
         }
 
         /**
@@ -462,7 +454,7 @@ class Config
             $suffix = (string) $directory['suffix'] ?: '.php';
             $method = (string) $directory['method'] ?: null;
 
-            $classes = $this->scanDirectoryForClasses($directory_name, $suffix, $excludes);
+            $classes = $this->scanDirectoryForClasses($directory_name, $suffix, $this->excluded_representations);
             /** @var string $class */
             foreach ($classes as $class) {
                 // Class declarations should always take priority over directories.
@@ -534,37 +526,14 @@ class Config
     }
 
     /**
-     * Load in an ignored representations configuration definition.
-     *
-     * @param SimpleXMLElement $representations
-     * @return void
-     */
-    protected function loadIgnoredRepresentations(SimpleXMLElement $representations)
-    {
-        /** @var SimpleXMLElement $filters */
-        $filters = $representations->filter;
-
-        /** @var SimpleXMLElement $ignore_config */
-        $ignore_config = $filters->ignores;
-        if (!empty($ignore_config)) {
-            foreach ($ignore_config->ignore as $ignore) {
-                $this->ignored_representations[] = (string)$ignore['name'];
-            }
-
-            // Keep things tidy.
-            $this->ignored_representations = array_unique($this->ignored_representations);
-        }
-    }
-
-    /**
-     * Check if a given representation has been configured to be ignored.
+     * Check if a given representation has been configured to be excluded.
      *
      * @param string $class
      * @return bool
      */
-    public function isRepresentationIgnored($class)
+    public function isRepresentationExcluded($class)
     {
-        return in_array($class, $this->getIgnoredRepresentations());
+        return in_array($class, $this->getExcludedRepresentations());
     }
 
     /**
@@ -668,13 +637,13 @@ class Config
     }
 
     /**
-     * Get the array of configured ignored application representations.
+     * Get the array of configured excluded application representations.
      *
      * @return array
      */
-    public function getIgnoredRepresentations()
+    public function getExcludedRepresentations()
     {
-        return $this->ignored_representations;
+        return $this->excluded_representations;
     }
 
     /**
@@ -706,20 +675,20 @@ class Config
     }
 
     /**
-     * Check if a specific representation exists. If the representation has been configured as being ignored, then act
+     * Check if a specific representation exists. If the representation has been configured as being excluded, then act
      * as if it doesn't exist (but don't throw an exception).
      *
      * @param string $class
      * @return bool
-     * @throws UnconfiguredRepresentationException If the representation hasn't been configured, or ignored.
+     * @throws UnconfiguredRepresentationException If the representation hasn't been configured, or excluded.
      */
     public function doesRepresentationExist($class)
     {
         $representations = $this->getRepresentations();
-        $ignored = $this->getIgnoredRepresentations();
+        $excluded = $this->getExcludedRepresentations();
 
-        // If the representation is ignored, just act like it doesn't exist.
-        if (in_array($class, $ignored)) {
+        // If the representation is excluded, just act like it doesn't exist.
+        if (in_array($class, $excluded)) {
             return false;
         }
 
