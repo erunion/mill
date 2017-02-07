@@ -31,21 +31,21 @@ class Config
      *
      * @var string
      */
-    public $first_api_version = null;
+    public $first_api_version;
 
     /**
      * The default version for your API.
      *
-     * @var string|null
+     * @var string
      */
-    public $default_api_version = null;
+    public $default_api_version;
 
     /**
      * The latest version of your API.
      *
-     * @var string|null
+     * @var string
      */
-    public $latest_api_version = null;
+    public $latest_api_version;
 
     /**
      * Array of API versions.
@@ -580,7 +580,7 @@ class Config
     /**
      * Get the configured default API version.
      *
-     * @return string|null
+     * @return string
      */
     public function getDefaultApiVersion()
     {
@@ -590,7 +590,7 @@ class Config
     /**
      * Get the configured latest API version.
      *
-     * @return string|null
+     * @return string
      */
     public function getLatestApiVersion()
     {

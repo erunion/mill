@@ -201,13 +201,17 @@ class Generator
     /**
      * Get compiled representations.
      *
-     * @param string|null $version
+     * @param Version|string|null $version
      * @return array
      */
     public function getRepresentations($version = null)
     {
         if (empty($version)) {
             return $this->compiled['representations'];
+        }
+
+        if ($version instanceof Version) {
+            $version = $version->getConstraint();
         }
 
         return $this->compiled['representations'][$version];
