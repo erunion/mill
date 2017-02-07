@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mill
     name="Mill unit test API, Showtimes"
-    sinceApiVersion="1.0"
-    defaultApiVersion="1.1"
-    latestApiVersion="1.2"
     bootstrap="../../vendor/autoload.php"
 >
+    <versions>
+        <version name="1.0" />
+        <version name="1.1" default="true" />
+    </versions>
+
     <controllers>
         <filter>
             <directory name="Showtimes/Controllers/" suffix=".php" />
@@ -16,11 +18,11 @@
         <filter>
             <directory name="Showtimes/Representations/" method="create" suffix=".php"  />
 
-            <exclude>
+            <excludes>
                 <exclude name="\Mill\Examples\Showtimes\Representations\Error" />
                 <exclude name="\Mill\Examples\Showtimes\Representations\CodedError" />
                 <exclude name="\Mill\Examples\Showtimes\Representations\Representation" />
-            </exclude>
+            </excludes>
         </filter>
 
         <errors>

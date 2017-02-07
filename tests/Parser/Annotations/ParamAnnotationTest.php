@@ -35,7 +35,7 @@ class ParamAnnotationTest extends AnnotationTest
             $this->assertFalse($annotation->getCapability());
         }
 
-        if (is_array($expected['version'])) {
+        if ($expected['version']) {
             $this->assertInstanceOf('Mill\Parser\Version', $annotation->getVersion());
         } else {
             $this->assertFalse($annotation->getVersion());
@@ -152,10 +152,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'required' => false,
                     'type' => 'int',
                     'values' => false,
-                    'version' => [
-                        'start' => '1.1',
-                        'end' => '1.2'
-                    ],
+                    'version' => '1.1 - 1.2',
                     'visible' => true
                 ]
             ]

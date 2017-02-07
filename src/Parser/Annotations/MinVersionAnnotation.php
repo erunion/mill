@@ -47,15 +47,12 @@ class MinVersionAnnotation extends Annotation
     protected function parser()
     {
         $parsed = new Version($this->docblock, $this->controller, $this->method);
-        $start = $parsed->getStart();
-        $end = $parsed->getEnd();
-
-        if ($start !== $end) {
+        if ($parsed->isRange()) {
             throw AbsoluteMinimumVersionException::create($this->docblock, $this->controller, $this->method);
         }
 
         return [
-            'minimum_version' => $start
+            'minimum_version' => $parsed->getConstraint()
         ];
     }
 

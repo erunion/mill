@@ -45,6 +45,8 @@ class Generator
     {
         $this->config = $config;
         $this->version = $version;
+
+        $this->supported_versions = $this->config->getApiVersions();
     }
 
     /**
@@ -67,36 +69,14 @@ class Generator
      */
     private function compileResources()
     {
-        $since_version = $this->config->getSinceApiVersion();
-
-        // Run through configured controllers and calculate the supported API versions across their application.
-        $controllers = [];
+        // Run through parsed controllers, and generate a versioned array of parseable resource action documentation.
+        $resources = [];
         foreach ($this->config->getControllers() as $controller) {
             $docs = (new Resource\Documentation($controller))->parse();
-            $methods = $docs->getMethods();
+            $annotations = $docs->toArray();
 
             /** @var \Mill\Parser\Resource\Action\Documentation $method */
-            foreach ($methods as $method) {
-                $this->supported_versions = array_merge(
-                    $this->supported_versions,
-                    $method->getSupportedVersions($since_version)
-                );
-            }
-
-            $controllers[] = $docs;
-        }
-
-        $this->supported_versions = array_unique($this->supported_versions);
-        sort($this->supported_versions);
-
-        // Run through parsed controllers, and now generate a versioned array of parseable resource action
-        // documentation.
-        $resources = [];
-        foreach ($controllers as $controller) {
-            $annotations = $controller->toArray();
-
-            /** @var \Mill\Parser\Resource\Action\Documentation $method */
-            foreach ($controller->getMethods() as $method) {
+            foreach ($docs->getMethods() as $method) {
                 /** @var \Mill\Parser\Annotations\UriAnnotation $uri */
                 foreach ($method->getUris() as $uri) {
                     $uri_data = $uri->toArray();
@@ -221,13 +201,17 @@ class Generator
     /**
      * Get compiled representations.
      *
-     * @param string|null $version
+     * @param Version|string|null $version
      * @return array
      */
     public function getRepresentations($version = null)
     {
         if (empty($version)) {
             return $this->compiled['representations'];
+        }
+
+        if ($version instanceof Version) {
+            $version = $version->getConstraint();
         }
 
         return $this->compiled['representations'][$version];

@@ -3,219 +3,46 @@ namespace Mill\Tests\Parser;
 
 use Mill\Parser\Version;
 
+/**
+ * Since the versioning system is powered by composer/semver, and it has its own test suite, we don't need to do
+ * exhaustive testing on our classes; we just that error handling with it is being properly caught.
+ *
+ * @link https://github.com/composer/semver
+ */
 class VersionTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @dataProvider parseProvider
-     */
-    public function testParse($version, $expected)
+    public function testParse()
     {
+        $version = '>3.4';
         $parsed = new Version($version, __CLASS__, __METHOD__);
-        $this->assertSame($parsed->toArray(), $expected);
+        $this->assertSame($version, $parsed->getConstraint());
+        $this->assertFalse($parsed->isRange());
+
+        $version = '3.0 - 3.3';
+        $parsed = new Version($version, __CLASS__, __METHOD__);
+        $this->assertSame($version, $parsed->getConstraint());
+        $this->assertTrue($parsed->isRange());
     }
 
-    /**
-     * @dataProvider matchesProvider
-     */
-    public function testMatches($version, $matches)
+    public function testMatches()
     {
+        $version = '3.*';
         $parsed = new Version($version, __CLASS__, __METHOD__);
 
-        foreach ($matches['good'] as $good) {
+        foreach (['3.0', '3.5'] as $good) {
             $this->assertTrue($parsed->matches($good), $good . ' did not successfully match ' . $version);
         }
 
-        foreach ($matches['bad'] as $bad) {
+        foreach (['2.9', '4.0', '4.1'] as $bad) {
             $this->assertFalse($parsed->matches($bad), $bad . ' improperly matched successfully against ' . $version);
         }
     }
 
     /**
-     * @dataProvider badMatchesProvider
+     * @expectedException \Mill\Exceptions\Version\UnrecognizedSchemaException
      */
-    public function testParseFailsOnBadVersionSchemas($version, $exception)
+    public function testParseFailsOnBadVersionSchemas()
     {
-        $this->expectException($exception);
-
-        new Version($version, __CLASS__, __METHOD__);
-    }
-
-    /**
-     * @return array
-     */
-    public function parseProvider()
-    {
-        return [
-            '`3.4` becomes `3.4 - 3.4`' => [
-                'version' => '3.4',
-                'expected' => [
-                    'start' => '3.4',
-                    'end' => '3.4'
-                ]
-            ],
-            '`>3.4` becomes `3.5 - *`' => [
-                'version' => '>3.4',
-                'expected' => [
-                    'start' => '3.5',
-                    'end' => '*'
-                ]
-            ],
-            '`>=3.4` becomes `3.4 - *`' => [
-                'version' => '>=3.4',
-                'expected' => [
-                    'start' => '3.4',
-                    'end' => '*'
-                ]
-            ],
-            '`<3.4` becomes `* - 3.3`' => [
-                'version' => '<3.4',
-                'expected' => [
-                    'start' => '*',
-                    'end' => '3.3'
-                ]
-            ],
-            '`<=3.4` becomes `* - 3.4`' => [
-                'version' => '<=3.4',
-                'expected' => [
-                    'start' => '*',
-                    'end' => '3.4'
-                ]
-            ],
-            '`3.0 - 3.3` becomes `3.0 - 3.3`' => [
-                'version' => '3.0 - 3.3',
-                'expected' => [
-                    'start' => '3.0',
-                    'end' => '3.3'
-                ]
-            ],
-            '`~3.3` becomes `3.3 - 4.0`' => [
-                'version' => '~3.3',
-                'expected' => [
-                    'start' => '3.3',
-                    'end' => '4.0'
-                ]
-            ],
-            '`3.*` becomes `3.0 - 4.0`' => [
-                'version' => '3.*',
-                'expected'  => [
-                    'start' => '3.0',
-                    'end' => '4.0'
-                ]
-            ]
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function matchesProvider()
-    {
-        return [
-            '3.4-matches-itself' => [
-                'version' => '3.4',
-                'matches' => [
-                    'good' => ['3.4'],
-                    'bad' => ['3.3', '3.5']
-                ],
-            ],
-            '>3.4-matches-above' => [
-                'version' => '>3.4',
-                'matches' => [
-                    'good' => ['3.5'],
-                    'bad' => ['3.4']
-                ],
-            ],
-            '>=3.4-matches-itself-and-above' => [
-                'version' => '>=3.4',
-                'matches' => [
-                    'good' => ['3.4', '3.5'],
-                    'bad' => ['3.3']
-                ]
-            ],
-            '<3.4-matches-below' => [
-                'version' => '<3.4',
-                'matches' => [
-                    'good' => ['3.2', '3.3'],
-                    'bad' => ['3.4']
-                ]
-            ],
-            '<=3.4-matches-itself-and-below' => [
-                'version' => '<=3.4',
-                'matches' => [
-                    'good' => ['3.3', '3.4'],
-                    'bad' => ['3.5']
-                ]
-            ],
-            '3.0-3.3-matches-range' => [
-                'version' => '3.0 - 3.3',
-                'matches' => [
-                    'good' => ['3.0', '3.1', '3.3'],
-                    'bad' => ['2.9', '3.4']
-                ]
-            ],
-            '~3.3-matches-range' => [
-                'version' => '~3.3',
-                'matches' => [
-                    'good' => ['3.3', '3.7', '4.0'],
-                    'bad' => ['3.2', '4.1']
-                ]
-            ],
-            '3.*-matches-range becomes `3.0 - 4.0`' => [
-                'version' => '3.*',
-                'matches' => [
-                    'good' => ['3.0', '3.5', '4.0'],
-                    'bad' => ['2.9', '4.1']
-                ]
-            ]
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function badMatchesProvider()
-    {
-        return [
-            'no-version' => [
-                '',
-                'exception' => '\Mill\Exceptions\Version\UnrecognizedSchemaException'
-            ],
-            'unrecognized-schema-integer' => [
-                'version' => '3',
-                'exception' => '\Mill\Exceptions\Version\UnrecognizedSchemaException'
-            ],
-            'unrecognized-schema-semver' => [
-                '3.0.0',
-                'exception' => '\Mill\Exceptions\Version\UnrecognizedSchemaException'
-            ],
-            'unrecognized-schema-carrot-integer' => [
-                '^3',
-                'exception' => '\Mill\Exceptions\Version\UnrecognizedSchemaException'
-            ],
-            'unrecognized-schema-carrot' => [
-                '^3.0',
-                'exception' => '\Mill\Exceptions\Version\UnrecognizedSchemaException'
-            ],
-            'unrecognized-schema-range-integet-float' => [
-                '3 - 3.3',
-                'exception' => '\Mill\Exceptions\Version\UnrecognizedSchemaException'
-            ],
-            'unrecognized-schema-range-without-space' => [
-                '3.0-3.3',
-                'exception' => '\Mill\Exceptions\Version\UnrecognizedSchemaException'
-            ],
-            'range-that-should-not-be-a-range' => [
-                'version' => '3.2 - 3.2',
-                'exception' => '\Mill\Exceptions\Version\BadRangeUseException'
-            ],
-            'lopsided-range' => [
-                'version' => '3.3 - 3.0',
-                'exception' => '\Mill\Exceptions\Version\LopsidedRangeException'
-            ],
-            'operators-are-found-in-a-range' => [
-                'version' => '>=3.0 - 3.3',
-                'exception' => '\Mill\Exceptions\Version\OperatorsWithinRangeException'
-            ]
-        ];
+        new Version('', __CLASS__, __METHOD__);
     }
 }

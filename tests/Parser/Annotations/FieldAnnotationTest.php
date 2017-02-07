@@ -28,7 +28,7 @@ class FieldAnnotationTest extends TestCase
             $this->assertFalse($annotation->getCapability());
         }
 
-        if (is_array($expected['version'])) {
+        if ($expected['version']) {
             $this->assertInstanceOf('\Mill\Parser\Version', $annotation->getVersion());
         } else {
             $this->assertFalse($annotation->getVersion());
@@ -82,10 +82,7 @@ class FieldAnnotationTest extends TestCase
                     'label' => 'MPAA rating',
                     'options' => false,
                     'type' => 'string',
-                    'version' => [
-                        'start' => '1.0',
-                        'end' => '1.0'
-                    ]
+                    'version' => '1.0'
                 ]
             ],
             'capability' => [
@@ -153,10 +150,7 @@ class FieldAnnotationTest extends TestCase
                         'UR'
                     ],
                     'type' => 'enum',
-                    'version' => [
-                        'start' => '1.0',
-                        'end' => '1.0'
-                    ]
+                    'version' => '1.0'
                 ]
             ]
         ];

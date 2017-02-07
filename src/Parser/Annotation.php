@@ -266,7 +266,7 @@ abstract class Annotation
             $arr['version'] = false;
 
             if ($this->version instanceof Version) {
-                $arr['version'] = $this->version->toArray();
+                $arr['version'] = $this->version->getConstraint();
             }
         }
 

@@ -1,6 +1,7 @@
 <?php
 namespace Mill;
 
+use Composer\Semver\Semver;
 use DOMDocument;
 use InvalidArgumentException;
 use League\Flysystem\FileNotFoundException;
@@ -30,21 +31,28 @@ class Config
      *
      * @var string
      */
-    public $since_api_version;
+    public $first_api_version;
 
     /**
      * The default version for your API.
      *
-     * @var string|null
+     * @var string
      */
-    public $default_api_version = null;
+    public $default_api_version;
 
     /**
      * The latest version of your API.
      *
-     * @var string|null
+     * @var string
      */
-    public $latest_api_version = null;
+    public $latest_api_version;
+
+    /**
+     * Array of API versions.
+     *
+     * @var array
+     */
+    protected $api_versions = [];
 
     /**
      * Allowable list of valid application capabilities.
@@ -157,18 +165,6 @@ class Config
             require_once $config->base_dir . $xml['bootstrap'];
         }
 
-        if (isset($xml['sinceApiVersion'])) {
-            $config->since_api_version = (string) $xml['sinceApiVersion'];
-        }
-
-        if (isset($xml['defaultApiVersion'])) {
-            $config->default_api_version = (string) $xml['defaultApiVersion'];
-        }
-
-        if (isset($xml['latestApiVersion'])) {
-            $config->latest_api_version = (string) $xml['latestApiVersion'];
-        }
-
         if (isset($xml->capabilities)) {
             $config->capabilities = [];
             $config->loadCapabilities($xml->capabilities->capability);
@@ -188,6 +184,9 @@ class Config
         if (isset($xml->parameterTokens)) {
             $config->loadParameterTokens($xml->parameterTokens->token);
         }
+
+        $config->api_versions = [];
+        $config->loadVersions($xml->versions->version);
 
         $config->controllers = [];
         $config->loadControllers($xml->controllers);
@@ -308,6 +307,41 @@ class Config
         }
 
         $this->parameter_tokens['{' . $parameter . '}'] = $annotation;
+    }
+
+    /**
+     * Load in a versions configuration definition.
+     *
+     * @param SimpleXMLElement $versions
+     * @return void
+     * @throws InvalidArgumentException If multiple configured default API versions were detected.
+     */
+    protected function loadVersions(SimpleXMLElement $versions)
+    {
+        foreach ($versions as $version) {
+            $this->api_versions[] = (string) $version['name'];
+
+            $is_default = (bool) $version['default'];
+            if ($is_default) {
+                if ($this->getDefaultApiVersion()) {
+                    throw new InvalidArgumentException(
+                        'Multiple default API versions have been detected in the Mill `versions` section.'
+                    );
+                }
+
+                $this->default_api_version = (string) $version['name'];
+            }
+        }
+
+        if (!$this->getDefaultApiVersion()) {
+            throw new InvalidArgumentException('You must set a default API version.');
+        }
+
+        // Keep things tidy.
+        $this->api_versions = array_unique($this->api_versions);
+
+        $this->first_api_version = Semver::sort($this->api_versions)[0];
+        $this->latest_api_version = Semver::rsort($this->api_versions)[0];
     }
 
     /**
@@ -538,15 +572,15 @@ class Config
      *
      * @return string
      */
-    public function getSinceApiVersion()
+    public function getFirstApiVersion()
     {
-        return $this->since_api_version;
+        return $this->first_api_version;
     }
 
     /**
      * Get the configured default API version.
      *
-     * @return string|null
+     * @return string
      */
     public function getDefaultApiVersion()
     {
@@ -556,11 +590,21 @@ class Config
     /**
      * Get the configured latest API version.
      *
-     * @return string|null
+     * @return string
      */
     public function getLatestApiVersion()
     {
         return $this->latest_api_version;
+    }
+
+    /**
+     * Get the array of configured API versions.
+     *
+     * @return array
+     */
+    public function getApiVersions()
+    {
+        return $this->api_versions;
     }
 
     /**

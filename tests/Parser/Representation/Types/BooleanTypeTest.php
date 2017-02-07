@@ -63,10 +63,7 @@ class BooleanTypeTest extends TypeTest
                     'label' => 'Does the movie have a trailer?',
                     'options' => false,
                     'type' => 'boolean',
-                    'version' => [
-                        'start' => '1.2',
-                        'end' => '1.2'
-                    ]
+                    'version' => '1.2'
                 ]
             ],
             '_complete' => [
@@ -83,10 +80,7 @@ class BooleanTypeTest extends TypeTest
                     'label' => 'Does the movie have a trailer?',
                     'options' => false,
                     'type' => 'boolean',
-                    'version' => [
-                        'start' => '1.2',
-                        'end' => '1.2'
-                    ]
+                    'version' => '1.2'
                 ]
             ]
         ];

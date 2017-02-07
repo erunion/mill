@@ -32,7 +32,7 @@ class ThrowsAnnotationTest extends AnnotationTest
             $this->assertFalse($annotation->getCapability());
         }
 
-        if (is_array($expected['version'])) {
+        if ($expected['version']) {
             $this->assertInstanceOf('\Mill\Parser\Version', $annotation->getVersion());
         } else {
             $this->assertFalse($annotation->getVersion());
@@ -183,10 +183,7 @@ class ThrowsAnnotationTest extends AnnotationTest
                     'error_code' => false,
                     'http_code' => '404 Not Found',
                     'representation' => '\Mill\Examples\Showtimes\Representations\Error',
-                    'version' => [
-                        'start' => '1.1',
-                        'end' => '1.2'
-                    ],
+                    'version' => '1.1 - 1.2',
                     'visible' => false
                 ]
             ],

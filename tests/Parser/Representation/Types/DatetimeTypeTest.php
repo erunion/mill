@@ -63,10 +63,7 @@ class DatetimeTypeTest extends TypeTest
                     'label' => 'Movie release date',
                     'options' => false,
                     'type' => 'datetime',
-                    'version' => [
-                        'start' => '1.2',
-                        'end' => '1.2'
-                    ]
+                    'version' => '1.2'
                 ]
             ],
             '_complete' => [
@@ -83,10 +80,7 @@ class DatetimeTypeTest extends TypeTest
                     'label' => 'Movie release date',
                     'options' => false,
                     'type' => 'datetime',
-                    'version' => [
-                        'start' => '1.2',
-                        'end' => '1.2'
-                    ]
+                    'version' => '1.2'
                 ]
             ]
         ];

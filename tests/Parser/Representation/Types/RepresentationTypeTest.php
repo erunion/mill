@@ -69,10 +69,7 @@ class RepresentationTypeTest extends TypeTest
                     'options' => false,
                     'subtype' => '\Mill\Examples\Showtimes\Representations\Theater',
                     'type' => 'representation',
-                    'version' => [
-                        'start' => '1.2',
-                        'end' => '1.2'
-                    ]
+                    'version' => '1.2'
                 ]
             ],
             '_complete' => [
@@ -91,10 +88,7 @@ class RepresentationTypeTest extends TypeTest
                     'options' => false,
                     'subtype' => '\Mill\Examples\Showtimes\Representations\Theater',
                     'type' => 'representation',
-                    'version' => [
-                        'start' => '1.2',
-                        'end' => '1.2'
-                    ]
+                    'version' => '1.2'
                 ]
             ],
         ];
