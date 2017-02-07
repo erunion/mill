@@ -45,9 +45,9 @@
         }
     },
     "scripts": {
+        "analysis": "psalm",
+        "check-style": "phpcs --standard=PSR2 src/ tests/",
         "coverage": "phpunit --coverage-html reports/",
-        "psalm": "psalm",
-        "standards": "phpcs --standard=PSR2 src/ tests/",
         "tests": "phpunit"
     }
 }
