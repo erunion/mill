@@ -9,25 +9,34 @@
 
     <xs:attributeGroup name="group.config.attribute">
         <xs:attribute name="name" type="xs:string" />
-        <xs:attribute name="sinceApiVersion" type="xs:string" use="required" />
-        <xs:attribute name="defaultApiVersion" type="xs:string" />
-        <xs:attribute name="latestApiVersion" type="xs:string" />
         <xs:attribute name="bootstrap" type="xs:string" use="required" />
     </xs:attributeGroup>
 
     <xs:group name="group.config">
         <xs:all>
-            <xs:element name="controllers" type="controllers" minOccurs="1" maxOccurs="1" />
-            <xs:element name="representations" type="representations" minOccurs="1" maxOccurs="1" />
+            <xs:element name="versions" type="component.versions" minOccurs="1" maxOccurs="1" />
+            <xs:element name="controllers" type="component.controllers" minOccurs="1" maxOccurs="1" />
+            <xs:element name="representations" type="component.representations" minOccurs="1" maxOccurs="1" />
 
-            <xs:element name="capabilities" type="capabilities" minOccurs="0" maxOccurs="1" />
-            <xs:element name="scopes" type="scopes" minOccurs="0" maxOccurs="1" />
-            <xs:element name="parameterTokens" type="parametertokens" minOccurs="0" maxOccurs="1" />
-            <xs:element name="uriSegments" type="urisegments" minOccurs="0" maxOccurs="1" />
+            <xs:element name="capabilities" type="component.capabilities" minOccurs="0" maxOccurs="1" />
+            <xs:element name="scopes" type="component.scopes" minOccurs="0" maxOccurs="1" />
+            <xs:element name="parameterTokens" type="component.parametertokens" minOccurs="0" maxOccurs="1" />
+            <xs:element name="uriSegments" type="component.urisegments" minOccurs="0" maxOccurs="1" />
         </xs:all>
     </xs:group>
 
-    <xs:complexType name="controllers">
+    <xs:complexType name="component.versions">
+        <xs:choice>
+            <xs:element name="version" minOccurs="1" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:attribute name="name" type="xs:string" use="required" />
+                    <xs:attribute name="default" type="xs:boolean" use="optional" />
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="component.controllers">
         <xs:choice>
             <xs:element name="filter">
                 <xs:complexType>
@@ -50,7 +59,7 @@
         </xs:choice>
     </xs:complexType>
 
-    <xs:complexType name="representations">
+    <xs:complexType name="component.representations">
         <xs:sequence>
             <xs:element name="filter">
                 <xs:complexType>
@@ -88,7 +97,7 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="capabilities">
+    <xs:complexType name="component.capabilities">
         <xs:choice>
             <xs:element name="capability" minOccurs="1" maxOccurs="unbounded">
                 <xs:complexType>
@@ -98,7 +107,7 @@
         </xs:choice>
     </xs:complexType>
 
-    <xs:complexType name="scopes">
+    <xs:complexType name="component.scopes">
         <xs:choice>
             <xs:element name="scope" minOccurs="1" maxOccurs="unbounded">
                 <xs:complexType>
@@ -108,7 +117,7 @@
         </xs:choice>
     </xs:complexType>
 
-    <xs:complexType name="parametertokens">
+    <xs:complexType name="component.parametertokens">
         <xs:choice>
             <xs:element name="token" minOccurs="1" maxOccurs="unbounded">
                 <xs:complexType>
@@ -122,7 +131,7 @@
         </xs:choice>
     </xs:complexType>
 
-    <xs:complexType name="urisegments">
+    <xs:complexType name="component.urisegments">
         <xs:sequence>
             <xs:element name="translations">
                 <xs:complexType>

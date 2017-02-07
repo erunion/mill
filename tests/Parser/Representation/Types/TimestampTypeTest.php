@@ -63,10 +63,7 @@ class TimestampTypeTest extends TypeTest
                     'label' => 'The time the object was created',
                     'options' => false,
                     'type' => 'timestamp',
-                    'version' => [
-                        'start' => '1.2',
-                        'end' => '1.2'
-                    ]
+                    'version' => '1.2'
                 ]
             ],
             '_complete' => [
@@ -83,10 +80,7 @@ class TimestampTypeTest extends TypeTest
                     'label' => 'The time the object was created',
                     'options' => false,
                     'type' => 'timestamp',
-                    'version' => [
-                        'start' => '1.2',
-                        'end' => '1.2'
-                    ]
+                    'version' => '1.2'
                 ]
             ]
         ];

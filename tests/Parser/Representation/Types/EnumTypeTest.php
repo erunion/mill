@@ -109,10 +109,7 @@ DOCBLOCK;
                         'UR'
                     ],
                     'type' => 'enum',
-                    'version' => [
-                        'start' => '1.2',
-                        'end' => '1.2'
-                    ]
+                    'version' => '1.2'
                 ]
             ],
             '_complete' => [
@@ -139,10 +136,7 @@ DOCBLOCK;
                         'UR'
                     ],
                     'type' => 'enum',
-                    'version' => [
-                        'start' => '1.2',
-                        'end' => '1.2'
-                    ]
+                    'version' => '1.2'
                 ]
             ]
         ];

@@ -63,10 +63,7 @@ class NumberTypeTest extends TypeTest
                     'label' => 'Movie runtime in seconds',
                     'options' => false,
                     'type' => 'number',
-                    'version' => [
-                        'start' => '1.2',
-                        'end' => '1.2'
-                    ]
+                    'version' => '1.2'
                 ]
             ],
             '_complete' => [
@@ -83,10 +80,7 @@ class NumberTypeTest extends TypeTest
                     'label' => 'Movie runtime in seconds',
                     'options' => false,
                     'type' => 'number',
-                    'version' => [
-                        'start' => '1.2',
-                        'end' => '1.2'
-                    ]
+                    'version' => '1.2'
                 ]
             ]
         ];

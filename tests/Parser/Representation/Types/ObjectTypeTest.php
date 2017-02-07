@@ -63,10 +63,7 @@ class ObjectTypeTest extends TypeTest
                     'label' => 'External URLs',
                     'options' => false,
                     'type' => 'object',
-                    'version' => [
-                        'start' => '1.2',
-                        'end' => '1.2'
-                    ]
+                    'version' => '1.2'
                 ]
             ],
             '_complete' => [
@@ -83,10 +80,7 @@ class ObjectTypeTest extends TypeTest
                     'label' => 'External URLs',
                     'options' => false,
                     'type' => 'object',
-                    'version' => [
-                        'start' => '1.2',
-                        'end' => '1.2'
-                    ]
+                    'version' => '1.2'
                 ]
             ]
         ];

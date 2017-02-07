@@ -63,10 +63,7 @@ class UriTypeTest extends TypeTest
                     'label' => 'Canonical relative URI',
                     'options' => false,
                     'type' => 'uri',
-                    'version' => [
-                        'start' => '1.2',
-                        'end' => '1.2'
-                    ]
+                    'version' => '1.2'
                 ]
             ],
             '_complete' => [
@@ -83,10 +80,7 @@ class UriTypeTest extends TypeTest
                     'label' => 'Canonical relative URI',
                     'options' => false,
                     'type' => 'uri',
-                    'version' => [
-                        'start' => '1.2',
-                        'end' => '1.2'
-                    ]
+                    'version' => '1.2'
                 ]
             ]
         ];

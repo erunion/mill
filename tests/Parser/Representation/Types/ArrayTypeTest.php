@@ -83,10 +83,7 @@ class ArrayTypeTest extends TypeTest
                     'options' => false,
                     'subtype' => false,
                     'type' => 'array',
-                    'version' => [
-                        'start' => '1.2',
-                        'end' => '1.2'
-                    ]
+                    'version' => '1.2'
                 ]
             ],
             '_complete' => [
@@ -105,10 +102,7 @@ class ArrayTypeTest extends TypeTest
                     'options' => false,
                     'subtype' => 'object',
                     'type' => 'array',
-                    'version' => [
-                        'start' => '1.2',
-                        'end' => '1.2'
-                    ]
+                    'version' => '1.2'
                 ]
             ]
         ];

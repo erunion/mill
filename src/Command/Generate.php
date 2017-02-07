@@ -2,9 +2,6 @@
 namespace Mill\Command;
 
 use Mill\Container;
-use Mill\Exceptions\Version\BadRangeUseException;
-use Mill\Exceptions\Version\LopsidedRangeException;
-use Mill\Exceptions\Version\OperatorsWithinRangeException;
 use Mill\Exceptions\Version\UnrecognizedSchemaException;
 use Mill\Generator\Blueprint;
 use Mill\Parser\Version;
@@ -93,15 +90,6 @@ class Generate extends Command
         if (!empty($version)) {
             try {
                 $version = new Version($version, __CLASS__, __METHOD__);
-            } catch (BadRangeUseException $e) {
-                $output->writeLn('<error>' . $e->getValidationMessage() . '</error>');
-                exit(1);
-            } catch (LopsidedRangeException $e) {
-                $output->writeLn('<error>' . $e->getValidationMessage() . '</error>');
-                exit(1);
-            } catch (OperatorsWithinRangeException $e) {
-                $output->writeLn('<error>' . $e->getValidationMessage() . '</error>');
-                exit(1);
             } catch (UnrecognizedSchemaException $e) {
                 $output->writeLn('<error>' . $e->getValidationMessage() . '</error>');
                 exit(1);

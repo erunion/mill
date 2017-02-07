@@ -23,7 +23,7 @@ class ReturnAnnotationTest extends AnnotationTest
         $this->assertSame($expected['representation'], $annotation->getRepresentation());
         $this->assertFalse($annotation->getCapability());
 
-        if (is_array($expected['version'])) {
+        if ($expected['version']) {
             $this->assertInstanceOf('\Mill\Parser\Version', $annotation->getVersion());
         } else {
             $this->assertFalse($annotation->getVersion());
@@ -66,10 +66,7 @@ class ReturnAnnotationTest extends AnnotationTest
                     'http_code' => '200 OK',
                     'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
                     'type' => 'collection',
-                    'version' => [
-                        'start' => '3.2',
-                        'end' => '3.2'
-                    ]
+                    'version' => '3.2'
                 ]
             ],
             '_complete' => [
@@ -80,10 +77,7 @@ class ReturnAnnotationTest extends AnnotationTest
                     'http_code' => '200 OK',
                     'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
                     'type' => 'collection',
-                    'version' => [
-                        'start' => '3.2',
-                        'end' => '3.2'
-                    ]
+                    'version' => '3.2'
                 ]
             ],
 

@@ -9,9 +9,14 @@ class ConfigTest extends TestCase
     {
         $config = $this->getConfig();
 
-        $this->assertSame('1.0', $config->getSinceApiVersion());
+        $this->assertSame('1.0', $config->getFirstApiVersion());
         $this->assertSame('1.1', $config->getDefaultApiVersion());
-        $this->assertSame('1.2', $config->getLatestApiVersion());
+        $this->assertSame('1.1', $config->getLatestApiVersion());
+
+        $this->assertSame([
+            '1.0',
+            '1.1'
+        ], $config->getApiVersions());
 
         $this->assertSame([
             'BUY_TICKETS',
@@ -121,7 +126,16 @@ XML;
         }
 
         // Customize the provider XML so we don't need to have a bunch of DRY'd XML everywhere.
-        $controllers = $representations = false;
+        $versions = $controllers = $representations = false;
+        if (in_array('versions', $includes)) {
+            $versions = <<<XML
+<versions>
+    <version name="1.0" />
+    <version name="1.1" default="true" />
+</versions>
+XML;
+        }
+
         if (in_array('controllers', $includes)) {
             $controllers = <<<XML
 <controllers>
@@ -144,7 +158,8 @@ XML;
 
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
-<mill sinceApiVersion="3.2" bootstrap="vendor/autoload.php">
+<mill bootstrap="vendor/autoload.php">
+    $versions
     $controllers
     $representations
     $xml
@@ -177,11 +192,40 @@ XML;
     {
         return [
             /**
+             * <versions>
+             *
+             */
+            'versions.no-default' => [
+                'includes' => ['controllers', 'representations'],
+                'exception' => [
+                    'regex' => '/You must set/'
+                ],
+                'xml' => <<<XML
+<versions>
+    <version name="1.0" />
+</versions>
+XML
+            ],
+
+            'versions.multiple-defaults' => [
+                'includes' => ['controllers', 'representations'],
+                'exception' => [
+                    'regex' => '/Multiple default API versions/'
+                ],
+                'xml' => <<<XML
+<versions>
+    <version name="1.0" default="true" />
+    <version name="1.1" default="true" />
+</versions>
+XML
+            ],
+
+            /**
              * <controllers>
              *
              */
             'controllers.directory.invalid' => [
-                'includes' => ['representations'],
+                'includes' => ['versions', 'representations'],
                 'exception' => [
                     'regex' => '/does not exist/'
                 ],
@@ -195,7 +239,7 @@ XML
             ],
 
             'controllers.none-found' => [
-                'includes' => ['representations'],
+                'includes' => ['versions', 'representations'],
                 'exception' => [
                     'regex' => '/requires a set of controllers/'
                 ],
@@ -209,7 +253,7 @@ XML
             ],
 
             'controllers.class.uncallable' => [
-                'includes' => ['representations'],
+                'includes' => ['versions', 'representations'],
                 'exception' => [
                     'regex' => '/could not be called/'
                 ],
@@ -227,7 +271,7 @@ XML
              *
              */
             'representations.none-found' => [
-                'includes' => ['controllers'],
+                'includes' => ['versions', 'controllers'],
                 'exception' => [
                     'regex' => '/requires a set of representations/'
                 ],
@@ -241,7 +285,7 @@ XML
             ],
 
             'representations.class.missing-method' => [
-                'includes' => ['controllers'],
+                'includes' => ['versions', 'controllers'],
                 'exception' => [
                     'regex' => '/missing a `method`/'
                 ],
@@ -255,7 +299,7 @@ XML
             ],
 
             'representations.class.uncallable' => [
-                'includes' => ['controllers'],
+                'includes' => ['versions', 'controllers'],
                 'exception' => [
                     'exception' => '\Mill\Exceptions\Config\UncallableRepresentationException'
                 ],
@@ -269,7 +313,7 @@ XML
             ],
 
             'representations.directory.invalid' => [
-                'includes' => ['controllers'],
+                'includes' => ['versions', 'controllers'],
                 'exception' => [
                     'regex' => '/does not exist/'
                 ],
@@ -283,7 +327,7 @@ XML
             ],
 
             'representations.error.uncallable' => [
-                'includes' => ['controllers'],
+                'includes' => ['versions', 'controllers'],
                 'exception' => [
                     'exception' => '\Mill\Exceptions\Config\UncallableErrorRepresentationException'
                 ],
@@ -305,7 +349,7 @@ XML
              *
              */
             'urisegments.invalid' => [
-                'includes' => ['controllers', 'representations'],
+                'includes' => ['versions', 'controllers', 'representations'],
                 'exception' => [
                     'regex' => '/invalid translation text/'
                 ],
