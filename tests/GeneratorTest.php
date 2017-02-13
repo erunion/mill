@@ -105,6 +105,7 @@ class GeneratorTest extends TestCase
             $this->assertSame($data['label'], $actual['label']);
             $this->assertSame($data['description.length'], strlen($actual['description']));
             $this->assertCount($data['content.size'], $actual['content']);
+            $this->assertCount($data['content.size'], $representation->getContent());
         }
     }
 
@@ -119,12 +120,12 @@ class GeneratorTest extends TestCase
                 'expected.representations' => [
                     '\Mill\Examples\Showtimes\Representations\Movie' => [
                         'label' => 'Movie',
-                        'description.length' => 0,
+                        'description.length' => 41,
                         'content.size' => 14
                     ],
                     '\Mill\Examples\Showtimes\Representations\Theater' => [
                         'label' => 'Theater',
-                        'description.length' => 0,
+                        'description.length' => 49,
                         'content.size' => 7
                     ]
                 ],
@@ -250,12 +251,12 @@ class GeneratorTest extends TestCase
                 'expected.representations' => [
                     '\Mill\Examples\Showtimes\Representations\Movie' => [
                         'label' => 'Movie',
-                        'description.length' => 0,
+                        'description.length' => 41,
                         'content.size' => 14
                     ],
                     '\Mill\Examples\Showtimes\Representations\Theater' => [
                         'label' => 'Theater',
-                        'description.length' => 0,
+                        'description.length' => 49,
                         'content.size' => 6
                     ]
                 ],

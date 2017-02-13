@@ -18,6 +18,7 @@ class ScopeAnnotationTest extends AnnotationTest
         $this->assertSame($expected, $annotation->toArray());
 
         $this->assertSame($expected['scope'], $annotation->getScope());
+        $this->assertSame($expected['description'], $annotation->getDescription());
         $this->assertFalse($annotation->getCapability());
         $this->assertFalse($annotation->getVersion());
     }

@@ -21,6 +21,7 @@ class ReturnAnnotationTest extends AnnotationTest
         $this->assertSame($expected['description'], $annotation->getDescription());
         $this->assertSame($expected['http_code'], $annotation->getHttpCode());
         $this->assertSame($expected['representation'], $annotation->getRepresentation());
+        $this->assertSame($expected['type'], $annotation->getType());
         $this->assertFalse($annotation->getCapability());
 
         if ($expected['version']) {

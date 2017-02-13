@@ -55,7 +55,7 @@ class DocumentationTest extends TestCase
                 'method' => 'create',
                 'expected' => [
                     'label' => 'Movie',
-                    'description.length' => 0,
+                    'description.length' => 41,
                     'content' => [
                         'cast' => [
                             'capability' => false,
@@ -351,6 +351,11 @@ class DocumentationTest extends TestCase
         return [
             'no-annotations' => [
                 'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithNoAnnotations',
+                'method' => 'create',
+                'expected.exception' => '\Mill\Exceptions\Resource\NoAnnotationsException'
+            ],
+            'no-annotations-on-the-class' => [
+                'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithNoClassAnnotations',
                 'method' => 'create',
                 'expected.exception' => '\Mill\Exceptions\Resource\NoAnnotationsException'
             ],

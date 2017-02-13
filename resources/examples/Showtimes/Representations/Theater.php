@@ -2,6 +2,8 @@
 namespace Mill\Examples\Showtimes\Representations;
 
 /**
+ * Data representation for a specific movie theater.
+ *
  * @api-label Theater
  */
 class Theater extends Representation
