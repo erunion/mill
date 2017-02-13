@@ -15,7 +15,7 @@ class Reader
      *
      * @param string $class
      * @param string|null $method
-     * @return string The found annotation docblock.
+     * @return string|false The found annotation docblock.
      * @throws MethodNotImplementedException If the supplied method does not exist on the supplied class.
      */
     public function getAnnotations($class, $method = null)
