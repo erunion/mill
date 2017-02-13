@@ -98,12 +98,6 @@ class GeneratorTest extends TestCase
         foreach ($expected_representations as $name => $data) {
             $this->assertArrayHasKey($name, $representations);
 
-            // If this representation has no content, then it was set up as a `noMethod` representation. It should
-            // basically be ignored.
-            if ($data['content.size'] === 0) {
-                continue;
-            }
-
             /** @var \Mill\Parser\Representation\Documentation $representation */
             $representation = $representations[$name];
             $actual = $representation->toArray();
@@ -125,8 +119,8 @@ class GeneratorTest extends TestCase
                 'expected.representations' => [
                     '\Mill\Examples\Showtimes\Representations\Movie' => [
                         'label' => 'Movie',
-                        'description.length' => 12,
-                        'content.size' => 0
+                        'description.length' => 0,
+                        'content.size' => 14
                     ],
                     '\Mill\Examples\Showtimes\Representations\Theater' => [
                         'label' => 'Theater',
@@ -256,8 +250,8 @@ class GeneratorTest extends TestCase
                 'expected.representations' => [
                     '\Mill\Examples\Showtimes\Representations\Movie' => [
                         'label' => 'Movie',
-                        'description.length' => 12,
-                        'content.size' => 0
+                        'description.length' => 0,
+                        'content.size' => 14
                     ],
                     '\Mill\Examples\Showtimes\Representations\Theater' => [
                         'label' => 'Theater',
