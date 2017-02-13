@@ -63,25 +63,15 @@ class Parser
      *
      * @param string|null $method_name
      * @return array An array containing all the found annotations.
-     * @throws MethodNotImplementedException If the supplied method does not exist on the supplied controller.
      */
     public function getAnnotations($method_name = null)
     {
-        $reflection = new ReflectionClass($this->controller);
-
-        if (empty($method_name)) {
-            $comments = $reflection->getDocComment();
-        } else {
+        if (!empty($method_name)) {
             $this->method = $method_name;
-
-            if (!$reflection->hasMethod($method_name)) {
-                throw MethodNotImplementedException::create($this->controller, $method_name);
-            }
-
-            /** @var \ReflectionMethod $method */
-            $method = $reflection->getMethod($method_name);
-            $comments = $method->getDocComment();
         }
+
+        $reader = Container::getReader();
+        $comments = $reader($this->controller, $method_name);
 
         if (empty($comments)) {
             return [];
