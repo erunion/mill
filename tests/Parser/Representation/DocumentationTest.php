@@ -360,8 +360,7 @@ class DocumentationTest extends TestCase
                 'expected.exception' => '\Mill\Exceptions\Resource\NoAnnotationsException'
             ],
             'missing-a-required-label-annotation' => [
-                'class' =>
-                    '\Mill\Tests\Fixtures\Representations\RepresentationWithRequiredLabelAnnotationMissing',
+                'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithRequiredLabelAnnotationMissing',
                 'method' => 'create',
                 'expected.exception' => '\Mill\Exceptions\RequiredAnnotationException'
             ],

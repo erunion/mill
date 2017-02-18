@@ -3,10 +3,13 @@ namespace Mill\Tests\Parser\Resource;
 
 use Mill\Exceptions\MethodNotImplementedException;
 use Mill\Parser\Resource\Documentation;
+use Mill\Tests\ReaderTestingTrait;
 use Mill\Tests\TestCase;
 
 class DocumentationTest extends TestCase
 {
+    use ReaderTestingTrait;
+
     /**
      * @dataProvider controllersProvider
      */
@@ -48,14 +51,16 @@ class DocumentationTest extends TestCase
     /**
      * @dataProvider badControllersProvider
      */
-    public function testDocumentationFailsOnBadControllers($controller, $exception, $regex)
+    public function testDocumentationFailsOnBadControllers($docblock, $exception, $regex)
     {
         $this->expectException($exception);
         foreach ($regex as $rule) {
             $this->expectExceptionMessageRegExp($rule);
         }
 
-        (new Documentation($controller))->parse();
+        $this->overrideReadersWithFakeDocblockReturn($docblock);
+
+        (new Documentation(''))->parse();
     }
 
     /**
@@ -102,14 +107,19 @@ class DocumentationTest extends TestCase
     {
         return [
             'missing-required-label-annotation' => [
-                'controller' => '\Mill\Tests\Fixtures\Controllers\ControllerWithRequiredLabelAnnotationMissing',
+                'docblock' => '/**
+                  *
+                  */',
                 'expected.exception' => '\Mill\Exceptions\RequiredAnnotationException',
                 'expected.exception.regex' => [
                     '/api-label/'
                 ]
             ],
             'multiple-label-annotations' => [
-                'controller' => '\Mill\Tests\Fixtures\Controllers\ControllerWithMultipleLabelAnnotations',
+                'docblock' => '/**
+                  * @api-label Something
+                  * @api-label Something else
+                  */',
                 'expected.exception' => '\Mill\Exceptions\MultipleAnnotationsException',
                 'expected.exception.regex' => [
                     '/api-label/'

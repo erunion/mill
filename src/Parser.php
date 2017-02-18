@@ -1,7 +1,6 @@
 <?php
 namespace Mill;
 
-use Mill\Exceptions\MethodNotImplementedException;
 use Mill\Exceptions\Resource\UnsupportedDecoratorException;
 use Mill\Parser\Annotation;
 use Mill\Parser\Version;
@@ -70,7 +69,7 @@ class Parser
             $this->method = $method_name;
         }
 
-        $reader = Container::getReader();
+        $reader = Container::getAnnotationReader();
         $comments = $reader($this->controller, $method_name);
 
         if (empty($comments)) {

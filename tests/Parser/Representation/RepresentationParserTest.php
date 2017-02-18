@@ -2,10 +2,13 @@
 namespace Mill\Tests\Parser\Representation;
 
 use Mill\Parser\Representation\RepresentationParser;
+use Mill\Tests\ReaderTestingTrait;
 use Mill\Tests\TestCase;
 
 class RepresentationParserTest extends TestCase
 {
+    use ReaderTestingTrait;
+
     /**
      * @dataProvider representationProvider
      */
@@ -40,7 +43,22 @@ class RepresentationParserTest extends TestCase
     /**
      * @dataProvider badRepresentationsProvider
      */
-    public function testRepresentationsThatWillFailParsing($class, $method, $exception, $regex)
+    public function testRepresentationsThatWillFailParsing($docblock, $exception, $regex)
+    {
+        $this->expectException($exception);
+        foreach ($regex as $rule) {
+            $this->expectExceptionMessageRegExp($rule);
+        }
+
+        $this->overrideReadersWithFakeDocblockReturn($docblock);
+
+        (new RepresentationParser(__CLASS__))->getAnnotations(__METHOD__);
+    }
+
+    /**
+     * @dataProvider badRepresentationMethodsProvider
+     */
+    public function testRepresentationMethodsThatWillFailParsing($class, $method, $exception, $regex)
     {
         $this->expectException($exception);
         foreach ($regex as $rule) {
@@ -198,44 +216,82 @@ class RepresentationParserTest extends TestCase
     public function badRepresentationsProvider()
     {
         return [
-            'no-method-supplied' => [
-                'class' => '\Mill\Examples\Showtimes\Representations\Movie',
-                'method' => null,
-                'expected.exception' => '\Mill\Exceptions\MethodNotSuppliedException',
-                'expected.exception.regex' => []
-            ],
             'docblock-has-duplicate-capability-annotations' => [
-                'class' =>
-                    '\Mill\Tests\Fixtures\Representations\RepresentationWithDuplicateCapabilityAnnotations',
-                'method' => 'create',
+                'docblocks' => '/**
+                  * @api-label Canonical relative URI
+                  * @api-field uri
+                  * @api-type uri
+                  * @api-capability SomeCapability
+                  * @api-capability SomeOtherCapability
+                  */',
                 'expected.exception' => '\Mill\Exceptions\Representation\DuplicateAnnotationsOnFieldException',
                 'expected.exception.regex' => [
                     '/api-capability/'
                 ]
             ],
             'docblock-has-duplicate-version-annotations' => [
-                'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithDuplicateVersionAnnotations',
-                'method' => 'create',
+                'docblocks' => '/**
+                  * @api-label Canonical relative URI
+                  * @api-field uri
+                  * @api-type uri
+                  * @api-version >3.2
+                  * @api-version 3.4
+                  */',
                 'expected.exception' => '\Mill\Exceptions\Representation\DuplicateAnnotationsOnFieldException',
                 'expected.exception.regex' => [
                     '/api-version/'
                 ]
             ],
             'docblock-missing-a-field' => [
-                'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithDocblockMissingAField',
-                'method' => 'create',
+                'docblocks' => '/**
+                  * @api-label Canonical relative URI
+                  */',
                 'expected.exception' => '\Mill\Exceptions\Representation\MissingFieldAnnotationException',
                 'expected.exception.regex' => [
                     '/api-field/'
                 ]
             ],
             'docblock-missing-a-type' => [
-                'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithDocblockMissingAType',
-                'method' => 'create',
+                'docblocks' => '/**
+                  * @api-label Canonical relative URI
+                  * @api-field uri
+                  */',
                 'expected.exception' => '\Mill\Exceptions\Representation\MissingFieldAnnotationException',
                 'expected.exception.regex' => [
                     '/api-type/'
                 ]
+            ],
+            'duplicate-fields' => [
+                'docblocks' => '/**
+                  * @api-label Canonical relative URI
+                  * @api-field uri
+                  * @api-type uri
+                  */
+
+                 /**
+                  * @api-label Canonical relative URI
+                  * @api-field uri
+                  * @api-type uri
+                  */',
+                'expected.exception' => '\Mill\Exceptions\Representation\DuplicateFieldException',
+                'expected.exception.regex' => [
+                    '/`uri`/'
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function badRepresentationMethodsProvider()
+    {
+        return [
+            'no-method-supplied' => [
+                'class' => '\Mill\Examples\Showtimes\Representations\Movie',
+                'method' => null,
+                'expected.exception' => '\Mill\Exceptions\MethodNotSuppliedException',
+                'expected.exception.regex' => []
             ],
             'method-that-doesnt-exist' => [
                 'class' => '\Mill\Examples\Showtimes\Representations\Movie',
@@ -244,15 +300,7 @@ class RepresentationParserTest extends TestCase
                 'expected.exception.regex' => [
                     '/invalid_method/'
                 ]
-            ],
-            'duplicate-fields' => [
-                'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithDuplicateFields',
-                'method' => 'create',
-                'expected.exception' => '\Mill\Exceptions\Representation\DuplicateFieldException',
-                'expected.exception.regex' => [
-                    '/`uri`/'
-                ]
-            ],
+            ]
         ];
     }
 }

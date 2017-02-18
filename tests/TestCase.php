@@ -34,7 +34,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
         ]);
 
         // Overwrite the stock library local filesystem with an in-memory file system we'll use for testing.
-        $container->extend('filesystem', function ($filesystem, $c) {
+        $container->extend('filesystem', function ($filesystem, Container $c) {
             return new Filesystem(new MemoryAdapter);
         });
 

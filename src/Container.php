@@ -81,8 +81,18 @@ class Container extends \Pimple\Container
      *
      * @return \Closure
      */
-    public static function getReader()
+    public static function getAnnotationReader()
     {
-        return self::getInstance()['reader'];
+        return self::getInstance()['reader.annotations'];
+    }
+
+    /**
+     * Return the current instance of the code annotation reader.
+     *
+     * @return \Closure
+     */
+    public static function getCodeReader()
+    {
+        return self::getInstance()['reader.code'];
     }
 }

@@ -1,7 +1,7 @@
 <?php
 namespace Mill\Parser\Representation;
 
-use ReflectionClass;
+use Mill\Container;
 use Mill\Exceptions\MethodNotImplementedException;
 use Mill\Exceptions\MethodNotSuppliedException;
 use Mill\Exceptions\Representation\DuplicateFieldException;
@@ -53,23 +53,8 @@ class RepresentationParser extends Parser
 
         $this->method = $method_name;
 
-        $reflection = new ReflectionClass($this->class);
-        if (!$reflection->hasMethod($this->method)) {
-            throw MethodNotImplementedException::create($this->controller, $this->method);
-        }
-
-        /** @var \ReflectionMethod $method */
-        $method = $reflection->getMethod($this->method);
-        $filename = $method->getFileName();
-
-        // The start line is actually `- 1`, otherwise you wont get the function() block.
-        $start_line = $method->getStartLine() - 1;
-        $end_line = $method->getEndLine();
-        $length = $end_line - $start_line;
-
-        /** @var array $source */
-        $source = file($filename);
-        $code = implode('', array_slice($source, $start_line, $length));
+        $reader = Container::getCodeReader();
+        $code = $reader($this->class, $this->method);
 
         $annotations = $this->parse($code);
 

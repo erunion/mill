@@ -2,10 +2,13 @@
 namespace Mill\Tests\Parser\Resource\Action;
 
 use Mill\Parser\Resource\Action\Documentation;
+use Mill\Tests\ReaderTestingTrait;
 use Mill\Tests\TestCase;
 
 class DocumentationTest extends TestCase
 {
+    use ReaderTestingTrait;
+
     /**
      * @dataProvider annotationsProvider
      */
@@ -68,15 +71,16 @@ class DocumentationTest extends TestCase
     /**
      * @dataProvider badMethodsProvider
      */
-    public function testMethodsThatWillFailParsing($method, $exception, $regex)
+    public function testMethodsThatWillFailParsing($docblock, $exception, $regex)
     {
         $this->expectException($exception);
         foreach ($regex as $rule) {
             $this->expectExceptionMessageRegExp($rule);
         }
 
-        $controller = '\Mill\Tests\Fixtures\Controllers\ControllerWithBadMethods';
-        (new Documentation($controller, $method))->parse()->toArray();
+        $this->overrideReadersWithFakeDocblockReturn($docblock);
+
+        (new Documentation('', ''))->parse()->toArray();
     }
 
     /**
@@ -384,45 +388,80 @@ class DocumentationTest extends TestCase
     {
         return [
             'no-parsed-annotations' => [
-                'method' => 'withNoParsedAnnotations',
+                'docblock' => '',
                 'expected.exception' => '\Mill\Exceptions\Resource\NoAnnotationsException',
                 'expected.exception.regex' => []
             ],
             'missing-required-label-annotation' => [
-                'method' => 'withMissingRequiredLabelAnnotation',
+                'docblock' => '/**
+                  * Test throwing an exception when a required `@api-label` annotation is missing.
+                  *
+                  * @api-uri {Something} /some/page
+                  */',
                 'expected.exception' => '\Mill\Exceptions\RequiredAnnotationException',
                 'expected.exception.regex' => []
             ],
             'multiple-label-annotations' => [
-                'method' => 'withMultipleLabelAnnotations',
+                'docblock' => '/**
+                  * Test throwing an exception when multiple `@api-label` annotations are present.
+                  *
+                  * @api-label Test method
+                  * @api-label Test method
+                  */',
                 'expected.exception' => '\Mill\Exceptions\MultipleAnnotationsException',
                 'expected.exception.regex' => [
                     '/api-label/'
                 ]
             ],
             'missing-required-content-type-annotation' => [
-                'method' => 'withMissingRequiredContentTypeAnnotation',
+                'docblock' => '/**
+                  * Test throwing an exception when a required `@api-contentType` annotation is missing.
+                  *
+                  * @api-label Test Method
+                  * @api-uri {Something} /some/page
+                  */',
                 'expected.exception' => '\Mill\Exceptions\RequiredAnnotationException',
                 'expected.exception.regex' => [
                     '/api-contentType/'
                 ]
             ],
             'multiple-content-type-annotations' => [
-                'method' => 'withMultipleContentTypeAnnotations',
+                'docblock' => '/**
+                  * Test throwing an exception when multiple `@api-contentType` annotations are present.
+                  *
+                  * @api-label Test method
+                  * @api-uri {Something} /some/page
+                  * @api-contentType application/json
+                  * @api-contentType text/xml
+                  */',
                 'expected.exception' => '\Mill\Exceptions\MultipleAnnotationsException',
                 'expected.exception.regex' => [
                     '/api-contentType/'
                 ]
             ],
             'missing-required-visibility-decorator' => [
-                'method' => 'withMissingRequiredVisibilityDecorator',
+                'docblock' => '/**
+                  * Test throwing an exception when a required visibility decorator is missing on an annotation.
+                  *
+                  * @api-label Test method
+                  * @api-uri {Root} /
+                  * @api-contentType application/json
+                  * @api-return:public {collection} \Mill\Examples\Showtimes\Representations\Representation
+                  */',
                 'expected.exception' => '\Mill\Exceptions\Resource\MissingVisibilityDecoratorException',
                 'expected.exception.regex' => [
                     '/api-uri/'
                 ]
             ],
             'unsupported-decorator' => [
-                'method' => 'withUnsupportedDecorator',
+                'docblock' => '/**
+                  * Test throwing an exception when an unsupported decorator is found.
+                  *
+                  * @api-label Test method
+                  * @api-uri:special {Root} /
+                  * @api-contentType application/json
+                  * @api-return {collection} \Mill\Examples\Showtimes\Representations\Representation
+                  */',
                 'expected.exception' => '\Mill\Exceptions\Resource\UnsupportedDecoratorException',
                 'expected.exception.regex' => [
                     '/special/',
@@ -430,14 +469,31 @@ class DocumentationTest extends TestCase
                 ]
             ],
             'required-uri-annotation-missing' => [
-                'method' => 'withRequiredUriAnnotationMissing',
+                'docblock' => '/**
+                  * Test throwing an exception when a required `@api-uri` annotation is missing.
+                  *
+                  * @api-label Test method
+                  * @api-contentType application/json
+                  * @api-param:public {page}
+                  */',
                 'expected.exception' => '\Mill\Exceptions\RequiredAnnotationException',
                 'expected.exception.regex' => [
                     '/api-uri/'
                 ]
             ],
             'public-annotations-on-a-private-action' => [
-                'method' => 'withPublicAnnotationsOnAPrivateAction',
+                'docblock' => '/**
+                  * Test throwing an exception when there are private annotations on a private action.
+                  *
+                  * @api-label Test method
+                  * @api-uri:private {Search} /search
+                  * @api-contentType application/json
+                  * @api-scope public
+                  * @api-return:private {collection} \Mill\Examples\Showtimes\Representations\Representation
+                  * @api-throws:public {403} \Mill\Examples\Showtimes\Representations\CodedError
+                  *      (Mill\Examples\Showtimes\Representations\CodedError::DISALLOWED) If the user isn\'t allowed to
+                  *      do something.
+                  */',
                 'expected.exception' => '\Mill\Exceptions\Resource\PublicDecoratorOnPrivateActionException',
                 'expected.exception.regex' => [
                     '/api-throws/'

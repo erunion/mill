@@ -13,9 +13,15 @@ class Reader implements \Pimple\ServiceProviderInterface
      */
     public function register(Container $container)
     {
-        $container['reader'] = function (Container $c) {
+        $container['reader.annotations'] = function (Container $c) {
             return function ($class, $method = null) {
                 return (new \Mill\Reader)->getAnnotations($class, $method);
+            };
+        };
+
+        $container['reader.code'] = function (Container $c) {
+            return function ($class, $method) {
+                return (new \Mill\Reader)->getCodeAnnotations($class, $method);
             };
         };
     }

@@ -36,4 +36,34 @@ class Reader
 
         return $comments;
     }
+
+    /**
+     * Given a class and method, pull out any code annotation docblocks that may exist within it.
+     *
+     * @param string $class
+     * @param string $method
+     * @return string
+     * @throws MethodNotImplementedException If the supplied method does not exist on the supplied class.
+     */
+    public function getCodeAnnotations($class, $method)
+    {
+        $reflection = new ReflectionClass($class);
+        if (!$reflection->hasMethod($method)) {
+            throw MethodNotImplementedException::create($class, $method);
+        }
+
+        /** @var \ReflectionMethod $method */
+        $method = $reflection->getMethod($method);
+        $filename = $method->getFileName();
+
+        // The start line is actually `- 1`, otherwise you wont get the function() block.
+        $start_line = $method->getStartLine() - 1;
+        $end_line = $method->getEndLine();
+        $length = $end_line - $start_line;
+
+        /** @var array $source */
+        $source = file($filename);
+
+        return implode('', array_slice($source, $start_line, $length));
+    }
 }
