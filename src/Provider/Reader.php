@@ -19,9 +19,9 @@ class Reader implements \Pimple\ServiceProviderInterface
             };
         };
 
-        $container['reader.code'] = function (Container $c) {
+        $container['reader.annotations.representation'] = function (Container $c) {
             return function ($class, $method) {
-                return (new \Mill\Reader)->getCodeAnnotations($class, $method);
+                return (new \Mill\Reader)->getRepresentationAnnotations($class, $method);
             };
         };
     }

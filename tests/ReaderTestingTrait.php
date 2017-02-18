@@ -13,7 +13,7 @@ trait ReaderTestingTrait
         // We're setting custom Readers in a number of tests, so let's just quickly reset it and re-register before
         // running any tests.
         unset($container['reader.annotations']);
-        unset($container['reader.code']);
+        unset($container['reader.annotations.representation']);
         $container->register(new Reader());
     }
 
@@ -36,7 +36,7 @@ trait ReaderTestingTrait
             };
         });
 
-        $container->extend('reader.code', function ($reader, Container $c) use ($docblock) {
+        $container->extend('reader.annotations.representation', function ($reader, Container $c) use ($docblock) {
             return function () use ($docblock) {
                 return $docblock;
             };

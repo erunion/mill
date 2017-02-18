@@ -45,7 +45,7 @@ class Reader
      * @return string
      * @throws MethodNotImplementedException If the supplied method does not exist on the supplied class.
      */
-    public function getCodeAnnotations($class, $method)
+    public function getRepresentationAnnotations($class, $method)
     {
         $reflection = new ReflectionClass($class);
         if (!$reflection->hasMethod($method)) {

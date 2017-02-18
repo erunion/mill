@@ -53,7 +53,7 @@ class RepresentationParser extends Parser
 
         $this->method = $method_name;
 
-        $reader = Container::getCodeReader();
+        $reader = Container::getRepresentationAnnotationReader();
         $code = $reader($this->class, $this->method);
 
         $annotations = $this->parse($code);
