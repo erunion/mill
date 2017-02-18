@@ -7,7 +7,7 @@ use Mill\Parser\Version;
 class ParamAnnotationTest extends AnnotationTest
 {
     /**
-     * @dataProvider annotationProvider
+     * @dataProvider providerAnnotation
      */
     public function testAnnotation($param, $version, $visible, $deprecated, $expected)
     {
@@ -45,7 +45,7 @@ class ParamAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function annotationProvider()
+    public function providerAnnotation()
     {
         return [
             'capability' => [
@@ -162,7 +162,7 @@ class ParamAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function badAnnotationProvider()
+    public function providerAnnotationFailsOnInvalidAnnotations()
     {
         return [
             'missing-field-name' => [

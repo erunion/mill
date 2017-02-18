@@ -7,7 +7,7 @@ use Mill\Tests\TestCase;
 class DocumentationTest extends TestCase
 {
     /**
-     * @dataProvider representationProvider
+     * @dataProvider providerParseDocumentationReturnsRepresentation
      */
     public function testParseDocumentationReturnsRepresentation($class, $method, $expected)
     {
@@ -35,7 +35,7 @@ class DocumentationTest extends TestCase
     }
 
     /**
-     * @dataProvider badRepresentationsProvider
+     * @dataProvider providerParseDocumentationFailsOnBadRepresentations
      */
     public function testParseDocumentationFailsOnBadRepresentations($class, $method, $exception)
     {
@@ -47,7 +47,7 @@ class DocumentationTest extends TestCase
     /**
      * @return array
      */
-    public function representationProvider()
+    public function providerParseDocumentationReturnsRepresentation()
     {
         return [
             'Movie' => [
@@ -346,7 +346,7 @@ class DocumentationTest extends TestCase
     /**
      * @return array
      */
-    public function badRepresentationsProvider()
+    public function providerParseDocumentationFailsOnBadRepresentations()
     {
         return [
             'no-annotations' => [

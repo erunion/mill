@@ -6,7 +6,7 @@ use Mill\Parser\Annotations\ContentTypeAnnotation;
 class ContentTypeAnnotationTest extends AnnotationTest
 {
     /**
-     * @dataProvider annotationProvider
+     * @dataProvider providerAnnotation
      */
     public function testAnnotation($capability, $expected)
     {
@@ -24,7 +24,7 @@ class ContentTypeAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function annotationProvider()
+    public function providerAnnotation()
     {
         return [
             '_complete' => [
@@ -39,7 +39,7 @@ class ContentTypeAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function badAnnotationProvider()
+    public function providerAnnotationFailsOnInvalidAnnotations()
     {
         return [
             'missing-content-type' => [

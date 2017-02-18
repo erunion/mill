@@ -6,7 +6,7 @@ use Mill\Tests\TestCase;
 abstract class TypeTest extends TestCase
 {
     /**
-     * @dataProvider annotationTypeProvider
+     * @dataProvider providerAnnotationWithType
      */
     public function testAnnotationWithType($docblock, $expected)
     {
@@ -21,5 +21,5 @@ abstract class TypeTest extends TestCase
     /**
      * @return array
      */
-    abstract public function annotationTypeProvider();
+    abstract public function providerAnnotationWithType();
 }

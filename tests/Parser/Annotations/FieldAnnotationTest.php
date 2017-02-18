@@ -6,7 +6,7 @@ use Mill\Tests\TestCase;
 class FieldAnnotationTest extends TestCase
 {
     /**
-     * @dataProvider annotationProvider
+     * @dataProvider providerAnnotation
      */
     public function testAnnotation($docblock, $expected)
     {
@@ -36,7 +36,7 @@ class FieldAnnotationTest extends TestCase
     }
 
     /**
-     * @dataProvider badAnnotationProvider
+     * @dataProvider providerAnnotationFailsOnInvalidAnnotations
      */
     public function testAnnotationFailsOnInvalidAnnotations($docblock, $exception, $regex = [])
     {
@@ -51,7 +51,7 @@ class FieldAnnotationTest extends TestCase
     /**
      * @return array
      */
-    public function annotationProvider()
+    public function providerAnnotation()
     {
         return [
             'bare' => [
@@ -159,7 +159,7 @@ class FieldAnnotationTest extends TestCase
     /**
      * @return array
      */
-    public function badAnnotationProvider()
+    public function providerAnnotationFailsOnInvalidAnnotations()
     {
         return [
             'invalid-type-is-detected' => [

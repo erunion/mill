@@ -6,7 +6,7 @@ use Mill\Parser\Annotations\MinVersionAnnotation;
 class MinVersionAnnotationTest extends AnnotationTest
 {
     /**
-     * @dataProvider annotationProvider
+     * @dataProvider providerAnnotation
      */
     public function testAnnotation($version, $expected)
     {
@@ -24,7 +24,7 @@ class MinVersionAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function annotationProvider()
+    public function providerAnnotation()
     {
         return [
             '_complete' => [
@@ -39,7 +39,7 @@ class MinVersionAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function badAnnotationProvider()
+    public function providerAnnotationFailsOnInvalidAnnotations()
     {
         return [
             'does-not-have-an-absolute-version' => [

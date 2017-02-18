@@ -11,7 +11,7 @@ class DocumentationTest extends TestCase
     use ReaderTestingTrait;
 
     /**
-     * @dataProvider controllersProvider
+     * @dataProvider providerDocumentation
      */
     public function testDocumentation($controller, $expected)
     {
@@ -49,7 +49,7 @@ class DocumentationTest extends TestCase
     }
 
     /**
-     * @dataProvider badControllersProvider
+     * @dataProvider providerDocumentationFailsOnBadControllers
      */
     public function testDocumentationFailsOnBadControllers($docblock, $exception, $regex)
     {
@@ -80,7 +80,7 @@ class DocumentationTest extends TestCase
     /**
      * @return array
      */
-    public function controllersProvider()
+    public function providerDocumentation()
     {
         return [
             'Movie' => [
@@ -103,7 +103,7 @@ class DocumentationTest extends TestCase
     /**
      * @return array
      */
-    public function badControllersProvider()
+    public function providerDocumentationFailsOnBadControllers()
     {
         return [
             'missing-required-label-annotation' => [

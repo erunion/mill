@@ -10,7 +10,7 @@ class DocumentationTest extends TestCase
     use ReaderTestingTrait;
 
     /**
-     * @dataProvider annotationsProvider
+     * @dataProvider providerParseMethodDocumentation
      */
     public function testParseMethodDocumentation($method, $expected)
     {
@@ -69,7 +69,7 @@ class DocumentationTest extends TestCase
     }
 
     /**
-     * @dataProvider badMethodsProvider
+     * @dataProvider providerMethodsThatWillFailParsing
      */
     public function testMethodsThatWillFailParsing($docblock, $exception, $regex)
     {
@@ -86,7 +86,7 @@ class DocumentationTest extends TestCase
     /**
      * @return array
      */
-    public function annotationsProvider()
+    public function providerParseMethodDocumentation()
     {
         return [
             'GET' => [
@@ -384,7 +384,7 @@ class DocumentationTest extends TestCase
     /**
      * @return array
      */
-    public function badMethodsProvider()
+    public function providerMethodsThatWillFailParsing()
     {
         return [
             'no-parsed-annotations' => [

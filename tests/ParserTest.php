@@ -19,7 +19,7 @@ class ParserTest extends TestCase
     }
 
     /**
-     * @dataProvider annotationsProvider
+     * @dataProvider providerParseAnnotationsOnClassMethod
      */
     public function testParseAnnotationsOnClassMethod($method, $expected)
     {
@@ -54,7 +54,7 @@ class ParserTest extends TestCase
     /**
      * @return array
      */
-    public function annotationsProvider()
+    public function providerParseAnnotationsOnClassMethod()
     {
         return [
             'GET' => [

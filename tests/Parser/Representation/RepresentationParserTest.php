@@ -10,7 +10,7 @@ class RepresentationParserTest extends TestCase
     use ReaderTestingTrait;
 
     /**
-     * @dataProvider representationProvider
+     * @dataProvider providerParseAnnotations
      */
     public function testParseAnnotations($class, $method, $expected)
     {
@@ -41,7 +41,7 @@ class RepresentationParserTest extends TestCase
     }
 
     /**
-     * @dataProvider badRepresentationsProvider
+     * @dataProvider providerRepresentationsThatWillFailParsing
      */
     public function testRepresentationsThatWillFailParsing($docblock, $exception, $regex)
     {
@@ -56,7 +56,7 @@ class RepresentationParserTest extends TestCase
     }
 
     /**
-     * @dataProvider badRepresentationMethodsProvider
+     * @dataProvider providerRepresentationMethodsThatWillFailParsing
      */
     public function testRepresentationMethodsThatWillFailParsing($class, $method, $exception, $regex)
     {
@@ -71,7 +71,7 @@ class RepresentationParserTest extends TestCase
     /**
      * @return array
      */
-    public function representationProvider()
+    public function providerParseAnnotations()
     {
         return [
             'Movie' => [
@@ -213,7 +213,7 @@ class RepresentationParserTest extends TestCase
     /**
      * @return array
      */
-    public function badRepresentationsProvider()
+    public function providerRepresentationsThatWillFailParsing()
     {
         return [
             'docblock-has-duplicate-capability-annotations' => [
@@ -284,7 +284,7 @@ class RepresentationParserTest extends TestCase
     /**
      * @return array
      */
-    public function badRepresentationMethodsProvider()
+    public function providerRepresentationMethodsThatWillFailParsing()
     {
         return [
             'no-method-supplied' => [

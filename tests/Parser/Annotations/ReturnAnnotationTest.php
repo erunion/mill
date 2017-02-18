@@ -7,7 +7,7 @@ use Mill\Parser\Version;
 class ReturnAnnotationTest extends AnnotationTest
 {
     /**
-     * @dataProvider annotationProvider
+     * @dataProvider providerAnnotation
      */
     public function testAnnotation($param, $version, $expected)
     {
@@ -34,7 +34,7 @@ class ReturnAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function annotationProvider()
+    public function providerAnnotation()
     {
         return [
             'with-no-representation' => [
@@ -218,7 +218,7 @@ class ReturnAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function badAnnotationProvider()
+    public function providerAnnotationFailsOnInvalidAnnotations()
     {
         return [
             'code-could-not-be-found' => [

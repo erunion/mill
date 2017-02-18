@@ -114,7 +114,7 @@ XML;
     }
 
     /**
-     * @dataProvider badXMLFilesProvider
+     * @dataProvider providerLoadFromXMLFailuresOnVariousBadXMLFiles
      */
     public function testLoadFromXMLFailuresOnVariousBadXMLFiles($includes, $exception_details, $xml)
     {
@@ -188,7 +188,7 @@ XML;
     /**
      * @return array
      */
-    public function badXMLFilesProvider()
+    public function providerLoadFromXMLFailuresOnVariousBadXMLFiles()
     {
         return [
             /**

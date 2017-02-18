@@ -16,7 +16,7 @@ class GeneratorTest extends TestCase
     }
 
     /**
-     * @dataProvider generatorVersionProvider
+     * @dataProvider providerGeneratorWithVersion
      */
     public function testGeneratorWithVersion($version, $expected_representations, $expected_resources)
     {
@@ -112,7 +112,7 @@ class GeneratorTest extends TestCase
     /**
      * @return array
      */
-    public function generatorVersionProvider()
+    public function providerGeneratorWithVersion()
     {
         return [
             'version-1.0' => [

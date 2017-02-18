@@ -6,7 +6,7 @@ use Mill\Tests\TestCase;
 abstract class AnnotationTest extends TestCase
 {
     /**
-     * @dataProvider badAnnotationProvider
+     * @dataProvider providerAnnotationFailsOnInvalidAnnotations
      */
     public function testAnnotationFailsOnInvalidAnnotations($annotation, $docblock, $exception, $regex = [])
     {
@@ -21,10 +21,10 @@ abstract class AnnotationTest extends TestCase
     /**
      * @return array
      */
-    abstract public function annotationProvider();
+    abstract public function providerAnnotation();
 
     /**
      * @return array
      */
-    abstract public function badAnnotationProvider();
+    abstract public function providerAnnotationFailsOnInvalidAnnotations();
 }

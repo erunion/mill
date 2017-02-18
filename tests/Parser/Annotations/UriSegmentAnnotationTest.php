@@ -6,7 +6,7 @@ use Mill\Parser\Annotations\UriSegmentAnnotation;
 class UriSegmentAnnotationTest extends AnnotationTest
 {
     /**
-     * @dataProvider annotationProvider
+     * @dataProvider providerAnnotation
      */
     public function testAnnotation($uri, $segment, $expected)
     {
@@ -29,7 +29,7 @@ class UriSegmentAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function annotationProvider()
+    public function providerAnnotation()
     {
         return [
             'bare' => [
@@ -64,7 +64,7 @@ class UriSegmentAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function badAnnotationProvider()
+    public function providerAnnotationFailsOnInvalidAnnotations()
     {
         return [
             'missing-uri' => [

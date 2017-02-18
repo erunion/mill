@@ -7,7 +7,7 @@ use Mill\Parser\Version;
 class ThrowsAnnotationTest extends AnnotationTest
 {
     /**
-     * @dataProvider annotationProvider
+     * @dataProvider providerAnnotation
      */
     public function testAnnotation($param, $version, $visible, $expected)
     {
@@ -43,7 +43,7 @@ class ThrowsAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function annotationProvider()
+    public function providerAnnotation()
     {
         return [
             'bare' => [
@@ -240,7 +240,7 @@ class ThrowsAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function badAnnotationProvider()
+    public function providerAnnotationFailsOnInvalidAnnotations()
     {
         return [
             'missing-http-code' => [

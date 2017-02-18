@@ -6,7 +6,7 @@ use Mill\Parser\Annotations\UriAnnotation;
 class UriAnnotationTest extends AnnotationTest
 {
     /**
-     * @dataProvider annotationProvider
+     * @dataProvider providerAnnotation
      */
     public function testAnnotation($param, $visible, $deprecated, $expected)
     {
@@ -37,7 +37,7 @@ class UriAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function annotationProvider()
+    public function providerAnnotation()
     {
         return [
             'private' => [
@@ -116,7 +116,7 @@ class UriAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function badAnnotationProvider()
+    public function providerAnnotationFailsOnInvalidAnnotations()
     {
         return [
             'missing-group' => [

@@ -6,7 +6,7 @@ use Mill\Parser\Annotations\ScopeAnnotation;
 class ScopeAnnotationTest extends AnnotationTest
 {
     /**
-     * @dataProvider annotationProvider
+     * @dataProvider providerAnnotation
      */
     public function testAnnotation($param, $expected)
     {
@@ -26,7 +26,7 @@ class ScopeAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function annotationProvider()
+    public function providerAnnotation()
     {
         return [
             'bare' => [
@@ -49,7 +49,7 @@ class ScopeAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function badAnnotationProvider()
+    public function providerAnnotationFailsOnInvalidAnnotations()
     {
         return [
             'missing-scope' => [
