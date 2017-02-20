@@ -150,6 +150,14 @@ class DocumentationTest extends TestCase
                             'type' => 'array',
                             'version' => false
                         ],
+                        'uri' => [
+                            'capability' => false,
+                            'field' => 'uri',
+                            'label' => 'Movie URI',
+                            'options' => false,
+                            'type' => 'uri',
+                            'version' => false
+                        ],
                         'urls' => [
                             'capability' => 'NONE',
                             'field' => 'urls',
@@ -294,6 +302,16 @@ class DocumentationTest extends TestCase
                                 'options' => false,
                                 'subtype' => '\Mill\Examples\Showtimes\Representations\Theater',
                                 'type' => 'array',
+                                'version' => false
+                            ]
+                        ],
+                        'uri' => [
+                            '__FIELD_DATA__' => [
+                                'capability' => false,
+                                'field' => 'uri',
+                                'label' => 'Movie URI',
+                                'options' => false,
+                                'type' => 'uri',
                                 'version' => false
                             ]
                         ],

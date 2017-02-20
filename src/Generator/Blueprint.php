@@ -30,10 +30,6 @@ class Blueprint extends Generator
             $this->version = $version;
 
             foreach ($groups as $group_name => $data) {
-                if (in_array($group_name, ['/', 'OAuth'])) {
-                    continue;
-                }
-
                 $contents = 'FORMAT: 1A';
                 $contents .= $this->line(2);
 

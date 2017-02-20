@@ -115,7 +115,7 @@ class DocumentationTest extends TestCase
                     'description' => 'Return information on a specific movie.',
                     'content_type' => 'application/json',
                     'minimum_version' => false,
-                    'responses.length' => 2,
+                    'responses.length' => 3,
                     'annotations' => [
                         'uri' => [
                             [
@@ -141,12 +141,14 @@ class DocumentationTest extends TestCase
                                 'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
                                 'type' => 'object',
                                 'version' => false
-                            ]
-                        ],
-                        'scope' => [
+                            ],
                             [
-                                'description' => false,
-                                'scope' => 'public'
+                                'description' => 'If no content has been modified since the supplied Last-Modified ' .
+                                    'header.',
+                                'http_code' => '304 Not Modified',
+                                'representation' => false,
+                                'type' => 'notmodified',
+                                'version' => false
                             ]
                         ],
                         'throws' => [
@@ -170,7 +172,7 @@ class DocumentationTest extends TestCase
                     'description' => 'Update a movies data.',
                     'content_type' => 'application/json',
                     'minimum_version' => '1.1',
-                    'responses.length' => 3,
+                    'responses.length' => 4,
                     'annotations' => [
                         'uri' => [
                             [
@@ -323,6 +325,15 @@ class DocumentationTest extends TestCase
                             [
                                 'capability' => false,
                                 'description' => 'If there is a problem with the request.',
+                                'error_code' => false,
+                                'http_code' => '400 Bad Request',
+                                'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                                'version' => false,
+                                'visible' => true
+                            ],
+                            [
+                                'capability' => false,
+                                'description' => 'If the IMDB URL could not be validated.',
                                 'error_code' => false,
                                 'http_code' => '400 Bad Request',
                                 'representation' => '\Mill\Examples\Showtimes\Representations\Error',

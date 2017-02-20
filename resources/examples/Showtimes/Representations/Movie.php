@@ -14,6 +14,13 @@ class Movie extends Representation
     {
         return [
             /**
+             * @api-label Movie URI
+             * @api-field uri
+             * @api-type uri
+             */
+            'uri' => $this->movie->uri,
+
+            /**
              * @api-label Unique ID
              * @api-field id
              * @api-type number

@@ -14,6 +14,13 @@ class Theater extends Representation
     {
         return [
             /**
+             * @api-label Theater URI
+             * @api-field uri
+             * @api-type uri
+             */
+            'uri' => $this->theater->uri,
+
+            /**
              * @api-label Unique ID
              * @api-field id
              * @api-type number

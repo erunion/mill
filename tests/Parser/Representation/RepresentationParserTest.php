@@ -60,7 +60,7 @@ class RepresentationParserTest extends TestCase
 
         // We're already asserting that the parser actually parses annotations, we just want to make sure that we
         // picked up the full Movie representation here by way of an `@api-see` pointer.
-        $this->assertCount(14, $annotations);
+        $this->assertCount(15, $annotations);
     }
 
     /**
@@ -193,6 +193,14 @@ class RepresentationParserTest extends TestCase
                             'options' => false,
                             'subtype' => '\Mill\Examples\Showtimes\Representations\Theater',
                             'type' => 'array',
+                            'version' => false
+                        ],
+                        'uri' => [
+                            'capability' => false,
+                            'field' => 'uri',
+                            'label' => 'Movie URI',
+                            'options' => false,
+                            'type' => 'uri',
                             'version' => false
                         ],
                         'urls' => [

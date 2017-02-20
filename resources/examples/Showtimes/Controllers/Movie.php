@@ -17,9 +17,9 @@ class Movie
      * @api-uriSegment {/movies/+id} {integer} id Movie ID
      *
      * @api-contentType application/json
-     * @api-scope public
      *
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Movie
+     * @api-return:public {notmodified} If no content has been modified since the supplied Last-Modified header.
      *
      * @api-throws:public {404} \Mill\Examples\Showtimes\Representations\Error If the movie could not be found.
      */
@@ -54,6 +54,7 @@ class Movie
      *
      * @api-throws:public {400} \Mill\Examples\Showtimes\Representations\Error If there is a problem with the
      *      request.
+     * @api-throws:public {400} \Mill\Examples\Showtimes\Representations\Error If the IMDB URL could not be validated.
      * @api-throws:public {404} \Mill\Examples\Showtimes\Representations\Error If the movie could not be found.
      */
     public function PATCH()

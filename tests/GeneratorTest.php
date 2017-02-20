@@ -139,12 +139,12 @@ class GeneratorTest extends TestCase
                     '\Mill\Examples\Showtimes\Representations\Movie' => [
                         'label' => 'Movie',
                         'description.length' => 41,
-                        'content.size' => 14
+                        'content.size' => 15
                     ],
                     '\Mill\Examples\Showtimes\Representations\Theater' => [
                         'label' => 'Theater',
                         'description.length' => 49,
-                        'content.size' => 7
+                        'content.size' => 8
                     ]
                 ],
                 'expected.resources' => [
@@ -270,12 +270,12 @@ class GeneratorTest extends TestCase
                     '\Mill\Examples\Showtimes\Representations\Movie' => [
                         'label' => 'Movie',
                         'description.length' => 41,
-                        'content.size' => 14
+                        'content.size' => 15
                     ],
                     '\Mill\Examples\Showtimes\Representations\Theater' => [
                         'label' => 'Theater',
                         'description.length' => 49,
-                        'content.size' => 6
+                        'content.size' => 7
                     ]
                 ],
                 'expected.resources' => [

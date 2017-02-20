@@ -106,11 +106,7 @@ class ParserTest extends TestCase
                     ],
                     'return' => [
                         'class' => '\Mill\Parser\Annotations\ReturnAnnotation',
-                        'count' => 1
-                    ],
-                    'scope' => [
-                        'class' => '\Mill\Parser\Annotations\ScopeAnnotation',
-                        'count' => 1
+                        'count' => 2
                     ],
                     'throws' => [
                         'class' => '\Mill\Parser\Annotations\ThrowsAnnotation',
@@ -159,7 +155,7 @@ class ParserTest extends TestCase
                     ],
                     'throws' => [
                         'class' => '\Mill\Parser\Annotations\ThrowsAnnotation',
-                        'count' => 2
+                        'count' => 3
                     ],
                     'uri' => [
                         'class' => '\Mill\Parser\Annotations\UriAnnotation',
