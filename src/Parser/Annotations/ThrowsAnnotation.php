@@ -182,7 +182,7 @@ class ThrowsAnnotation extends Annotation
         }
 
         $this->capability = $this->optional('capability');
-        $this->description = $this->optional('description');
+        $this->description = $this->required('description');
     }
 
     /**

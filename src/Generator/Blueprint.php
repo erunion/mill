@@ -273,18 +273,6 @@ class Blueprint extends Generator
                 foreach ($responses as $response) {
                     $description = $response->getDescription();
 
-                    // Only really need descriptions for non-200 responses.
-                    if ($http_code >= 300 && empty($description)) {
-                        throw new \Exception(
-                            sprintf(
-                                'The non-200 response, %s, in %s %s is missing a description.',
-                                $http_code,
-                                $action->getMethod(),
-                                $action->getUri()->getPath()
-                            )
-                        );
-                    }
-
                     $description = (!empty($description)) ? $description : 'Standard request.';
 
                     $blueprint .= $this->tab(2);
