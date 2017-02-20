@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Tests;
 
+use Mill\Exceptions\MethodNotImplementedException;
 use Mill\Parser;
 
 class ParserTest extends TestCase
@@ -70,13 +71,16 @@ class ParserTest extends TestCase
         $this->assertTrue($annotations['uri'][1]->isDeprecated());
     }
 
-    /**
-     * @expectedException \Mill\Exceptions\MethodNotImplementedException
-     */
     public function testParseAnnotationsOnClassMethodThatDoesntExist()
     {
         $controller = '\Mill\Examples\Showtimes\Controllers\Movie';
-        (new Parser($controller))->getAnnotations('POST');
+
+        try {
+            (new Parser($controller))->getAnnotations('POST');
+        } catch (MethodNotImplementedException $e) {
+            $this->assertSame($controller, $e->getClass());
+            $this->assertSame('POST', $e->getMethod());
+        }
     }
 
     /**

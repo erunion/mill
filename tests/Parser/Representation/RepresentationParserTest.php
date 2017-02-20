@@ -66,29 +66,40 @@ class RepresentationParserTest extends TestCase
     /**
      * @dataProvider providerRepresentationsThatWillFailParsing
      */
-    public function testRepresentationsThatWillFailParsing($docblock, $exception, $regex)
+    public function testRepresentationsThatWillFailParsing($docblock, $exception, $asserts)
     {
         $this->expectException($exception);
-        foreach ($regex as $rule) {
-            $this->expectExceptionMessageRegExp($rule);
-        }
-
         $this->overrideReadersWithFakeDocblockReturn($docblock);
 
-        (new RepresentationParser(__CLASS__))->getAnnotations(__METHOD__);
+        try {
+            (new RepresentationParser(__CLASS__))->getAnnotations(__METHOD__);
+        } catch (\Exception $e) {
+            if ('\\' . get_class($e) !== $exception) {
+                $this->fail('Unrecognized exception (' . get_class($e) . ') thrown.');
+            }
+
+            $this->assertExceptionAsserts($e, __CLASS__, __METHOD__, $asserts);
+            throw $e;
+        }
     }
 
     /**
      * @dataProvider providerRepresentationMethodsThatWillFailParsing
      */
-    public function testRepresentationMethodsThatWillFailParsing($class, $method, $exception, $regex)
+    public function testRepresentationMethodsThatWillFailParsing($class, $method, $exception)
     {
         $this->expectException($exception);
-        foreach ($regex as $rule) {
-            $this->expectExceptionMessageRegExp($rule);
-        }
 
-        (new RepresentationParser($class))->getAnnotations($method);
+        try {
+            (new RepresentationParser($class))->getAnnotations($method);
+        } catch (\Exception $e) {
+            if ('\\' . get_class($e) !== $exception) {
+                $this->fail('Unrecognized exception (' . get_class($e) . ') thrown.');
+            }
+
+            $this->assertExceptionAsserts($e, $class, $method);
+            throw $e;
+        }
     }
 
     /**
@@ -248,8 +259,8 @@ class RepresentationParserTest extends TestCase
                   * @api-capability SomeOtherCapability
                   */',
                 'expected.exception' => '\Mill\Exceptions\Representation\DuplicateAnnotationsOnFieldException',
-                'expected.exception.regex' => [
-                    '/api-capability/'
+                'expected.exception.asserts' => [
+                    'getAnnotation' => 'capability'
                 ]
             ],
             'docblock-has-duplicate-version-annotations' => [
@@ -261,8 +272,8 @@ class RepresentationParserTest extends TestCase
                   * @api-version 3.4
                   */',
                 'expected.exception' => '\Mill\Exceptions\Representation\DuplicateAnnotationsOnFieldException',
-                'expected.exception.regex' => [
-                    '/api-version/'
+                'expected.exception.asserts' => [
+                    'getAnnotation' => 'version'
                 ]
             ],
             'docblock-missing-a-field' => [
@@ -270,8 +281,8 @@ class RepresentationParserTest extends TestCase
                   * @api-label Canonical relative URI
                   */',
                 'expected.exception' => '\Mill\Exceptions\Representation\MissingFieldAnnotationException',
-                'expected.exception.regex' => [
-                    '/api-field/'
+                'expected.exception.asserts' => [
+                    'getAnnotation' => 'field'
                 ]
             ],
             'docblock-missing-a-type' => [
@@ -280,8 +291,8 @@ class RepresentationParserTest extends TestCase
                   * @api-field uri
                   */',
                 'expected.exception' => '\Mill\Exceptions\Representation\MissingFieldAnnotationException',
-                'expected.exception.regex' => [
-                    '/api-type/'
+                'expected.exception.asserts' => [
+                    'getAnnotation' => 'type'
                 ]
             ],
             'duplicate-fields' => [
@@ -297,8 +308,8 @@ class RepresentationParserTest extends TestCase
                   * @api-type uri
                   */',
                 'expected.exception' => '\Mill\Exceptions\Representation\DuplicateFieldException',
-                'expected.exception.regex' => [
-                    '/`uri`/'
+                'expected.exception.asserts' => [
+                    'getField' => 'uri'
                 ]
             ]
         ];
@@ -314,15 +325,11 @@ class RepresentationParserTest extends TestCase
                 'class' => '\Mill\Examples\Showtimes\Representations\Movie',
                 'method' => null,
                 'expected.exception' => '\Mill\Exceptions\MethodNotSuppliedException',
-                'expected.exception.regex' => []
             ],
             'method-that-doesnt-exist' => [
                 'class' => '\Mill\Examples\Showtimes\Representations\Movie',
                 'method' => 'invalid_method',
                 'expected.exception' => '\Mill\Exceptions\MethodNotImplementedException',
-                'expected.exception.regex' => [
-                    '/invalid_method/'
-                ]
             ]
         ];
     }

@@ -46,15 +46,20 @@ class CapabilityAnnotationTest extends AnnotationTest
                 'annotation' => '\Mill\Parser\Annotations\CapabilityAnnotation',
                 'docblock' => '',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
-                'expected.exception.regex' => [
-                    '/api-capability/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => 'capability',
+                    'getAnnotation' => 'capability',
+                    'getDocblock' => '',
+                    'getValues' => []
                 ]
             ],
             'capability-was-not-configured' => [
                 'annotation' => '\Mill\Parser\Annotations\CapabilityAnnotation',
                 'docblock' => 'UnconfiguredCapability',
                 'expected.exception' => '\Mill\Exceptions\InvalidCapabilitySuppliedException',
-                'expected.exception.regex' => []
+                'expected.exception.asserts' => [
+                    'getCapability' => 'UnconfiguredCapability'
+                ]
             ]
         ];
     }

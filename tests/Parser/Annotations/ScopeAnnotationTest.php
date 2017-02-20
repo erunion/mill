@@ -56,15 +56,21 @@ class ScopeAnnotationTest extends AnnotationTest
                 'annotation' => '\Mill\Parser\Annotations\ScopeAnnotation',
                 'docblock' => '',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
-                'expected.exception.regex' => [
-                    '/`scope`/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => 'scope',
+                    'getAnnotation' => 'scope',
+                    'getDocblock' => '',
+                    'getValues' => []
                 ]
             ],
             'scope-was-not-configured' => [
                 'annotation' => '\Mill\Parser\Annotations\ScopeAnnotation',
                 'docblock' => 'unknownScope',
                 'expected.exception' => '\Mill\Exceptions\InvalidScopeSuppliedException',
-                'expected.exception.regex' => []
+                'expected.exception.asserts' => [
+                    'getScope' => 'unknownScope',
+                    'getAnnotation' => null
+                ]
             ]
         ];
     }

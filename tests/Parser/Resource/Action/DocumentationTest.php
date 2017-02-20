@@ -90,16 +90,21 @@ class DocumentationTest extends TestCase
     /**
      * @dataProvider providerMethodsThatWillFailParsing
      */
-    public function testMethodsThatWillFailParsing($docblock, $exception, $regex)
+    public function testMethodsThatWillFailParsing($docblock, $exception, $asserts)
     {
         $this->expectException($exception);
-        foreach ($regex as $rule) {
-            $this->expectExceptionMessageRegExp($rule);
-        }
-
         $this->overrideReadersWithFakeDocblockReturn($docblock);
 
-        (new Documentation(__CLASS__, __METHOD__))->parse()->toArray();
+        try {
+            (new Documentation(__CLASS__, __METHOD__))->parse()->toArray();
+        } catch (\Exception $e) {
+            if ('\\' . get_class($e) !== $exception) {
+                $this->fail('Unrecognized exception (' . get_class($e) . ') thrown.');
+            }
+
+            $this->assertExceptionAsserts($e, __CLASS__, __METHOD__, $asserts);
+            throw $e;
+        }
     }
 
     /**
@@ -486,7 +491,7 @@ class DocumentationTest extends TestCase
             'no-parsed-annotations' => [
                 'docblock' => '',
                 'expected.exception' => '\Mill\Exceptions\Resource\NoAnnotationsException',
-                'expected.exception.regex' => []
+                'expected.exception.asserts' => []
             ],
             'missing-required-label-annotation' => [
                 'docblock' => '/**
@@ -495,7 +500,9 @@ class DocumentationTest extends TestCase
                   * @api-uri {Something} /some/page
                   */',
                 'expected.exception' => '\Mill\Exceptions\RequiredAnnotationException',
-                'expected.exception.regex' => []
+                'expected.exception.asserts' => [
+                    'getAnnotation' => 'label'
+                ]
             ],
             'multiple-label-annotations' => [
                 'docblock' => '/**
@@ -505,8 +512,8 @@ class DocumentationTest extends TestCase
                   * @api-label Test method
                   */',
                 'expected.exception' => '\Mill\Exceptions\MultipleAnnotationsException',
-                'expected.exception.regex' => [
-                    '/api-label/'
+                'expected.exception.asserts' => [
+                    'getAnnotation' => 'label'
                 ]
             ],
             'missing-required-content-type-annotation' => [
@@ -517,8 +524,8 @@ class DocumentationTest extends TestCase
                   * @api-uri {Something} /some/page
                   */',
                 'expected.exception' => '\Mill\Exceptions\RequiredAnnotationException',
-                'expected.exception.regex' => [
-                    '/api-contentType/'
+                'expected.exception.asserts' => [
+                    'getAnnotation' => 'contentType'
                 ]
             ],
             'multiple-content-type-annotations' => [
@@ -531,8 +538,8 @@ class DocumentationTest extends TestCase
                   * @api-contentType text/xml
                   */',
                 'expected.exception' => '\Mill\Exceptions\MultipleAnnotationsException',
-                'expected.exception.regex' => [
-                    '/api-contentType/'
+                'expected.exception.asserts' => [
+                    'getAnnotation' => 'contentType'
                 ]
             ],
             'missing-required-visibility-decorator' => [
@@ -545,8 +552,8 @@ class DocumentationTest extends TestCase
                   * @api-return:public {collection} \Mill\Examples\Showtimes\Representations\Representation
                   */',
                 'expected.exception' => '\Mill\Exceptions\Resource\MissingVisibilityDecoratorException',
-                'expected.exception.regex' => [
-                    '/api-uri/'
+                'expected.exception.asserts' => [
+                    'getAnnotation' => 'uri'
                 ]
             ],
             'unsupported-decorator' => [
@@ -559,9 +566,9 @@ class DocumentationTest extends TestCase
                   * @api-return {collection} \Mill\Examples\Showtimes\Representations\Representation
                   */',
                 'expected.exception' => '\Mill\Exceptions\Resource\UnsupportedDecoratorException',
-                'expected.exception.regex' => [
-                    '/special/',
-                    '/uri/'
+                'expected.exception.asserts' => [
+                    'getDecorator' => 'special',
+                    'getAnnotation' => 'uri'
                 ]
             ],
             'required-uri-annotation-missing' => [
@@ -573,8 +580,8 @@ class DocumentationTest extends TestCase
                   * @api-param:public {page}
                   */',
                 'expected.exception' => '\Mill\Exceptions\RequiredAnnotationException',
-                'expected.exception.regex' => [
-                    '/api-uri/'
+                'expected.exception.asserts' => [
+                    'getAnnotation' => 'uri'
                 ]
             ],
             'public-annotations-on-a-private-action' => [
@@ -591,8 +598,8 @@ class DocumentationTest extends TestCase
                   *      do something.
                   */',
                 'expected.exception' => '\Mill\Exceptions\Resource\PublicDecoratorOnPrivateActionException',
-                'expected.exception.regex' => [
-                    '/api-throws/'
+                'expected.exception.asserts' => [
+                    'getAnnotation' => 'throws'
                 ]
             ]
         ];

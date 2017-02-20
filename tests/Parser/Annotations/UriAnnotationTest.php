@@ -123,16 +123,22 @@ class UriAnnotationTest extends AnnotationTest
                 'annotation' => '\Mill\Parser\Annotations\UriAnnotation',
                 'docblock' => '',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
-                'expected.exception.regex' => [
-                    '/`group`/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => 'group',
+                    'getAnnotation' => 'uri',
+                    'getDocblock' => '',
+                    'getValues' => []
                 ]
             ],
             'missing-path' => [
                 'annotation' => '\Mill\Parser\Annotations\UriAnnotation',
                 'docblock' => '{Movies}',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
-                'expected.exception.regex' => [
-                    '/`path`/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => 'path',
+                    'getAnnotation' => 'uri',
+                    'getDocblock' => '{Movies}',
+                    'getValues' => []
                 ]
             ]
         ];

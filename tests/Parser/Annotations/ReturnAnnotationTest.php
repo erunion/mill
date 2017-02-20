@@ -225,23 +225,34 @@ class ReturnAnnotationTest extends AnnotationTest
                 'annotation' => '\Mill\Parser\Annotations\ReturnAnnotation',
                 'docblock' => '\Mill\Examples\Showtimes\Representations\Movie',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
-                'expected.exception.regex' => [
-                    '/code/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => 'http_code',
+                    'getAnnotation' => 'return',
+                    'getDocblock' => '\Mill\Examples\Showtimes\Representations\Movie',
+                    'getValues' => []
                 ]
             ],
             'code-is-invalid' => [
                 'annotation' => '\Mill\Parser\Annotations\ReturnAnnotation',
                 'docblock' => '{200 OK} \Mill\Examples\Showtimes\Representations\Movie',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\UnknownReturnCodeException',
-                'expected.exception.regex' => [
-                    '/200 OK/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => null,
+                    'getAnnotation' => null,
+                    'getDocblock' => '{200 OK} \Mill\Examples\Showtimes\Representations\Movie',
+                    'getValues' => []
                 ]
             ],
             'representation-is-unknown' => [
                 'annotation' => '\Mill\Parser\Annotations\ReturnAnnotation',
                 'docblock' => '{object} \UnknownRepresentation',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\UnknownRepresentationException',
-                'expected.exception.regex' => []
+                'expected.exception.asserts' => [
+                    'getRequiredField' => null,
+                    'getAnnotation' => null,
+                    'getDocblock' => '\UnknownRepresentation',
+                    'getValues' => []
+                ]
             ]
         ];
     }

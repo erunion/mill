@@ -48,7 +48,7 @@ class RepresentationParser extends Parser
     public function getAnnotations($method_name = null)
     {
         if (empty($method_name)) {
-            throw new MethodNotSuppliedException();
+            throw MethodNotSuppliedException::create($this->class);
         }
 
         $this->method = $method_name;

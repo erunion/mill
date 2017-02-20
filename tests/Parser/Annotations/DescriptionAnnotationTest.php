@@ -46,8 +46,11 @@ class DescriptionAnnotationTest extends AnnotationTest
                 'annotation' => '\Mill\Parser\Annotations\DescriptionAnnotation',
                 'docblock' => '',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
-                'expected.exception.regex' => [
-                    '/`description`/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => 'description',
+                    'getAnnotation' => 'description',
+                    'getDocblock' => '',
+                    'getValues' => []
                 ]
             ]
         ];

@@ -10,7 +10,7 @@ abstract class TypeTest extends TestCase
      */
     public function testAnnotationWithType($docblock, $expected)
     {
-        $annotation = $this->getFieldAnnotationFromDocblock($docblock);
+        $annotation = $this->getFieldAnnotationFromDocblock($docblock, __CLASS__, __METHOD__);
 
         $this->assertFalse($annotation->requiresVisibilityDecorator());
         $this->assertTrue($annotation->supportsVersioning());

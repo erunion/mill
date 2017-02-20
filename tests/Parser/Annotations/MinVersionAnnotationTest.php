@@ -46,15 +46,22 @@ class MinVersionAnnotationTest extends AnnotationTest
                 'annotation' => '\Mill\Parser\Annotations\MinVersionAnnotation',
                 'docblock' => '~1.2',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\AbsoluteMinimumVersionException',
-                'expected.exception.regex' => [
-                    '/~1.2/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => null,
+                    'getAnnotation' => '~1.2',
+                    'getDocblock' => null,
+                    'getValues' => []
                 ]
             ],
             'missing-minimum-version' => [
                 'annotation' => '\Mill\Parser\Annotations\MinVersionAnnotation',
                 'docblock' => '',
                 'expected.exception' => '\Mill\Exceptions\Version\UnrecognizedSchemaException',
-                'expected.exception.regex' => []
+                'expected.exception.asserts' => [
+                    'getVersion' => '',
+                    'getValidationMessage' => 'The supplied version, ``, has an unrecognized schema. Please consult ' .
+                        'the versioning documentation.'
+                ]
             ]
         ];
     }

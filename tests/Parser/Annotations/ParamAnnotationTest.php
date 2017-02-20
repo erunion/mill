@@ -169,32 +169,46 @@ class ParamAnnotationTest extends AnnotationTest
                 'annotation' => '\Mill\Parser\Annotations\ParamAnnotation',
                 'docblock' => '{string}',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
-                'expected.exception.regex' => [
-                    '/`field`/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => 'field',
+                    'getAnnotation' => 'param',
+                    'getDocblock' => '{string}',
+                    'getValues' => []
                 ]
             ],
             'missing-type' => [
                 'annotation' => '\Mill\Parser\Annotations\ParamAnnotation',
                 'docblock' => '__testing',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
-                'expected.exception.regex' => [
-                    '/`type`/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => 'type',
+                    'getAnnotation' => 'param',
+                    'getDocblock' => '__testing',
+                    'getValues' => []
                 ]
             ],
             'values-are-in-the-wrong-format' => [
                 'annotation' => '\Mill\Parser\Annotations\ParamAnnotation',
                 'docblock' => '{string} __testing [true,false] Because reasons',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\BadOptionsListException',
-                'expected.exception.regex' => [
-                    '/true,false/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => null,
+                    'getAnnotation' => '{string} __testing [true,false] Because reasons',
+                    'getDocblock' => null,
+                    'getValues' => [
+                        'true,false'
+                    ]
                 ]
             ],
             'missing-description' => [
                 'annotation' => '\Mill\Parser\Annotations\ParamAnnotation',
                 'docblock' => '{string} __testing [true|false]',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
-                'expected.exception.regex' => [
-                    '/`description`/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => 'description',
+                    'getAnnotation' => 'param',
+                    'getDocblock' => '{string} __testing [true|false]',
+                    'getValues' => []
                 ]
             ]
         ];

@@ -78,9 +78,11 @@ class TestCase extends \PHPUnit_Framework_TestCase
      * Given a full response field docblock, return a `FieldAnnotation` object.
      *
      * @param string $docblock
+     * @param string $class
+     * @param string $method
      * @return FieldAnnotation
      */
-    protected function getFieldAnnotationFromDocblock($docblock)
+    protected function getFieldAnnotationFromDocblock($docblock, $class, $method)
     {
         // So we can simplify this test by passing in a full docblock, we can just mimic the work that happens inside
         // the Parser and ResponseParser classes where they clean a given docblock, and explode it into an actionable
@@ -90,8 +92,8 @@ class TestCase extends \PHPUnit_Framework_TestCase
 
         $annotation = new FieldAnnotation(
             $docblock,
-            __CLASS__,
-            __METHOD__,
+            $class,
+            $method,
             null,
             [
                 'docblock_lines' => $lines
@@ -99,5 +101,21 @@ class TestCase extends \PHPUnit_Framework_TestCase
         );
 
         return $annotation;
+    }
+
+    /**
+     * @param mixed $exception
+     * @param string $class
+     * @param string|null $method
+     * @param array $asserts
+     * @return void
+     */
+    protected function assertExceptionAsserts($exception, $class, $method, $asserts = [])
+    {
+        $this->assertSame($class, $exception->getClass());
+        $this->assertSame($method, $exception->getMethod());
+        foreach ($asserts as $method => $expected) {
+            $this->assertSame($expected, $exception->{$method}(), $method . '() does not match expected.');
+        }
     }
 }

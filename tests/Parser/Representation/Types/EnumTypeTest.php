@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Tests\Parser\Representation\Types;
 
+use Mill\Exceptions\Representation\Types\MissingOptionsException;
 use Mill\Parser\Representation\Types\EnumType;
 
 class EnumTypeTest extends TypeTest
@@ -13,9 +14,6 @@ class EnumTypeTest extends TypeTest
         $this->assertTrue($type->requiresOptions());
     }
 
-    /**
-     * @expectedException \Mill\Exceptions\Representation\Types\MissingOptionsException
-     */
     public function testAnnotationWithTypeFailsIfNoOptionsArePresent()
     {
         $docblock = <<<DOCBLOCK
@@ -26,7 +24,15 @@ class EnumTypeTest extends TypeTest
  */
 DOCBLOCK;
 
-        $this->getFieldAnnotationFromDocblock($docblock);
+        try {
+            $this->getFieldAnnotationFromDocblock($docblock, __CLASS__, __METHOD__);
+        } catch (MissingOptionsException $e) {
+            $this->assertSame('enum', $e->getType());
+            $this->assertNull($e->getField());
+            $this->assertNull($e->getAnnotation());
+            $this->assertSame(__CLASS__, $e->getClass());
+            $this->assertSame(__METHOD__, $e->getMethod());
+        }
     }
 
     /**

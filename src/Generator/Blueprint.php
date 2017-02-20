@@ -202,12 +202,8 @@ class Blueprint extends Generator
         $blueprint .= '+ Attributes';
         $blueprint .= $this->line();
 
-        $has_visible_params = false;
-
         /** @var ParamAnnotation $param */
         foreach ($params as $param) {
-            $has_visible_params = true;
-
             $values = $param->getValues();
 
             $blueprint .= $this->tab(2);
@@ -232,10 +228,6 @@ class Blueprint extends Generator
                     $blueprint .= $this->line();
                 }
             }
-        }
-
-        if (!$has_visible_params) {
-            return '';
         }
 
         return $blueprint;

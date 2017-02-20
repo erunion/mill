@@ -3,14 +3,14 @@ namespace Mill\Tests\Parser\Annotations;
 
 use Mill\Tests\TestCase;
 
-class FieldAnnotationTest extends TestCase
+class FieldAnnotationTest extends AnnotationTest
 {
     /**
      * @dataProvider providerAnnotation
      */
     public function testAnnotation($docblock, $expected)
     {
-        $annotation = $this->getFieldAnnotationFromDocblock($docblock);
+        $annotation = $this->getFieldAnnotationFromDocblock($docblock, __CLASS__, __METHOD__);
 
         $this->assertFalse($annotation->requiresVisibilityDecorator());
         $this->assertTrue($annotation->supportsVersioning());
@@ -33,19 +33,6 @@ class FieldAnnotationTest extends TestCase
         } else {
             $this->assertFalse($annotation->getVersion());
         }
-    }
-
-    /**
-     * @dataProvider providerAnnotationFailsOnInvalidAnnotations
-     */
-    public function testAnnotationFailsOnInvalidAnnotations($docblock, $exception, $regex = [])
-    {
-        $this->expectException($exception);
-        foreach ($regex as $rule) {
-            $this->expectExceptionMessageRegExp($rule);
-        }
-
-        $this->getFieldAnnotationFromDocblock($docblock);
     }
 
     /**
@@ -163,26 +150,26 @@ class FieldAnnotationTest extends TestCase
     {
         return [
             'invalid-type-is-detected' => [
+                'annotation' => '\Mill\Parser\Annotations\FieldAnnotation',
                 'docblock' => '/**
                     * @api-label MPAA rating
                     * @api-field content_rating
                     * @api-type zuul
                     */',
                 'expected.exception' => '\Mill\Exceptions\Representation\Types\InvalidTypeException',
-                'expected.exception.regex' => [
-                    '/zuul/'
+                'expected.exception.asserts' => [
+                    'getType' => 'zuul'
                 ]
             ],
             'restricted-field-name-is-detected' => [
+                'annotation' => '\Mill\Parser\Annotations\FieldAnnotation',
                 'docblock' => '/**
                     * @api-label This is an restricted field name
                     * @api-field __FIELD_DATA__
                     * @api-type string
                     */',
                 'expected.exception' => '\Mill\Exceptions\Representation\RestrictedFieldNameException',
-                'expected.exception.regex' => [
-                    '/`__FIELD_DATA__`/'
-                ]
+                'expected.exception.asserts' => []
             ]
         ];
     }

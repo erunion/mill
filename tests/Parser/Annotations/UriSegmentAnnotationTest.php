@@ -71,24 +71,33 @@ class UriSegmentAnnotationTest extends AnnotationTest
                 'annotation' => '\Mill\Parser\Annotations\UriSegmentAnnotation',
                 'docblock' => '',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
-                'expected.exception.regex' => [
-                    '/`uri`/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => 'uri',
+                    'getAnnotation' => 'urisegment',
+                    'getDocblock' => '',
+                    'getValues' => []
                 ]
             ],
             'missing-field-name' => [
                 'annotation' => '\Mill\Parser\Annotations\UriSegmentAnnotation',
                 'docblock' => '{/movies/+id}',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
-                'expected.exception.regex' => [
-                    '/`field`/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => 'field',
+                    'getAnnotation' => 'urisegment',
+                    'getDocblock' => '{/movies/+id}',
+                    'getValues' => []
                 ]
             ],
             'missing-type' => [
                 'annotation' => '\Mill\Parser\Annotations\UriSegmentAnnotation',
                 'docblock' => '{/movies/+id} id',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
-                'expected.exception.regex' => [
-                    '/`type`/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => 'type',
+                    'getAnnotation' => 'urisegment',
+                    'getDocblock' => '{/movies/+id} id',
+                    'getValues' => []
                 ]
             ],
             'values-are-in-the-wrong-format' => [
@@ -96,16 +105,25 @@ class UriSegmentAnnotationTest extends AnnotationTest
                 'docblock' => '{/movies/+id/showtimes/*date} {string} date [today,tomorrow] Date to look for movie ' .
                     'showtimes.',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\BadOptionsListException',
-                'expected.exception.regex' => [
-                    '/today,tomorrow/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => null,
+                    'getAnnotation' => '{/movies/+id/showtimes/*date} {string} date [today,tomorrow] Date to look ' .
+                        'for movie showtimes.',
+                    'getDocblock' => null,
+                    'getValues' => [
+                        'today,tomorrow'
+                    ]
                 ]
             ],
             'missing-description' => [
                 'annotation' => '\Mill\Parser\Annotations\UriSegmentAnnotation',
                 'docblock' => '{/movies/+id} {string} id',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
-                'expected.exception.regex' => [
-                    '/`description`/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => 'description',
+                    'getAnnotation' => 'urisegment',
+                    'getDocblock' => '{/movies/+id} {string} id',
+                    'getValues' => []
                 ]
             ]
         ];

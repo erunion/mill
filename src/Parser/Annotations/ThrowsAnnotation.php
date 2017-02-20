@@ -5,7 +5,6 @@ use Mill\Container;
 use Mill\Exceptions\Config\UnconfiguredErrorRepresentationException;
 use Mill\Exceptions\Resource\Annotations\MissingRepresentationErrorCodeException;
 use Mill\Exceptions\Resource\Annotations\UncallableErrorCodeException;
-use Mill\Exceptions\Resource\Annotations\UncallableRepresentationException;
 use Mill\Exceptions\Resource\Annotations\UnknownErrorRepresentationException;
 use Mill\Exceptions\Resource\Annotations\UnknownReturnCodeException;
 use Mill\Parser\Annotation;
@@ -62,7 +61,6 @@ class ThrowsAnnotation extends Annotation
      *
      * @return array
      * @throws UnknownReturnCodeException If a supplied HTTP code is invalid.
-     * @throws UncallableRepresentationException If a supplied representation is uncallable.
      * @throws UncallableErrorCodeException If a supplied error code is uncallable.
      * @throws UnknownErrorRepresentationException If a supplied representation has not been configured as allowing
      *      errors.

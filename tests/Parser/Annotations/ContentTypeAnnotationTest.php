@@ -46,8 +46,11 @@ class ContentTypeAnnotationTest extends AnnotationTest
                 'annotation' => '\Mill\Parser\Annotations\ContentTypeAnnotation',
                 'docblock' => '',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
-                'expected.exception.regex' => [
-                    '/`content_type`/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => 'content_type',
+                    'getAnnotation' => 'contenttype',
+                    'getDocblock' => '',
+                    'getValues' => []
                 ]
             ]
         ];

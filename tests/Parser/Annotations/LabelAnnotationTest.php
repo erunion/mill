@@ -46,8 +46,11 @@ class LabelAnnotationTest extends AnnotationTest
                 'annotation' => '\Mill\Parser\Annotations\LabelAnnotation',
                 'docblock' => '',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
-                'expected.exception.regex' => [
-                    '/`label`/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => 'label',
+                    'getAnnotation' => 'label',
+                    'getDocblock' => '',
+                    'getValues' => []
                 ]
             ]
         ];

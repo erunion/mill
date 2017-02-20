@@ -250,54 +250,77 @@ class ThrowsAnnotationTest extends AnnotationTest
                 'annotation' => '\Mill\Parser\Annotations\ThrowsAnnotation',
                 'docblock' => '',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
-                'expected.exception.regex' => [
-                    '/`http_code`/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => 'http_code',
+                    'getAnnotation' => 'throws',
+                    'getDocblock' => '',
+                    'getValues' => []
                 ]
             ],
             'missing-representation' => [
                 'annotation' => '\Mill\Parser\Annotations\ThrowsAnnotation',
                 'docblock' => '{404} \Mill\Examples\Showtimes\Representations\Error',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
-                'expected.exception.regex' => [
-                    '/`description`/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => 'description',
+                    'getAnnotation' => 'throws',
+                    'getDocblock' => '{404} \Mill\Examples\Showtimes\Representations\Error',
+                    'getValues' => []
                 ]
             ],
             'missing-description' => [
                 'annotation' => '\Mill\Parser\Annotations\ThrowsAnnotation',
                 'docblock' => '{404}',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
-                'expected.exception.regex' => [
-                    '/`representation`/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => 'representation',
+                    'getAnnotation' => 'throws',
+                    'getDocblock' => '{404}',
+                    'getValues' => []
                 ]
             ],
             'representation-is-unknown' => [
                 'annotation' => '\Mill\Parser\Annotations\ThrowsAnnotation',
                 'docblock' => '{404} \UnknownRepresentation',
-                'expected.exception' =>
-                    '\Mill\Exceptions\Resource\Annotations\UnknownErrorRepresentationException',
-                'expected.exception.regex' => []
+                'expected.exception' =>  '\Mill\Exceptions\Resource\Annotations\UnknownErrorRepresentationException',
+                'expected.exception.asserts' => [
+                    'getRequiredField' => null,
+                    'getAnnotation' => null,
+                    'getDocblock' => '\UnknownRepresentation',
+                    'getValues' => []
+                ]
             ],
             'error-code-is-uncallable' => [
                 'annotation' => '\Mill\Parser\Annotations\ThrowsAnnotation',
                 'docblock' => '{404} \Mill\Examples\Showtimes\Representations\CodedError (\Uncallable::CONSTANT)',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\UncallableErrorCodeException',
-                'expected.exception.regex' => [
-                    '/uncallable/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => null,
+                    'getAnnotation' => null,
+                    'getDocblock' => '{404} \Mill\Examples\Showtimes\Representations\CodedError (\Uncallable::CONSTANT)',
+                    'getValues' => []
                 ]
             ],
             'error-code-is-required-but-missing' => [
                 'annotation' => '\Mill\Parser\Annotations\ThrowsAnnotation',
                 'docblock' => '{403} \Mill\Examples\Showtimes\Representations\CodedError',
-                'expected.exception' =>
-                    '\Mill\Exceptions\Resource\Annotations\MissingRepresentationErrorCodeException',
-                'expected.exception.regex' => []
+                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRepresentationErrorCodeException',
+                'expected.exception.asserts' => [
+                    'getRequiredField' => null,
+                    'getAnnotation' => null,
+                    'getDocblock' => '\Mill\Examples\Showtimes\Representations\CodedError',
+                    'getValues' => []
+                ]
             ],
             'http-code-is-invalid' => [
                 'annotation' => '\Mill\Parser\Annotations\ThrowsAnnotation',
                 'docblock' => '{440} \Mill\Examples\Showtimes\Representations\Error',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\UnknownReturnCodeException',
-                'expected.exception.regex' => [
-                    '/code/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => null,
+                    'getAnnotation' => null,
+                    'getDocblock' => '{440} \Mill\Examples\Showtimes\Representations\Error',
+                    'getValues' => []
                 ]
             ]
         ];

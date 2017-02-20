@@ -51,16 +51,21 @@ class DocumentationTest extends TestCase
     /**
      * @dataProvider providerDocumentationFailsOnBadControllers
      */
-    public function testDocumentationFailsOnBadControllers($docblock, $exception, $regex)
+    public function testDocumentationFailsOnBadControllers($docblock, $exception, $asserts)
     {
         $this->expectException($exception);
-        foreach ($regex as $rule) {
-            $this->expectExceptionMessageRegExp($rule);
-        }
-
         $this->overrideReadersWithFakeDocblockReturn($docblock);
 
-        (new Documentation(__CLASS__))->parse();
+        try {
+            (new Documentation(__CLASS__))->parse();
+        } catch (\Exception $e) {
+            if ('\\' . get_class($e) !== $exception) {
+                $this->fail('Unrecognized exception (' . get_class($e) . ') thrown.');
+            }
+
+            $this->assertExceptionAsserts($e, __CLASS__, null, $asserts);
+            throw $e;
+        }
     }
 
     /**
@@ -111,8 +116,8 @@ class DocumentationTest extends TestCase
                   *
                   */',
                 'expected.exception' => '\Mill\Exceptions\RequiredAnnotationException',
-                'expected.exception.regex' => [
-                    '/api-label/'
+                'expected.exception.asserts' => [
+                    'getAnnotation' => 'label'
                 ]
             ],
             'multiple-label-annotations' => [
@@ -121,8 +126,8 @@ class DocumentationTest extends TestCase
                   * @api-label Something else
                   */',
                 'expected.exception' => '\Mill\Exceptions\MultipleAnnotationsException',
-                'expected.exception.regex' => [
-                    '/api-label/'
+                'expected.exception.asserts' => [
+                    'getAnnotation' => 'label'
                 ]
             ]
         ];

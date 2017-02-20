@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Tests\Parser;
 
+use Mill\Exceptions\Version\UnrecognizedSchemaException;
 use Mill\Parser\Version;
 
 /**
@@ -38,11 +39,20 @@ class VersionTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    /**
-     * @expectedException \Mill\Exceptions\Version\UnrecognizedSchemaException
-     */
     public function testParseFailsOnBadVersionSchemas()
     {
-        new Version('', __CLASS__, __METHOD__);
+        try {
+            new Version('', __CLASS__, __METHOD__);
+        } catch (UnrecognizedSchemaException $e) {
+            $this->assertSame('', $e->getVersion());
+            $this->assertNull($e->getAnnotation());
+            $this->assertSame(__CLASS__, $e->getClass());
+            $this->assertSame(__METHOD__, $e->getMethod());
+
+            $this->assertSame(
+                'The supplied version, ``, has an unrecognized schema. Please consult the versioning documentation.',
+                $e->getValidationMessage()
+            );
+        }
     }
 }

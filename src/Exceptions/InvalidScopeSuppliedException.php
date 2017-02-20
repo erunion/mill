@@ -32,4 +32,14 @@ class InvalidScopeSuppliedException extends \Exception
 
         return $exception;
     }
+
+    /**
+     * Get the scope that this exception occurred for.
+     *
+     * @return string
+     */
+    public function getScope()
+    {
+        return $this->scope;
+    }
 }
