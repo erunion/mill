@@ -64,10 +64,6 @@ class Movie extends Representation
             'genres' => $this->movie->getGenres(),
 
             /**
-             * @api-label External URLs
-             * @api-field urls
-             * @api-type object
-             * @api-capability NONE
              * @api-see \Mill\Examples\Showtimes\Representations\Movie::getUrls urls
              */
             'urls' => $this->getUrls(),
@@ -127,6 +123,7 @@ class Movie extends Representation
              * @api-label Tickets URL
              * @api-field tickets
              * @api-type string
+             * @api-capability BUY_TICKETS
              */
             'tickets' => $this->movie->tickets_url
         ];

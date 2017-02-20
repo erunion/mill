@@ -158,14 +158,6 @@ class DocumentationTest extends TestCase
                             'type' => 'uri',
                             'version' => false
                         ],
-                        'urls' => [
-                            'capability' => 'NONE',
-                            'field' => 'urls',
-                            'label' => 'External URLs',
-                            'options' => false,
-                            'type' => 'object',
-                            'version' => false
-                        ],
                         'urls.imdb' => [
                             'capability' => false,
                             'field' => 'urls.imdb',
@@ -175,7 +167,7 @@ class DocumentationTest extends TestCase
                             'version' => false
                         ],
                         'urls.tickets' => [
-                            'capability' => false,
+                            'capability' => 'BUY_TICKETS',
                             'field' => 'urls.tickets',
                             'label' => 'Tickets URL',
                             'options' => false,
@@ -316,14 +308,6 @@ class DocumentationTest extends TestCase
                             ]
                         ],
                         'urls' => [
-                            '__FIELD_DATA__' => [
-                                'capability' => 'NONE',
-                                'field' => 'urls',
-                                'label' => 'External URLs',
-                                'options' => false,
-                                'type' => 'object',
-                                'version' => false
-                            ],
                             'imdb' => [
                                 '__FIELD_DATA__' => [
                                     'capability' => false,
@@ -336,7 +320,7 @@ class DocumentationTest extends TestCase
                             ],
                             'tickets' => [
                                 '__FIELD_DATA__' => [
-                                    'capability' => false,
+                                    'capability' => 'BUY_TICKETS',
                                     'field' => 'urls.tickets',
                                     'label' => 'Tickets URL',
                                     'options' => false,

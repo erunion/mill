@@ -385,7 +385,7 @@ class Blueprint extends Generator
             if (count($field) > 1) {
                 unset($field['__FIELD_DATA__']);
 
-                // If this is an array, and has a subtype of object, we should intent a bit so we can properly render
+                // If this is an array, and has a subtype of object, we should indent a bit so we can properly render
                 // out the array objects.
                 if (!empty($data) && isset($data['subtype']) && $data['subtype'] === 'object') {
                     $blueprint .= $this->tab($indent + 1);

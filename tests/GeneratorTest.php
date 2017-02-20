@@ -139,7 +139,7 @@ class GeneratorTest extends TestCase
                     '\Mill\Examples\Showtimes\Representations\Movie' => [
                         'label' => 'Movie',
                         'description.length' => 41,
-                        'content.size' => 15
+                        'content.size' => 14
                     ],
                     '\Mill\Examples\Showtimes\Representations\Theater' => [
                         'label' => 'Theater',
@@ -270,7 +270,7 @@ class GeneratorTest extends TestCase
                     '\Mill\Examples\Showtimes\Representations\Movie' => [
                         'label' => 'Movie',
                         'description.length' => 41,
-                        'content.size' => 15
+                        'content.size' => 14
                     ],
                     '\Mill\Examples\Showtimes\Representations\Theater' => [
                         'label' => 'Theater',
