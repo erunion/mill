@@ -66,7 +66,10 @@ class ConfigTest extends TestCase
             '\Mill\Examples\Showtimes\Representations\Representation'
         ], $config->getExcludedRepresentations());
 
-        $this->assertEmpty($config->getUriSegmentTranslations());
+        $this->assertSame([
+            'movie_id' => 'id',
+            'theater_id' => 'id'
+        ], $config->getUriSegmentTranslations());
     }
 
     /**
@@ -341,6 +344,22 @@ XML
         <class name="\Uncallable" needsErrorCode="false" />
     </errors>
 </representations>
+XML
+            ],
+
+            /**
+             * <parameterTokens>
+             *
+             */
+            'parametertokens.invalid' => [
+                'includes' => ['versions', 'controllers', 'representations'],
+                'exception' => [
+                    'regex' => '/invalid parameter token/'
+                ],
+                'xml' => <<<XML
+<parameterTokens>
+    <token name=""></token>
+</parameterTokens>
 XML
             ],
 

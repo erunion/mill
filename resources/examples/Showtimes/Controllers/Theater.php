@@ -2,6 +2,8 @@
 namespace Mill\Examples\Showtimes\Controllers;
 
 /**
+ * Information on a specific movie theater.
+ *
  * @api-label Movie Theaters
  */
 class Theater

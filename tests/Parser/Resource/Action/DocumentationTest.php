@@ -22,6 +22,7 @@ class DocumentationTest extends TestCase
 
         $this->assertSame($expected['label'], $parser->getLabel());
         $this->assertSame($expected['content_type'], $parser->getContentType());
+        $this->assertEmpty($parser->getCapabilities());
 
         /** @var \Mill\Parser\Annotations\MinVersionAnnotation $min_version */
         $min_version = $parser->getMinimumVersion();
@@ -49,7 +50,7 @@ class DocumentationTest extends TestCase
         $docs = $parser->toArray();
         $this->assertSame($expected['label'], $docs['label']);
         $this->assertSame($docs['description'], $parser->getDescription());
-        $this->assertSame($expected['description.length'], strlen($docs['description']));
+        $this->assertSame($expected['description'], $docs['description']);
         $this->assertSame($method, $docs['method']);
         $this->assertSame($expected['content_type'], $docs['content_type']);
 
@@ -69,6 +70,24 @@ class DocumentationTest extends TestCase
     }
 
     /**
+     * @dataProvider providerParsingOfSpecificUseCases
+     */
+    public function testParsingOfSpecificUseCases($docblock, $asserts)
+    {
+        $this->overrideReadersWithFakeDocblockReturn($docblock);
+
+        $parser = (new Documentation(__CLASS__, __METHOD__))->parse();
+
+        $docs = $parser->toArray();
+        $annotations = $docs['annotations'];
+        foreach ($asserts as $method => $assert) {
+            $this->assertCount($assert['total'], $parser->{$method}());
+            $this->assertArrayHasKey($assert['annotation.name'], $annotations);
+            $this->assertSame($assert['data'], $annotations[$assert['annotation.name']]);
+        }
+    }
+
+    /**
      * @dataProvider providerMethodsThatWillFailParsing
      */
     public function testMethodsThatWillFailParsing($docblock, $exception, $regex)
@@ -80,7 +99,7 @@ class DocumentationTest extends TestCase
 
         $this->overrideReadersWithFakeDocblockReturn($docblock);
 
-        (new Documentation('', ''))->parse()->toArray();
+        (new Documentation(__CLASS__, __METHOD__))->parse()->toArray();
     }
 
     /**
@@ -93,7 +112,7 @@ class DocumentationTest extends TestCase
                 'method' => 'GET',
                 'expected' => [
                     'label' => 'Get a single movie.',
-                    'description.length' => 39,
+                    'description' => 'Return information on a specific movie.',
                     'content_type' => 'application/json',
                     'minimum_version' => false,
                     'responses.length' => 2,
@@ -148,7 +167,7 @@ class DocumentationTest extends TestCase
                 'method' => 'PATCH',
                 'expected' => [
                     'label' => 'Update a movie.',
-                    'description.length' => 21,
+                    'description' => 'Update a movies data.',
                     'content_type' => 'application/json',
                     'minimum_version' => '1.1',
                     'responses.length' => 3,
@@ -327,7 +346,7 @@ class DocumentationTest extends TestCase
                 'method' => 'DELETE',
                 'expected' => [
                     'label' => 'Delete a movie.',
-                    'description.length' => 15,
+                    'description' => 'Delete a movie.',
                     'content_type' => 'application/json',
                     'minimum_version' => false,
                     'responses.length' => 2,
@@ -373,6 +392,72 @@ class DocumentationTest extends TestCase
                                 'representation' => '\Mill\Examples\Showtimes\Representations\Error',
                                 'version' => false,
                                 'visible' => false
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function providerParsingOfSpecificUseCases()
+    {
+        return [
+            'with-multiple-visibilities' => [
+                'docblock' => '/**
+                  * @api-label Update a piece of content.
+                  *
+                  * @api-uri:public {Foo\Bar} /foo
+                  * @api-uri:private {Foo\Bar} /bar
+                  *
+                  * @api-contentType application/json
+                  * @api-scope public
+                  *
+                  * @api-return:public {ok}
+                  */',
+                'asserts' => [
+                    'getUris' => [
+                        'total' => 2,
+                        'annotation.name' => 'uri',
+                        'data' => [
+                            [
+                                'deprecated' => false,
+                                'group' => 'Foo\Bar',
+                                'path' => '/foo',
+                                'visible' => true
+                            ],
+                            [
+                                'deprecated' => false,
+                                'group' => 'Foo\Bar',
+                                'path' => '/bar',
+                                'visible' => false
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            'with-capabilities' => [
+                'docblock' => '/**
+                  * @api-label Delete a piece of content.
+                  *
+                  * @api-uri:private {Foo\Bar} /foo
+                  *
+                  * @api-contentType application/json
+                  * @api-scope delete
+                  * @api-capability NONE
+                  *
+                  * @api-return:private {deleted}
+                  */',
+                'asserts' => [
+                    'getCapabilities' => [
+                        'total' => 1,
+                        'annotation.name' => 'capability',
+                        'data' => [
+                            [
+                                'capability' => 'NONE'
                             ]
                         ]
                     ]

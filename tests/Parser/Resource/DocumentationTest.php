@@ -32,7 +32,7 @@ class DocumentationTest extends TestCase
 
         $this->assertSame($class_docs['controller'], $controller);
         $this->assertSame($expected['label'], $class_docs['label']);
-        $this->assertSame($expected['description.length'], strlen($class_docs['description']));
+        $this->assertSame($expected['description'], $class_docs['description']);
 
         foreach ($expected['methods.available'] as $method) {
             $this->assertInternalType('array', $class_docs['methods'][$method]);
@@ -60,7 +60,7 @@ class DocumentationTest extends TestCase
 
         $this->overrideReadersWithFakeDocblockReturn($docblock);
 
-        (new Documentation(''))->parse();
+        (new Documentation(__CLASS__))->parse();
     }
 
     /**
@@ -88,7 +88,7 @@ class DocumentationTest extends TestCase
                 'expected' => [
                     'methods.size' => 3,
                     'label' => 'Movies',
-                    'description.length' => 0,
+                    'description' => 'Information on a specific movie.',
                     'methods.available' => [
                         'GET',
                         'PATCH',

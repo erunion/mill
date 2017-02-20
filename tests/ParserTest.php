@@ -5,17 +5,24 @@ use Mill\Parser;
 
 class ParserTest extends TestCase
 {
+    use ReaderTestingTrait;
+
     public function testParseAnnotationsOnClassWithNoMethod()
     {
         $controller = '\Mill\Examples\Showtimes\Controllers\Movie';
         $docs = (new Parser($controller))->getAnnotations();
 
-        $this->assertCount(1, $docs);
+        $this->assertCount(2, $docs);
+        $this->assertCount(1, $docs['description']);
+        $this->assertCount(1, $docs['label']);
 
         /** @var \Mill\Parser\Annotations\LabelAnnotation $annotation */
         $annotation = $docs['label'][0];
-        $this->assertCount(1, $docs['label']);
         $this->assertSame('Movies', $annotation->toArray()['label']);
+
+        /** @var \Mill\Parser\Annotations\DescriptionAnnotation $annotation */
+        $annotation = $docs['description'][0];
+        $this->assertSame('Information on a specific movie.', $annotation->toArray()['description']);
     }
 
     /**
@@ -40,6 +47,27 @@ class ParserTest extends TestCase
                 $this->assertInstanceOf($expected[$annotation]['class'], $obj, '`' . $annotation . '` mismatch');
             }
         }
+    }
+
+    public function testParsingADeprecatedDecorator()
+    {
+        $this->overrideReadersWithFakeDocblockReturn('/**
+          * @api-label Update a piece of content.
+          *
+          * @api-uri:public {Foo\Bar} /foo
+          * @api-uri:private:deprecated {Foo\Bar} /bar
+          *
+          * @api-contentType application/json
+          * @api-scope public
+          *
+          * @api-return:public {ok}
+          */');
+
+        $annotations = (new Parser(__CLASS__))->getAnnotations(__METHOD__);
+
+        $this->assertArrayHasKey('uri', $annotations);
+        $this->assertFalse($annotations['uri'][0]->isDeprecated());
+        $this->assertTrue($annotations['uri'][1]->isDeprecated());
     }
 
     /**

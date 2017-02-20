@@ -15,12 +15,28 @@ class GeneratorTest extends TestCase
         $this->assertCount(2, $generator->getResources());
     }
 
+    public function testGeneratorButExcludeARepresentation()
+    {
+        $config = $this->getConfig();
+        $config->addExcludedRepresentation('\Mill\Examples\Showtimes\Representations\Movie');
+
+        $version_obj = new Version('1.0', __CLASS__, __METHOD__);
+        $generator = new Generator($config, $version_obj);
+        $generator->generate();
+
+        $this->assertCount(1, $generator->getRepresentations($version_obj->getConstraint()));
+
+        // Clean up after ourselves.
+        $config->removeExcludedRepresentation('\Mill\Examples\Showtimes\Representations\Movie');
+    }
+
     /**
      * @dataProvider providerGeneratorWithVersion
      */
     public function testGeneratorWithVersion($version, $expected_representations, $expected_resources)
     {
-        $generator = new Generator($this->getConfig(), new Version($version, __CLASS__, __METHOD__));
+        $version_obj = new Version($version, __CLASS__, __METHOD__);
+        $generator = new Generator($this->getConfig(), $version_obj);
         $generator->generate();
 
         /**
@@ -30,6 +46,7 @@ class GeneratorTest extends TestCase
         $this->assertArrayHasKey($version, $resources);
 
         $resources = $resources[$version];
+        $this->assertSame($resources, $generator->getResources($version));
         foreach ($expected_resources as $group => $data) {
             $this->assertArrayHasKey($group, $resources);
 
@@ -94,6 +111,7 @@ class GeneratorTest extends TestCase
 
         $representations = $representations[$version];
         $this->assertCount(count($expected_representations), $representations);
+        $this->assertSame($representations, $generator->getRepresentations($version_obj));
 
         foreach ($expected_representations as $name => $data) {
             $this->assertArrayHasKey($name, $representations);
@@ -134,7 +152,7 @@ class GeneratorTest extends TestCase
                         'resources' => [
                             [
                                 'resource.name' => 'Movies',
-                                'description.length' => 0,
+                                'description.length' => 32,
                                 'actions.data' => [
                                     '/movies::GET' => [
                                         'uri' => '/movies',
@@ -184,7 +202,7 @@ class GeneratorTest extends TestCase
                         'resources' => [
                             [
                                 'resource.name' => 'Movie Theaters',
-                                'description.length' => 0,
+                                'description.length' => 40,
                                 'actions.data' => [
                                     '/theaters::GET' => [
                                         'uri' => '/theaters',
@@ -265,7 +283,7 @@ class GeneratorTest extends TestCase
                         'resources' => [
                             [
                                 'resource.name' => 'Movies',
-                                'description.length' => 0,
+                                'description.length' => 32,
                                 'actions.data' => [
                                     '/movies::GET' => [
                                         'uri' => '/movies',
@@ -329,7 +347,7 @@ class GeneratorTest extends TestCase
                         'resources' => [
                             [
                                 'resource.name' => 'Movie Theaters',
-                                'description.length' => 0,
+                                'description.length' => 40,
                                 'actions.data' => [
                                     '/theaters::GET' => [
                                         'uri' => '/theaters',

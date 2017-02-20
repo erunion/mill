@@ -40,6 +40,29 @@ class RepresentationParserTest extends TestCase
         }
     }
 
+    public function testRepresentationWithUnknownAnnotations()
+    {
+        $docblock = '/**
+          * @deprecated
+          */';
+
+        $this->overrideReadersWithFakeDocblockReturn($docblock);
+
+        $annotations = (new RepresentationParser(__CLASS__))->getAnnotations(__METHOD__);
+
+        $this->assertEmpty($annotations);
+    }
+
+    public function testRepresentationWithApiSee()
+    {
+        $parser = new RepresentationParser('\Mill\Tests\Fixtures\Representations\RepresentationWithOnlyApiSee');
+        $annotations = $parser->getAnnotations('create');
+
+        // We're already asserting that the parser actually parses annotations, we just want to make sure that we
+        // picked up the full Movie representation here by way of an `@api-see` pointer.
+        $this->assertCount(14, $annotations);
+    }
+
     /**
      * @dataProvider providerRepresentationsThatWillFailParsing
      */
