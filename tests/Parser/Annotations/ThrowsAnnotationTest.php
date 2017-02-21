@@ -297,7 +297,8 @@ class ThrowsAnnotationTest extends AnnotationTest
                 'expected.exception.asserts' => [
                     'getRequiredField' => null,
                     'getAnnotation' => null,
-                    'getDocblock' => '{404} \Mill\Examples\Showtimes\Representations\CodedError (\Uncallable::CONSTANT)',
+                    'getDocblock' => '{404} \Mill\Examples\Showtimes\Representations\CodedError ' .
+                        '(\Uncallable::CONSTANT)',
                     'getValues' => []
                 ]
             ],
