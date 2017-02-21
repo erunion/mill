@@ -8,7 +8,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 class GenerateTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Mill\Command\Generate
+     * @var \Symfony\Component\Console\Command\Command
      */
     protected $command;
 
