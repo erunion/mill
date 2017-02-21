@@ -92,6 +92,7 @@ class Blueprint extends Generator
 
                     if (!is_null($resource['description'])) {
                         $contents .= $resource['description'];
+                        $contents .= $this->line();
                     }
 
                     foreach ($resource['actions'] as $action_identifier => $markdown) {
