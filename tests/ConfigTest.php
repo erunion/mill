@@ -66,7 +66,10 @@ class ConfigTest extends TestCase
             '\Mill\Examples\Showtimes\Representations\Representation'
         ], $config->getExcludedRepresentations());
 
-        $this->assertEmpty($config->getUriSegmentTranslations());
+        $this->assertSame([
+            'movie_id' => 'id',
+            'theater_id' => 'id'
+        ], $config->getUriSegmentTranslations());
     }
 
     /**
@@ -114,7 +117,7 @@ XML;
     }
 
     /**
-     * @dataProvider badXMLFilesProvider
+     * @dataProvider providerLoadFromXMLFailuresOnVariousBadXMLFiles
      */
     public function testLoadFromXMLFailuresOnVariousBadXMLFiles($includes, $exception_details, $xml)
     {
@@ -188,7 +191,7 @@ XML;
     /**
      * @return array
      */
-    public function badXMLFilesProvider()
+    public function providerLoadFromXMLFailuresOnVariousBadXMLFiles()
     {
         return [
             /**
@@ -341,6 +344,22 @@ XML
         <class name="\Uncallable" needsErrorCode="false" />
     </errors>
 </representations>
+XML
+            ],
+
+            /**
+             * <parameterTokens>
+             *
+             */
+            'parametertokens.invalid' => [
+                'includes' => ['versions', 'controllers', 'representations'],
+                'exception' => [
+                    'regex' => '/invalid parameter token/'
+                ],
+                'xml' => <<<XML
+<parameterTokens>
+    <token name=""></token>
+</parameterTokens>
 XML
             ],
 

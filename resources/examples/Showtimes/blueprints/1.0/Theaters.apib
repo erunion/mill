@@ -2,10 +2,8 @@ FORMAT: 1A
 
 # Theaters
 ## Movie Theaters [/theaters/{id}]
-
+Information on a specific movie theater.
 ### Get a single movie theater [GET]
-This action requires a bearer token with `public` scope.
-
 + Parameters
     + `id` (integer, required) - Theater ID
 + Response 200 (application/json)
@@ -16,7 +14,9 @@ This action requires a bearer token with `public` scope.
         - `name` (string) - Name
         - `phone_number` (string) - Phone number
         - `showtimes` (array) - Non-movie specific showtimes
+        - `uri` (string) - Theater URI
         - `website` (string) - Website
++ Response 304 (application/json)
 + Response 404 (application/json)
 
 ### Update a movie theater [PATCH]
@@ -37,6 +37,7 @@ This action requires a bearer token with `create` scope.
         - `name` (string) - Name
         - `phone_number` (string) - Phone number
         - `showtimes` (array) - Non-movie specific showtimes
+        - `uri` (string) - Theater URI
         - `website` (string) - Website
 + Response 400 (application/json)
 + Response 404 (application/json)
@@ -50,10 +51,8 @@ This action requires a bearer token with `delete` scope.
 + Response 404 (application/json)
 
 ## Movie Theaters [/theaters]
-
+Information on a specific movie theater.
 ### Get movie theaters. [GET]
-This action requires a bearer token with `public` scope.
-
 + Request
     + Attributes
         - `location` (string, required) - Location you want theaters in.
@@ -65,6 +64,7 @@ This action requires a bearer token with `public` scope.
         - `name` (string) - Name
         - `phone_number` (string) - Phone number
         - `showtimes` (array) - Non-movie specific showtimes
+        - `uri` (string) - Theater URI
         - `website` (string) - Website
 + Response 400 (application/json)
 
@@ -84,5 +84,6 @@ This action requires a bearer token with `create` scope.
         - `name` (string) - Name
         - `phone_number` (string) - Phone number
         - `showtimes` (array) - Non-movie specific showtimes
+        - `uri` (string) - Theater URI
         - `website` (string) - Website
 + Response 400 (application/json)

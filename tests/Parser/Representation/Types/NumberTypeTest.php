@@ -16,7 +16,7 @@ class NumberTypeTest extends TypeTest
     /**
      * @return array
      */
-    public function annotationTypeProvider()
+    public function providerAnnotationWithType()
     {
         return [
             'bare' => [

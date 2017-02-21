@@ -1,25 +1,33 @@
 <?php
 namespace Mill\Tests;
 
+use Mill\Exceptions\MethodNotImplementedException;
 use Mill\Parser;
 
 class ParserTest extends TestCase
 {
+    use ReaderTestingTrait;
+
     public function testParseAnnotationsOnClassWithNoMethod()
     {
         $controller = '\Mill\Examples\Showtimes\Controllers\Movie';
         $docs = (new Parser($controller))->getAnnotations();
 
-        $this->assertCount(1, $docs);
+        $this->assertCount(2, $docs);
+        $this->assertCount(1, $docs['description']);
+        $this->assertCount(1, $docs['label']);
 
         /** @var \Mill\Parser\Annotations\LabelAnnotation $annotation */
         $annotation = $docs['label'][0];
-        $this->assertCount(1, $docs['label']);
         $this->assertSame('Movies', $annotation->toArray()['label']);
+
+        /** @var \Mill\Parser\Annotations\DescriptionAnnotation $annotation */
+        $annotation = $docs['description'][0];
+        $this->assertSame('Information on a specific movie.', $annotation->toArray()['description']);
     }
 
     /**
-     * @dataProvider annotationsProvider
+     * @dataProvider providerParseAnnotationsOnClassMethod
      */
     public function testParseAnnotationsOnClassMethod($method, $expected)
     {
@@ -42,19 +50,43 @@ class ParserTest extends TestCase
         }
     }
 
-    /**
-     * @expectedException \Mill\Exceptions\MethodNotImplementedException
-     */
+    public function testParsingADeprecatedDecorator()
+    {
+        $this->overrideReadersWithFakeDocblockReturn('/**
+          * @api-label Update a piece of content.
+          *
+          * @api-uri:public {Foo\Bar} /foo
+          * @api-uri:private:deprecated {Foo\Bar} /bar
+          *
+          * @api-contentType application/json
+          * @api-scope public
+          *
+          * @api-return:public {ok}
+          */');
+
+        $annotations = (new Parser(__CLASS__))->getAnnotations(__METHOD__);
+
+        $this->assertArrayHasKey('uri', $annotations);
+        $this->assertFalse($annotations['uri'][0]->isDeprecated());
+        $this->assertTrue($annotations['uri'][1]->isDeprecated());
+    }
+
     public function testParseAnnotationsOnClassMethodThatDoesntExist()
     {
         $controller = '\Mill\Examples\Showtimes\Controllers\Movie';
-        (new Parser($controller))->getAnnotations('POST');
+
+        try {
+            (new Parser($controller))->getAnnotations('POST');
+        } catch (MethodNotImplementedException $e) {
+            $this->assertSame($controller, $e->getClass());
+            $this->assertSame('POST', $e->getMethod());
+        }
     }
 
     /**
      * @return array
      */
-    public function annotationsProvider()
+    public function providerParseAnnotationsOnClassMethod()
     {
         return [
             'GET' => [
@@ -78,11 +110,7 @@ class ParserTest extends TestCase
                     ],
                     'return' => [
                         'class' => '\Mill\Parser\Annotations\ReturnAnnotation',
-                        'count' => 1
-                    ],
-                    'scope' => [
-                        'class' => '\Mill\Parser\Annotations\ScopeAnnotation',
-                        'count' => 1
+                        'count' => 2
                     ],
                     'throws' => [
                         'class' => '\Mill\Parser\Annotations\ThrowsAnnotation',
@@ -131,7 +159,7 @@ class ParserTest extends TestCase
                     ],
                     'throws' => [
                         'class' => '\Mill\Parser\Annotations\ThrowsAnnotation',
-                        'count' => 2
+                        'count' => 3
                     ],
                     'uri' => [
                         'class' => '\Mill\Parser\Annotations\UriAnnotation',

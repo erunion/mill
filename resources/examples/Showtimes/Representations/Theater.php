@@ -2,6 +2,8 @@
 namespace Mill\Examples\Showtimes\Representations;
 
 /**
+ * Data representation for a specific movie theater.
+ *
  * @api-label Theater
  */
 class Theater extends Representation
@@ -11,6 +13,13 @@ class Theater extends Representation
     public function create()
     {
         return [
+            /**
+             * @api-label Theater URI
+             * @api-field uri
+             * @api-type uri
+             */
+            'uri' => $this->theater->uri,
+
             /**
              * @api-label Unique ID
              * @api-field id

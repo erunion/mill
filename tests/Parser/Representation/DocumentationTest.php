@@ -7,7 +7,7 @@ use Mill\Tests\TestCase;
 class DocumentationTest extends TestCase
 {
     /**
-     * @dataProvider representationProvider
+     * @dataProvider providerParseDocumentationReturnsRepresentation
      */
     public function testParseDocumentationReturnsRepresentation($class, $method, $expected)
     {
@@ -35,7 +35,7 @@ class DocumentationTest extends TestCase
     }
 
     /**
-     * @dataProvider badRepresentationsProvider
+     * @dataProvider providerParseDocumentationFailsOnBadRepresentations
      */
     public function testParseDocumentationFailsOnBadRepresentations($class, $method, $exception)
     {
@@ -47,7 +47,7 @@ class DocumentationTest extends TestCase
     /**
      * @return array
      */
-    public function representationProvider()
+    public function providerParseDocumentationReturnsRepresentation()
     {
         return [
             'Movie' => [
@@ -55,7 +55,7 @@ class DocumentationTest extends TestCase
                 'method' => 'create',
                 'expected' => [
                     'label' => 'Movie',
-                    'description.length' => 0,
+                    'description.length' => 41,
                     'content' => [
                         'cast' => [
                             'capability' => false,
@@ -150,12 +150,12 @@ class DocumentationTest extends TestCase
                             'type' => 'array',
                             'version' => false
                         ],
-                        'urls' => [
-                            'capability' => 'NONE',
-                            'field' => 'urls',
-                            'label' => 'External URLs',
+                        'uri' => [
+                            'capability' => false,
+                            'field' => 'uri',
+                            'label' => 'Movie URI',
                             'options' => false,
-                            'type' => 'object',
+                            'type' => 'uri',
                             'version' => false
                         ],
                         'urls.imdb' => [
@@ -167,7 +167,7 @@ class DocumentationTest extends TestCase
                             'version' => false
                         ],
                         'urls.tickets' => [
-                            'capability' => false,
+                            'capability' => 'BUY_TICKETS',
                             'field' => 'urls.tickets',
                             'label' => 'Tickets URL',
                             'options' => false,
@@ -297,15 +297,17 @@ class DocumentationTest extends TestCase
                                 'version' => false
                             ]
                         ],
-                        'urls' => [
+                        'uri' => [
                             '__FIELD_DATA__' => [
-                                'capability' => 'NONE',
-                                'field' => 'urls',
-                                'label' => 'External URLs',
+                                'capability' => false,
+                                'field' => 'uri',
+                                'label' => 'Movie URI',
                                 'options' => false,
-                                'type' => 'object',
+                                'type' => 'uri',
                                 'version' => false
-                            ],
+                            ]
+                        ],
+                        'urls' => [
                             'imdb' => [
                                 '__FIELD_DATA__' => [
                                     'capability' => false,
@@ -318,7 +320,7 @@ class DocumentationTest extends TestCase
                             ],
                             'tickets' => [
                                 '__FIELD_DATA__' => [
-                                    'capability' => false,
+                                    'capability' => 'BUY_TICKETS',
                                     'field' => 'urls.tickets',
                                     'label' => 'Tickets URL',
                                     'options' => false,
@@ -346,7 +348,7 @@ class DocumentationTest extends TestCase
     /**
      * @return array
      */
-    public function badRepresentationsProvider()
+    public function providerParseDocumentationFailsOnBadRepresentations()
     {
         return [
             'no-annotations' => [
@@ -354,9 +356,13 @@ class DocumentationTest extends TestCase
                 'method' => 'create',
                 'expected.exception' => '\Mill\Exceptions\Resource\NoAnnotationsException'
             ],
+            'no-annotations-on-the-class' => [
+                'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithNoClassAnnotations',
+                'method' => 'create',
+                'expected.exception' => '\Mill\Exceptions\Resource\NoAnnotationsException'
+            ],
             'missing-a-required-label-annotation' => [
-                'class' =>
-                    '\Mill\Tests\Fixtures\Representations\RepresentationWithRequiredLabelAnnotationMissing',
+                'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithRequiredLabelAnnotationMissing',
                 'method' => 'create',
                 'expected.exception' => '\Mill\Exceptions\RequiredAnnotationException'
             ],

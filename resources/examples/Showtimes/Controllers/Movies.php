@@ -14,7 +14,6 @@ class Movies
      * @api-uri:public {Movies} /movies
      *
      * @api-contentType application/json
-     * @api-scope public
      *
      * @api-param:public {string} location Location you want movies for.
      *
@@ -49,6 +48,7 @@ class Movies
      *
      * @api-throws:public {400} \Mill\Examples\Showtimes\Representations\Error If there is a problem with the
      *      request.
+     * @api-throws:public {400} \Mill\Examples\Showtimes\Representations\Error If the IMDB URL could not be validated.
      *
      * @api-version 1.1
      * @api-param:public {string} imdb (optional) IMDB URL

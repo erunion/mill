@@ -74,6 +74,7 @@ class Generate extends Command
         $dry_run = $input->getOption('dry-run');
 
         // Generate!
+        // @todo This should be pulled from the core Application instead, so we can inject the dependency in tests.
         $container = new Container([
             'config.path' => $config
         ]);
@@ -92,7 +93,7 @@ class Generate extends Command
                 $version = new Version($version, __CLASS__, __METHOD__);
             } catch (UnrecognizedSchemaException $e) {
                 $output->writeLn('<error>' . $e->getValidationMessage() . '</error>');
-                exit(1);
+                return;
             }
         }
 

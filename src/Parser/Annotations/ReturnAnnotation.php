@@ -111,9 +111,15 @@ class ReturnAnnotation extends Annotation
     protected function interpreter()
     {
         $this->http_code = $this->required('http_code');
-        $this->description = $this->optional('description');
         $this->representation = $this->optional('representation');
         $this->type = $this->required('type');
+
+        // Descriptions are only required for non-200 responses.
+        if ($this->isNon200HttpCode()) {
+            $this->description = $this->required('description');
+        } else {
+            $this->description = $this->optional('description');
+        }
     }
 
     /**

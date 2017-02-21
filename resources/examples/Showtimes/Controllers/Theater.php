@@ -2,6 +2,8 @@
 namespace Mill\Examples\Showtimes\Controllers;
 
 /**
+ * Information on a specific movie theater.
+ *
  * @api-label Movie Theaters
  */
 class Theater
@@ -15,9 +17,9 @@ class Theater
      * @api-uriSegment {/theaters/+id} {integer} id Theater ID
      *
      * @api-contentType application/json
-     * @api-scope public
      *
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Theater
+     * @api-return:public {notmodified} If no content has been modified since the supplied Last-Modified header.
      *
      * @api-throws:public {404} \Mill\Examples\Showtimes\Representations\Error If the movie theater could not be
      *      found.

@@ -6,7 +6,7 @@ use Mill\Parser\Annotations\MinVersionAnnotation;
 class MinVersionAnnotationTest extends AnnotationTest
 {
     /**
-     * @dataProvider annotationProvider
+     * @dataProvider providerAnnotation
      */
     public function testAnnotation($version, $expected)
     {
@@ -24,7 +24,7 @@ class MinVersionAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function annotationProvider()
+    public function providerAnnotation()
     {
         return [
             '_complete' => [
@@ -39,22 +39,29 @@ class MinVersionAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function badAnnotationProvider()
+    public function providerAnnotationFailsOnInvalidAnnotations()
     {
         return [
             'does-not-have-an-absolute-version' => [
                 'annotation' => '\Mill\Parser\Annotations\MinVersionAnnotation',
                 'docblock' => '~1.2',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\AbsoluteMinimumVersionException',
-                'expected.exception.regex' => [
-                    '/~1.2/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => null,
+                    'getAnnotation' => '~1.2',
+                    'getDocblock' => null,
+                    'getValues' => []
                 ]
             ],
             'missing-minimum-version' => [
                 'annotation' => '\Mill\Parser\Annotations\MinVersionAnnotation',
                 'docblock' => '',
                 'expected.exception' => '\Mill\Exceptions\Version\UnrecognizedSchemaException',
-                'expected.exception.regex' => []
+                'expected.exception.asserts' => [
+                    'getVersion' => '',
+                    'getValidationMessage' => 'The supplied version, ``, has an unrecognized schema. Please consult ' .
+                        'the versioning documentation.'
+                ]
             ]
         ];
     }

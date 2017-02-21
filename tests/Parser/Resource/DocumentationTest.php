@@ -3,12 +3,15 @@ namespace Mill\Tests\Parser\Resource;
 
 use Mill\Exceptions\MethodNotImplementedException;
 use Mill\Parser\Resource\Documentation;
+use Mill\Tests\ReaderTestingTrait;
 use Mill\Tests\TestCase;
 
 class DocumentationTest extends TestCase
 {
+    use ReaderTestingTrait;
+
     /**
-     * @dataProvider controllersProvider
+     * @dataProvider providerDocumentation
      */
     public function testDocumentation($controller, $expected)
     {
@@ -29,7 +32,7 @@ class DocumentationTest extends TestCase
 
         $this->assertSame($class_docs['controller'], $controller);
         $this->assertSame($expected['label'], $class_docs['label']);
-        $this->assertSame($expected['description.length'], strlen($class_docs['description']));
+        $this->assertSame($expected['description'], $class_docs['description']);
 
         foreach ($expected['methods.available'] as $method) {
             $this->assertInternalType('array', $class_docs['methods'][$method]);
@@ -46,16 +49,23 @@ class DocumentationTest extends TestCase
     }
 
     /**
-     * @dataProvider badControllersProvider
+     * @dataProvider providerDocumentationFailsOnBadControllers
      */
-    public function testDocumentationFailsOnBadControllers($controller, $exception, $regex)
+    public function testDocumentationFailsOnBadControllers($docblock, $exception, $asserts)
     {
         $this->expectException($exception);
-        foreach ($regex as $rule) {
-            $this->expectExceptionMessageRegExp($rule);
-        }
+        $this->overrideReadersWithFakeDocblockReturn($docblock);
 
-        (new Documentation($controller))->parse();
+        try {
+            (new Documentation(__CLASS__))->parse();
+        } catch (\Exception $e) {
+            if ('\\' . get_class($e) !== $exception) {
+                $this->fail('Unrecognized exception (' . get_class($e) . ') thrown.');
+            }
+
+            $this->assertExceptionAsserts($e, __CLASS__, null, $asserts);
+            throw $e;
+        }
     }
 
     /**
@@ -75,7 +85,7 @@ class DocumentationTest extends TestCase
     /**
      * @return array
      */
-    public function controllersProvider()
+    public function providerDocumentation()
     {
         return [
             'Movie' => [
@@ -83,7 +93,7 @@ class DocumentationTest extends TestCase
                 'expected' => [
                     'methods.size' => 3,
                     'label' => 'Movies',
-                    'description.length' => 0,
+                    'description' => 'Information on a specific movie.',
                     'methods.available' => [
                         'GET',
                         'PATCH',
@@ -98,21 +108,26 @@ class DocumentationTest extends TestCase
     /**
      * @return array
      */
-    public function badControllersProvider()
+    public function providerDocumentationFailsOnBadControllers()
     {
         return [
             'missing-required-label-annotation' => [
-                'controller' => '\Mill\Tests\Fixtures\Controllers\ControllerWithRequiredLabelAnnotationMissing',
+                'docblock' => '/**
+                  *
+                  */',
                 'expected.exception' => '\Mill\Exceptions\RequiredAnnotationException',
-                'expected.exception.regex' => [
-                    '/api-label/'
+                'expected.exception.asserts' => [
+                    'getAnnotation' => 'label'
                 ]
             ],
             'multiple-label-annotations' => [
-                'controller' => '\Mill\Tests\Fixtures\Controllers\ControllerWithMultipleLabelAnnotations',
+                'docblock' => '/**
+                  * @api-label Something
+                  * @api-label Something else
+                  */',
                 'expected.exception' => '\Mill\Exceptions\MultipleAnnotationsException',
-                'expected.exception.regex' => [
-                    '/api-label/'
+                'expected.exception.asserts' => [
+                    'getAnnotation' => 'label'
                 ]
             ]
         ];

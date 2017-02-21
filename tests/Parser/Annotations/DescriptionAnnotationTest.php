@@ -6,7 +6,7 @@ use Mill\Parser\Annotations\DescriptionAnnotation;
 class DescriptionAnnotationTest extends AnnotationTest
 {
     /**
-     * @dataProvider annotationProvider
+     * @dataProvider providerAnnotation
      */
     public function testAnnotation($description, $expected)
     {
@@ -24,7 +24,7 @@ class DescriptionAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function annotationProvider()
+    public function providerAnnotation()
     {
         return [
             '_complete' => [
@@ -39,15 +39,18 @@ class DescriptionAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function badAnnotationProvider()
+    public function providerAnnotationFailsOnInvalidAnnotations()
     {
         return [
             'missing-description' => [
                 'annotation' => '\Mill\Parser\Annotations\DescriptionAnnotation',
                 'docblock' => '',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
-                'expected.exception.regex' => [
-                    '/`description`/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => 'description',
+                    'getAnnotation' => 'description',
+                    'getDocblock' => '',
+                    'getValues' => []
                 ]
             ]
         ];

@@ -2,6 +2,8 @@
 namespace Mill\Examples\Showtimes\Representations;
 
 /**
+ * Data representation for a specific movie.
+ *
  * @api-label Movie
  */
 class Movie extends Representation
@@ -11,6 +13,13 @@ class Movie extends Representation
     public function create()
     {
         return [
+            /**
+             * @api-label Movie URI
+             * @api-field uri
+             * @api-type uri
+             */
+            'uri' => $this->movie->uri,
+
             /**
              * @api-label Unique ID
              * @api-field id
@@ -55,10 +64,6 @@ class Movie extends Representation
             'genres' => $this->movie->getGenres(),
 
             /**
-             * @api-label External URLs
-             * @api-field urls
-             * @api-type object
-             * @api-capability NONE
              * @api-see \Mill\Examples\Showtimes\Representations\Movie::getUrls urls
              */
             'urls' => $this->getUrls(),
@@ -118,6 +123,7 @@ class Movie extends Representation
              * @api-label Tickets URL
              * @api-field tickets
              * @api-type string
+             * @api-capability BUY_TICKETS
              */
             'tickets' => $this->movie->tickets_url
         ];

@@ -15,12 +15,28 @@ class GeneratorTest extends TestCase
         $this->assertCount(2, $generator->getResources());
     }
 
+    public function testGeneratorButExcludeARepresentation()
+    {
+        $config = $this->getConfig();
+        $config->addExcludedRepresentation('\Mill\Examples\Showtimes\Representations\Movie');
+
+        $version_obj = new Version('1.0', __CLASS__, __METHOD__);
+        $generator = new Generator($config, $version_obj);
+        $generator->generate();
+
+        $this->assertCount(1, $generator->getRepresentations($version_obj->getConstraint()));
+
+        // Clean up after ourselves.
+        $config->removeExcludedRepresentation('\Mill\Examples\Showtimes\Representations\Movie');
+    }
+
     /**
-     * @dataProvider generatorVersionProvider
+     * @dataProvider providerGeneratorWithVersion
      */
     public function testGeneratorWithVersion($version, $expected_representations, $expected_resources)
     {
-        $generator = new Generator($this->getConfig(), new Version($version, __CLASS__, __METHOD__));
+        $version_obj = new Version($version, __CLASS__, __METHOD__);
+        $generator = new Generator($this->getConfig(), $version_obj);
         $generator->generate();
 
         /**
@@ -30,6 +46,7 @@ class GeneratorTest extends TestCase
         $this->assertArrayHasKey($version, $resources);
 
         $resources = $resources[$version];
+        $this->assertSame($resources, $generator->getResources($version));
         foreach ($expected_resources as $group => $data) {
             $this->assertArrayHasKey($group, $resources);
 
@@ -94,6 +111,7 @@ class GeneratorTest extends TestCase
 
         $representations = $representations[$version];
         $this->assertCount(count($expected_representations), $representations);
+        $this->assertSame($representations, $generator->getRepresentations($version_obj));
 
         foreach ($expected_representations as $name => $data) {
             $this->assertArrayHasKey($name, $representations);
@@ -105,13 +123,14 @@ class GeneratorTest extends TestCase
             $this->assertSame($data['label'], $actual['label']);
             $this->assertSame($data['description.length'], strlen($actual['description']));
             $this->assertCount($data['content.size'], $actual['content']);
+            $this->assertCount($data['content.size'], $representation->getContent());
         }
     }
 
     /**
      * @return array
      */
-    public function generatorVersionProvider()
+    public function providerGeneratorWithVersion()
     {
         return [
             'version-1.0' => [
@@ -119,13 +138,13 @@ class GeneratorTest extends TestCase
                 'expected.representations' => [
                     '\Mill\Examples\Showtimes\Representations\Movie' => [
                         'label' => 'Movie',
-                        'description.length' => 0,
+                        'description.length' => 41,
                         'content.size' => 14
                     ],
                     '\Mill\Examples\Showtimes\Representations\Theater' => [
                         'label' => 'Theater',
-                        'description.length' => 0,
-                        'content.size' => 7
+                        'description.length' => 49,
+                        'content.size' => 8
                     ]
                 ],
                 'expected.resources' => [
@@ -133,7 +152,7 @@ class GeneratorTest extends TestCase
                         'resources' => [
                             [
                                 'resource.name' => 'Movies',
-                                'description.length' => 0,
+                                'description.length' => 32,
                                 'actions.data' => [
                                     '/movies::GET' => [
                                         'uri' => '/movies',
@@ -183,7 +202,7 @@ class GeneratorTest extends TestCase
                         'resources' => [
                             [
                                 'resource.name' => 'Movie Theaters',
-                                'description.length' => 0,
+                                'description.length' => 40,
                                 'actions.data' => [
                                     '/theaters::GET' => [
                                         'uri' => '/theaters',
@@ -250,13 +269,13 @@ class GeneratorTest extends TestCase
                 'expected.representations' => [
                     '\Mill\Examples\Showtimes\Representations\Movie' => [
                         'label' => 'Movie',
-                        'description.length' => 0,
+                        'description.length' => 41,
                         'content.size' => 14
                     ],
                     '\Mill\Examples\Showtimes\Representations\Theater' => [
                         'label' => 'Theater',
-                        'description.length' => 0,
-                        'content.size' => 6
+                        'description.length' => 49,
+                        'content.size' => 7
                     ]
                 ],
                 'expected.resources' => [
@@ -264,7 +283,7 @@ class GeneratorTest extends TestCase
                         'resources' => [
                             [
                                 'resource.name' => 'Movies',
-                                'description.length' => 0,
+                                'description.length' => 32,
                                 'actions.data' => [
                                     '/movies::GET' => [
                                         'uri' => '/movies',
@@ -328,7 +347,7 @@ class GeneratorTest extends TestCase
                         'resources' => [
                             [
                                 'resource.name' => 'Movie Theaters',
-                                'description.length' => 0,
+                                'description.length' => 40,
                                 'actions.data' => [
                                     '/theaters::GET' => [
                                         'uri' => '/theaters',

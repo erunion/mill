@@ -3,6 +3,7 @@ namespace Mill;
 
 use Mill\Provider\Config;
 use Mill\Provider\Filesystem;
+use Mill\Provider\Reader;
 
 class Container extends \Pimple\Container
 {
@@ -33,6 +34,7 @@ class Container extends \Pimple\Container
 
         $this->register(new Filesystem);
         $this->register(new Config);
+        $this->register(new Reader);
 
         self::$instance = $this;
     }
@@ -72,5 +74,25 @@ class Container extends \Pimple\Container
     public static function getFilesystem()
     {
         return self::getInstance()['filesystem'];
+    }
+
+    /**
+     * Return the current instance of the annotation reader.
+     *
+     * @return \Closure
+     */
+    public static function getAnnotationReader()
+    {
+        return self::getInstance()['reader.annotations'];
+    }
+
+    /**
+     * Return the current instance of the annotation reader for representations.
+     *
+     * @return \Closure
+     */
+    public static function getRepresentationAnnotationReader()
+    {
+        return self::getInstance()['reader.annotations.representation'];
     }
 }

@@ -14,7 +14,6 @@ class Theaters
      * @api-uri:public {Theaters} /theaters
      *
      * @api-contentType application/json
-     * @api-scope public
      *
      * @api-param:public {string} location Location you want theaters in.
      *
