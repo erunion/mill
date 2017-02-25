@@ -29,10 +29,6 @@ Information on a specific movie.
         - `showtimes` (array) - Non-theater specific showtimes
         - `theaters` (array) - Theaters the movie is currently showing in
         - `uri` (string) - Movie URI
-        - `urls` (object)
-            - `imdb` (string) - IMDB URL
-            - `tickets` (string) - Tickets URL
-            - `trailer` (string) - Trailer URL
 + Response 304 (application/json)
 + Response 404 (application/json)
 
@@ -73,10 +69,6 @@ Information on a specific movie.
         - `showtimes` (array) - Non-theater specific showtimes
         - `theaters` (array) - Theaters the movie is currently showing in
         - `uri` (string) - Movie URI
-        - `urls` (object)
-            - `imdb` (string) - IMDB URL
-            - `tickets` (string) - Tickets URL
-            - `trailer` (string) - Trailer URL
 + Response 400 (application/json)
 
 ### Create a movie. [POST]
@@ -122,10 +114,6 @@ This action requires a bearer token with `create` scope.
         - `showtimes` (array) - Non-theater specific showtimes
         - `theaters` (array) - Theaters the movie is currently showing in
         - `uri` (string) - Movie URI
-        - `urls` (object)
-            - `imdb` (string) - IMDB URL
-            - `tickets` (string) - Tickets URL
-            - `trailer` (string) - Trailer URL
 + Response 400 (application/json)
     There are 2 ways that this status code can be encountered.
          * If there is a problem with the request.

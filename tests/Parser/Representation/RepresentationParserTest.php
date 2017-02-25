@@ -60,7 +60,23 @@ class RepresentationParserTest extends TestCase
 
         // We're already asserting that the parser actually parses annotations, we just want to make sure that we
         // picked up the full Movie representation here by way of an `@api-see` pointer.
-        $this->assertCount(14, $annotations);
+        $this->assertSame([
+            'cast',
+            'content_rating',
+            'description',
+            'director',
+            'genres',
+            'id',
+            'name',
+            'runtime',
+            'showtimes',
+            'theaters',
+            'uri',
+            'urls',
+            'urls.imdb',
+            'urls.tickets',
+            'urls.trailer'
+        ], array_keys($annotations));
     }
 
     /**
@@ -214,13 +230,21 @@ class RepresentationParserTest extends TestCase
                             'type' => 'uri',
                             'version' => false
                         ],
+                        'urls' => [
+                            'capability' => false,
+                            'field' => 'urls',
+                            'label' => 'Urls',
+                            'options' => false,
+                            'type' => 'object',
+                            'version' => '1.1'
+                        ],
                         'urls.imdb' => [
                             'capability' => false,
                             'field' => 'urls.imdb',
                             'label' => 'IMDB URL',
                             'options' => false,
                             'type' => 'string',
-                            'version' => false
+                            'version' => '1.1'
                         ],
                         'urls.tickets' => [
                             'capability' => 'BUY_TICKETS',
@@ -228,7 +252,7 @@ class RepresentationParserTest extends TestCase
                             'label' => 'Tickets URL',
                             'options' => false,
                             'type' => 'string',
-                            'version' => false
+                            'version' => '1.1'
                         ],
                         'urls.trailer' => [
                             'capability' => false,
@@ -236,7 +260,7 @@ class RepresentationParserTest extends TestCase
                             'label' => 'Trailer URL',
                             'options' => false,
                             'type' => 'string',
-                            'version' => false
+                            'version' => '1.1'
                         ]
                     ]
                 ]

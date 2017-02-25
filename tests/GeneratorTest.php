@@ -12,7 +12,10 @@ class GeneratorTest extends TestCase
         $generator = new Generator($this->getConfig());
         $generator->generate();
 
-        $this->assertCount(2, $generator->getResources());
+        $this->assertSame([
+            '1.0',
+            '1.1'
+        ], array_keys($generator->getResources()));
     }
 
     public function testGeneratorButExcludeARepresentation()
@@ -122,8 +125,8 @@ class GeneratorTest extends TestCase
 
             $this->assertSame($data['label'], $actual['label']);
             $this->assertSame($data['description.length'], strlen($actual['description']));
-            $this->assertCount($data['content.size'], $actual['content']);
-            $this->assertCount($data['content.size'], $representation->getContent());
+            $this->assertSame($data['content.keys'], array_keys($actual['content']));
+            $this->assertSame($data['content.keys'], array_keys($representation->getContent()));
         }
     }
 
@@ -139,12 +142,33 @@ class GeneratorTest extends TestCase
                     '\Mill\Examples\Showtimes\Representations\Movie' => [
                         'label' => 'Movie',
                         'description.length' => 41,
-                        'content.size' => 14
+                        'content.keys' => [
+                            'cast',
+                            'content_rating',
+                            'description',
+                            'director',
+                            'genres',
+                            'id',
+                            'name',
+                            'runtime',
+                            'showtimes',
+                            'theaters',
+                            'uri'
+                        ]
                     ],
                     '\Mill\Examples\Showtimes\Representations\Theater' => [
                         'label' => 'Theater',
                         'description.length' => 49,
-                        'content.size' => 8
+                        'content.keys' => [
+                            'address',
+                            'id',
+                            'movies',
+                            'name',
+                            'phone_number',
+                            'showtimes',
+                            'uri',
+                            'website'
+                        ]
                     ]
                 ],
                 'expected.resources' => [
@@ -270,12 +294,36 @@ class GeneratorTest extends TestCase
                     '\Mill\Examples\Showtimes\Representations\Movie' => [
                         'label' => 'Movie',
                         'description.length' => 41,
-                        'content.size' => 14
+                        'content.keys' => [
+                            'cast',
+                            'content_rating',
+                            'description',
+                            'director',
+                            'genres',
+                            'id',
+                            'name',
+                            'runtime',
+                            'showtimes',
+                            'theaters',
+                            'uri',
+                            'urls',
+                            'urls.imdb',
+                            'urls.tickets',
+                            'urls.trailer'
+                        ]
                     ],
                     '\Mill\Examples\Showtimes\Representations\Theater' => [
                         'label' => 'Theater',
                         'description.length' => 49,
-                        'content.size' => 7
+                        'content.keys' => [
+                            'address',
+                            'id',
+                            'movies',
+                            'name',
+                            'phone_number',
+                            'showtimes',
+                            'uri'
+                        ]
                     ]
                 ],
                 'expected.resources' => [
