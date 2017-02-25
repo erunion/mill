@@ -50,7 +50,7 @@ class Movies
      *      request.
      * @api-throws:public {400} \Mill\Examples\Showtimes\Representations\Error If the IMDB URL could not be validated.
      *
-     * @api-version 1.1
+     * @api-version >=1.1
      * @api-param:public {string} imdb (optional) IMDB URL
      * @api-param:public {string} trailer (optional) Trailer URL
      */

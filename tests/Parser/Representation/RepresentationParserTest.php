@@ -236,7 +236,7 @@ class RepresentationParserTest extends TestCase
                             'label' => 'Urls',
                             'options' => false,
                             'type' => 'object',
-                            'version' => '1.1'
+                            'version' => '>=1.1'
                         ],
                         'urls.imdb' => [
                             'capability' => false,
@@ -244,7 +244,7 @@ class RepresentationParserTest extends TestCase
                             'label' => 'IMDB URL',
                             'options' => false,
                             'type' => 'string',
-                            'version' => '1.1'
+                            'version' => '>=1.1'
                         ],
                         'urls.tickets' => [
                             'capability' => 'BUY_TICKETS',
@@ -252,7 +252,7 @@ class RepresentationParserTest extends TestCase
                             'label' => 'Tickets URL',
                             'options' => false,
                             'type' => 'string',
-                            'version' => '1.1'
+                            'version' => '>=1.1'
                         ],
                         'urls.trailer' => [
                             'capability' => false,
@@ -260,7 +260,7 @@ class RepresentationParserTest extends TestCase
                             'label' => 'Trailer URL',
                             'options' => false,
                             'type' => 'string',
-                            'version' => '1.1'
+                            'version' => '>=1.1'
                         ]
                     ]
                 ]
