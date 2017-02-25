@@ -54,6 +54,8 @@ class Reader
 
         /** @var \ReflectionMethod $method */
         $method = $reflection->getMethod($method);
+
+        /** @var string $filename */
         $filename = $method->getFileName();
 
         // The start line is actually `- 1`, otherwise you wont get the function() block.
