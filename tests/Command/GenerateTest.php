@@ -57,7 +57,8 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
             '.',
             '..',
             '1.0',
-            '1.1'
+            '1.1',
+            '1.1.1'
         ], scandir($output_dir));
 
         $blueprints_dir = __DIR__ . '/../../resources/examples/Showtimes/blueprints';

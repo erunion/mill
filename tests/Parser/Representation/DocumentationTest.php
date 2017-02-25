@@ -164,7 +164,7 @@ class DocumentationTest extends TestCase
                             'label' => 'Urls',
                             'options' => false,
                             'type' => 'object',
-                            'version' => '1.1'
+                            'version' => '>=1.1'
                         ],
                         'urls.imdb' => [
                             'capability' => false,
@@ -172,7 +172,7 @@ class DocumentationTest extends TestCase
                             'label' => 'IMDB URL',
                             'options' => false,
                             'type' => 'string',
-                            'version' => '1.1'
+                            'version' => '>=1.1'
                         ],
                         'urls.tickets' => [
                             'capability' => 'BUY_TICKETS',
@@ -180,7 +180,7 @@ class DocumentationTest extends TestCase
                             'label' => 'Tickets URL',
                             'options' => false,
                             'type' => 'string',
-                            'version' => '1.1'
+                            'version' => '>=1.1'
                         ],
                         'urls.trailer' => [
                             'capability' => false,
@@ -188,7 +188,7 @@ class DocumentationTest extends TestCase
                             'label' => 'Trailer URL',
                             'options' => false,
                             'type' => 'string',
-                            'version' => '1.1'
+                            'version' => '>=1.1'
                         ]
                     ],
                     'content.exploded' => [
@@ -322,7 +322,7 @@ class DocumentationTest extends TestCase
                                 'label' => 'Urls',
                                 'options' => false,
                                 'type' => 'object',
-                                'version' => '1.1'
+                                'version' => '>=1.1'
                             ],
                             'imdb' => [
                                 '__FIELD_DATA__' => [
@@ -331,7 +331,7 @@ class DocumentationTest extends TestCase
                                     'label' => 'IMDB URL',
                                     'options' => false,
                                     'type' => 'string',
-                                    'version' => '1.1'
+                                    'version' => '>=1.1'
                                 ]
                             ],
                             'tickets' => [
@@ -341,7 +341,7 @@ class DocumentationTest extends TestCase
                                     'label' => 'Tickets URL',
                                     'options' => false,
                                     'type' => 'string',
-                                    'version' => '1.1'
+                                    'version' => '>=1.1'
                                 ]
                             ],
                             'trailer' => [
@@ -351,7 +351,7 @@ class DocumentationTest extends TestCase
                                     'label' => 'Trailer URL',
                                     'options' => false,
                                     'type' => 'string',
-                                    'version' => '1.1'
+                                    'version' => '>=1.1'
                                 ]
                             ]
                         ]

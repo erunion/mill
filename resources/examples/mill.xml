@@ -5,7 +5,8 @@
 >
     <versions>
         <version name="1.0" />
-        <version name="1.1" default="true" />
+        <version name="1.1" />
+        <version name="1.1.1" default="true" />
     </versions>
 
     <controllers>

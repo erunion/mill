@@ -269,17 +269,6 @@ class DocumentationTest extends TestCase
                             [
                                 'capability' => false,
                                 'deprecated' => false,
-                                'description' => 'IMDB URL',
-                                'field' => 'imdb',
-                                'required' => false,
-                                'type' => 'string',
-                                'values' => false,
-                                'version' => false,
-                                'visible' => true
-                            ],
-                            [
-                                'capability' => false,
-                                'deprecated' => false,
                                 'description' => 'Trailer URL',
                                 'field' => 'trailer',
                                 'required' => false,
@@ -309,7 +298,18 @@ class DocumentationTest extends TestCase
                                 'values' => false,
                                 'version' => false,
                                 'visible' => true
-                            ]
+                            ],
+                            [
+                                'capability' => false,
+                                'deprecated' => false,
+                                'description' => 'IMDB URL',
+                                'field' => 'imdb',
+                                'required' => false,
+                                'type' => 'string',
+                                'values' => false,
+                                'version' => '>=1.1.1',
+                                'visible' => true
+                            ],
                         ],
                         'return' => [
                             [

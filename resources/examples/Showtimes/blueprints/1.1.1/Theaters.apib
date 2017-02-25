@@ -1,0 +1,87 @@
+FORMAT: 1A
+
+# Theaters
+## Movie Theaters [/theaters/{id}]
+Information on a specific movie theater.
+
+### Get a single movie theater [GET]
++ Parameters
+    + `id` (integer, required) - Theater ID
++ Response 200 (application/json)
+    + Attributes
+        - `address` (string) - Address
+        - `id` (number) - Unique ID
+        - `movies` (array) - Movies currently playing
+        - `name` (string) - Name
+        - `phone_number` (string) - Phone number
+        - `showtimes` (array) - Non-movie specific showtimes
+        - `uri` (string) - Theater URI
++ Response 304 (application/json)
++ Response 404 (application/json)
+
+### Update a movie theater [PATCH]
+This action requires a bearer token with `create` scope.
+
++ Parameters
+    + `id` (integer, required) - Theater ID
++ Request
+    + Attributes
+        - `name` (string, required) - Name of the theater.
+        - `address` (string, required) - Theater address
+        - `phone_number` (string, required) - Theater phone number
++ Response 200 (application/json)
+    + Attributes
+        - `address` (string) - Address
+        - `id` (number) - Unique ID
+        - `movies` (array) - Movies currently playing
+        - `name` (string) - Name
+        - `phone_number` (string) - Phone number
+        - `showtimes` (array) - Non-movie specific showtimes
+        - `uri` (string) - Theater URI
++ Response 400 (application/json)
++ Response 404 (application/json)
+
+### Delete a movie movie. [DELETE]
+This action requires a bearer token with `delete` scope.
+
++ Parameters
+    + `id` (integer, required) - Theater ID
++ Response 204 (application/json)
++ Response 404 (application/json)
+
+## Movie Theaters [/theaters]
+Information on a specific movie theater.
+
+### Get movie theaters. [GET]
++ Request
+    + Attributes
+        - `location` (string, required) - Location you want theaters in.
++ Response 200 (application/json)
+    + Attributes
+        - `address` (string) - Address
+        - `id` (number) - Unique ID
+        - `movies` (array) - Movies currently playing
+        - `name` (string) - Name
+        - `phone_number` (string) - Phone number
+        - `showtimes` (array) - Non-movie specific showtimes
+        - `uri` (string) - Theater URI
++ Response 400 (application/json)
+
+### Create a movie theater. [POST]
+This action requires a bearer token with `create` scope.
+
++ Request
+    + Attributes
+        - `name` (string, required) - Name of the theater.
+        - `address` (string, required) - Theater address
+        - `phone_number` (string, required) - Theater phone number
++ Response 200 (application/json)
+    + Attributes
+        - `address` (string) - Address
+        - `id` (number) - Unique ID
+        - `movies` (array) - Movies currently playing
+        - `name` (string) - Name
+        - `phone_number` (string) - Phone number
+        - `showtimes` (array) - Non-movie specific showtimes
+        - `uri` (string) - Theater URI
++ Response 400 (application/json)
