@@ -76,9 +76,7 @@ This action requires a bearer token with `create` scope.
 
 + Request
     + Attributes
-        - `name` (string, required) - Name of the movie.
-        - `description` (string, required) - Description, or tagline, for the movie.
-        - `runtime` (string) - Movie runtime, in `HHhr MMmin` format.
+        - `cast` (string) - Array of names of the cast.
         - `content_rating` (enum[string]) - MPAA rating
             + Members
                 + `G`
@@ -89,9 +87,11 @@ This action requires a bearer token with `create` scope.
                 + `X`
                 + `NR`
                 + `UR`
-        - `genres` (string) - Array of movie genres.
+        - `description` (string, required) - Description, or tagline, for the movie.
         - `director` (string) - Name of the director.
-        - `cast` (string) - Array of names of the cast.
+        - `genres` (string) - Array of movie genres.
+        - `name` (string, required) - Name of the movie.
+        - `runtime` (string) - Movie runtime, in `HHhr MMmin` format.
 + Response 200 (application/json)
     + Attributes
         - `cast` (array) - Cast

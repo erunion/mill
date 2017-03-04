@@ -64,7 +64,17 @@ class DocumentationTest extends TestCase
             }
 
             foreach ($data as $k => $annotation) {
-                $this->assertSame($expected['annotations'][$name][$k], $annotation, '`' . $name . '` mismatch');
+                $annotation_key = $k;
+                if ($name === 'param') {
+                    // Param annotations are keyed off of the field name.
+                    $annotation_key = $annotation['field'];
+                }
+
+                $this->assertSame(
+                    $expected['annotations'][$name][$annotation_key],
+                    $annotation,
+                    '`' . $k . '` mismatch'
+                );
             }
         }
     }
@@ -202,40 +212,18 @@ class DocumentationTest extends TestCase
                             ]
                         ],
                         'param' => [
-                            [
+                            'cast' => [
                                 'capability' => false,
                                 'deprecated' => false,
-                                'description' => 'Name of the movie.',
-                                'field' => 'name',
-                                'required' => true,
-                                'type' => 'string',
-                                'values' => false,
-                                'version' => false,
-                                'visible' => true
-                            ],
-                            [
-                                'capability' => false,
-                                'deprecated' => false,
-                                'description' => 'Description, or tagline, for the movie.',
-                                'field' => 'description',
-                                'required' => true,
-                                'type' => 'string',
-                                'values' => false,
-                                'version' => false,
-                                'visible' => true
-                            ],
-                            [
-                                'capability' => false,
-                                'deprecated' => false,
-                                'description' => 'Movie runtime, in `HHhr MMmin` format.',
-                                'field' => 'runtime',
+                                'description' => 'Array of names of the cast.',
+                                'field' => 'cast',
                                 'required' => false,
-                                'type' => 'string',
+                                'type' => 'array',
                                 'values' => false,
                                 'version' => false,
                                 'visible' => true
                             ],
-                            [
+                            'content_rating' => [
                                 'capability' => false,
                                 'deprecated' => false,
                                 'description' => 'MPAA rating',
@@ -255,29 +243,18 @@ class DocumentationTest extends TestCase
                                 'version' => false,
                                 'visible' => true
                             ],
-                            [
+                            'description' => [
                                 'capability' => false,
                                 'deprecated' => false,
-                                'description' => 'Array of movie genres.',
-                                'field' => 'genres',
-                                'required' => false,
-                                'type' => 'array',
-                                'values' => false,
-                                'version' => false,
-                                'visible' => true
-                            ],
-                            [
-                                'capability' => false,
-                                'deprecated' => false,
-                                'description' => 'Trailer URL',
-                                'field' => 'trailer',
-                                'required' => false,
+                                'description' => 'Description, or tagline, for the movie.',
+                                'field' => 'description',
+                                'required' => true,
                                 'type' => 'string',
                                 'values' => false,
                                 'version' => false,
                                 'visible' => true
                             ],
-                            [
+                            'director' => [
                                 'capability' => false,
                                 'deprecated' => false,
                                 'description' => 'Name of the director.',
@@ -288,18 +265,29 @@ class DocumentationTest extends TestCase
                                 'version' => false,
                                 'visible' => true
                             ],
-                            [
+                            'name' => [
                                 'capability' => false,
                                 'deprecated' => false,
-                                'description' => 'Array of names of the cast.',
-                                'field' => 'cast',
+                                'description' => 'Name of the movie.',
+                                'field' => 'name',
+                                'required' => true,
+                                'type' => 'string',
+                                'values' => false,
+                                'version' => false,
+                                'visible' => true
+                            ],
+                            'genres' => [
+                                'capability' => false,
+                                'deprecated' => false,
+                                'description' => 'Array of movie genres.',
+                                'field' => 'genres',
                                 'required' => false,
                                 'type' => 'array',
                                 'values' => false,
                                 'version' => false,
                                 'visible' => true
                             ],
-                            [
+                            'imdb' => [
                                 'capability' => false,
                                 'deprecated' => false,
                                 'description' => 'IMDB URL',
@@ -310,6 +298,28 @@ class DocumentationTest extends TestCase
                                 'version' => '>=1.1.1',
                                 'visible' => true
                             ],
+                            'runtime' => [
+                                'capability' => false,
+                                'deprecated' => false,
+                                'description' => 'Movie runtime, in `HHhr MMmin` format.',
+                                'field' => 'runtime',
+                                'required' => false,
+                                'type' => 'string',
+                                'values' => false,
+                                'version' => false,
+                                'visible' => true
+                            ],
+                            'trailer' => [
+                                'capability' => false,
+                                'deprecated' => false,
+                                'description' => 'Trailer URL',
+                                'field' => 'trailer',
+                                'required' => false,
+                                'type' => 'string',
+                                'values' => false,
+                                'version' => false,
+                                'visible' => true
+                            ]
                         ],
                         'return' => [
                             [

@@ -64,15 +64,6 @@ class Movie extends Representation
             'genres' => $this->movie->getGenres(),
 
             /**
-             * @api-label Urls
-             * @api-field urls
-             * @api-type object
-             * @api-version >=1.1
-             * @api-see \Mill\Examples\Showtimes\Representations\Movie::getUrls urls
-             */
-            'urls' => $this->getUrls(),
-
-            /**
              * @api-label Director
              * @api-field director
              * @api-type string
@@ -99,14 +90,23 @@ class Movie extends Representation
              * @api-field showtimes
              * @api-type array
              */
-            'showtimes' => $this->getShowtimes()
+            'showtimes' => $this->getShowtimes(),
+
+            /**
+             * @api-label External URLs
+             * @api-field external_urls
+             * @api-type object
+             * @api-version >=1.1
+             * @api-see \Mill\Examples\Showtimes\Representations\Movie::getExternalUrls external_urls
+             */
+            'external_urls' => $this->getExternalUrls()
         ];
     }
 
     /**
      * @return array
      */
-    private function getUrls()
+    private function getExternalUrls()
     {
         return [
             /**

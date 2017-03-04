@@ -22,6 +22,10 @@ Information on a specific movie.
                 + `UR`
         - `description` (string) - Description
         - `director` (string) - Director
+        - `external_urls` (object) - External URLs
+            - `imdb` (string) - IMDB URL
+            - `tickets` (string) - Tickets URL
+            - `trailer` (string) - Trailer URL
         - `genres` (array) - Genres
         - `id` (number) - Unique ID
         - `name` (string) - Name
@@ -29,10 +33,6 @@ Information on a specific movie.
         - `showtimes` (array) - Non-theater specific showtimes
         - `theaters` (array) - Theaters the movie is currently showing in
         - `uri` (string) - Movie URI
-        - `urls` (object) - Urls
-            - `imdb` (string) - IMDB URL
-            - `tickets` (string) - Tickets URL
-            - `trailer` (string) - Trailer URL
 + Response 304 (application/json)
 + Response 404 (application/json)
 
@@ -43,9 +43,7 @@ This action requires a bearer token with `edit` scope.
     + `id` (integer, required) - Movie ID
 + Request
     + Attributes
-        - `name` (string, required) - Name of the movie.
-        - `description` (string, required) - Description, or tagline, for the movie.
-        - `runtime` (string) - Movie runtime, in `HHhr MMmin` format.
+        - `cast` (string) - Array of names of the cast.
         - `content_rating` (enum[string]) - MPAA rating
             + Members
                 + `G`
@@ -56,10 +54,12 @@ This action requires a bearer token with `edit` scope.
                 + `X`
                 + `NR`
                 + `UR`
-        - `genres` (string) - Array of movie genres.
-        - `trailer` (string) - Trailer URL
+        - `description` (string, required) - Description, or tagline, for the movie.
         - `director` (string) - Name of the director.
-        - `cast` (string) - Array of names of the cast.
+        - `genres` (string) - Array of movie genres.
+        - `name` (string, required) - Name of the movie.
+        - `runtime` (string) - Movie runtime, in `HHhr MMmin` format.
+        - `trailer` (string) - Trailer URL
 + Response 200 (application/json)
     + Attributes
         - `cast` (array) - Cast
@@ -75,6 +75,10 @@ This action requires a bearer token with `edit` scope.
                 + `UR`
         - `description` (string) - Description
         - `director` (string) - Director
+        - `external_urls` (object) - External URLs
+            - `imdb` (string) - IMDB URL
+            - `tickets` (string) - Tickets URL
+            - `trailer` (string) - Trailer URL
         - `genres` (array) - Genres
         - `id` (number) - Unique ID
         - `name` (string) - Name
@@ -82,10 +86,6 @@ This action requires a bearer token with `edit` scope.
         - `showtimes` (array) - Non-theater specific showtimes
         - `theaters` (array) - Theaters the movie is currently showing in
         - `uri` (string) - Movie URI
-        - `urls` (object) - Urls
-            - `imdb` (string) - IMDB URL
-            - `tickets` (string) - Tickets URL
-            - `trailer` (string) - Trailer URL
 + Response 400 (application/json)
     There are 2 ways that this status code can be encountered.
          * If there is a problem with the request.
@@ -122,6 +122,10 @@ Information on a specific movie.
                 + `UR`
         - `description` (string) - Description
         - `director` (string) - Director
+        - `external_urls` (object) - External URLs
+            - `imdb` (string) - IMDB URL
+            - `tickets` (string) - Tickets URL
+            - `trailer` (string) - Trailer URL
         - `genres` (array) - Genres
         - `id` (number) - Unique ID
         - `name` (string) - Name
@@ -129,10 +133,6 @@ Information on a specific movie.
         - `showtimes` (array) - Non-theater specific showtimes
         - `theaters` (array) - Theaters the movie is currently showing in
         - `uri` (string) - Movie URI
-        - `urls` (object) - Urls
-            - `imdb` (string) - IMDB URL
-            - `tickets` (string) - Tickets URL
-            - `trailer` (string) - Trailer URL
 + Response 400 (application/json)
 
 ### Create a movie. [POST]
@@ -140,9 +140,7 @@ This action requires a bearer token with `create` scope.
 
 + Request
     + Attributes
-        - `name` (string, required) - Name of the movie.
-        - `description` (string, required) - Description, or tagline, for the movie.
-        - `runtime` (string) - Movie runtime, in `HHhr MMmin` format.
+        - `cast` (string) - Array of names of the cast.
         - `content_rating` (enum[string]) - MPAA rating
             + Members
                 + `G`
@@ -153,10 +151,12 @@ This action requires a bearer token with `create` scope.
                 + `X`
                 + `NR`
                 + `UR`
-        - `genres` (string) - Array of movie genres.
+        - `description` (string, required) - Description, or tagline, for the movie.
         - `director` (string) - Name of the director.
-        - `cast` (string) - Array of names of the cast.
+        - `genres` (string) - Array of movie genres.
         - `imdb` (string) - IMDB URL
+        - `name` (string, required) - Name of the movie.
+        - `runtime` (string) - Movie runtime, in `HHhr MMmin` format.
         - `trailer` (string) - Trailer URL
 + Response 200 (application/json)
     + Attributes
@@ -173,6 +173,10 @@ This action requires a bearer token with `create` scope.
                 + `UR`
         - `description` (string) - Description
         - `director` (string) - Director
+        - `external_urls` (object) - External URLs
+            - `imdb` (string) - IMDB URL
+            - `tickets` (string) - Tickets URL
+            - `trailer` (string) - Trailer URL
         - `genres` (array) - Genres
         - `id` (number) - Unique ID
         - `name` (string) - Name
@@ -180,10 +184,6 @@ This action requires a bearer token with `create` scope.
         - `showtimes` (array) - Non-theater specific showtimes
         - `theaters` (array) - Theaters the movie is currently showing in
         - `uri` (string) - Movie URI
-        - `urls` (object) - Urls
-            - `imdb` (string) - IMDB URL
-            - `tickets` (string) - Tickets URL
-            - `trailer` (string) - Trailer URL
 + Response 400 (application/json)
     There are 2 ways that this status code can be encountered.
          * If there is a problem with the request.
