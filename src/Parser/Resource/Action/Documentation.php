@@ -159,8 +159,20 @@ class Documentation
                     );
                 }
 
-                $this->annotations[$key][] = $annotation;
+                // If we're dealing with parameter annotations, let's set us up the ability to later sort them in
+                // alphabetical order by keying their annotation array off the parameter field name.
+                if ($key === 'param') {
+                    /** @var Parser\Annotations\ParamAnnotation $annotation */
+                    $this->annotations[$key][$annotation->getField()] = $annotation;
+                } else {
+                    $this->annotations[$key][] = $annotation;
+                }
             }
+        }
+
+        // Keep the parameter annotation array in alphabetical order, so they're easier to consume in the documentation.
+        if (isset($this->annotations['param'])) {
+            ksort($this->annotations['param']);
         }
 
         // Run through the parsed annotations and verify that we aren't missing any required annotations.

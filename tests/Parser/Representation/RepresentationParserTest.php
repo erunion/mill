@@ -65,17 +65,17 @@ class RepresentationParserTest extends TestCase
             'content_rating',
             'description',
             'director',
+            'external_urls',
+            'external_urls.imdb',
+            'external_urls.tickets',
+            'external_urls.trailer',
             'genres',
             'id',
             'name',
             'runtime',
             'showtimes',
             'theaters',
-            'uri',
-            'urls',
-            'urls.imdb',
-            'urls.tickets',
-            'urls.trailer'
+            'uri'
         ], array_keys($annotations));
     }
 
@@ -171,6 +171,38 @@ class RepresentationParserTest extends TestCase
                             'type' => 'string',
                             'version' => false
                         ],
+                        'external_urls' => [
+                            'capability' => false,
+                            'field' => 'external_urls',
+                            'label' => 'External URLs',
+                            'options' => false,
+                            'type' => 'object',
+                            'version' => '>=1.1'
+                        ],
+                        'external_urls.imdb' => [
+                            'capability' => false,
+                            'field' => 'external_urls.imdb',
+                            'label' => 'IMDB URL',
+                            'options' => false,
+                            'type' => 'string',
+                            'version' => '>=1.1'
+                        ],
+                        'external_urls.tickets' => [
+                            'capability' => 'BUY_TICKETS',
+                            'field' => 'external_urls.tickets',
+                            'label' => 'Tickets URL',
+                            'options' => false,
+                            'type' => 'string',
+                            'version' => '>=1.1'
+                        ],
+                        'external_urls.trailer' => [
+                            'capability' => false,
+                            'field' => 'external_urls.trailer',
+                            'label' => 'Trailer URL',
+                            'options' => false,
+                            'type' => 'string',
+                            'version' => '>=1.1'
+                        ],
                         'genres' => [
                             'capability' => false,
                             'field' => 'genres',
@@ -229,38 +261,6 @@ class RepresentationParserTest extends TestCase
                             'options' => false,
                             'type' => 'uri',
                             'version' => false
-                        ],
-                        'urls' => [
-                            'capability' => false,
-                            'field' => 'urls',
-                            'label' => 'Urls',
-                            'options' => false,
-                            'type' => 'object',
-                            'version' => '>=1.1'
-                        ],
-                        'urls.imdb' => [
-                            'capability' => false,
-                            'field' => 'urls.imdb',
-                            'label' => 'IMDB URL',
-                            'options' => false,
-                            'type' => 'string',
-                            'version' => '>=1.1'
-                        ],
-                        'urls.tickets' => [
-                            'capability' => 'BUY_TICKETS',
-                            'field' => 'urls.tickets',
-                            'label' => 'Tickets URL',
-                            'options' => false,
-                            'type' => 'string',
-                            'version' => '>=1.1'
-                        ],
-                        'urls.trailer' => [
-                            'capability' => false,
-                            'field' => 'urls.trailer',
-                            'label' => 'Trailer URL',
-                            'options' => false,
-                            'type' => 'string',
-                            'version' => '>=1.1'
                         ]
                     ]
                 ]

@@ -99,9 +99,9 @@ class GeneratorTest extends TestCase
                     }
 
                     $this->assertSame(
-                        $expected_action['params.size'],
-                        count($action->getParameters()),
-                        $i . ' does not have the right amount of parameters.'
+                        $expected_action['params.keys'],
+                        array_keys($action->getParameters()),
+                        $i . ' does not have the right parameters.'
                     );
                 }
             }
@@ -282,16 +282,26 @@ class GeneratorTest extends TestCase
                                 'description.length' => 32,
                                 'actions.data' => [
                                     '/movies::GET' => array_merge($common_actions['/movies::GET'], [
-                                        'params.size' => 1
+                                        'params.keys' => [
+                                            'location'
+                                        ]
                                     ]),
                                     '/movies::POST' => array_merge($common_actions['/movies::POST'], [
-                                        'params.size' => 7
+                                        'params.keys' => [
+                                            'cast',
+                                            'content_rating',
+                                            'description',
+                                            'director',
+                                            'genres',
+                                            'name',
+                                            'runtime'
+                                        ]
                                     ]),
                                     '/movies/+id::GET' => array_merge($common_actions['/movies/+id::GET'], [
-                                        'params.size' => 0
+                                        'params.keys' => []
                                     ]),
                                     '/movies/+id::DELETE' => array_merge($common_actions['/movies/+id::DELETE'], [
-                                        'params.size' => 0
+                                        'params.keys' => []
                                     ])
                                 ]
                             ]
@@ -304,19 +314,29 @@ class GeneratorTest extends TestCase
                                 'description.length' => 40,
                                 'actions.data' => [
                                     '/theaters::GET' => array_merge($common_actions['/theaters::GET'], [
-                                        'params.size' => 1
+                                        'params.keys' => [
+                                            'location'
+                                        ]
                                     ]),
                                     '/theaters::POST' => array_merge($common_actions['/theaters::POST'], [
-                                        'params.size' => 3
+                                        'params.keys' => [
+                                            'address',
+                                            'name',
+                                            'phone_number'
+                                        ]
                                     ]),
                                     '/theaters/+id::GET' => array_merge($common_actions['/theaters/+id::GET'], [
-                                        'params.size' => 0
+                                        'params.keys' => []
                                     ]),
                                     '/theaters/+id::PATCH' => array_merge($common_actions['/theaters/+id::PATCH'], [
-                                        'params.size' => 3
+                                        'params.keys' => [
+                                            'address',
+                                            'name',
+                                            'phone_number'
+                                        ]
                                     ]),
                                     '/theaters/+id::DELETE' => array_merge($common_actions['/theaters/+id::DELETE'], [
-                                        'params.size' => 0
+                                        'params.keys' => []
                                     ])
                                 ]
                             ]
@@ -335,17 +355,17 @@ class GeneratorTest extends TestCase
                             'content_rating',
                             'description',
                             'director',
+                            'external_urls',
+                            'external_urls.imdb',
+                            'external_urls.tickets',
+                            'external_urls.trailer',
                             'genres',
                             'id',
                             'name',
                             'runtime',
                             'showtimes',
                             'theaters',
-                            'uri',
-                            'urls',
-                            'urls.imdb',
-                            'urls.tickets',
-                            'urls.trailer'
+                            'uri'
                         ]
                     ],
                     '\Mill\Examples\Showtimes\Representations\Theater' => [
@@ -370,19 +390,40 @@ class GeneratorTest extends TestCase
                                 'description.length' => 32,
                                 'actions.data' => [
                                     '/movies::GET' => array_merge($common_actions['/movies::GET'], [
-                                        'params.size' => 1
+                                        'params.keys' => [
+                                            'location'
+                                        ]
                                     ]),
                                     '/movies::POST' => array_merge($common_actions['/movies::POST'], [
-                                        'params.size' => 9
+                                        'params.keys' => [
+                                            'cast',
+                                            'content_rating',
+                                            'description',
+                                            'director',
+                                            'genres',
+                                            'imdb',
+                                            'name',
+                                            'runtime',
+                                            'trailer'
+                                        ]
                                     ]),
                                     '/movies/+id::GET' => array_merge($common_actions['/movies/+id::GET'], [
-                                        'params.size' => 0
+                                        'params.keys' => []
                                     ]),
                                     '/movies/+id::PATCH' => array_merge($common_actions['/movies/+id::PATCH'], [
-                                        'params.size' => 8
+                                        'params.keys' => [
+                                            'cast',
+                                            'content_rating',
+                                            'description',
+                                            'director',
+                                            'genres',
+                                            'name',
+                                            'runtime',
+                                            'trailer'
+                                        ]
                                     ]),
                                     '/movies/+id::DELETE' => array_merge($common_actions['/movies/+id::DELETE'], [
-                                        'params.size' => 0
+                                        'params.keys' => []
                                     ])
                                 ]
                             ]
@@ -395,19 +436,29 @@ class GeneratorTest extends TestCase
                                 'description.length' => 40,
                                 'actions.data' => [
                                     '/theaters::GET' => array_merge($common_actions['/theaters::GET'], [
-                                        'params.size' => 1
+                                        'params.keys' => [
+                                            'location'
+                                        ]
                                     ]),
                                     '/theaters::POST' => array_merge($common_actions['/theaters::POST'], [
-                                        'params.size' => 3
+                                        'params.keys' => [
+                                            'address',
+                                            'name',
+                                            'phone_number'
+                                        ]
                                     ]),
                                     '/theaters/+id::GET' => array_merge($common_actions['/theaters/+id::GET'], [
-                                        'params.size' => 0
+                                        'params.keys' => []
                                     ]),
                                     '/theaters/+id::PATCH' => array_merge($common_actions['/theaters/+id::PATCH'], [
-                                        'params.size' => 3
+                                        'params.keys' => [
+                                            'address',
+                                            'name',
+                                            'phone_number'
+                                        ]
                                     ]),
                                     '/theaters/+id::DELETE' => array_merge($common_actions['/theaters/+id::DELETE'], [
-                                        'params.size' => 0
+                                        'params.keys' => []
                                     ])
                                 ]
                             ]
@@ -426,17 +477,17 @@ class GeneratorTest extends TestCase
                             'content_rating',
                             'description',
                             'director',
+                            'external_urls',
+                            'external_urls.imdb',
+                            'external_urls.tickets',
+                            'external_urls.trailer',
                             'genres',
                             'id',
                             'name',
                             'runtime',
                             'showtimes',
                             'theaters',
-                            'uri',
-                            'urls',
-                            'urls.imdb',
-                            'urls.tickets',
-                            'urls.trailer'
+                            'uri'
                         ]
                     ],
                     '\Mill\Examples\Showtimes\Representations\Theater' => [
@@ -461,19 +512,41 @@ class GeneratorTest extends TestCase
                                 'description.length' => 32,
                                 'actions.data' => [
                                     '/movies::GET' => array_merge($common_actions['/movies::GET'], [
-                                        'params.size' => 1
+                                        'params.keys' => [
+                                            'location'
+                                        ]
                                     ]),
                                     '/movies::POST' => array_merge($common_actions['/movies::POST'], [
-                                        'params.size' => 9
+                                        'params.keys' => [
+                                            'cast',
+                                            'content_rating',
+                                            'description',
+                                            'director',
+                                            'genres',
+                                            'imdb',
+                                            'name',
+                                            'runtime',
+                                            'trailer'
+                                        ]
                                     ]),
                                     '/movies/+id::GET' => array_merge($common_actions['/movies/+id::GET'], [
-                                        'params.size' => 0
+                                        'params.keys' => []
                                     ]),
                                     '/movies/+id::PATCH' => array_merge($common_actions['/movies/+id::PATCH'], [
-                                        'params.size' => 9
+                                        'params.keys' => [
+                                            'cast',
+                                            'content_rating',
+                                            'description',
+                                            'director',
+                                            'genres',
+                                            'imdb',
+                                            'name',
+                                            'runtime',
+                                            'trailer'
+                                        ]
                                     ]),
                                     '/movies/+id::DELETE' => array_merge($common_actions['/movies/+id::DELETE'], [
-                                        'params.size' => 0
+                                        'params.keys' => []
                                     ])
                                 ]
                             ]
@@ -486,19 +559,29 @@ class GeneratorTest extends TestCase
                                 'description.length' => 40,
                                 'actions.data' => [
                                     '/theaters::GET' => array_merge($common_actions['/theaters::GET'], [
-                                        'params.size' => 1
+                                        'params.keys' => [
+                                            'location'
+                                        ]
                                     ]),
                                     '/theaters::POST' => array_merge($common_actions['/theaters::POST'], [
-                                        'params.size' => 3
+                                        'params.keys' => [
+                                            'address',
+                                            'name',
+                                            'phone_number'
+                                        ]
                                     ]),
                                     '/theaters/+id::GET' => array_merge($common_actions['/theaters/+id::GET'], [
-                                        'params.size' => 0
+                                        'params.keys' => []
                                     ]),
                                     '/theaters/+id::PATCH' => array_merge($common_actions['/theaters/+id::PATCH'], [
-                                        'params.size' => 3
+                                        'params.keys' => [
+                                            'address',
+                                            'name',
+                                            'phone_number'
+                                        ]
                                     ]),
                                     '/theaters/+id::DELETE' => array_merge($common_actions['/theaters/+id::DELETE'], [
-                                        'params.size' => 0
+                                        'params.keys' => []
                                     ])
                                 ]
                             ]
