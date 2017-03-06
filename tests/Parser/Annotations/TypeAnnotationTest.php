@@ -17,7 +17,7 @@ use Mill\Tests\TestCase;
 class TypeAnnotationTest extends TestCase
 {
     /**
-     * @dataProvider annotationProvider
+     * @dataProvider providerAnnotation
      */
     public function testAnnotation($type, $object, $subtype, $expected)
     {
@@ -47,7 +47,7 @@ class TypeAnnotationTest extends TestCase
     /**
      * @return array
      */
-    public function annotationProvider()
+    public function providerAnnotation()
     {
         return [
             // `@api-type array`

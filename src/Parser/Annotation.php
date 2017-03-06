@@ -364,4 +364,17 @@ abstract class Annotation
     {
         return $this->version;
     }
+
+    /**
+     * Set a version that this annotation is available on. This is specifically used in tandem with `@api-see`
+     * annotations.
+     *
+     * @param Version $version
+     * @return Annotation
+     */
+    public function setVersion(Version $version)
+    {
+        $this->version = $version;
+        return $this;
+    }
 }

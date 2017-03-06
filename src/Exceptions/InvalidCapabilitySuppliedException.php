@@ -32,4 +32,14 @@ class InvalidCapabilitySuppliedException extends \Exception
 
         return $exception;
     }
+
+    /**
+     * Get the capability that this exception occurred with.
+     *
+     * @return string
+     */
+    public function getCapability()
+    {
+        return $this->capability;
+    }
 }

@@ -6,11 +6,11 @@ use Mill\Tests\TestCase;
 abstract class TypeTest extends TestCase
 {
     /**
-     * @dataProvider annotationTypeProvider
+     * @dataProvider providerAnnotationWithType
      */
     public function testAnnotationWithType($docblock, $expected)
     {
-        $annotation = $this->getFieldAnnotationFromDocblock($docblock);
+        $annotation = $this->getFieldAnnotationFromDocblock($docblock, __CLASS__, __METHOD__);
 
         $this->assertFalse($annotation->requiresVisibilityDecorator());
         $this->assertTrue($annotation->supportsVersioning());
@@ -21,5 +21,5 @@ abstract class TypeTest extends TestCase
     /**
      * @return array
      */
-    abstract public function annotationTypeProvider();
+    abstract public function providerAnnotationWithType();
 }

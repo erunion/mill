@@ -117,6 +117,19 @@ trait HasHttpCodeResponseTrait
     }
 
     /**
+     * Is this HTTP code a non-200?
+     *
+     * @return bool
+     */
+    public function isNon200HttpCode()
+    {
+        $message = explode(' ', $this->http_code);
+        $code = array_shift($message);
+
+        return $code >= 300;
+    }
+
+    /**
      * Is a given HTTP code valid?
      *
      * @param string $http_code

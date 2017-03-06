@@ -22,6 +22,10 @@ Information on a specific movie.
                 + `UR`
         - `description` (string) - Description
         - `director` (string) - Director
+        - `external_urls` (object) - External URLs
+            - `imdb` (string) - IMDB URL
+            - `tickets` (string) - Tickets URL
+            - `trailer` (string) - Trailer URL
         - `genres` (array) - Genres
         - `id` (number) - Unique ID
         - `name` (string) - Name
@@ -30,6 +34,63 @@ Information on a specific movie.
         - `theaters` (array) - Theaters the movie is currently showing in
         - `uri` (string) - Movie URI
 + Response 304 (application/json)
++ Response 404 (application/json)
+
+### Update a movie. [PATCH]
+This action requires a bearer token with `edit` scope.
+
++ Parameters
+    + `id` (integer, required) - Movie ID
++ Request
+    + Attributes
+        - `cast` (string) - Array of names of the cast.
+        - `content_rating` (enum[string]) - MPAA rating
+            + Members
+                + `G`
+                + `PG`
+                + `PG-13`
+                + `R`
+                + `NC-17`
+                + `X`
+                + `NR`
+                + `UR`
+        - `description` (string, required) - Description, or tagline, for the movie.
+        - `director` (string) - Name of the director.
+        - `genres` (string) - Array of movie genres.
+        - `imdb` (string) - IMDB URL
+        - `name` (string, required) - Name of the movie.
+        - `runtime` (string) - Movie runtime, in `HHhr MMmin` format.
+        - `trailer` (string) - Trailer URL
++ Response 200 (application/json)
+    + Attributes
+        - `cast` (array) - Cast
+        - `content_rating` (enum[string]) - MPAA rating
+            + Members
+                + `G`
+                + `PG`
+                + `PG-13`
+                + `R`
+                + `NC-17`
+                + `X`
+                + `NR`
+                + `UR`
+        - `description` (string) - Description
+        - `director` (string) - Director
+        - `external_urls` (object) - External URLs
+            - `imdb` (string) - IMDB URL
+            - `tickets` (string) - Tickets URL
+            - `trailer` (string) - Trailer URL
+        - `genres` (array) - Genres
+        - `id` (number) - Unique ID
+        - `name` (string) - Name
+        - `runtime` (string) - Runtime
+        - `showtimes` (array) - Non-theater specific showtimes
+        - `theaters` (array) - Theaters the movie is currently showing in
+        - `uri` (string) - Movie URI
++ Response 400 (application/json)
+    There are 2 ways that this status code can be encountered.
+         * If there is a problem with the request.
+         * If the IMDB URL could not be validated.
 + Response 404 (application/json)
 
 ### Delete a movie. [DELETE]
@@ -62,6 +123,10 @@ Information on a specific movie.
                 + `UR`
         - `description` (string) - Description
         - `director` (string) - Director
+        - `external_urls` (object) - External URLs
+            - `imdb` (string) - IMDB URL
+            - `tickets` (string) - Tickets URL
+            - `trailer` (string) - Trailer URL
         - `genres` (array) - Genres
         - `id` (number) - Unique ID
         - `name` (string) - Name
@@ -90,8 +155,10 @@ This action requires a bearer token with `create` scope.
         - `description` (string, required) - Description, or tagline, for the movie.
         - `director` (string) - Name of the director.
         - `genres` (string) - Array of movie genres.
+        - `imdb` (string) - IMDB URL
         - `name` (string, required) - Name of the movie.
         - `runtime` (string) - Movie runtime, in `HHhr MMmin` format.
+        - `trailer` (string) - Trailer URL
 + Response 200 (application/json)
     + Attributes
         - `cast` (array) - Cast
@@ -107,6 +174,10 @@ This action requires a bearer token with `create` scope.
                 + `UR`
         - `description` (string) - Description
         - `director` (string) - Director
+        - `external_urls` (object) - External URLs
+            - `imdb` (string) - IMDB URL
+            - `tickets` (string) - Tickets URL
+            - `trailer` (string) - Trailer URL
         - `genres` (array) - Genres
         - `id` (number) - Unique ID
         - `name` (string) - Name

@@ -7,7 +7,7 @@ use Mill\Tests\TestCase;
 class DocumentationTest extends TestCase
 {
     /**
-     * @dataProvider representationProvider
+     * @dataProvider providerParseDocumentationReturnsRepresentation
      */
     public function testParseDocumentationReturnsRepresentation($class, $method, $expected)
     {
@@ -35,7 +35,7 @@ class DocumentationTest extends TestCase
     }
 
     /**
-     * @dataProvider badRepresentationsProvider
+     * @dataProvider providerParseDocumentationFailsOnBadRepresentations
      */
     public function testParseDocumentationFailsOnBadRepresentations($class, $method, $exception)
     {
@@ -47,7 +47,7 @@ class DocumentationTest extends TestCase
     /**
      * @return array
      */
-    public function representationProvider()
+    public function providerParseDocumentationReturnsRepresentation()
     {
         return [
             'Movie' => [
@@ -55,7 +55,7 @@ class DocumentationTest extends TestCase
                 'method' => 'create',
                 'expected' => [
                     'label' => 'Movie',
-                    'description.length' => 0,
+                    'description.length' => 41,
                     'content' => [
                         'cast' => [
                             'capability' => false,
@@ -98,6 +98,38 @@ class DocumentationTest extends TestCase
                             'options' => false,
                             'type' => 'string',
                             'version' => false
+                        ],
+                        'external_urls' => [
+                            'capability' => false,
+                            'field' => 'external_urls',
+                            'label' => 'External URLs',
+                            'options' => false,
+                            'type' => 'object',
+                            'version' => '>=1.1'
+                        ],
+                        'external_urls.imdb' => [
+                            'capability' => false,
+                            'field' => 'external_urls.imdb',
+                            'label' => 'IMDB URL',
+                            'options' => false,
+                            'type' => 'string',
+                            'version' => '>=1.1'
+                        ],
+                        'external_urls.tickets' => [
+                            'capability' => 'BUY_TICKETS',
+                            'field' => 'external_urls.tickets',
+                            'label' => 'Tickets URL',
+                            'options' => false,
+                            'type' => 'string',
+                            'version' => '>=1.1'
+                        ],
+                        'external_urls.trailer' => [
+                            'capability' => false,
+                            'field' => 'external_urls.trailer',
+                            'label' => 'Trailer URL',
+                            'options' => false,
+                            'type' => 'string',
+                            'version' => '>=1.1'
                         ],
                         'genres' => [
                             'capability' => false,
@@ -150,36 +182,12 @@ class DocumentationTest extends TestCase
                             'type' => 'array',
                             'version' => false
                         ],
-                        'urls' => [
-                            'capability' => 'NONE',
-                            'field' => 'urls',
-                            'label' => 'External URLs',
-                            'options' => false,
-                            'type' => 'object',
-                            'version' => false
-                        ],
-                        'urls.imdb' => [
+                        'uri' => [
                             'capability' => false,
-                            'field' => 'urls.imdb',
-                            'label' => 'IMDB URL',
+                            'field' => 'uri',
+                            'label' => 'Movie URI',
                             'options' => false,
-                            'type' => 'string',
-                            'version' => false
-                        ],
-                        'urls.tickets' => [
-                            'capability' => false,
-                            'field' => 'urls.tickets',
-                            'label' => 'Tickets URL',
-                            'options' => false,
-                            'type' => 'string',
-                            'version' => false
-                        ],
-                        'urls.trailer' => [
-                            'capability' => false,
-                            'field' => 'urls.trailer',
-                            'label' => 'Trailer URL',
-                            'options' => false,
-                            'type' => 'string',
+                            'type' => 'uri',
                             'version' => false
                         ]
                     ],
@@ -192,6 +200,25 @@ class DocumentationTest extends TestCase
                                 'options' => false,
                                 'subtype' => false,
                                 'type' => 'array',
+                                'version' => false
+                            ]
+                        ],
+                        'content_rating' => [
+                            '__FIELD_DATA__' => [
+                                'capability' => false,
+                                'field' => 'content_rating',
+                                'label' => 'MPAA rating',
+                                'options' => [
+                                    'G',
+                                    'PG',
+                                    'PG-13',
+                                    'R',
+                                    'NC-17',
+                                    'X',
+                                    'NR',
+                                    'UR'
+                                ],
+                                'type' => 'enum',
                                 'version' => false
                             ]
                         ],
@@ -213,6 +240,46 @@ class DocumentationTest extends TestCase
                                 'options' => false,
                                 'type' => 'string',
                                 'version' => false
+                            ]
+                        ],
+                        'external_urls' => [
+                            '__FIELD_DATA__' => [
+                                'capability' => false,
+                                'field' => 'external_urls',
+                                'label' => 'External URLs',
+                                'options' => false,
+                                'type' => 'object',
+                                'version' => '>=1.1'
+                            ],
+                            'imdb' => [
+                                '__FIELD_DATA__' => [
+                                    'capability' => false,
+                                    'field' => 'external_urls.imdb',
+                                    'label' => 'IMDB URL',
+                                    'options' => false,
+                                    'type' => 'string',
+                                    'version' => '>=1.1'
+                                ]
+                            ],
+                            'tickets' => [
+                                '__FIELD_DATA__' => [
+                                    'capability' => 'BUY_TICKETS',
+                                    'field' => 'external_urls.tickets',
+                                    'label' => 'Tickets URL',
+                                    'options' => false,
+                                    'type' => 'string',
+                                    'version' => '>=1.1'
+                                ]
+                            ],
+                            'trailer' => [
+                                '__FIELD_DATA__' => [
+                                    'capability' => false,
+                                    'field' => 'external_urls.trailer',
+                                    'label' => 'Trailer URL',
+                                    'options' => false,
+                                    'type' => 'string',
+                                    'version' => '>=1.1'
+                                ]
                             ]
                         ],
                         'genres' => [
@@ -243,25 +310,6 @@ class DocumentationTest extends TestCase
                                 'label' => 'Name',
                                 'options' => false,
                                 'type' => 'string',
-                                'version' => false
-                            ]
-                        ],
-                        'content_rating' => [
-                            '__FIELD_DATA__' => [
-                                'capability' => false,
-                                'field' => 'content_rating',
-                                'label' => 'MPAA rating',
-                                'options' => [
-                                    'G',
-                                    'PG',
-                                    'PG-13',
-                                    'R',
-                                    'NC-17',
-                                    'X',
-                                    'NR',
-                                    'UR'
-                                ],
-                                'type' => 'enum',
                                 'version' => false
                             ]
                         ],
@@ -297,44 +345,14 @@ class DocumentationTest extends TestCase
                                 'version' => false
                             ]
                         ],
-                        'urls' => [
+                        'uri' => [
                             '__FIELD_DATA__' => [
-                                'capability' => 'NONE',
-                                'field' => 'urls',
-                                'label' => 'External URLs',
+                                'capability' => false,
+                                'field' => 'uri',
+                                'label' => 'Movie URI',
                                 'options' => false,
-                                'type' => 'object',
+                                'type' => 'uri',
                                 'version' => false
-                            ],
-                            'imdb' => [
-                                '__FIELD_DATA__' => [
-                                    'capability' => false,
-                                    'field' => 'urls.imdb',
-                                    'label' => 'IMDB URL',
-                                    'options' => false,
-                                    'type' => 'string',
-                                    'version' => false
-                                ]
-                            ],
-                            'tickets' => [
-                                '__FIELD_DATA__' => [
-                                    'capability' => false,
-                                    'field' => 'urls.tickets',
-                                    'label' => 'Tickets URL',
-                                    'options' => false,
-                                    'type' => 'string',
-                                    'version' => false
-                                ]
-                            ],
-                            'trailer' => [
-                                '__FIELD_DATA__' => [
-                                    'capability' => false,
-                                    'field' => 'urls.trailer',
-                                    'label' => 'Trailer URL',
-                                    'options' => false,
-                                    'type' => 'string',
-                                    'version' => false
-                                ]
                             ]
                         ]
                     ]
@@ -346,7 +364,7 @@ class DocumentationTest extends TestCase
     /**
      * @return array
      */
-    public function badRepresentationsProvider()
+    public function providerParseDocumentationFailsOnBadRepresentations()
     {
         return [
             'no-annotations' => [
@@ -354,9 +372,13 @@ class DocumentationTest extends TestCase
                 'method' => 'create',
                 'expected.exception' => '\Mill\Exceptions\Resource\NoAnnotationsException'
             ],
+            'no-annotations-on-the-class' => [
+                'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithNoClassAnnotations',
+                'method' => 'create',
+                'expected.exception' => '\Mill\Exceptions\Resource\NoAnnotationsException'
+            ],
             'missing-a-required-label-annotation' => [
-                'class' =>
-                    '\Mill\Tests\Fixtures\Representations\RepresentationWithRequiredLabelAnnotationMissing',
+                'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithRequiredLabelAnnotationMissing',
                 'method' => 'create',
                 'expected.exception' => '\Mill\Exceptions\RequiredAnnotationException'
             ],

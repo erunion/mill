@@ -247,9 +247,6 @@ class Config
 
             $this->addUriSegmentTranslation($translate_from, $translate_to);
         }
-
-        // Keep things tidy.
-        $this->uri_segment_translations = array_unique($this->uri_segment_translations);
     }
 
     /**
@@ -447,7 +444,7 @@ class Config
 
             /** @var SimpleXMLElement $exclude */
             foreach ($exclude_config->exclude as $exclude) {
-                $this->excluded_representations[] = (string) $exclude['name'];
+                $this->addExcludedRepresentation((string) $exclude['name']);
             }
 
             // Keep things tidy.
@@ -506,6 +503,33 @@ class Config
         if (empty($this->representations)) {
             throw new InvalidArgumentException('Mill requires a set of representations to parse for documentation.');
         }
+    }
+
+    /**
+     * Add a representation into the excluded list of representations.
+     *
+     * @param string $class
+     * @return void
+     */
+    public function addExcludedRepresentation($class)
+    {
+        $this->excluded_representations[] = $class;
+    }
+
+    /**
+     * Remove a representation that has been set up to be excluded from compilation, from being excluded.
+     *
+     * @param string $class
+     * @return void
+     */
+    public function removeExcludedRepresentation($class)
+    {
+        $excludes = array_flip($this->excluded_representations);
+        if (isset($excludes[$class])) {
+            unset($excludes[$class]);
+        }
+
+        $this->excluded_representations = array_flip($excludes);
     }
 
     /**

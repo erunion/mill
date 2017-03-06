@@ -30,10 +30,6 @@ class Blueprint extends Generator
             $this->version = $version;
 
             foreach ($groups as $group_name => $data) {
-                if (in_array($group_name, ['/', 'OAuth'])) {
-                    continue;
-                }
-
                 $contents = 'FORMAT: 1A';
                 $contents .= $this->line(2);
 
@@ -96,6 +92,7 @@ class Blueprint extends Generator
 
                     if (!is_null($resource['description'])) {
                         $contents .= $resource['description'];
+                        $contents .= $this->line();
                     }
 
                     foreach ($resource['actions'] as $action_identifier => $markdown) {
@@ -206,12 +203,8 @@ class Blueprint extends Generator
         $blueprint .= '+ Attributes';
         $blueprint .= $this->line();
 
-        $has_visible_params = false;
-
         /** @var ParamAnnotation $param */
         foreach ($params as $param) {
-            $has_visible_params = true;
-
             $values = $param->getValues();
 
             $blueprint .= $this->tab(2);
@@ -236,10 +229,6 @@ class Blueprint extends Generator
                     $blueprint .= $this->line();
                 }
             }
-        }
-
-        if (!$has_visible_params) {
-            return '';
         }
 
         return $blueprint;
@@ -276,18 +265,6 @@ class Blueprint extends Generator
                 /** @var ReturnAnnotation|ThrowsAnnotation $response */
                 foreach ($responses as $response) {
                     $description = $response->getDescription();
-
-                    // Only really need descriptions for non-200 responses.
-                    if ($http_code >= 300 && empty($description)) {
-                        throw new \Exception(
-                            sprintf(
-                                'The non-200 response, %s, in %s %s is missing a description.',
-                                $http_code,
-                                $action->getMethod(),
-                                $action->getUri()->getPath()
-                            )
-                        );
-                    }
 
                     $description = (!empty($description)) ? $description : 'Standard request.';
 
@@ -389,7 +366,7 @@ class Blueprint extends Generator
             if (count($field) > 1) {
                 unset($field['__FIELD_DATA__']);
 
-                // If this is an array, and has a subtype of object, we should intent a bit so we can properly render
+                // If this is an array, and has a subtype of object, we should indent a bit so we can properly render
                 // out the array objects.
                 if (!empty($data) && isset($data['subtype']) && $data['subtype'] === 'object') {
                     $blueprint .= $this->tab($indent + 1);

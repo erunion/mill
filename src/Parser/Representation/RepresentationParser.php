@@ -1,12 +1,13 @@
 <?php
 namespace Mill\Parser\Representation;
 
-use ReflectionClass;
+use Mill\Container;
 use Mill\Exceptions\MethodNotImplementedException;
 use Mill\Exceptions\MethodNotSuppliedException;
 use Mill\Exceptions\Representation\DuplicateFieldException;
 use Mill\Parser;
 use Mill\Parser\Annotations\FieldAnnotation;
+use Mill\Parser\Version;
 
 /**
  * Class for parsing the docblock on a representation.
@@ -48,28 +49,13 @@ class RepresentationParser extends Parser
     public function getAnnotations($method_name = null)
     {
         if (empty($method_name)) {
-            throw new MethodNotSuppliedException();
+            throw MethodNotSuppliedException::create($this->class);
         }
 
         $this->method = $method_name;
 
-        $reflection = new ReflectionClass($this->class);
-        if (!$reflection->hasMethod($this->method)) {
-            throw MethodNotImplementedException::create($this->controller, $this->method);
-        }
-
-        /** @var \ReflectionMethod $method */
-        $method = $reflection->getMethod($this->method);
-        $filename = $method->getFileName();
-
-        // The start line is actually `- 1`, otherwise you wont get the function() block.
-        $start_line = $method->getStartLine() - 1;
-        $end_line = $method->getEndLine();
-        $length = $end_line - $start_line;
-
-        /** @var array $source */
-        $source = file($filename);
-        $code = implode('', array_slice($source, $start_line, $length));
+        $reader = Container::getRepresentationAnnotationReader();
+        $code = $reader($this->class, $this->method);
 
         $annotations = $this->parse($code);
 
@@ -91,30 +77,52 @@ class RepresentationParser extends Parser
         $annotations = [];
 
         // Does this have any `@api-see` pointers?
+        $has_version = false;
+        $has_see = false;
         foreach ($matches as $k => $match) {
             list($_, $annotation, $decorator, $_last_decorator, $data) = $match;
-            if ($annotation !== 'see') {
-                continue;
-            }
+            switch ($annotation) {
+                case 'see':
+                    $has_see = explode(' ', trim($data));
+                    unset($matches[$k]);
+                    break;
 
-            $parts = explode(' ', trim($data));
-            list($see_class, $see_method) = explode('::', array_shift($parts));
-            $prefix = array_shift($parts);
+                // Do not remove the version from the array of matches, because we'll re-apply the version to the
+                // field annotation that we, maybe, picked up here.
+                case 'version':
+                    $data = trim($data);
+                    $has_version = new Version($data, $this->class, $this->method);
+                    break;
+
+                default:
+                    continue;
+            }
+        }
+
+        // If we matched an `@api-see` annotation, then let's parse it out into viable annotations.
+        if ($has_see) {
+            list($see_class, $see_method) = explode('::', array_shift($has_see));
+            $prefix = array_shift($has_see);
 
             $parser = new self($see_class);
             $see_annotations = $parser->getAnnotations($see_method);
 
-            // If this `@api-see` has a prefix to attach to found annotations, do so.
-            if (!empty($prefix)) {
-                /** @var FieldAnnotation $annotation */
-                foreach ($see_annotations as $name => $annotation) {
+            /** @var FieldAnnotation $annotation */
+            foreach ($see_annotations as $name => $annotation) {
+                if ($has_version) {
+                    // If this `@api-see` is being used with a `@api-version`, then the version here should always
+                    // take precedence over any versioning set up within the see.
+                    $annotation->setVersion($has_version);
+                }
+
+                // If this `@api-see` has a prefix to attach to found annotations, do so.
+                if (!empty($prefix)) {
                     $see_annotations[$prefix . '.' . $name] = $annotation->setFieldNamePrefix($prefix);
                     unset($see_annotations[$name]);
                 }
             }
 
             $annotations += $see_annotations;
-            unset($matches[$k]);
         }
 
         // If $matches is empty, then we only parsed `@api-see` annotations, so let's drop out.

@@ -5,18 +5,26 @@
 >
     <versions>
         <version name="1.0" />
-        <version name="1.1" default="true" />
+        <version name="1.1" />
+        <version name="1.1.1" default="true" />
     </versions>
 
     <controllers>
         <filter>
             <directory name="resources/examples/Showtimes/Controllers/" suffix=".php" />
+
+            <excludes>
+                <!-- This is here just for code coverage purposes, and to verify that we're able to exclude controllers
+                    when loading a config XML file. -->
+                <exclude name="\IAmNotARealClass" />
+            </excludes>
         </filter>
     </controllers>
 
     <representations>
         <filter>
             <directory name="resources/examples/Showtimes/Representations/" method="create" suffix=".php"  />
+            <class name="\Mill\Examples\Showtimes\Representations\Movie" method="create" />
 
             <excludes>
                 <exclude name="\Mill\Examples\Showtimes\Representations\Error" />
@@ -49,4 +57,11 @@
         <token name="per_page">{int} per_page (optional) Number of items to show on each page. Max 100.</token>
         <token name="filter">{string} filter (optional) Filter to apply to the results.</token>
     </parameterTokens>
+
+    <uriSegments>
+        <translations>
+            <translation from="movie_id" to="id" />
+            <translation from="theater_id" to="id" />
+        </translations>
+    </uriSegments>
 </mill>

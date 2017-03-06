@@ -6,7 +6,7 @@ use Mill\Parser\Annotations\LabelAnnotation;
 class LabelAnnotationTest extends AnnotationTest
 {
     /**
-     * @dataProvider annotationProvider
+     * @dataProvider providerAnnotation
      */
     public function testAnnotation($label, $expected)
     {
@@ -24,7 +24,7 @@ class LabelAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function annotationProvider()
+    public function providerAnnotation()
     {
         return [
             '_complete' => [
@@ -39,15 +39,18 @@ class LabelAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function badAnnotationProvider()
+    public function providerAnnotationFailsOnInvalidAnnotations()
     {
         return [
             'missing-label' => [
                 'annotation' => '\Mill\Parser\Annotations\LabelAnnotation',
                 'docblock' => '',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
-                'expected.exception.regex' => [
-                    '/`label`/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => 'label',
+                    'getAnnotation' => 'label',
+                    'getDocblock' => '',
+                    'getValues' => []
                 ]
             ]
         ];

@@ -6,7 +6,7 @@ use Mill\Parser\Annotations\ScopeAnnotation;
 class ScopeAnnotationTest extends AnnotationTest
 {
     /**
-     * @dataProvider annotationProvider
+     * @dataProvider providerAnnotation
      */
     public function testAnnotation($param, $expected)
     {
@@ -18,6 +18,7 @@ class ScopeAnnotationTest extends AnnotationTest
         $this->assertSame($expected, $annotation->toArray());
 
         $this->assertSame($expected['scope'], $annotation->getScope());
+        $this->assertSame($expected['description'], $annotation->getDescription());
         $this->assertFalse($annotation->getCapability());
         $this->assertFalse($annotation->getVersion());
     }
@@ -25,7 +26,7 @@ class ScopeAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function annotationProvider()
+    public function providerAnnotation()
     {
         return [
             'bare' => [
@@ -48,22 +49,28 @@ class ScopeAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function badAnnotationProvider()
+    public function providerAnnotationFailsOnInvalidAnnotations()
     {
         return [
             'missing-scope' => [
                 'annotation' => '\Mill\Parser\Annotations\ScopeAnnotation',
                 'docblock' => '',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
-                'expected.exception.regex' => [
-                    '/`scope`/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => 'scope',
+                    'getAnnotation' => 'scope',
+                    'getDocblock' => '',
+                    'getValues' => []
                 ]
             ],
             'scope-was-not-configured' => [
                 'annotation' => '\Mill\Parser\Annotations\ScopeAnnotation',
                 'docblock' => 'unknownScope',
                 'expected.exception' => '\Mill\Exceptions\InvalidScopeSuppliedException',
-                'expected.exception.regex' => []
+                'expected.exception.asserts' => [
+                    'getScope' => 'unknownScope',
+                    'getAnnotation' => null
+                ]
             ]
         ];
     }

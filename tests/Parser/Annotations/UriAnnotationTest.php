@@ -6,7 +6,7 @@ use Mill\Parser\Annotations\UriAnnotation;
 class UriAnnotationTest extends AnnotationTest
 {
     /**
-     * @dataProvider annotationProvider
+     * @dataProvider providerAnnotation
      */
     public function testAnnotation($param, $visible, $deprecated, $expected)
     {
@@ -37,7 +37,7 @@ class UriAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function annotationProvider()
+    public function providerAnnotation()
     {
         return [
             'private' => [
@@ -116,23 +116,29 @@ class UriAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function badAnnotationProvider()
+    public function providerAnnotationFailsOnInvalidAnnotations()
     {
         return [
             'missing-group' => [
                 'annotation' => '\Mill\Parser\Annotations\UriAnnotation',
                 'docblock' => '',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
-                'expected.exception.regex' => [
-                    '/`group`/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => 'group',
+                    'getAnnotation' => 'uri',
+                    'getDocblock' => '',
+                    'getValues' => []
                 ]
             ],
             'missing-path' => [
                 'annotation' => '\Mill\Parser\Annotations\UriAnnotation',
                 'docblock' => '{Movies}',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
-                'expected.exception.regex' => [
-                    '/`path`/'
+                'expected.exception.asserts' => [
+                    'getRequiredField' => 'path',
+                    'getAnnotation' => 'uri',
+                    'getDocblock' => '{Movies}',
+                    'getValues' => []
                 ]
             ]
         ];

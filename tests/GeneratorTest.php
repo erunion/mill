@@ -12,15 +12,35 @@ class GeneratorTest extends TestCase
         $generator = new Generator($this->getConfig());
         $generator->generate();
 
-        $this->assertCount(2, $generator->getResources());
+        $this->assertSame([
+            '1.0',
+            '1.1',
+            '1.1.1'
+        ], array_keys($generator->getResources()));
+    }
+
+    public function testGeneratorButExcludeARepresentation()
+    {
+        $config = $this->getConfig();
+        $config->addExcludedRepresentation('\Mill\Examples\Showtimes\Representations\Movie');
+
+        $version_obj = new Version('1.0', __CLASS__, __METHOD__);
+        $generator = new Generator($config, $version_obj);
+        $generator->generate();
+
+        $this->assertCount(1, $generator->getRepresentations($version_obj->getConstraint()));
+
+        // Clean up after ourselves.
+        $config->removeExcludedRepresentation('\Mill\Examples\Showtimes\Representations\Movie');
     }
 
     /**
-     * @dataProvider generatorVersionProvider
+     * @dataProvider providerGeneratorWithVersion
      */
     public function testGeneratorWithVersion($version, $expected_representations, $expected_resources)
     {
-        $generator = new Generator($this->getConfig(), new Version($version, __CLASS__, __METHOD__));
+        $version_obj = new Version($version, __CLASS__, __METHOD__);
+        $generator = new Generator($this->getConfig(), $version_obj);
         $generator->generate();
 
         /**
@@ -30,6 +50,7 @@ class GeneratorTest extends TestCase
         $this->assertArrayHasKey($version, $resources);
 
         $resources = $resources[$version];
+        $this->assertSame($resources, $generator->getResources($version));
         foreach ($expected_resources as $group => $data) {
             $this->assertArrayHasKey($group, $resources);
 
@@ -78,9 +99,9 @@ class GeneratorTest extends TestCase
                     }
 
                     $this->assertSame(
-                        $expected_action['params.size'],
-                        count($action->getParameters()),
-                        $i . ' does not have the right amount of parameters.'
+                        $expected_action['params.keys'],
+                        array_keys($action->getParameters()),
+                        $i . ' does not have the right parameters.'
                     );
                 }
             }
@@ -94,15 +115,10 @@ class GeneratorTest extends TestCase
 
         $representations = $representations[$version];
         $this->assertCount(count($expected_representations), $representations);
+        $this->assertSame($representations, $generator->getRepresentations($version_obj));
 
         foreach ($expected_representations as $name => $data) {
             $this->assertArrayHasKey($name, $representations);
-
-            // If this representation has no content, then it was set up as a `noMethod` representation. It should
-            // basically be ignored.
-            if ($data['content.size'] === 0) {
-                continue;
-            }
 
             /** @var \Mill\Parser\Representation\Documentation $representation */
             $representation = $representations[$name];
@@ -110,28 +126,152 @@ class GeneratorTest extends TestCase
 
             $this->assertSame($data['label'], $actual['label']);
             $this->assertSame($data['description.length'], strlen($actual['description']));
-            $this->assertCount($data['content.size'], $actual['content']);
+            $this->assertSame($data['content.keys'], array_keys($actual['content']));
+            $this->assertSame($data['content.keys'], array_keys($representation->getContent()));
         }
     }
 
     /**
      * @return array
      */
-    public function generatorVersionProvider()
+    public function providerGeneratorWithVersion()
     {
+        // Save us the effort of copy and pasting the same base endpoints over and over.
+        $common_actions = [
+            '/movies::GET' => [
+                'uri' => '/movies',
+                'method' => 'GET',
+                'uriSegment' => false
+            ],
+            '/movies::POST' => [
+                'uri' => '/movies',
+                'method' => 'POST',
+                'uriSegment' => false
+            ],
+            '/movies/+id::GET' => [
+                'uri' => '/movies/+id',
+                'method' => 'GET',
+                'uriSegment' => [
+                    [
+                        'description' => 'Movie ID',
+                        'field' => 'id',
+                        'type' => 'integer',
+                        'uri' => '/movies/+id',
+                        'values' => false
+                    ]
+                ]
+            ],
+            '/movies/+id::PATCH' => [
+                'uri' => '/movies/+id',
+                'method' => 'PATCH',
+                'uriSegment' => [
+                    [
+                        'description' => 'Movie ID',
+                        'field' => 'id',
+                        'type' => 'integer',
+                        'uri' => '/movies/+id',
+                        'values' => false
+                    ]
+                ]
+            ],
+            '/movies/+id::DELETE' => [
+                'uri' => '/movies/+id',
+                'method' => 'DELETE',
+                'uriSegment' => [
+                    [
+                        'description' => 'Movie ID',
+                        'field' => 'id',
+                        'type' => 'integer',
+                        'uri' => '/movies/+id',
+                        'values' => false
+                    ]
+                ]
+            ],
+            '/theaters::GET' => [
+                'uri' => '/theaters',
+                'method' => 'GET',
+                'uriSegment' => false
+            ],
+            '/theaters::POST' => [
+                'uri' => '/theaters',
+                'method' => 'POST',
+                'uriSegment' => false
+            ],
+            '/theaters/+id::GET' => [
+                'uri' => '/theaters/+id',
+                'method' => 'GET',
+                'uriSegment' => [
+                    [
+                        'description' => 'Theater ID',
+                        'field' => 'id',
+                        'type' => 'integer',
+                        'uri' => '/theaters/+id',
+                        'values' => false
+                    ]
+                ]
+            ],
+            '/theaters/+id::PATCH' => [
+                'uri' => '/theaters/+id',
+                'method' => 'PATCH',
+                'uriSegment' => [
+                    [
+                        'description' => 'Theater ID',
+                        'field' => 'id',
+                        'type' => 'integer',
+                        'uri' => '/theaters/+id',
+                        'values' => false
+                    ]
+                ]
+            ],
+            '/theaters/+id::DELETE' => [
+                'uri' => '/theaters/+id',
+                'method' => 'DELETE',
+                'uriSegment' => [
+                    [
+                        'description' => 'Theater ID',
+                        'field' => 'id',
+                        'type' => 'integer',
+                        'uri' => '/theaters/+id',
+                        'values' => false
+                    ]
+                ]
+            ]
+        ];
+
         return [
             'version-1.0' => [
                 'version' => '1.0',
                 'expected.representations' => [
                     '\Mill\Examples\Showtimes\Representations\Movie' => [
                         'label' => 'Movie',
-                        'description.length' => 12,
-                        'content.size' => 0
+                        'description.length' => 41,
+                        'content.keys' => [
+                            'cast',
+                            'content_rating',
+                            'description',
+                            'director',
+                            'genres',
+                            'id',
+                            'name',
+                            'runtime',
+                            'showtimes',
+                            'theaters',
+                            'uri'
+                        ]
                     ],
                     '\Mill\Examples\Showtimes\Representations\Theater' => [
                         'label' => 'Theater',
-                        'description.length' => 0,
-                        'content.size' => 7
+                        'description.length' => 49,
+                        'content.keys' => [
+                            'address',
+                            'id',
+                            'movies',
+                            'name',
+                            'phone_number',
+                            'showtimes',
+                            'uri',
+                            'website'
+                        ]
                     ]
                 ],
                 'expected.resources' => [
@@ -139,48 +279,30 @@ class GeneratorTest extends TestCase
                         'resources' => [
                             [
                                 'resource.name' => 'Movies',
-                                'description.length' => 0,
+                                'description.length' => 32,
                                 'actions.data' => [
-                                    '/movies::GET' => [
-                                        'uri' => '/movies',
-                                        'method' => 'GET',
-                                        'uriSegment' => false,
-                                        'params.size' => 1
-                                    ],
-                                    '/movies::POST' => [
-                                        'uri' => '/movies',
-                                        'method' => 'POST',
-                                        'uriSegment' => false,
-                                        'params.size' => 7
-                                    ],
-                                    '/movies/+id::GET' => [
-                                        'uri' => '/movies/+id',
-                                        'method' => 'GET',
-                                        'uriSegment' => [
-                                            [
-                                                'description' => 'Movie ID',
-                                                'field' => 'id',
-                                                'type' => 'integer',
-                                                'uri' => '/movies/+id',
-                                                'values' => false
-                                            ]
-                                        ],
-                                        'params.size' => 0
-                                    ],
-                                    '/movies/+id::DELETE' => [
-                                        'uri' => '/movies/+id',
-                                        'method' => 'DELETE',
-                                        'uriSegment' => [
-                                            [
-                                                'description' => 'Movie ID',
-                                                'field' => 'id',
-                                                'type' => 'integer',
-                                                'uri' => '/movies/+id',
-                                                'values' => false
-                                            ]
-                                        ],
-                                        'params.size' => 0
-                                    ]
+                                    '/movies::GET' => array_merge($common_actions['/movies::GET'], [
+                                        'params.keys' => [
+                                            'location'
+                                        ]
+                                    ]),
+                                    '/movies::POST' => array_merge($common_actions['/movies::POST'], [
+                                        'params.keys' => [
+                                            'cast',
+                                            'content_rating',
+                                            'description',
+                                            'director',
+                                            'genres',
+                                            'name',
+                                            'runtime'
+                                        ]
+                                    ]),
+                                    '/movies/+id::GET' => array_merge($common_actions['/movies/+id::GET'], [
+                                        'params.keys' => []
+                                    ]),
+                                    '/movies/+id::DELETE' => array_merge($common_actions['/movies/+id::DELETE'], [
+                                        'params.keys' => []
+                                    ])
                                 ]
                             ]
                         ]
@@ -189,62 +311,33 @@ class GeneratorTest extends TestCase
                         'resources' => [
                             [
                                 'resource.name' => 'Movie Theaters',
-                                'description.length' => 0,
+                                'description.length' => 40,
                                 'actions.data' => [
-                                    '/theaters::GET' => [
-                                        'uri' => '/theaters',
-                                        'method' => 'GET',
-                                        'uriSegment' => false,
-                                        'params.size' => 1
-                                    ],
-                                    '/theaters::POST' => [
-                                        'uri' => '/theaters',
-                                        'method' => 'POST',
-                                        'uriSegment' => false,
-                                        'params.size' => 3
-                                    ],
-                                    '/theaters/+id::GET' => [
-                                        'uri' => '/theaters/+id',
-                                        'method' => 'GET',
-                                        'uriSegment' => [
-                                            [
-                                                'description' => 'Theater ID',
-                                                'field' => 'id',
-                                                'type' => 'integer',
-                                                'uri' => '/theaters/+id',
-                                                'values' => false
-                                            ]
-                                        ],
-                                        'params.size' => 0
-                                    ],
-                                    '/theaters/+id::PATCH' => [
-                                        'uri' => '/theaters/+id',
-                                        'method' => 'PATCH',
-                                        'uriSegment' => [
-                                            [
-                                                'description' => 'Theater ID',
-                                                'field' => 'id',
-                                                'type' => 'integer',
-                                                'uri' => '/theaters/+id',
-                                                'values' => false
-                                            ]
-                                        ],
-                                        'params.size' => 3
-                                    ],
-                                    '/theaters/+id::DELETE' => [
-                                        'uri' => '/theaters/+id',
-                                        'method' => 'DELETE',
-                                        'uriSegment' => [
-                                            [
-                                                'description' => 'Theater ID',
-                                                'field' => 'id',
-                                                'type' => 'integer',
-                                                'uri' => '/theaters/+id',
-                                                'values' => false
-                                            ]
-                                        ],
-                                        'params.size' => 0
-                                    ]
+                                    '/theaters::GET' => array_merge($common_actions['/theaters::GET'], [
+                                        'params.keys' => [
+                                            'location'
+                                        ]
+                                    ]),
+                                    '/theaters::POST' => array_merge($common_actions['/theaters::POST'], [
+                                        'params.keys' => [
+                                            'address',
+                                            'name',
+                                            'phone_number'
+                                        ]
+                                    ]),
+                                    '/theaters/+id::GET' => array_merge($common_actions['/theaters/+id::GET'], [
+                                        'params.keys' => []
+                                    ]),
+                                    '/theaters/+id::PATCH' => array_merge($common_actions['/theaters/+id::PATCH'], [
+                                        'params.keys' => [
+                                            'address',
+                                            'name',
+                                            'phone_number'
+                                        ]
+                                    ]),
+                                    '/theaters/+id::DELETE' => array_merge($common_actions['/theaters/+id::DELETE'], [
+                                        'params.keys' => []
+                                    ])
                                 ]
                             ]
                         ]
@@ -256,13 +349,37 @@ class GeneratorTest extends TestCase
                 'expected.representations' => [
                     '\Mill\Examples\Showtimes\Representations\Movie' => [
                         'label' => 'Movie',
-                        'description.length' => 12,
-                        'content.size' => 0
+                        'description.length' => 41,
+                        'content.keys' => [
+                            'cast',
+                            'content_rating',
+                            'description',
+                            'director',
+                            'external_urls',
+                            'external_urls.imdb',
+                            'external_urls.tickets',
+                            'external_urls.trailer',
+                            'genres',
+                            'id',
+                            'name',
+                            'runtime',
+                            'showtimes',
+                            'theaters',
+                            'uri'
+                        ]
                     ],
                     '\Mill\Examples\Showtimes\Representations\Theater' => [
                         'label' => 'Theater',
-                        'description.length' => 0,
-                        'content.size' => 6
+                        'description.length' => 49,
+                        'content.keys' => [
+                            'address',
+                            'id',
+                            'movies',
+                            'name',
+                            'phone_number',
+                            'showtimes',
+                            'uri'
+                        ]
                     ]
                 ],
                 'expected.resources' => [
@@ -270,62 +387,44 @@ class GeneratorTest extends TestCase
                         'resources' => [
                             [
                                 'resource.name' => 'Movies',
-                                'description.length' => 0,
+                                'description.length' => 32,
                                 'actions.data' => [
-                                    '/movies::GET' => [
-                                        'uri' => '/movies',
-                                        'method' => 'GET',
-                                        'uriSegment' => false,
-                                        'params.size' => 1
-                                    ],
-                                    '/movies::POST' => [
-                                        'uri' => '/movies',
-                                        'method' => 'POST',
-                                        'uriSegment' => false,
-                                        'params.size' => 9
-                                    ],
-                                    '/movies/+id::GET' => [
-                                        'uri' => '/movies/+id',
-                                        'method' => 'GET',
-                                        'uriSegment' => [
-                                            [
-                                                'description' => 'Movie ID',
-                                                'field' => 'id',
-                                                'type' => 'integer',
-                                                'uri' => '/movies/+id',
-                                                'values' => false
-                                            ]
-                                        ],
-                                        'params.size' => 0
-                                    ],
-                                    '/movies/+id::PATCH' => [
-                                        'uri' => '/movies/+id',
-                                        'method' => 'PATCH',
-                                        'uriSegment' => [
-                                            [
-                                                'description' => 'Movie ID',
-                                                'field' => 'id',
-                                                'type' => 'integer',
-                                                'uri' => '/movies/+id',
-                                                'values' => false
-                                                ]
-                                        ],
-                                        'params.size' => 9
-                                    ],
-                                    '/movies/+id::DELETE' => [
-                                        'uri' => '/movies/+id',
-                                        'method' => 'DELETE',
-                                        'uriSegment' => [
-                                            [
-                                                'description' => 'Movie ID',
-                                                'field' => 'id',
-                                                'type' => 'integer',
-                                                'uri' => '/movies/+id',
-                                                'values' => false
-                                            ]
-                                        ],
-                                        'params.size' => 0
-                                    ]
+                                    '/movies::GET' => array_merge($common_actions['/movies::GET'], [
+                                        'params.keys' => [
+                                            'location'
+                                        ]
+                                    ]),
+                                    '/movies::POST' => array_merge($common_actions['/movies::POST'], [
+                                        'params.keys' => [
+                                            'cast',
+                                            'content_rating',
+                                            'description',
+                                            'director',
+                                            'genres',
+                                            'imdb',
+                                            'name',
+                                            'runtime',
+                                            'trailer'
+                                        ]
+                                    ]),
+                                    '/movies/+id::GET' => array_merge($common_actions['/movies/+id::GET'], [
+                                        'params.keys' => []
+                                    ]),
+                                    '/movies/+id::PATCH' => array_merge($common_actions['/movies/+id::PATCH'], [
+                                        'params.keys' => [
+                                            'cast',
+                                            'content_rating',
+                                            'description',
+                                            'director',
+                                            'genres',
+                                            'name',
+                                            'runtime',
+                                            'trailer'
+                                        ]
+                                    ]),
+                                    '/movies/+id::DELETE' => array_merge($common_actions['/movies/+id::DELETE'], [
+                                        'params.keys' => []
+                                    ])
                                 ]
                             ]
                         ]
@@ -334,62 +433,156 @@ class GeneratorTest extends TestCase
                         'resources' => [
                             [
                                 'resource.name' => 'Movie Theaters',
-                                'description.length' => 0,
+                                'description.length' => 40,
                                 'actions.data' => [
-                                    '/theaters::GET' => [
-                                        'uri' => '/theaters',
-                                        'method' => 'GET',
-                                        'uriSegment' => false,
-                                        'params.size' => 1
-                                    ],
-                                    '/theaters::POST' => [
-                                        'uri' => '/theaters',
-                                        'method' => 'POST',
-                                        'uriSegment' => false,
-                                        'params.size' => 3
-                                    ],
-                                    '/theaters/+id::GET' => [
-                                        'uri' => '/theaters/+id',
-                                        'method' => 'GET',
-                                        'uriSegment' => [
-                                            [
-                                                'description' => 'Theater ID',
-                                                'field' => 'id',
-                                                'type' => 'integer',
-                                                'uri' => '/theaters/+id',
-                                                'values' => false
-                                            ]
-                                        ],
-                                        'params.size' => 0
-                                    ],
-                                    '/theaters/+id::PATCH' => [
-                                        'uri' => '/theaters/+id',
-                                        'method' => 'PATCH',
-                                        'uriSegment' => [
-                                            [
-                                                'description' => 'Theater ID',
-                                                'field' => 'id',
-                                                'type' => 'integer',
-                                                'uri' => '/theaters/+id',
-                                                'values' => false
-                                            ]
-                                        ],
-                                        'params.size' => 3
-                                    ],
-                                    '/theaters/+id::DELETE' => [
-                                        'uri' => '/theaters/+id',
-                                        'method' => 'DELETE',
-                                        'uriSegment' => [
-                                            [
-                                                'description' => 'Theater ID',
-                                                'field' => 'id',
-                                                'type' => 'integer',
-                                                'uri' => '/theaters/+id',
-                                                'values' => false
-                                            ]
-                                        ],
-                                        'params.size' => 0
-                                    ]
+                                    '/theaters::GET' => array_merge($common_actions['/theaters::GET'], [
+                                        'params.keys' => [
+                                            'location'
+                                        ]
+                                    ]),
+                                    '/theaters::POST' => array_merge($common_actions['/theaters::POST'], [
+                                        'params.keys' => [
+                                            'address',
+                                            'name',
+                                            'phone_number'
+                                        ]
+                                    ]),
+                                    '/theaters/+id::GET' => array_merge($common_actions['/theaters/+id::GET'], [
+                                        'params.keys' => []
+                                    ]),
+                                    '/theaters/+id::PATCH' => array_merge($common_actions['/theaters/+id::PATCH'], [
+                                        'params.keys' => [
+                                            'address',
+                                            'name',
+                                            'phone_number'
+                                        ]
+                                    ]),
+                                    '/theaters/+id::DELETE' => array_merge($common_actions['/theaters/+id::DELETE'], [
+                                        'params.keys' => []
+                                    ])
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            'version-1.1.1' => [
+                'version' => '1.1.1',
+                'expected.representations' => [
+                    '\Mill\Examples\Showtimes\Representations\Movie' => [
+                        'label' => 'Movie',
+                        'description.length' => 41,
+                        'content.keys' => [
+                            'cast',
+                            'content_rating',
+                            'description',
+                            'director',
+                            'external_urls',
+                            'external_urls.imdb',
+                            'external_urls.tickets',
+                            'external_urls.trailer',
+                            'genres',
+                            'id',
+                            'name',
+                            'runtime',
+                            'showtimes',
+                            'theaters',
+                            'uri'
+                        ]
+                    ],
+                    '\Mill\Examples\Showtimes\Representations\Theater' => [
+                        'label' => 'Theater',
+                        'description.length' => 49,
+                        'content.keys' => [
+                            'address',
+                            'id',
+                            'movies',
+                            'name',
+                            'phone_number',
+                            'showtimes',
+                            'uri'
+                        ]
+                    ]
+                ],
+                'expected.resources' => [
+                    'Movies' => [
+                        'resources' => [
+                            [
+                                'resource.name' => 'Movies',
+                                'description.length' => 32,
+                                'actions.data' => [
+                                    '/movies::GET' => array_merge($common_actions['/movies::GET'], [
+                                        'params.keys' => [
+                                            'location'
+                                        ]
+                                    ]),
+                                    '/movies::POST' => array_merge($common_actions['/movies::POST'], [
+                                        'params.keys' => [
+                                            'cast',
+                                            'content_rating',
+                                            'description',
+                                            'director',
+                                            'genres',
+                                            'imdb',
+                                            'name',
+                                            'runtime',
+                                            'trailer'
+                                        ]
+                                    ]),
+                                    '/movies/+id::GET' => array_merge($common_actions['/movies/+id::GET'], [
+                                        'params.keys' => []
+                                    ]),
+                                    '/movies/+id::PATCH' => array_merge($common_actions['/movies/+id::PATCH'], [
+                                        'params.keys' => [
+                                            'cast',
+                                            'content_rating',
+                                            'description',
+                                            'director',
+                                            'genres',
+                                            'imdb',
+                                            'name',
+                                            'runtime',
+                                            'trailer'
+                                        ]
+                                    ]),
+                                    '/movies/+id::DELETE' => array_merge($common_actions['/movies/+id::DELETE'], [
+                                        'params.keys' => []
+                                    ])
+                                ]
+                            ]
+                        ]
+                    ],
+                    'Theaters' => [
+                        'resources' => [
+                            [
+                                'resource.name' => 'Movie Theaters',
+                                'description.length' => 40,
+                                'actions.data' => [
+                                    '/theaters::GET' => array_merge($common_actions['/theaters::GET'], [
+                                        'params.keys' => [
+                                            'location'
+                                        ]
+                                    ]),
+                                    '/theaters::POST' => array_merge($common_actions['/theaters::POST'], [
+                                        'params.keys' => [
+                                            'address',
+                                            'name',
+                                            'phone_number'
+                                        ]
+                                    ]),
+                                    '/theaters/+id::GET' => array_merge($common_actions['/theaters/+id::GET'], [
+                                        'params.keys' => []
+                                    ]),
+                                    '/theaters/+id::PATCH' => array_merge($common_actions['/theaters/+id::PATCH'], [
+                                        'params.keys' => [
+                                            'address',
+                                            'name',
+                                            'phone_number'
+                                        ]
+                                    ]),
+                                    '/theaters/+id::DELETE' => array_merge($common_actions['/theaters/+id::DELETE'], [
+                                        'params.keys' => []
+                                    ])
                                 ]
                             ]
                         ]
