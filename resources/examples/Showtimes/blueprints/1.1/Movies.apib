@@ -9,8 +9,8 @@ Information on a specific movie.
     + `id` (integer, required) - Movie ID
 + Response 200 (application/json)
     + Attributes
-        - `cast` (array) - Cast
-        - `content_rating` (enum[string]) - MPAA rating
+        - `cast`: (array) - Cast
+        - `content_rating`: (enum[string]) - MPAA rating
             + Members
                 + `G`
                 + `PG`
@@ -20,19 +20,19 @@ Information on a specific movie.
                 + `X`
                 + `NR`
                 + `UR`
-        - `description` (string) - Description
-        - `director` (string) - Director
-        - `external_urls` (object) - External URLs
-            - `imdb` (string) - IMDB URL
-            - `tickets` (string) - Tickets URL
-            - `trailer` (string) - Trailer URL
-        - `genres` (array) - Genres
-        - `id` (number) - Unique ID
-        - `name` (string) - Name
-        - `runtime` (string) - Runtime
-        - `showtimes` (array) - Non-theater specific showtimes
-        - `theaters` (array) - Theaters the movie is currently showing in
-        - `uri` (string) - Movie URI
+        - `description`: (string) - Description
+        - `director`: (string) - Director
+        - `external_urls`: (object) - External URLs
+            - `imdb`: (string) - IMDB URL
+            - `tickets`: (string) - Tickets URL
+            - `trailer`: (string) - Trailer URL
+        - `genres`: (array) - Genres
+        - `id`: (number) - Unique ID
+        - `name`: (string) - Name
+        - `runtime`: (string) - Runtime
+        - `showtimes`: (array) - Non-theater specific showtimes
+        - `theaters`: (array) - Theaters the movie is currently showing in
+        - `uri`: (string) - Movie URI
 + Response 304 (application/json)
 + Response 404 (application/json)
 
@@ -62,8 +62,8 @@ This action requires a bearer token with `edit` scope.
         - `trailer` (string) - Trailer URL
 + Response 200 (application/json)
     + Attributes
-        - `cast` (array) - Cast
-        - `content_rating` (enum[string]) - MPAA rating
+        - `cast`: (array) - Cast
+        - `content_rating`: (enum[string]) - MPAA rating
             + Members
                 + `G`
                 + `PG`
@@ -73,19 +73,19 @@ This action requires a bearer token with `edit` scope.
                 + `X`
                 + `NR`
                 + `UR`
-        - `description` (string) - Description
-        - `director` (string) - Director
-        - `external_urls` (object) - External URLs
-            - `imdb` (string) - IMDB URL
-            - `tickets` (string) - Tickets URL
-            - `trailer` (string) - Trailer URL
-        - `genres` (array) - Genres
-        - `id` (number) - Unique ID
-        - `name` (string) - Name
-        - `runtime` (string) - Runtime
-        - `showtimes` (array) - Non-theater specific showtimes
-        - `theaters` (array) - Theaters the movie is currently showing in
-        - `uri` (string) - Movie URI
+        - `description`: (string) - Description
+        - `director`: (string) - Director
+        - `external_urls`: (object) - External URLs
+            - `imdb`: (string) - IMDB URL
+            - `tickets`: (string) - Tickets URL
+            - `trailer`: (string) - Trailer URL
+        - `genres`: (array) - Genres
+        - `id`: (number) - Unique ID
+        - `name`: (string) - Name
+        - `runtime`: (string) - Runtime
+        - `showtimes`: (array) - Non-theater specific showtimes
+        - `theaters`: (array) - Theaters the movie is currently showing in
+        - `uri`: (string) - Movie URI
 + Response 400 (application/json)
     There are 2 ways that this status code can be encountered.
          * If there is a problem with the request.
@@ -109,8 +109,8 @@ Information on a specific movie.
         - `location` (string, required) - Location you want movies for.
 + Response 200 (application/json)
     + Attributes
-        - `cast` (array) - Cast
-        - `content_rating` (enum[string]) - MPAA rating
+        - `cast`: (array) - Cast
+        - `content_rating`: (enum[string]) - MPAA rating
             + Members
                 + `G`
                 + `PG`
@@ -120,19 +120,19 @@ Information on a specific movie.
                 + `X`
                 + `NR`
                 + `UR`
-        - `description` (string) - Description
-        - `director` (string) - Director
-        - `external_urls` (object) - External URLs
-            - `imdb` (string) - IMDB URL
-            - `tickets` (string) - Tickets URL
-            - `trailer` (string) - Trailer URL
-        - `genres` (array) - Genres
-        - `id` (number) - Unique ID
-        - `name` (string) - Name
-        - `runtime` (string) - Runtime
-        - `showtimes` (array) - Non-theater specific showtimes
-        - `theaters` (array) - Theaters the movie is currently showing in
-        - `uri` (string) - Movie URI
+        - `description`: (string) - Description
+        - `director`: (string) - Director
+        - `external_urls`: (object) - External URLs
+            - `imdb`: (string) - IMDB URL
+            - `tickets`: (string) - Tickets URL
+            - `trailer`: (string) - Trailer URL
+        - `genres`: (array) - Genres
+        - `id`: (number) - Unique ID
+        - `name`: (string) - Name
+        - `runtime`: (string) - Runtime
+        - `showtimes`: (array) - Non-theater specific showtimes
+        - `theaters`: (array) - Theaters the movie is currently showing in
+        - `uri`: (string) - Movie URI
 + Response 400 (application/json)
 
 ### Create a movie. [POST]
@@ -160,8 +160,8 @@ This action requires a bearer token with `create` scope.
         - `trailer` (string) - Trailer URL
 + Response 200 (application/json)
     + Attributes
-        - `cast` (array) - Cast
-        - `content_rating` (enum[string]) - MPAA rating
+        - `cast`: (array) - Cast
+        - `content_rating`: (enum[string]) - MPAA rating
             + Members
                 + `G`
                 + `PG`
@@ -171,19 +171,19 @@ This action requires a bearer token with `create` scope.
                 + `X`
                 + `NR`
                 + `UR`
-        - `description` (string) - Description
-        - `director` (string) - Director
-        - `external_urls` (object) - External URLs
-            - `imdb` (string) - IMDB URL
-            - `tickets` (string) - Tickets URL
-            - `trailer` (string) - Trailer URL
-        - `genres` (array) - Genres
-        - `id` (number) - Unique ID
-        - `name` (string) - Name
-        - `runtime` (string) - Runtime
-        - `showtimes` (array) - Non-theater specific showtimes
-        - `theaters` (array) - Theaters the movie is currently showing in
-        - `uri` (string) - Movie URI
+        - `description`: (string) - Description
+        - `director`: (string) - Director
+        - `external_urls`: (object) - External URLs
+            - `imdb`: (string) - IMDB URL
+            - `tickets`: (string) - Tickets URL
+            - `trailer`: (string) - Trailer URL
+        - `genres`: (array) - Genres
+        - `id`: (number) - Unique ID
+        - `name`: (string) - Name
+        - `runtime`: (string) - Runtime
+        - `showtimes`: (array) - Non-theater specific showtimes
+        - `theaters`: (array) - Theaters the movie is currently showing in
+        - `uri`: (string) - Movie URI
 + Response 400 (application/json)
     There are 2 ways that this status code can be encountered.
          * If there is a problem with the request.
