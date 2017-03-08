@@ -342,7 +342,7 @@ class Blueprint extends Generator
                 }
 
                 //$blueprint .= $this->tab($indent);
-                $blueprint .= sprintf('- `%s` (%s) - %s', $field_name, $type, $data['label']);
+                $blueprint .= sprintf('- `%s`: (%s) - %s', $field_name, $type, $data['label']);
                 $blueprint .= $this->line();
 
                 // Only enum's support options/members.
