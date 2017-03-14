@@ -148,12 +148,28 @@ class DocumentationTest extends TestCase
                             'type' => 'number',
                             'version' => false
                         ],
+                        'kid_friendly' => [
+                            'capability' => false,
+                            'field' => 'kid_friendly',
+                            'label' => 'Kid friendly?',
+                            'options' => false,
+                            'type' => 'boolean',
+                            'version' => false
+                        ],
                         'name' => [
                             'capability' => false,
                             'field' => 'name',
                             'label' => 'Name',
                             'options' => false,
                             'type' => 'string',
+                            'version' => false
+                        ],
+                        'rotten_tomatoes_score' => [
+                            'capability' => false,
+                            'field' => 'rotten_tomatoes_score',
+                            'label' => 'Rotten Tomatoes score',
+                            'options' => false,
+                            'type' => 'number',
                             'version' => false
                         ],
                         'runtime' => [
@@ -303,6 +319,16 @@ class DocumentationTest extends TestCase
                                 'version' => false
                             ]
                         ],
+                        'kid_friendly' => [
+                            '__FIELD_DATA__' => [
+                                'capability' => false,
+                                'field' => 'kid_friendly',
+                                'label' => 'Kid friendly?',
+                                'options' => false,
+                                'type' => 'boolean',
+                                'version' => false
+                            ]
+                        ],
                         'name' => [
                             '__FIELD_DATA__' => [
                                 'capability' => false,
@@ -310,6 +336,16 @@ class DocumentationTest extends TestCase
                                 'label' => 'Name',
                                 'options' => false,
                                 'type' => 'string',
+                                'version' => false
+                            ]
+                        ],
+                        'rotten_tomatoes_score' => [
+                            '__FIELD_DATA__' => [
+                                'capability' => false,
+                                'field' => 'rotten_tomatoes_score',
+                                'label' => 'Rotten Tomatoes score',
+                                'options' => false,
+                                'type' => 'number',
                                 'version' => false
                             ]
                         ],

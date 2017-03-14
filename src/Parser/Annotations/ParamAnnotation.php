@@ -2,7 +2,9 @@
 namespace Mill\Parser\Annotations;
 
 use Mill\Container;
+use Mill\Exceptions\Representation\Types\InvalidTypeException;
 use Mill\Exceptions\Resource\Annotations\BadOptionsListException;
+use Mill\Exceptions\Resource\Annotations\UnsupportedTypeException;
 use Mill\Parser\Annotation;
 
 /**
@@ -55,7 +57,7 @@ class ParamAnnotation extends Annotation
     protected $description;
 
     /**
-     * Return an array of items that should be included in an array representation of this annotation.
+     * Array of items that should be included in an array representation of this annotation.
      *
      * @var array
      */
@@ -70,10 +72,29 @@ class ParamAnnotation extends Annotation
     ];
 
     /**
+     * Array of supported parameter types.
+     *
+     * @var array
+     */
+    protected $supported_types = [
+        'array',
+        'boolean',
+        'datetime',
+        'float',
+        'enum',
+        'integer',
+        'number',
+        'object',
+        'string',
+        'timestamp'
+    ];
+
+    /**
      * Parse the annotation out and return an array of data that we can use to then interpret this annotations'
      * representation.
      *
      * @return array
+     * @throws UnsupportedTypeException If an unsupported parameter type has been supplied.
      * @throws BadOptionsListException If values are not in the right format.
      */
     protected function parser()
@@ -90,6 +111,12 @@ class ParamAnnotation extends Annotation
         // Parameter type is surrounded by `{curly braces}`.
         if (preg_match(self::REGEX_TYPE, $doc, $matches)) {
             $parsed['type'] = substr($matches[1], 1, -1);
+
+            // Verify that the supplied type is supported.
+            if (!in_array(strtolower($parsed['type']), $this->supported_types)) {
+                throw UnsupportedTypeException::create($doc, $this->controller, $this->method);
+            }
+
             $doc = trim(preg_replace(self::REGEX_TYPE, '', $doc));
         }
 

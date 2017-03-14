@@ -71,7 +71,9 @@ class RepresentationParserTest extends TestCase
             'external_urls.trailer',
             'genres',
             'id',
+            'kid_friendly',
             'name',
+            'rotten_tomatoes_score',
             'runtime',
             'showtimes',
             'theaters',
@@ -220,12 +222,28 @@ class RepresentationParserTest extends TestCase
                             'type' => 'number',
                             'version' => false
                         ],
+                        'kid_friendly' => [
+                            'capability' => false,
+                            'field' => 'kid_friendly',
+                            'label' => 'Kid friendly?',
+                            'options' => false,
+                            'type' => 'boolean',
+                            'version' => false
+                        ],
                         'name' => [
                             'capability' => false,
                             'field' => 'name',
                             'label' => 'Name',
                             'options' => false,
                             'type' => 'string',
+                            'version' => false
+                        ],
+                        'rotten_tomatoes_score' => [
+                            'capability' => false,
+                            'field' => 'rotten_tomatoes_score',
+                            'label' => 'Rotten Tomatoes score',
+                            'options' => false,
+                            'type' => 'number',
                             'version' => false
                         ],
                         'runtime' => [

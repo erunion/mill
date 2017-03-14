@@ -48,6 +48,8 @@ class Movie
      * @api-param:public {string} trailer (optional) Trailer URL
      * @api-param:public {string} director (optional) Name of the director.
      * @api-param:public {array} cast (optional) Array of names of the cast.
+     * @api-param:public {boolean} is_kid_friendly (optional) Is this movie kid friendly?
+     * @api-param:public {integer} rotten_tomatoes_score (optional) Rotten Tomatoes score
      *
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Movie
      *

@@ -78,6 +78,13 @@ class Movie extends Representation
             'cast' => $this->movie->getCast(),
 
             /**
+             * @api-label Kid friendly?
+             * @api-field kid_friendly
+             * @api-type boolean
+             */
+            'kid_friendly' => $this->movie->is_kid_friendly,
+
+            /**
              * @api-label Theaters the movie is currently showing in
              * @api-field theaters
              * @api-type array
@@ -99,7 +106,14 @@ class Movie extends Representation
              * @api-version >=1.1
              * @api-see \Mill\Examples\Showtimes\Representations\Movie::getExternalUrls external_urls
              */
-            'external_urls' => $this->getExternalUrls()
+            'external_urls' => $this->getExternalUrls(),
+
+            /**
+             * @api-label Rotten Tomatoes score
+             * @api-field rotten_tomatoes_score
+             * @api-type number
+             */
+            'rotten_tomatoes_score' => $this->rotten_tomatoes_score
         ];
     }
 
