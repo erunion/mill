@@ -147,7 +147,7 @@ class ParserTest extends TestCase
                     ],
                     'param' => [
                         'class' => '\Mill\Parser\Annotations\ParamAnnotation',
-                        'count' => 9
+                        'count' => 11
                     ],
                     'return' => [
                         'class' => '\Mill\Parser\Annotations\ReturnAnnotation',

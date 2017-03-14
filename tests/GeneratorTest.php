@@ -252,7 +252,9 @@ class GeneratorTest extends TestCase
                             'director',
                             'genres',
                             'id',
+                            'kid_friendly',
                             'name',
+                            'rotten_tomatoes_score',
                             'runtime',
                             'showtimes',
                             'theaters',
@@ -293,7 +295,9 @@ class GeneratorTest extends TestCase
                                             'description',
                                             'director',
                                             'genres',
+                                            'is_kid_friendly',
                                             'name',
+                                            'rotten_tomatoes_score',
                                             'runtime'
                                         ]
                                     ]),
@@ -361,7 +365,9 @@ class GeneratorTest extends TestCase
                             'external_urls.trailer',
                             'genres',
                             'id',
+                            'kid_friendly',
                             'name',
+                            'rotten_tomatoes_score',
                             'runtime',
                             'showtimes',
                             'theaters',
@@ -402,7 +408,9 @@ class GeneratorTest extends TestCase
                                             'director',
                                             'genres',
                                             'imdb',
+                                            'is_kid_friendly',
                                             'name',
+                                            'rotten_tomatoes_score',
                                             'runtime',
                                             'trailer'
                                         ]
@@ -417,7 +425,9 @@ class GeneratorTest extends TestCase
                                             'description',
                                             'director',
                                             'genres',
+                                            'is_kid_friendly',
                                             'name',
+                                            'rotten_tomatoes_score',
                                             'runtime',
                                             'trailer'
                                         ]
@@ -483,7 +493,9 @@ class GeneratorTest extends TestCase
                             'external_urls.trailer',
                             'genres',
                             'id',
+                            'kid_friendly',
                             'name',
+                            'rotten_tomatoes_score',
                             'runtime',
                             'showtimes',
                             'theaters',
@@ -524,7 +536,9 @@ class GeneratorTest extends TestCase
                                             'director',
                                             'genres',
                                             'imdb',
+                                            'is_kid_friendly',
                                             'name',
+                                            'rotten_tomatoes_score',
                                             'runtime',
                                             'trailer'
                                         ]
@@ -540,7 +554,9 @@ class GeneratorTest extends TestCase
                                             'director',
                                             'genres',
                                             'imdb',
+                                            'is_kid_friendly',
                                             'name',
+                                            'rotten_tomatoes_score',
                                             'runtime',
                                             'trailer'
                                         ]
