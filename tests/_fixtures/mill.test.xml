@@ -53,8 +53,8 @@
     </capabilities>
 
     <parameterTokens>
-        <token name="page">{int} page (optional) The page number to show.</token>
-        <token name="per_page">{int} per_page (optional) Number of items to show on each page. Max 100.</token>
+        <token name="page">{integer} page (optional) The page number to show.</token>
+        <token name="per_page">{integer} per_page (optional) Number of items to show on each page. Max 100.</token>
         <token name="filter">{string} filter (optional) Filter to apply to the results.</token>
     </parameterTokens>
 

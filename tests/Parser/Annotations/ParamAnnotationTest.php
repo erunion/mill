@@ -76,7 +76,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'description' => 'The page number to show.',
                     'field' => 'page',
                     'required' => false,
-                    'type' => 'int',
+                    'type' => 'integer',
                     'values' => false,
                     'version' => false,
                     'visible' => false
@@ -113,7 +113,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'description' => 'The page number to show.',
                     'field' => 'page',
                     'required' => false,
-                    'type' => 'int',
+                    'type' => 'integer',
                     'values' => false,
                     'version' => false,
                     'visible' => true
@@ -150,7 +150,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'description' => 'The page number to show.',
                     'field' => 'page',
                     'required' => false,
-                    'type' => 'int',
+                    'type' => 'integer',
                     'values' => false,
                     'version' => '1.1 - 1.2',
                     'visible' => true
@@ -185,6 +185,15 @@ class ParamAnnotationTest extends AnnotationTest
                     'getAnnotation' => 'param',
                     'getDocblock' => '__testing',
                     'getValues' => []
+                ]
+            ],
+            'missing-field-name' => [
+                'annotation' => '\Mill\Parser\Annotations\ParamAnnotation',
+                'docblock' => '{int} __testing',
+                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\UnsupportedTypeException',
+                'expected.exception.asserts' => [
+                    'getAnnotation' => '{int} __testing',
+                    'getDocblock' => null
                 ]
             ],
             'values-are-in-the-wrong-format' => [

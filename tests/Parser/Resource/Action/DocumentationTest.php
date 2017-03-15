@@ -265,6 +265,17 @@ class DocumentationTest extends TestCase
                                 'version' => false,
                                 'visible' => true
                             ],
+                            'is_kid_friendly' => [
+                                'capability' => false,
+                                'deprecated' => false,
+                                'description' => 'Is this movie kid friendly?',
+                                'field' => 'is_kid_friendly',
+                                'required' => false,
+                                'type' => 'boolean',
+                                'values' => false,
+                                'version' => false,
+                                'visible' => true
+                            ],
                             'name' => [
                                 'capability' => false,
                                 'deprecated' => false,
@@ -296,6 +307,17 @@ class DocumentationTest extends TestCase
                                 'type' => 'string',
                                 'values' => false,
                                 'version' => '>=1.1.1',
+                                'visible' => true
+                            ],
+                            'rotten_tomatoes_score' => [
+                                'capability' => false,
+                                'deprecated' => false,
+                                'description' => 'Rotten Tomatoes score',
+                                'field' => 'rotten_tomatoes_score',
+                                'required' => false,
+                                'type' => 'integer',
+                                'values' => false,
+                                'version' => false,
                                 'visible' => true
                             ],
                             'runtime' => [

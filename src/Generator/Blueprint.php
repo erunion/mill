@@ -206,12 +206,13 @@ class Blueprint extends Generator
         /** @var ParamAnnotation $param */
         foreach ($params as $param) {
             $values = $param->getValues();
+            $type = $this->convertTypeToCompatibleType($param->getType());
 
             $blueprint .= $this->tab(2);
             $blueprint .= sprintf(
                 '- `%s` (%s%s) - %s',
                 $param->getField(),
-                (!empty($values)) ? 'enum[' . $param->getType() . ']' : 'string',
+                (!empty($values)) ? 'enum[' . $type . ']' : $type,
                 ($param->isRequired()) ? ', required' : null,
                 $param->getDescription()
             );
@@ -317,31 +318,8 @@ class Blueprint extends Generator
             if (isset($field['__FIELD_DATA__'])) {
                 /** @var array $data */
                 $data = $field['__FIELD_DATA__'];
-                switch ($data['type']) {
-                    case 'enum':
-                        $type = 'enum[string]';
-                        break;
+                $type = $this->convertTypeToCompatibleType($data['type']);
 
-                    // @todo set this to the name of the response and embed the full docs for that response type
-                    case 'representation':
-                        // https://apiblueprint.org/documentation/mson/specification.html#22-named-types
-                        $type = 'object'; //'<<@todo REPRESENTATION>>';
-                        break;
-
-                    // API Blueprint doesn't have support for dates, timestamps, or URI's, but we still want to
-                    // keep that metadata in our comments, so just convert these on the fly to strings so they
-                    // pass blueprint validation.
-                    case 'datetime':
-                    case 'timestamp':
-                    case 'uri':
-                        $type = 'string';
-                        break;
-
-                    default:
-                        $type = $data['type'];
-                }
-
-                //$blueprint .= $this->tab($indent);
                 $blueprint .= sprintf('- `%s`: (%s) - %s', $field_name, $type, $data['label']);
                 $blueprint .= $this->line();
 
@@ -403,5 +381,43 @@ class Blueprint extends Generator
     protected function tab($repeat = 1)
     {
         return str_repeat('    ', $repeat);
+    }
+
+    /**
+     * Convert a Mill-supported documentation into an API Blueprint-compatible type.
+     *
+     * @link https://github.com/apiaryio/mson/blob/master/MSON%20Specification.md#2-types
+     * @param string $type
+     * @return string
+     */
+    private function convertTypeToCompatibleType($type)
+    {
+        switch ($type) {
+            case 'enum':
+                return 'enum[string]';
+                break;
+
+            // @todo set this to the name of the response and embed the full docs for that response type
+            case 'representation':
+                // https://apiblueprint.org/documentation/mson/specification.html#22-named-types
+                return 'object'; //'<<@todo REPRESENTATION>>';
+                break;
+
+            case 'integer':
+            case 'float':
+                return 'number';
+                break;
+
+            // API Blueprint doesn't have support for dates, timestamps, or URI's, but we still want to
+            // keep that metadata in our comments, so just convert these on the fly to strings so they
+            // pass blueprint validation.
+            case 'datetime':
+            case 'timestamp':
+            case 'uri':
+                return 'string';
+                break;
+        }
+
+        return $type;
     }
 }

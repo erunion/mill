@@ -24,7 +24,9 @@ Information on a specific movie.
         - `director`: (string) - Director
         - `genres`: (array) - Genres
         - `id`: (number) - Unique ID
+        - `kid_friendly`: (boolean) - Kid friendly?
         - `name`: (string) - Name
+        - `rotten_tomatoes_score`: (number) - Rotten Tomatoes score
         - `runtime`: (string) - Runtime
         - `showtimes`: (array) - Non-theater specific showtimes
         - `theaters`: (array) - Theaters the movie is currently showing in
@@ -64,7 +66,9 @@ Information on a specific movie.
         - `director`: (string) - Director
         - `genres`: (array) - Genres
         - `id`: (number) - Unique ID
+        - `kid_friendly`: (boolean) - Kid friendly?
         - `name`: (string) - Name
+        - `rotten_tomatoes_score`: (number) - Rotten Tomatoes score
         - `runtime`: (string) - Runtime
         - `showtimes`: (array) - Non-theater specific showtimes
         - `theaters`: (array) - Theaters the movie is currently showing in
@@ -76,7 +80,7 @@ This action requires a bearer token with `create` scope.
 
 + Request
     + Attributes
-        - `cast` (string) - Array of names of the cast.
+        - `cast` (array) - Array of names of the cast.
         - `content_rating` (enum[string]) - MPAA rating
             + Members
                 + `G`
@@ -89,8 +93,10 @@ This action requires a bearer token with `create` scope.
                 + `UR`
         - `description` (string, required) - Description, or tagline, for the movie.
         - `director` (string) - Name of the director.
-        - `genres` (string) - Array of movie genres.
+        - `genres` (array) - Array of movie genres.
+        - `is_kid_friendly` (boolean) - Is this movie kid friendly?
         - `name` (string, required) - Name of the movie.
+        - `rotten_tomatoes_score` (number) - Rotten Tomatoes score
         - `runtime` (string) - Movie runtime, in `HHhr MMmin` format.
 + Response 200 (application/json)
     + Attributes
@@ -109,7 +115,9 @@ This action requires a bearer token with `create` scope.
         - `director`: (string) - Director
         - `genres`: (array) - Genres
         - `id`: (number) - Unique ID
+        - `kid_friendly`: (boolean) - Kid friendly?
         - `name`: (string) - Name
+        - `rotten_tomatoes_score`: (number) - Rotten Tomatoes score
         - `runtime`: (string) - Runtime
         - `showtimes`: (array) - Non-theater specific showtimes
         - `theaters`: (array) - Theaters the movie is currently showing in
