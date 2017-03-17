@@ -320,7 +320,7 @@ class Blueprint extends Generator
                 $data = $field['__FIELD_DATA__'];
                 $type = $this->convertTypeToCompatibleType($data['type']);
 
-                $blueprint .= sprintf('- `%s`: (%s) - %s', $field_name, $type, $data['label']);
+                $blueprint .= sprintf('- `%s` (%s) - %s', $field_name, $type, $data['label']);
                 $blueprint .= $this->line();
 
                 // Only enum's support options/members.
