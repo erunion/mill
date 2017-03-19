@@ -17,6 +17,7 @@ class DocumentationTest extends TestCase
         $this->assertSame($class, $parsed->getClass());
         $this->assertSame($method, $parsed->getMethod());
 
+        $this->assertSame($expected['label'], $parsed->getLabel());
         $this->assertSame($expected['label'], $representation['label']);
         $this->assertSame($expected['description.length'], strlen($representation['description']));
 
@@ -62,7 +63,7 @@ class DocumentationTest extends TestCase
                             'field' => 'cast',
                             'label' => 'Cast',
                             'options' => false,
-                            'subtype' => false,
+                            'subtype' => '\Mill\Examples\Showtimes\Representations\Person',
                             'type' => 'array',
                             'version' => false
                         ],
@@ -96,7 +97,8 @@ class DocumentationTest extends TestCase
                             'field' => 'director',
                             'label' => 'Director',
                             'options' => false,
-                            'type' => 'string',
+                            'subtype' => '\Mill\Examples\Showtimes\Representations\Person',
+                            'type' => 'representation',
                             'version' => false
                         ],
                         'external_urls' => [
@@ -214,7 +216,7 @@ class DocumentationTest extends TestCase
                                 'field' => 'cast',
                                 'label' => 'Cast',
                                 'options' => false,
-                                'subtype' => false,
+                                'subtype' => '\Mill\Examples\Showtimes\Representations\Person',
                                 'type' => 'array',
                                 'version' => false
                             ]
@@ -254,7 +256,8 @@ class DocumentationTest extends TestCase
                                 'field' => 'director',
                                 'label' => 'Director',
                                 'options' => false,
-                                'type' => 'string',
+                                'subtype' => '\Mill\Examples\Showtimes\Representations\Person',
+                                'type' => 'representation',
                                 'version' => false
                             ]
                         ],

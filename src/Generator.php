@@ -161,13 +161,17 @@ class Generator
     {
         $representations = [];
 
-        /** @var array $representation */
-        foreach ($this->config->getRepresentations() as $representation) {
-            $class = $representation['class'];
+        $error_representations = $this->config->getErrorRepresentations();
 
-            // If the representation is being excluded, then don't set it up for compilation.
-            if ($this->config->isRepresentationExcluded($class)) {
-                continue;
+        /** @var array $representation */
+        foreach ($this->config->getAllRepresentations() as $class => $representation) {
+            // If we're running through a standard (non-error) representation, let's make sure we don't want it
+            // excluded.
+            if (!isset($error_representations[$class])) {
+                // If the representation is being excluded, then don't set it up for compilation.
+                if ($this->config->isRepresentationExcluded($class)) {
+                    continue;
+                }
             }
 
             $docs = (new Representation\Documentation($class, $representation['method']))->parse();
