@@ -136,7 +136,7 @@ class RepresentationParserTest extends TestCase
                             'field' => 'cast',
                             'label' => 'Cast',
                             'options' => false,
-                            'subtype' => false,
+                            'subtype' => '\Mill\Examples\Showtimes\Representations\Person',
                             'type' => 'array',
                             'version' => false
                         ],
@@ -170,7 +170,8 @@ class RepresentationParserTest extends TestCase
                             'field' => 'director',
                             'label' => 'Director',
                             'options' => false,
-                            'type' => 'string',
+                            'subtype' => '\Mill\Examples\Showtimes\Representations\Person',
+                            'type' => 'representation',
                             'version' => false
                         ],
                         'external_urls' => [

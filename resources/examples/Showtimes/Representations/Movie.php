@@ -66,7 +66,8 @@ class Movie extends Representation
             /**
              * @api-label Director
              * @api-field director
-             * @api-type string
+             * @api-type representation
+             * @api-subtype \Mill\Examples\Showtimes\Representations\Person
              */
             'director' => $this->movie->director,
 
@@ -74,6 +75,7 @@ class Movie extends Representation
              * @api-label Cast
              * @api-field cast
              * @api-type array
+             * @api-subtype \Mill\Examples\Showtimes\Representations\Person
              */
             'cast' => $this->movie->getCast(),
 

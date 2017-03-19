@@ -27,6 +27,13 @@ class Config
     protected $base_dir;
 
     /**
+     * The name of your API.
+     *
+     * @var string|null
+     */
+    protected $name = null;
+
+    /**
      * The first version of your API.
      *
      * @var string
@@ -153,6 +160,10 @@ class Config
         }
 
         $xml = new SimpleXMLElement($contents);
+
+        if ($xml['name']) {
+            $config->name = (string) $xml['name'];
+        }
 
         // Load in the user-configured bootstrap. This should either be a Composer autoload file, or set up the
         // applications autoloader so we have access to their application classes for controller and representation
@@ -567,14 +578,23 @@ class Config
         /** @var SimpleXMLElement $class */
         foreach ($errors->class as $class) {
             $class_name = (string) $class['name'];
+            $method = (string) $class['method'] ?: null;
             $needs_error_code = (string) $class['needsErrorCode'];
 
             if (!class_exists($class_name)) {
                 throw UncallableErrorRepresentationException::create($class_name);
+            } elseif (empty($method)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'The `%s` error representation class declaration is missing a `method` attribute.',
+                        $class_name
+                    )
+                );
             }
 
             $this->error_representations[$class_name] = [
                 'class' => $class_name,
+                'method' => $method,
                 'needs_error_code' => (strtolower($needs_error_code) === 'true')
             ];
         }
@@ -589,6 +609,16 @@ class Config
     public function isRepresentationExcluded($class)
     {
         return in_array($class, $this->getExcludedRepresentations());
+    }
+
+    /**
+     * Get the name of your API.
+     *
+     * @return null|string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 
     /**
@@ -699,6 +729,16 @@ class Config
     public function getErrorRepresentations()
     {
         return $this->error_representations;
+    }
+
+    /**
+     * Get an array of all configured representations (normal and error).
+     *
+     * @return array
+     */
+    public function getAllRepresentations()
+    {
+        return array_merge($this->getRepresentations(), $this->getErrorRepresentations());
     }
 
     /**

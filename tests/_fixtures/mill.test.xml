@@ -34,8 +34,8 @@
         </filter>
 
         <errors>
-            <class name="\Mill\Examples\Showtimes\Representations\Error" needsErrorCode="false" />
-            <class name="\Mill\Examples\Showtimes\Representations\CodedError" needsErrorCode="true" />
+            <class name="\Mill\Examples\Showtimes\Representations\Error" method="create" needsErrorCode="false" />
+            <class name="\Mill\Examples\Showtimes\Representations\CodedError" method="create" needsErrorCode="true" />
         </errors>
     </representations>
 

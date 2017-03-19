@@ -28,7 +28,12 @@ class GeneratorTest extends TestCase
         $generator = new Generator($config, $version_obj);
         $generator->generate();
 
-        $this->assertCount(1, $generator->getRepresentations($version_obj->getConstraint()));
+        $this->assertSame([
+            '\Mill\Examples\Showtimes\Representations\CodedError',
+            '\Mill\Examples\Showtimes\Representations\Error',
+            '\Mill\Examples\Showtimes\Representations\Person',
+            '\Mill\Examples\Showtimes\Representations\Theater'
+        ], array_keys($generator->getRepresentations($version_obj->getConstraint())));
 
         // Clean up after ourselves.
         $config->removeExcludedRepresentation('\Mill\Examples\Showtimes\Representations\Movie');
@@ -238,10 +243,28 @@ class GeneratorTest extends TestCase
             ]
         ];
 
+        $error_representations = [
+            '\Mill\Examples\Showtimes\Representations\CodedError' => [
+                'label' => 'Coded error',
+                'description.length' => 0,
+                'content.keys' => [
+                    'error',
+                    'error_code'
+                ]
+            ],
+            '\Mill\Examples\Showtimes\Representations\Error' => [
+                'label' => 'Error',
+                'description.length' => 0,
+                'content.keys' => [
+                    'error'
+                ]
+            ],
+        ];
+
         return [
             'version-1.0' => [
                 'version' => '1.0',
-                'expected.representations' => [
+                'expected.representations' => array_merge($error_representations, [
                     '\Mill\Examples\Showtimes\Representations\Movie' => [
                         'label' => 'Movie',
                         'description.length' => 41,
@@ -261,6 +284,16 @@ class GeneratorTest extends TestCase
                             'uri'
                         ]
                     ],
+                    '\Mill\Examples\Showtimes\Representations\Person' => [
+                        'label' => 'Person',
+                        'description.length' => 42,
+                        'content.keys' => [
+                            'id',
+                            'imdb',
+                            'name',
+                            'uri'
+                        ]
+                    ],
                     '\Mill\Examples\Showtimes\Representations\Theater' => [
                         'label' => 'Theater',
                         'description.length' => 49,
@@ -275,7 +308,7 @@ class GeneratorTest extends TestCase
                             'website'
                         ]
                     ]
-                ],
+                ]),
                 'expected.resources' => [
                     'Movies' => [
                         'resources' => [
@@ -350,7 +383,7 @@ class GeneratorTest extends TestCase
             ],
             'version-1.1' => [
                 'version' => '1.1',
-                'expected.representations' => [
+                'expected.representations' => array_merge($error_representations, [
                     '\Mill\Examples\Showtimes\Representations\Movie' => [
                         'label' => 'Movie',
                         'description.length' => 41,
@@ -374,6 +407,16 @@ class GeneratorTest extends TestCase
                             'uri'
                         ]
                     ],
+                    '\Mill\Examples\Showtimes\Representations\Person' => [
+                        'label' => 'Person',
+                        'description.length' => 42,
+                        'content.keys' => [
+                            'id',
+                            'imdb',
+                            'name',
+                            'uri'
+                        ]
+                    ],
                     '\Mill\Examples\Showtimes\Representations\Theater' => [
                         'label' => 'Theater',
                         'description.length' => 49,
@@ -387,7 +430,7 @@ class GeneratorTest extends TestCase
                             'uri'
                         ]
                     ]
-                ],
+                ]),
                 'expected.resources' => [
                     'Movies' => [
                         'resources' => [
@@ -478,7 +521,7 @@ class GeneratorTest extends TestCase
             ],
             'version-1.1.1' => [
                 'version' => '1.1.1',
-                'expected.representations' => [
+                'expected.representations' => array_merge($error_representations, [
                     '\Mill\Examples\Showtimes\Representations\Movie' => [
                         'label' => 'Movie',
                         'description.length' => 41,
@@ -502,6 +545,16 @@ class GeneratorTest extends TestCase
                             'uri'
                         ]
                     ],
+                    '\Mill\Examples\Showtimes\Representations\Person' => [
+                        'label' => 'Person',
+                        'description.length' => 42,
+                        'content.keys' => [
+                            'id',
+                            'imdb',
+                            'name',
+                            'uri'
+                        ]
+                    ],
                     '\Mill\Examples\Showtimes\Representations\Theater' => [
                         'label' => 'Theater',
                         'description.length' => 49,
@@ -515,7 +568,7 @@ class GeneratorTest extends TestCase
                             'uri'
                         ]
                     ]
-                ],
+                ]),
                 'expected.resources' => [
                     'Movies' => [
                         'resources' => [

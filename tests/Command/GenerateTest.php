@@ -62,18 +62,35 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         ], scandir($output_dir));
 
         $blueprints_dir = __DIR__ . '/../../resources/examples/Showtimes/blueprints';
-        foreach (['1.0', '1.1'] as $version) {
-            $this->assertSame(
-                file_get_contents($blueprints_dir . '/' . $version . '/Movies.apib'),
-                file_get_contents($output_dir . '/' . $version . '/Movies.apib'),
-                'Generated `Movies.apib` for version `' . $version . '`` does not match.'
-            );
+        $representations = [
+            'Coded error',
+            'Error',
+            'Movie',
+            'Person',
+            'Theater'
+        ];
 
-            $this->assertSame(
-                file_get_contents($blueprints_dir . '/' . $version . '/Theaters.apib'),
-                file_get_contents($output_dir . '/' . $version . '/Theaters.apib'),
-                'Generated `Theaters.apib` for version `' . $version . '`` does not match.'
-            );
+        $resources = [
+            'Movies',
+            'Theaters'
+        ];
+
+        foreach (['1.0', '1.1', '1.1.1'] as $version) {
+            foreach ($representations as $name) {
+                $this->assertSame(
+                    file_get_contents($blueprints_dir . '/' . $version . '/representations/' . $name . '.apib'),
+                    file_get_contents($output_dir . '/' . $version . '/representations/' . $name . '.apib'),
+                    'Generated representation `' . $name . '.apib` for version `' . $version . '`` does not match.'
+                );
+            }
+
+            foreach ($resources as $name) {
+                $this->assertSame(
+                    file_get_contents($blueprints_dir . '/' . $version . '/resources/' . $name . '.apib'),
+                    file_get_contents($output_dir . '/' . $version . '/resources/' . $name . '.apib'),
+                    'Generated resource `' . $name . '.apib` for version `' . $version . '`` does not match.'
+                );
+            }
         }
     }
 

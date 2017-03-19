@@ -9,6 +9,8 @@ class ConfigTest extends TestCase
     {
         $config = $this->getConfig();
 
+        $this->assertSame('Mill unit test API, Showtimes', $config->getName());
+
         $this->assertSame('1.0', $config->getFirstApiVersion());
         $this->assertSame('1.1.1', $config->getDefaultApiVersion());
         $this->assertSame('1.1.1', $config->getLatestApiVersion());
@@ -39,27 +41,41 @@ class ConfigTest extends TestCase
             '\Mill\Examples\Showtimes\Controllers\Theaters'
         ], $config->getControllers());
 
-        $this->assertSame([
-            '\Mill\Examples\Showtimes\Representations\Movie' => [
-                'class' => '\Mill\Examples\Showtimes\Representations\Movie',
-                'method' => 'create'
+        $representations = [
+            'standard' => [
+                '\Mill\Examples\Showtimes\Representations\Movie' => [
+                    'class' => '\Mill\Examples\Showtimes\Representations\Movie',
+                    'method' => 'create'
+                ],
+                '\Mill\Examples\Showtimes\Representations\Person' => [
+                    'class' => '\Mill\Examples\Showtimes\Representations\Person',
+                    'method' => 'create'
+                ],
+                '\Mill\Examples\Showtimes\Representations\Theater' => [
+                    'class' => '\Mill\Examples\Showtimes\Representations\Theater',
+                    'method' => 'create'
+                ]
             ],
-            '\Mill\Examples\Showtimes\Representations\Theater' => [
-                'class' => '\Mill\Examples\Showtimes\Representations\Theater',
-                'method' => 'create'
+            'error' => [
+                '\Mill\Examples\Showtimes\Representations\Error' => [
+                    'class' => '\Mill\Examples\Showtimes\Representations\Error',
+                    'method' => 'create',
+                    'needs_error_code' => false
+                ],
+                '\Mill\Examples\Showtimes\Representations\CodedError' => [
+                    'class' => '\Mill\Examples\Showtimes\Representations\CodedError',
+                    'method' => 'create',
+                    'needs_error_code' => true
+                ]
             ]
-        ], $config->getRepresentations());
+        ];
 
-        $this->assertSame([
-            '\Mill\Examples\Showtimes\Representations\Error' => [
-                'class' => '\Mill\Examples\Showtimes\Representations\Error',
-                'needs_error_code' => false
-            ],
-            '\Mill\Examples\Showtimes\Representations\CodedError' => [
-                'class' => '\Mill\Examples\Showtimes\Representations\CodedError',
-                'needs_error_code' => true
-            ]
-        ], $config->getErrorRepresentations());
+        $this->assertSame($representations['standard'], $config->getRepresentations());
+        $this->assertSame($representations['error'], $config->getErrorRepresentations());
+        $this->assertSame(
+            array_merge($representations['standard'], $representations['error']),
+            $config->getAllRepresentations()
+        );
 
         $this->assertSame([
             '\Mill\Examples\Showtimes\Representations\Error',
@@ -342,7 +358,25 @@ XML
     </filter>
 
     <errors>
-        <class name="\Uncallable" needsErrorCode="false" />
+        <class name="\Uncallable" method="create" needsErrorCode="false" />
+    </errors>
+</representations>
+XML
+            ],
+
+            'representations.error.missing-method' => [
+                'includes' => ['versions', 'controllers'],
+                'exception' => [
+                    'regex' => '/missing a `method`/'
+                ],
+                'xml' => <<<XML
+<representations>
+    <filter>
+        <class name="\Mill\Examples\Showtimes\Representations\Movie" method="create" />
+    </filter>
+
+    <errors>
+        <class name="\Mill\Examples\Showtimes\Representations\Error" method="" needsErrorCode="false" />
     </errors>
 </representations>
 XML
