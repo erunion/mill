@@ -520,7 +520,9 @@ class Blueprint extends Generator
 
             case 'representation':
                 $representation = $this->getRepresentation($subtype);
-                return $representation->getLabel();
+                if ($representation) {
+                    return $representation->getLabel();
+                }
                 break;
         }
 

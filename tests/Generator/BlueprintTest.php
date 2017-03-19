@@ -23,7 +23,8 @@ class BlueprintTest extends TestCase
                 $this->assertSame(
                     $expected,
                     $content,
-                    sprintf('The generated resource `%s`, on version %s does not match the expected content.',
+                    sprintf(
+                        'The generated resource `%s`, on version %s does not match the expected content.',
                         $group,
                         $version
                     )
@@ -37,7 +38,8 @@ class BlueprintTest extends TestCase
                 $this->assertSame(
                     $expected,
                     $content,
-                    sprintf('The generated representation `%s`, on version %s does not match the expected content.',
+                    sprintf(
+                        'The generated representation `%s`, on version %s does not match the expected content.',
                         $representation,
                         $version
                     )
