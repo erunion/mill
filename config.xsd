@@ -15,6 +15,8 @@
     <xs:group name="group.config">
         <xs:all>
             <xs:element name="versions" type="component.versions" minOccurs="1" maxOccurs="1" />
+            <xs:element name="generators" type="component.generators" minOccurs="0" maxOccurs="1" />
+
             <xs:element name="controllers" type="component.controllers" minOccurs="1" maxOccurs="1" />
             <xs:element name="representations" type="component.representations" minOccurs="1" maxOccurs="1" />
 
@@ -34,6 +36,28 @@
                 </xs:complexType>
             </xs:element>
         </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="component.generators">
+        <xs:sequence>
+            <xs:element name="blueprint">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="excludes" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="exclude" minOccurs="1" maxOccurs="unbounded">
+                                        <xs:complexType>
+                                            <xs:attribute name="group" type="xs:string" use="required" />
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="component.controllers">

@@ -22,6 +22,10 @@ class ConfigTest extends TestCase
         ], $config->getApiVersions());
 
         $this->assertSame([
+            'FakeExcludeGroup'
+        ], $config->getBlueprintGroupExcludes());
+
+        $this->assertSame([
             'BUY_TICKETS',
             'MOVIE_RATINGS',
             'NONE'
@@ -141,7 +145,7 @@ XML;
         if (isset($exception_details['exception'])) {
             $this->expectException($exception_details['exception']);
         } else {
-            $this->expectException('\InvalidArgumentException');
+            $this->expectException('\DomainException');
             $this->expectExceptionMessageRegExp($exception_details['regex']);
         }
 
@@ -230,6 +234,7 @@ XML
             'versions.multiple-defaults' => [
                 'includes' => ['controllers', 'representations'],
                 'exception' => [
+                    'exception' => '\InvalidArgumentException',
                     'regex' => '/Multiple default API versions/'
                 ],
                 'xml' => <<<XML
@@ -241,12 +246,33 @@ XML
             ],
 
             /**
+             * <generators>
+             *
+             */
+            'generators.blueprint.exclude.invalid' => [
+                'includes' => ['versions', 'controllers', 'representations'],
+                'exception' => [
+                    'regex' => '/invalid Blueprint generator group/'
+                ],
+                'xml' => <<<XML
+<generators>
+    <blueprint>
+        <excludes>
+            <exclude group="" />
+        </excludes>
+    </blueprint>
+</generators>
+XML
+            ],
+
+            /**
              * <controllers>
              *
              */
             'controllers.directory.invalid' => [
                 'includes' => ['versions', 'representations'],
                 'exception' => [
+                    'exception' => 'InvalidArgumentException',
                     'regex' => '/does not exist/'
                 ],
                 'xml' => <<<XML
@@ -261,6 +287,7 @@ XML
             'controllers.none-found' => [
                 'includes' => ['versions', 'representations'],
                 'exception' => [
+                    'exception' => '\InvalidArgumentException',
                     'regex' => '/requires a set of controllers/'
                 ],
                 'xml' => <<<XML
@@ -275,6 +302,7 @@ XML
             'controllers.class.uncallable' => [
                 'includes' => ['versions', 'representations'],
                 'exception' => [
+                    'exception' => '\InvalidArgumentException',
                     'regex' => '/could not be called/'
                 ],
                 'xml' => <<<XML
@@ -293,6 +321,7 @@ XML
             'representations.none-found' => [
                 'includes' => ['versions', 'controllers'],
                 'exception' => [
+                    'exception' => '\InvalidArgumentException',
                     'regex' => '/requires a set of representations/'
                 ],
                 'xml' => <<<XML
@@ -335,6 +364,7 @@ XML
             'representations.directory.invalid' => [
                 'includes' => ['versions', 'controllers'],
                 'exception' => [
+                    'exception' => '\InvalidArgumentException',
                     'regex' => '/does not exist/'
                 ],
                 'xml' => <<<XML

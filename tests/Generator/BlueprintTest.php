@@ -47,4 +47,25 @@ class BlueprintTest extends TestCase
             }
         }
     }
+
+    public function testGenerationWithAnExcludedGroup()
+    {
+        $this->getConfig()->addBlueprintGroupExclude('Movies');
+
+        $blueprint = new Blueprint($this->getConfig());
+        $generated = $blueprint->generate();
+
+        $this->assertSame([
+            '1.0',
+            '1.1',
+            '1.1.1'
+        ], array_keys($generated));
+
+        foreach ($generated as $version => $section) {
+            $this->assertArrayNotHasKey('Movies', $section['groups']);
+            $this->assertArrayHasKey('Theaters', $section['groups']);
+        }
+
+        $this->getConfig()->removeBlueprintGroupExclude('Movies');
+    }
 }

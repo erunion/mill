@@ -2,6 +2,7 @@
 namespace Mill;
 
 use Composer\Semver\Semver;
+use DomainException;
 use DOMDocument;
 use InvalidArgumentException;
 use League\Flysystem\FileNotFoundException;
@@ -120,6 +121,13 @@ class Config
     protected $parameter_tokens = [];
 
     /**
+     * Array of API Blueprint generator resource group excludes.
+     *
+     * @var array
+     */
+    protected $blueprint_group_excludes = [];
+
+    /**
      * Create a new configuration object from a given config file.
      *
      * @param Filesystem $filesystem
@@ -196,6 +204,10 @@ class Config
             $config->loadParameterTokens($xml->parameterTokens->token);
         }
 
+        if (isset($xml->generators)) {
+            $config->loadGeneratorSettings($xml->generators);
+        }
+
         $config->api_versions = [];
         $config->loadVersions($xml->versions->version);
 
@@ -266,12 +278,12 @@ class Config
      * @param string $from
      * @param string $to
      * @return void
-     * @throws InvalidArgumentException If an invalid uriSegment translation text was found.
+     * @throws DomainException If an invalid uriSegment translation text was found.
      */
     public function addUriSegmentTranslation($from, $to)
     {
         if (empty($from) || empty($to)) {
-            throw new InvalidArgumentException(
+            throw new DomainException(
                 'An invalid translation text was supplied in the Mill `uriSegmentTranslations` section.'
             );
         }
@@ -304,12 +316,12 @@ class Config
      * @param string $parameter
      * @param string $annotation
      * @return void
-     * @throws InvalidArgumentException If an invalid parameterTokens token name was found.
+     * @throws DomainException If an invalid parameterTokens token name was found.
      */
     public function addParameterToken($parameter, $annotation)
     {
         if (empty($parameter) || empty($annotation)) {
-            throw new InvalidArgumentException(
+            throw new DomainException(
                 'An invalid parameter token name was supplied in the Mill `parameterTokens` section.'
             );
         }
@@ -318,11 +330,66 @@ class Config
     }
 
     /**
+     * Load in generator settings.
+     *
+     * @param SimpleXMLElement $generators
+     * @return void
+     */
+    protected function loadGeneratorSettings(SimpleXMLElement $generators)
+    {
+        if (isset($generators->blueprint)) {
+            if (isset($generators->blueprint->excludes)) {
+                foreach ($generators->blueprint->excludes->exclude as $exclude) {
+                    $group = trim((string) $exclude['group']);
+
+                    $this->addBlueprintGroupExclude($group);
+                }
+            }
+        }
+    }
+
+    /**
+     * Add a new API Blueprint resource group generator exclusion.
+     *
+     * @param string $group
+     * @return void
+     * @throws DomainException If an invalid Blueprint generator group exclude was detected.
+     */
+    public function addBlueprintGroupExclude($group)
+    {
+        if (empty($group)) {
+            throw new DomainException(
+                'An invalid Blueprint generator group exclude was supplied in the Mill `generators` ' .
+                    'section.'
+            );
+        }
+
+        $this->blueprint_group_excludes[] = $group;
+    }
+
+    /**
+     * Remove a currently configured API Blueprint resource group generator exclusion.
+     *
+     * @param string $group
+     * @return void
+     */
+    public function removeBlueprintGroupExclude($group)
+    {
+        $excludes = array_flip($this->blueprint_group_excludes);
+        if (isset($excludes[$group])) {
+            unset($excludes[$group]);
+        }
+
+        $this->blueprint_group_excludes = array_flip($excludes);
+    }
+
+    /**
      * Load in a versions configuration definition.
      *
      * @param SimpleXMLElement $versions
      * @return void
      * @throws InvalidArgumentException If multiple configured default API versions were detected.
+     * @throws DomainException If no default API version was set.
      */
     protected function loadVersions(SimpleXMLElement $versions)
     {
@@ -342,7 +409,7 @@ class Config
         }
 
         if (!$this->getDefaultApiVersion()) {
-            throw new InvalidArgumentException('You must set a default API version.');
+            throw new DomainException('You must set a default API version.');
         }
 
         // Keep things tidy.
@@ -439,7 +506,7 @@ class Config
      * @param SimpleXMLElement $representations
      * @return void
      * @throws UncallableRepresentationException If a configured representation does not exist.
-     * @throws InvalidArgumentException If a representation is configured without a `method` attribute.
+     * @throws DomainException If a representation is configured without a `method` attribute.
      * @throws InvalidArgumentException If a directory configured does not exist.
      * @throws InvalidArgumentException If no representations were detected.
      */
@@ -471,7 +538,7 @@ class Config
             $class_name = (string) $class['name'];
             $method = (string) $class['method'] ?: null;
             if (empty($method)) {
-                throw new InvalidArgumentException(
+                throw new DomainException(
                     sprintf(
                         'The `%s` representation class declaration is missing a `method` attribute.',
                         $class_name
@@ -569,6 +636,7 @@ class Config
      * @param SimpleXMLElement $representations
      * @return void
      * @throws UncallableErrorRepresentationException If a configured error representation class does not exist.
+     * @throws DomainException If an error representation is missing a `method` attribute.
      */
     protected function loadErrorRepresentations(SimpleXMLElement $representations)
     {
@@ -584,7 +652,7 @@ class Config
             if (!class_exists($class_name)) {
                 throw UncallableErrorRepresentationException::create($class_name);
             } elseif (empty($method)) {
-                throw new InvalidArgumentException(
+                throw new DomainException(
                     sprintf(
                         'The `%s` error representation class declaration is missing a `method` attribute.',
                         $class_name
@@ -749,6 +817,16 @@ class Config
     public function getExcludedRepresentations()
     {
         return $this->excluded_representations;
+    }
+
+    /**
+     * Get the array of configured API Blueprint resource group excludes.
+     *
+     * @return array
+     */
+    public function getBlueprintGroupExcludes()
+    {
+        return $this->blueprint_group_excludes;
     }
 
     /**

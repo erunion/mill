@@ -27,6 +27,7 @@ class Blueprint extends Generator
     {
         parent::generate();
 
+        $group_excludes = $this->config->getBlueprintGroupExcludes();
         $resources = $this->getResources();
 
         $blueprints = [];
@@ -38,6 +39,11 @@ class Blueprint extends Generator
 
             // Process resource groups.
             foreach ($groups as $group_name => $data) {
+                // If this group has been designated in the config file to be excluded, then exclude it.
+                if (in_array($group_name, $group_excludes)) {
+                    continue;
+                }
+
                 $contents = sprintf('# Group %s', $group_name);
                 $contents .= $this->line();
 
