@@ -9,6 +9,8 @@ class ConfigTest extends TestCase
     {
         $config = $this->getConfig();
 
+        $this->assertSame('Mill unit test API, Showtimes', $config->getName());
+
         $this->assertSame('1.0', $config->getFirstApiVersion());
         $this->assertSame('1.1.1', $config->getDefaultApiVersion());
         $this->assertSame('1.1.1', $config->getLatestApiVersion());
@@ -18,6 +20,10 @@ class ConfigTest extends TestCase
             '1.1',
             '1.1.1'
         ], $config->getApiVersions());
+
+        $this->assertSame([
+            'FakeExcludeGroup'
+        ], $config->getBlueprintGroupExcludes());
 
         $this->assertSame([
             'BUY_TICKETS',
@@ -39,27 +45,41 @@ class ConfigTest extends TestCase
             '\Mill\Examples\Showtimes\Controllers\Theaters'
         ], $config->getControllers());
 
-        $this->assertSame([
-            '\Mill\Examples\Showtimes\Representations\Movie' => [
-                'class' => '\Mill\Examples\Showtimes\Representations\Movie',
-                'method' => 'create'
+        $representations = [
+            'standard' => [
+                '\Mill\Examples\Showtimes\Representations\Movie' => [
+                    'class' => '\Mill\Examples\Showtimes\Representations\Movie',
+                    'method' => 'create'
+                ],
+                '\Mill\Examples\Showtimes\Representations\Person' => [
+                    'class' => '\Mill\Examples\Showtimes\Representations\Person',
+                    'method' => 'create'
+                ],
+                '\Mill\Examples\Showtimes\Representations\Theater' => [
+                    'class' => '\Mill\Examples\Showtimes\Representations\Theater',
+                    'method' => 'create'
+                ]
             ],
-            '\Mill\Examples\Showtimes\Representations\Theater' => [
-                'class' => '\Mill\Examples\Showtimes\Representations\Theater',
-                'method' => 'create'
+            'error' => [
+                '\Mill\Examples\Showtimes\Representations\Error' => [
+                    'class' => '\Mill\Examples\Showtimes\Representations\Error',
+                    'method' => 'create',
+                    'needs_error_code' => false
+                ],
+                '\Mill\Examples\Showtimes\Representations\CodedError' => [
+                    'class' => '\Mill\Examples\Showtimes\Representations\CodedError',
+                    'method' => 'create',
+                    'needs_error_code' => true
+                ]
             ]
-        ], $config->getRepresentations());
+        ];
 
-        $this->assertSame([
-            '\Mill\Examples\Showtimes\Representations\Error' => [
-                'class' => '\Mill\Examples\Showtimes\Representations\Error',
-                'needs_error_code' => false
-            ],
-            '\Mill\Examples\Showtimes\Representations\CodedError' => [
-                'class' => '\Mill\Examples\Showtimes\Representations\CodedError',
-                'needs_error_code' => true
-            ]
-        ], $config->getErrorRepresentations());
+        $this->assertSame($representations['standard'], $config->getRepresentations());
+        $this->assertSame($representations['error'], $config->getErrorRepresentations());
+        $this->assertSame(
+            array_merge($representations['standard'], $representations['error']),
+            $config->getAllRepresentations()
+        );
 
         $this->assertSame([
             '\Mill\Examples\Showtimes\Representations\Error',
@@ -125,7 +145,7 @@ XML;
         if (isset($exception_details['exception'])) {
             $this->expectException($exception_details['exception']);
         } else {
-            $this->expectException('\InvalidArgumentException');
+            $this->expectException('\DomainException');
             $this->expectExceptionMessageRegExp($exception_details['regex']);
         }
 
@@ -214,6 +234,7 @@ XML
             'versions.multiple-defaults' => [
                 'includes' => ['controllers', 'representations'],
                 'exception' => [
+                    'exception' => '\InvalidArgumentException',
                     'regex' => '/Multiple default API versions/'
                 ],
                 'xml' => <<<XML
@@ -225,12 +246,33 @@ XML
             ],
 
             /**
+             * <generators>
+             *
+             */
+            'generators.blueprint.exclude.invalid' => [
+                'includes' => ['versions', 'controllers', 'representations'],
+                'exception' => [
+                    'regex' => '/invalid Blueprint generator group/'
+                ],
+                'xml' => <<<XML
+<generators>
+    <blueprint>
+        <excludes>
+            <exclude group="" />
+        </excludes>
+    </blueprint>
+</generators>
+XML
+            ],
+
+            /**
              * <controllers>
              *
              */
             'controllers.directory.invalid' => [
                 'includes' => ['versions', 'representations'],
                 'exception' => [
+                    'exception' => 'InvalidArgumentException',
                     'regex' => '/does not exist/'
                 ],
                 'xml' => <<<XML
@@ -245,6 +287,7 @@ XML
             'controllers.none-found' => [
                 'includes' => ['versions', 'representations'],
                 'exception' => [
+                    'exception' => '\InvalidArgumentException',
                     'regex' => '/requires a set of controllers/'
                 ],
                 'xml' => <<<XML
@@ -259,6 +302,7 @@ XML
             'controllers.class.uncallable' => [
                 'includes' => ['versions', 'representations'],
                 'exception' => [
+                    'exception' => '\InvalidArgumentException',
                     'regex' => '/could not be called/'
                 ],
                 'xml' => <<<XML
@@ -277,6 +321,7 @@ XML
             'representations.none-found' => [
                 'includes' => ['versions', 'controllers'],
                 'exception' => [
+                    'exception' => '\InvalidArgumentException',
                     'regex' => '/requires a set of representations/'
                 ],
                 'xml' => <<<XML
@@ -319,6 +364,7 @@ XML
             'representations.directory.invalid' => [
                 'includes' => ['versions', 'controllers'],
                 'exception' => [
+                    'exception' => '\InvalidArgumentException',
                     'regex' => '/does not exist/'
                 ],
                 'xml' => <<<XML
@@ -342,7 +388,25 @@ XML
     </filter>
 
     <errors>
-        <class name="\Uncallable" needsErrorCode="false" />
+        <class name="\Uncallable" method="create" needsErrorCode="false" />
+    </errors>
+</representations>
+XML
+            ],
+
+            'representations.error.missing-method' => [
+                'includes' => ['versions', 'controllers'],
+                'exception' => [
+                    'regex' => '/missing a `method`/'
+                ],
+                'xml' => <<<XML
+<representations>
+    <filter>
+        <class name="\Mill\Examples\Showtimes\Representations\Movie" method="create" />
+    </filter>
+
+    <errors>
+        <class name="\Mill\Examples\Showtimes\Representations\Error" method="" needsErrorCode="false" />
     </errors>
 </representations>
 XML

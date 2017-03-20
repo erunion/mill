@@ -19,6 +19,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class Generate extends Command
 {
+    const DS = DIRECTORY_SEPARATOR;
+
     /**
      * @return void
      */
@@ -80,11 +82,11 @@ class Generate extends Command
         ]);
 
         if ($dry_run) {
-            $output->writeln('<info>Running a dry run...</info>');
+            $output->writeln('<info>Running a dry run…</info>');
         }
 
         if ($input->getOption('default')) {
-            $version = Container::getConfig()->getDefaultApiVersion();
+            $version = $container['config']->getDefaultApiVersion();
         }
 
         // Validate the current version generation constraint.
@@ -100,36 +102,75 @@ class Generate extends Command
         /** @var \League\Flysystem\Filesystem $filesystem */
         $filesystem = $container['filesystem'];
 
-        $output->writeln('<comment>Compiling controllers and representations...</comment>');
+        $output->writeln('<comment>Compiling controllers and representations…</comment>');
         $generator = new Blueprint($container['config'], $version);
 
-        $output->writeln('<comment>Generating API Blueprint files...</comment>');
+        $output->writeln('<comment>Generating API Blueprint files…</comment>');
         $blueprints = $generator->generate();
 
-        foreach ($blueprints as $version => $groups) {
+        foreach ($blueprints as $version => $section) {
+            $version_dir = $output_dir . self::DS . $version . self::DS;
+
             $output->writeLn('<comment> - API version: ' . $version . '</comment>');
 
-            $progress = new ProgressBar($output, count($groups));
+            $total_work = (isset($section['groups'])) ? count($section['groups']) : 0;
+            $total_work += (isset($section['structures'])) ? count($section['structures']) : 0;
+
+            $progress = new ProgressBar($output, $total_work);
+            $progress->setFormatDefinition('custom', ' %current%/%max% [%bar%] %message%');
+            $progress->setFormat('custom');
             $progress->start();
 
-            foreach ($groups as $group => $markdown) {
-                $progress->advance();
+            // Process resource groups.
+            if (isset($section['groups'])) {
+                $progress->setMessage('Processing resources…');
+                foreach ($section['groups'] as $group => $markdown) {
+                    $progress->advance();
 
-                if ($dry_run) {
-                    continue;
+                    if ($dry_run) {
+                        continue;
+                    }
+
+                    // Convert any nested group names, like `Me\Videos`, into a proper directory structure: `Me/Videos`.
+                    $group = str_replace('\\', self::DS, $group);
+
+                    $filesystem->put(
+                        $version_dir . 'resources' . self::DS . $group . '.apib',
+                        trim($markdown)
+                    );
                 }
+            }
 
-                // Convert any nested group names, like `Me\Videos`, into a proper directory structure: `Me/Videos`.
-                if (strpos($group, '\\') !== false) {
-                    $group = str_replace('\\', DIRECTORY_SEPARATOR, $group);
+            // Process data structures.
+            if (isset($section['structures'])) {
+                $progress->setMessage('Processing representations…');
+                foreach ($section['structures'] as $structure => $markdown) {
+                    $progress->advance();
+
+                    if ($dry_run) {
+                        continue;
+                    }
+
+                    // Sanitize any structure names with forward slashes to avoid them from being nested in directories
+                    // by Flysystem.
+                    $structure = str_replace('/', '-', $structure);
+
+                    $filesystem->put(
+                        $version_dir . 'representations' . self::DS . $structure . '.apib',
+                        trim($markdown)
+                    );
                 }
+            }
 
+            // Save a, single, combined API Blueprint file.
+            if (!$dry_run) {
                 $filesystem->put(
-                    $output_dir . DIRECTORY_SEPARATOR . $version . DIRECTORY_SEPARATOR . $group . '.apib',
-                    $markdown
+                    $version_dir . 'api.apib',
+                    $section['combined']
                 );
             }
 
+            $progress->setMessage('');
             $progress->finish();
             $output->writeLn('');
         }

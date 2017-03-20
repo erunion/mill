@@ -77,8 +77,9 @@ class RepresentationParser extends Parser
         $annotations = [];
 
         // Does this have any `@api-see` pointers?
+        /** @var mixed $has_version */
         $has_version = false;
-        $has_see = false;
+        $has_see = [];
         foreach ($matches as $k => $match) {
             list($_, $annotation, $decorator, $_last_decorator, $data) = $match;
             switch ($annotation) {
@@ -100,7 +101,7 @@ class RepresentationParser extends Parser
         }
 
         // If we matched an `@api-see` annotation, then let's parse it out into viable annotations.
-        if ($has_see) {
+        if (!empty($has_see)) {
             list($see_class, $see_method) = explode('::', array_shift($has_see));
             $prefix = array_shift($has_see);
 

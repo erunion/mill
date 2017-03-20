@@ -9,6 +9,16 @@
         <version name="1.1.1" default="true" />
     </versions>
 
+    <generators>
+        <blueprint>
+            <excludes>
+                <!-- This is here just for code coverage purposes, and to verify that we're able to exclude resource
+                    groups when loading a config XML file. -->
+                <exclude group="FakeExcludeGroup" />
+            </excludes>
+        </blueprint>
+    </generators>
+
     <controllers>
         <filter>
             <directory name="resources/examples/Showtimes/Controllers/" suffix=".php" />
@@ -34,8 +44,8 @@
         </filter>
 
         <errors>
-            <class name="\Mill\Examples\Showtimes\Representations\Error" needsErrorCode="false" />
-            <class name="\Mill\Examples\Showtimes\Representations\CodedError" needsErrorCode="true" />
+            <class name="\Mill\Examples\Showtimes\Representations\Error" method="create" needsErrorCode="false" />
+            <class name="\Mill\Examples\Showtimes\Representations\CodedError" method="create" needsErrorCode="true" />
         </errors>
     </representations>
 

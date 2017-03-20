@@ -144,6 +144,16 @@ class Documentation
     }
 
     /**
+     * Get the label of this representation.
+     *
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->label;
+    }
+
+    /**
      * Pull the content of this representation.
      *
      * @return array

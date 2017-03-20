@@ -13,6 +13,12 @@ use Mill\Parser\Resource\Action;
 class Blueprint extends Generator
 {
     /**
+     * Current list of representations for the current API version we're working with.
+     * @var array
+     */
+    private $representations = [];
+
+    /**
      * Take compiled API documentation and generate API Blueprint representations.
      *
      * @return array
@@ -21,6 +27,7 @@ class Blueprint extends Generator
     {
         parent::generate();
 
+        $group_excludes = $this->config->getBlueprintGroupExcludes();
         $resources = $this->getResources();
 
         $blueprints = [];
@@ -28,12 +35,16 @@ class Blueprint extends Generator
         /** @var array $data */
         foreach ($resources as $version => $groups) {
             $this->version = $version;
+            $this->representations = $this->getRepresentations($this->version);
 
+            // Process resource groups.
             foreach ($groups as $group_name => $data) {
-                $contents = 'FORMAT: 1A';
-                $contents .= $this->line(2);
+                // If this group has been designated in the config file to be excluded, then exclude it.
+                if (in_array($group_name, $group_excludes)) {
+                    continue;
+                }
 
-                $contents .= sprintf('# %s', $group_name);
+                $contents = sprintf('# Group %s', $group_name);
                 $contents .= $this->line();
 
                 // Sort the resources so they're alphabetical.
@@ -107,8 +118,34 @@ class Blueprint extends Generator
                 }
 
                 $contents = trim($contents);
-                $blueprints[$this->version][$group_name] = $contents;
+                $blueprints[$this->version]['groups'][$group_name] = $contents;
             }
+
+            // Process representation data structures.
+            if (!empty($this->representations)) {
+                foreach ($this->representations as $representation) {
+                    $fields = $representation->getExplodedContentDotNotation();
+                    if (empty($fields)) {
+                        continue;
+                    }
+
+                    $identifier = $representation->getLabel();
+
+                    $contents = sprintf('## %s', $identifier);
+                    $contents .= $this->line();
+
+                    $contents .= $this->processRepresentationFields($fields, 0);
+
+                    $contents = trim($contents);
+                    $blueprints[$this->version]['structures'][$identifier] = $contents;
+                }
+            }
+
+            // Process the combined file.
+            $blueprints[$this->version]['combined'] = $this->processCombinedFile(
+                $blueprints[$this->version]['groups'],
+                $blueprints[$this->version]['structures']
+            );
         }
 
         return $blueprints;
@@ -266,11 +303,16 @@ class Blueprint extends Generator
                 /** @var ReturnAnnotation|ThrowsAnnotation $response */
                 foreach ($responses as $response) {
                     $description = $response->getDescription();
-
                     $description = (!empty($description)) ? $description : 'Standard request.';
-
                     $blueprint .= $this->tab(2);
-                    $blueprint .= ' * ' . $description;
+                    $blueprint .= sprintf(' * %s', $description);
+                    if ($response instanceof ThrowsAnnotation) {
+                        $error_code = $response->getErrorCode();
+                        if ($error_code) {
+                            $blueprint .= sprintf(' Unique error code: %s', $error_code);
+                        }
+                    }
+
                     $blueprint .= $this->line();
                 }
             }
@@ -280,7 +322,6 @@ class Blueprint extends Generator
         $response = array_shift($responses);
         $representation = $response->getRepresentation();
         $representations = $this->getRepresentations($this->version);
-
         if (!isset($representations[$representation])) {
             return $blueprint;
         }
@@ -290,10 +331,16 @@ class Blueprint extends Generator
         $fields = $docs->getExplodedContentDotNotation();
         if (!empty($fields)) {
             $blueprint .= $this->tab();
-            $blueprint .= '+ Attributes';
-            $blueprint .= $this->line();
 
-            $blueprint .= $this->processRepresentationFields($fields);
+            $attribute_type = $docs->getLabel();
+            if ($response instanceof ReturnAnnotation) {
+                if ($response->getType() === 'collection') {
+                    $attribute_type = sprintf('array[%s]', $attribute_type);
+                }
+            }
+
+            $blueprint .= sprintf('+ Attributes (%s)', $attribute_type);
+            $blueprint .= $this->line();
         }
 
         return $blueprint;
@@ -318,7 +365,10 @@ class Blueprint extends Generator
             if (isset($field['__FIELD_DATA__'])) {
                 /** @var array $data */
                 $data = $field['__FIELD_DATA__'];
-                $type = $this->convertTypeToCompatibleType($data['type']);
+                $type = $this->convertTypeToCompatibleType(
+                    $data['type'],
+                    (isset($data['subtype'])) ? $data['subtype'] : false
+                );
 
                 $blueprint .= sprintf('- `%s` (%s) - %s', $field_name, $type, $data['label']);
                 $blueprint .= $this->line();
@@ -362,6 +412,57 @@ class Blueprint extends Generator
     }
 
     /**
+     * Given an array of resource groups, and representation structures, build a combined API Blueprint file.
+     *
+     * @param array $groups
+     * @param array $structures
+     * @return string
+     */
+    protected function processCombinedFile($groups = [], $structures = [])
+    {
+        $blueprint = 'FORMAT: 1A';
+        $blueprint .= $this->line(2);
+
+        $api_name = $this->config->getName();
+        if (!empty($api_name)) {
+            $blueprint .= sprintf('# %s', $api_name);
+            $blueprint .= $this->line();
+
+            $blueprint .= sprintf("This is the API Blueprint file for %s.", $api_name);
+            $blueprint .= $this->line(2);
+
+            $blueprint .= sprintf(
+                "It was automatically generated by [Mill](https://github.com/vimeo/mill) on %s.",
+                (new \DateTime())->format('Y-m-d H:i:s')
+            );
+
+            $blueprint .= $this->line(2);
+        }
+
+        if (!empty($groups)) {
+            $blueprint .= implode($this->line(2), $groups);
+        }
+
+        if (!empty($structures)) {
+            if (!empty($groups)) {
+                $blueprint .= $this->line(2);
+            }
+
+            // Keep things tidy in the combined file.
+            ksort($structures);
+
+            $blueprint .= '# Data Structures';
+            $blueprint .= $this->line();
+
+            $blueprint .= implode($this->line(2), $structures);
+        }
+
+        $blueprint = trim($blueprint);
+
+        return $blueprint;
+    }
+
+    /**
      * Return a repeated new line character.
      *
      * @param integer $repeat
@@ -388,36 +489,63 @@ class Blueprint extends Generator
      *
      * @link https://github.com/apiaryio/mson/blob/master/MSON%20Specification.md#2-types
      * @param string $type
+     * @param mixed $subtype
      * @return string
      */
-    private function convertTypeToCompatibleType($type)
+    private function convertTypeToCompatibleType($type, $subtype = false)
     {
         switch ($type) {
             case 'enum':
                 return 'enum[string]';
                 break;
 
-            // @todo set this to the name of the response and embed the full docs for that response type
-            case 'representation':
-                // https://apiblueprint.org/documentation/mson/specification.html#22-named-types
-                return 'object'; //'<<@todo REPRESENTATION>>';
-                break;
-
-            case 'integer':
             case 'float':
+            case 'integer':
                 return 'number';
                 break;
 
             // API Blueprint doesn't have support for dates, timestamps, or URI's, but we still want to
-            // keep that metadata in our comments, so just convert these on the fly to strings so they
-            // pass blueprint validation.
+            // keep that metadata in our documentation (because they might be useful if you're using Mill as an API
+            // to display your documentation in some other format), so just convert these on the fly to strings so
+            // they're able pass blueprint validation.
             case 'datetime':
             case 'timestamp':
             case 'uri':
                 return 'string';
                 break;
+
+            case 'array':
+                if ($subtype) {
+                    $representation = $this->getRepresentation($subtype);
+                    if ($representation) {
+                        return 'array[' . $representation->getLabel() . ']';
+                    } else {
+                        return 'array[' . $subtype . ']';
+                    }
+                }
+
+                return 'array';
+                break;
+
+            case 'representation':
+                $representation = $this->getRepresentation($subtype);
+                if ($representation) {
+                    return $representation->getLabel();
+                }
+                break;
         }
 
         return $type;
+    }
+
+    /**
+     * Pull a representation from the current versioned set of representations.
+     *
+     * @param string $representation
+     * @return \Mill\Parser\Representation\Documentation|false
+     */
+    private function getRepresentation($representation)
+    {
+        return (isset($this->representations[$representation])) ? $this->representations[$representation] : false;
     }
 }
