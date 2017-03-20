@@ -73,13 +73,13 @@ class DocumentationTest extends TestCase
                             'label' => 'MPAA rating',
                             'options' => [
                                 'G',
+                                'NC-17',
+                                'NR',
                                 'PG',
                                 'PG-13',
                                 'R',
-                                'NC-17',
-                                'X',
-                                'NR',
-                                'UR'
+                                'UR',
+                                'X'
                             ],
                             'type' => 'enum',
                             'version' => false
@@ -228,13 +228,13 @@ class DocumentationTest extends TestCase
                                 'label' => 'MPAA rating',
                                 'options' => [
                                     'G',
+                                    'NC-17',
+                                    'NR',
                                     'PG',
                                     'PG-13',
                                     'R',
-                                    'NC-17',
-                                    'X',
-                                    'NR',
-                                    'UR'
+                                    'UR',
+                                    'X'
                                 ],
                                 'type' => 'enum',
                                 'version' => false

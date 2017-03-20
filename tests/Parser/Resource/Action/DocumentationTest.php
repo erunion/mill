@@ -232,13 +232,13 @@ class DocumentationTest extends TestCase
                                 'type' => 'string',
                                 'values' => [
                                     'G',
+                                    'NC-17',
+                                    'NR',
                                     'PG',
                                     'PG-13',
                                     'R',
-                                    'NC-17',
-                                    'X',
-                                    'NR',
-                                    'UR'
+                                    'UR',
+                                    'X'
                                 ],
                                 'version' => false,
                                 'visible' => true

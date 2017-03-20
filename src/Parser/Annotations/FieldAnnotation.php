@@ -143,6 +143,9 @@ class FieldAnnotation extends Annotation
                 case 'options':
                     if (preg_match(self::OPTIONS_PATTERN, $data, $options_matches)) {
                         $parsed['options'] = array_filter(explode('|', $options_matches[1]));
+
+                        // Keep the array of options alphabetical so it's cleaner when generated into documentation.
+                        sort($parsed['options']);
                     }
                     break;
 

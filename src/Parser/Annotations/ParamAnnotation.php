@@ -152,6 +152,9 @@ class ParamAnnotation extends Annotation
                 }
             }
 
+            // Keep the array of values alphabetical so it's cleaner when generated into documentation.
+            sort($parsed['values']);
+
             $doc = trim(preg_replace(self::REGEX_VALUES, '', $doc));
         }
 
