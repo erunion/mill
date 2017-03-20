@@ -125,7 +125,6 @@ class Generate extends Command
             if (isset($section['groups'])) {
                 $progress->setMessage('Processing resources…');
                 foreach ($section['groups'] as $group => $markdown) {
-                    $markdown = trim($markdown);
                     $progress->advance();
 
                     if ($dry_run) {
@@ -133,13 +132,11 @@ class Generate extends Command
                     }
 
                     // Convert any nested group names, like `Me\Videos`, into a proper directory structure: `Me/Videos`.
-                    if (strpos($group, '\\') !== false) {
-                        $group = str_replace('\\', self::DS, $group);
-                    }
+                    $group = str_replace('\\', self::DS, $group);
 
                     $filesystem->put(
                         $version_dir . 'resources' . self::DS . $group . '.apib',
-                        $markdown
+                        trim($markdown)
                     );
                 }
             }
@@ -148,23 +145,29 @@ class Generate extends Command
             if (isset($section['structures'])) {
                 $progress->setMessage('Processing representations…');
                 foreach ($section['structures'] as $structure => $markdown) {
-                    $markdown = trim($markdown);
                     $progress->advance();
 
                     if ($dry_run) {
                         continue;
                     }
 
+                    // Sanitize any structure names with forward slashes to avoid them from being nested in directories
+                    // by Flysystem.
+                    $structure = str_replace('/', '-', $structure);
+
                     $filesystem->put(
                         $version_dir . 'representations' . self::DS . $structure . '.apib',
-                        $markdown
+                        trim($markdown)
                     );
                 }
             }
 
             // Save a, single, combined API Blueprint file.
             if (!$dry_run) {
-                $filesystem->put($version_dir . 'api.apib', $section['combined']);
+                $filesystem->put(
+                    $version_dir . 'api.apib',
+                    $section['combined']
+                );
             }
 
             $progress->setMessage('');
