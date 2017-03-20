@@ -109,6 +109,8 @@ class Generate extends Command
         $blueprints = $generator->generate();
 
         foreach ($blueprints as $version => $section) {
+            $version_dir = $output_dir . self::DS . $version . self::DS;
+
             $output->writeLn('<comment> - API version: ' . $version . '</comment>');
 
             $total_work = (isset($section['groups'])) ? count($section['groups']) : 0;
@@ -136,7 +138,7 @@ class Generate extends Command
                     }
 
                     $filesystem->put(
-                        $output_dir . self::DS . $version . self::DS . 'resources' . self::DS . $group . '.apib',
+                        $version_dir . 'resources' . self::DS . $group . '.apib',
                         $markdown
                     );
                 }
@@ -154,15 +156,16 @@ class Generate extends Command
                     }
 
                     $filesystem->put(
-                        $output_dir . self::DS . $version . self::DS . 'representations' . self::DS . $structure .
-                            '.apib',
+                        $version_dir . 'representations' . self::DS . $structure . '.apib',
                         $markdown
                     );
                 }
             }
 
             // Save a, single, combined API Blueprint file.
-            $filesystem->put($output_dir . self::DS . $version . self::DS . 'api.apib', $section['combined']);
+            if (!$dry_run) {
+                $filesystem->put($version_dir . 'api.apib', $section['combined']);
+            }
 
             $progress->setMessage('');
             $progress->finish();
