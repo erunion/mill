@@ -95,8 +95,8 @@ class ParamAnnotationTest extends AnnotationTest
                     'required' => true,
                     'type' => 'string',
                     'values' => [
-                        'true',
-                        'false'
+                        'false',
+                        'true'
                     ],
                     'version' => false,
                     'visible' => false
