@@ -448,6 +448,9 @@ class Blueprint extends Generator
                 $blueprint .= $this->line(2);
             }
 
+            // Keep things tidy in the combined file.
+            ksort($structures);
+
             $blueprint .= '# Data Structures';
             $blueprint .= $this->line();
 
