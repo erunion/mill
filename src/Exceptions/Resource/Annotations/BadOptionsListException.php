@@ -7,16 +7,18 @@ class BadOptionsListException extends \Exception
 
     /**
      * @param string $annotation
+     * @param string $docblock
      * @param array $values
      * @param string $class
      * @param string $method
      * @return BadOptionsListException
      */
-    public static function create($annotation, array $values, $class, $method)
+    public static function create($annotation, $docblock, array $values, $class, $method)
     {
         $message = sprintf(
-            'The options list on `@api-param %s`in %s::%s should written as `[%s]`, not `[%s]`.',
+            'The options list on `@api-%s %s`in %s::%s should written as `[%s]`, not `[%s]`.',
             $annotation,
+            $docblock,
             $class,
             $method,
             preg_replace("/,( )?/uim", "|", implode(',', $values)),
@@ -25,6 +27,7 @@ class BadOptionsListException extends \Exception
 
         $exception = new self($message);
         $exception->annotation = $annotation;
+        $exception->docblock = $docblock;
         $exception->values = $values;
         $exception->class = $class;
         $exception->method = $method;

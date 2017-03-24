@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Parser;
 
+use Mill\Exceptions\Resource\Annotations\BadOptionsListException;
 use Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException;
 
 /**
@@ -222,6 +223,41 @@ abstract class Annotation
     public function supportsDeprecation()
     {
         return static::SUPPORTS_DEPRECATION;
+    }
+
+    /**
+     * Given our common format for describing enumerated values, parse it out and run validation.
+     *
+     * @param string $annotation
+     * @param string $values
+     * @return array
+     * @throws BadOptionsListException If the enum values were not written in the proper format.
+     */
+    public function parseEnumValues($annotation, $values)
+    {
+        $values = explode('|', $values);
+        if (!empty($values)) {
+            foreach ($values as $k => $value) {
+                if (strpos($value, ',') !== false) {
+                    throw BadOptionsListException::create(
+                        $annotation,
+                        $this->docblock,
+                        $values,
+                        $this->controller,
+                        $this->method
+                    );
+                }
+
+                // Values might be on multiple lines, or be surrounded with whitespace to make them easier to read,
+                // so let's clean them up a bit.
+                $values[$k] = trim($value);
+            }
+
+            // Keep the array of values alphabetical so it's cleaner when generated into documentation.
+            sort($values);
+        }
+
+        return $values;
     }
 
     /**
