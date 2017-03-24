@@ -148,6 +148,13 @@ class FieldAnnotationTest extends AnnotationTest
      */
     public function providerAnnotationFailsOnInvalidAnnotations()
     {
+        $bad_values_docblock = '/**
+         * @api-label MPAA rating
+         * @api-field content_rating
+         * @api-type enum
+         * @api-options [G,PG-13]
+         */';
+
         return [
             'invalid-type-is-detected' => [
                 'annotation' => '\Mill\Parser\Annotations\FieldAnnotation',
@@ -170,6 +177,19 @@ class FieldAnnotationTest extends AnnotationTest
                     */',
                 'expected.exception' => '\Mill\Exceptions\Representation\RestrictedFieldNameException',
                 'expected.exception.asserts' => []
+            ],
+            'values-are-in-the-wrong-format' => [
+                'annotation' => '\Mill\Parser\Annotations\FieldAnnotation',
+                'docblock' => $bad_values_docblock,
+                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\BadOptionsListException',
+                'expected.exception.asserts' => [
+                    'getRequiredField' => null,
+                    'getAnnotation' => 'field',
+                    'getDocblock' => $bad_values_docblock,
+                    'getValues' => [
+                        'G,PG-13'
+                    ]
+                ]
             ]
         ];
     }

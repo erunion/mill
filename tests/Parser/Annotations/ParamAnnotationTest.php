@@ -202,8 +202,8 @@ class ParamAnnotationTest extends AnnotationTest
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\BadOptionsListException',
                 'expected.exception.asserts' => [
                     'getRequiredField' => null,
-                    'getAnnotation' => '{string} __testing [true,false] Because reasons',
-                    'getDocblock' => null,
+                    'getAnnotation' => 'param',
+                    'getDocblock' => '{string} __testing [true,false] Because reasons',
                     'getValues' => [
                         'true,false'
                     ]

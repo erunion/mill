@@ -142,10 +142,7 @@ class FieldAnnotation extends Annotation
                 // `@api-options`
                 case 'options':
                     if (preg_match(self::OPTIONS_PATTERN, $data, $options_matches)) {
-                        $parsed['options'] = array_filter(explode('|', $options_matches[1]));
-
-                        // Keep the array of options alphabetical so it's cleaner when generated into documentation.
-                        sort($parsed['options']);
+                        $parsed['options'] = $this->parseEnumValues('field', $options_matches[1]);
                     }
                     break;
 

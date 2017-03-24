@@ -61,20 +61,7 @@ class UriSegmentAnnotation extends ParamAnnotation
 
         // Parameter values are provided `[in|braces]`.
         if (preg_match(self::REGEX_VALUES, $doc, $matches)) {
-            $parsed['values'] = explode('|', substr($matches[1], 1, -1));
-            if (!empty($parsed['values'])) {
-                foreach ($parsed['values'] as $value) {
-                    if (strpos($value, ',') !== false) {
-                        throw BadOptionsListException::create(
-                            $this->docblock,
-                            $parsed['values'],
-                            $this->controller,
-                            $this->method
-                        );
-                    }
-                }
-            }
-
+            $parsed['values'] = $this->parseEnumValues('options', substr($matches[1], 1, -1));
             $doc = trim(preg_replace(self::REGEX_VALUES, '', $doc));
         }
 

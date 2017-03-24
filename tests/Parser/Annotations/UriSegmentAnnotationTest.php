@@ -107,9 +107,9 @@ class UriSegmentAnnotationTest extends AnnotationTest
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\BadOptionsListException',
                 'expected.exception.asserts' => [
                     'getRequiredField' => null,
-                    'getAnnotation' => '{/movies/+id/showtimes/*date} {string} date [today,tomorrow] Date to look ' .
+                    'getAnnotation' => 'options',
+                    'getDocblock' => '{/movies/+id/showtimes/*date} {string} date [today,tomorrow] Date to look ' .
                         'for movie showtimes.',
-                    'getDocblock' => null,
                     'getValues' => [
                         'today,tomorrow'
                     ]

@@ -138,23 +138,7 @@ class ParamAnnotation extends Annotation
 
         // Parameter values are provided `[in|braces]`.
         if (preg_match(self::REGEX_VALUES, $doc, $matches)) {
-            $parsed['values'] = explode('|', substr($matches[1], 1, -1));
-            if (!empty($parsed['values'])) {
-                foreach ($parsed['values'] as $value) {
-                    if (strpos($value, ',') !== false) {
-                        throw BadOptionsListException::create(
-                            $this->docblock,
-                            $parsed['values'],
-                            $this->controller,
-                            $this->method
-                        );
-                    }
-                }
-            }
-
-            // Keep the array of values alphabetical so it's cleaner when generated into documentation.
-            sort($parsed['values']);
-
+            $parsed['values'] = $this->parseEnumValues('param', substr($matches[1], 1, -1));
             $doc = trim(preg_replace(self::REGEX_VALUES, '', $doc));
         }
 
