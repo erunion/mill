@@ -19,7 +19,7 @@ composer require vimeo/mill
 ```
 
 ### Resources
-* [Getting Started](https://github.com/vimeo/mill/wiki/Getting Started)
+* [Getting Started](https://github.com/vimeo/mill/wiki/Getting%20Started)
 * [Configuration](https://github.com/vimeo/mill/wiki/Configuration)
-* [Language Syntax](https://github.com/vimeo/mill/wiki/Language Syntax)
-* [Generating Documentation](https://github.com/vimeo/mill/wiki/Generating Documentation)
+* [Language Syntax](https://github.com/vimeo/mill/wiki/Language%20Syntax)
+* [Generating Documentation](https://github.com/vimeo/mill/wiki/Generating%20Documentation)
