@@ -19,7 +19,7 @@ class ParamAnnotation extends Annotation
 
     const REGEX_TYPE = '/^({[^}]*})/';
     const REGEX_OPTIONAL = '/(\(optional\))/';
-    const REGEX_VALUES = '/(\[[^\]]*\])/';
+    const REGEX_VALUES = '/(\[[^\]]*\])(\ |$)/';
 
     /**
      * Name of this parameter's field.
