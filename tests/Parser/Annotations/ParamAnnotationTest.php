@@ -155,6 +155,60 @@ class ParamAnnotationTest extends AnnotationTest
                     'version' => '1.1 - 1.2',
                     'visible' => true
                 ]
+            ],
+            '_complete' => [
+                'param' => '{string} content_rating [G|PG|PG-13|R|NC-17|X|NR|UR] (optional) +MOVIE_RATINGS+ ' .
+                    'MPAA rating',
+                'version' => null,
+                'visible' => true,
+                'deprecated' => false,
+                'expected' => [
+                    'capability' => 'MOVIE_RATINGS',
+                    'deprecated' => false,
+                    'description' => 'MPAA rating',
+                    'field' => 'content_rating',
+                    'required' => false,
+                    'type' => 'string',
+                    'values' => [
+                        'G',
+                        'NC-17',
+                        'NR',
+                        'PG',
+                        'PG-13',
+                        'R',
+                        'UR',
+                        'X'
+                    ],
+                    'version' => false,
+                    'visible' => true
+                ]
+            ],
+            '_complete.with-markdown-description' => [
+                'param' => '{string} content_rating [G|PG|PG-13|R|NC-17|X|NR|UR] (optional) +MOVIE_RATINGS+ ' .
+                    '[MPAA rating](http://www.mpaa.org/film-ratings/)',
+                'version' => null,
+                'visible' => true,
+                'deprecated' => false,
+                'expected' => [
+                    'capability' => 'MOVIE_RATINGS',
+                    'deprecated' => false,
+                    'description' => '[MPAA rating](http://www.mpaa.org/film-ratings/)',
+                    'field' => 'content_rating',
+                    'required' => false,
+                    'type' => 'string',
+                    'values' => [
+                        'G',
+                        'NC-17',
+                        'NR',
+                        'PG',
+                        'PG-13',
+                        'R',
+                        'UR',
+                        'X'
+                    ],
+                    'version' => false,
+                    'visible' => true
+                ]
             ]
         ];
     }

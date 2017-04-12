@@ -35,5 +35,12 @@
                 <directory name="tests/" />
             </errorLevel>
         </MissingReturnType>
+
+        <PossiblyInvalidArgument>
+            <errorLevel type="suppress">
+                <!-- Masking errors where we're passing methods that return object|bool into test assertions. -->
+                <directory name="tests/" />
+            </errorLevel>
+        </PossiblyInvalidArgument>
     </issueHandlers>
 </psalm>
