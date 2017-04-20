@@ -206,15 +206,30 @@ class Blueprint extends Generator
                 $field = str_replace($from, $to, $field);
             }
 
+            $values = $segment->getValues();
+            $type = $this->convertTypeToCompatibleType($segment->getType());
+
             $blueprint .= $this->tab();
             $blueprint .= sprintf(
-                '+ `%s` (%s, required) - %s',
+                '- `%s` (%s, required) - %s',
                 $field,
-                $segment->getType(),
+                (!empty($values)) ? 'enum[' . $type . ']' : $type,
                 $segment->getDescription()
             );
 
             $blueprint .= $this->line();
+
+            if (!empty($values)) {
+                $blueprint .= $this->tab(2);
+                $blueprint .= '+ Members';
+                $blueprint .= $this->line();
+
+                foreach ($values as $value) {
+                    $blueprint .= $this->tab(3);
+                    $blueprint .= '+ `' . $value . '`';
+                    $blueprint .= $this->line();
+                }
+            }
         }
 
         return $blueprint;
