@@ -4,7 +4,7 @@ Information on a specific movie.
 
 ### Get a single movie. [GET]
 + Parameters
-    + `id` (integer, required) - Movie ID
+    - `id` (number, required) - Movie ID
 + Response 200 (application/json)
     + Attributes (Movie)
 + Response 304 (application/json)
@@ -15,7 +15,7 @@ Information on a specific movie.
 This action requires a bearer token with `edit` scope.
 
 + Parameters
-    + `id` (integer, required) - Movie ID
+    - `id` (number, required) - Movie ID
 + Request
     + Headers
 
@@ -56,7 +56,7 @@ This action requires a bearer token with `edit` scope.
 This action requires a bearer token with `delete` scope.
 
 + Parameters
-    + `id` (integer, required) - Movie ID
+    - `id` (number, required) - Movie ID
 + Response 204 (application/json)
 + Response 404 (application/json)
     + Attributes (Error)
