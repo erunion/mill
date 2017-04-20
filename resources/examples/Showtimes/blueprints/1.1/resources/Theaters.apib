@@ -17,6 +17,10 @@ This action requires a bearer token with `create` scope.
 + Parameters
     + `id` (integer, required) - Theater ID
 + Request
+    + Headers
+
+        Content-Type: application/json
+
     + Attributes
         - `address` (string, required) - Theater address
         - `name` (string, required) - Name of the theater.
@@ -42,6 +46,10 @@ Information on a specific movie theater.
 
 ### Get movie theaters. [GET]
 + Request
+    + Headers
+
+        Content-Type: application/json
+
     + Attributes
         - `location` (string, required) - Location you want theaters in.
 + Response 200 (application/json)
@@ -53,6 +61,10 @@ Information on a specific movie theater.
 This action requires a bearer token with `create` scope.
 
 + Request
+    + Headers
+
+        Content-Type: application/json
+
     + Attributes
         - `address` (string, required) - Theater address
         - `name` (string, required) - Name of the theater.
