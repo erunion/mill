@@ -256,7 +256,7 @@ class Blueprint extends Generator
         $blueprint .= '+ Headers';
         $blueprint .= $this->line(2);
 
-        $blueprint .= $this->tab(2);
+        $blueprint .= $this->tab(3);
         $blueprint .= sprintf('Content-Type: %s', $action->getContentType());
         $blueprint .= $this->line(2);
 
