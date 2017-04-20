@@ -236,6 +236,16 @@ class Blueprint extends Generator
         $blueprint = '+ Request';
         $blueprint .= $this->line();
 
+        // Build up request headers.
+        $blueprint .= $this->tab();
+        $blueprint .= '+ Headers';
+        $blueprint .= $this->line(2);
+
+        $blueprint .= $this->tab(2);
+        $blueprint .= sprintf('Content-Type: %s', $action->getContentType());
+        $blueprint .= $this->line(2);
+
+        // Build up request attributes.
         $blueprint .= $this->tab();
         $blueprint .= '+ Attributes';
         $blueprint .= $this->line();
