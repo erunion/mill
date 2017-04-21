@@ -48,18 +48,21 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
             'output' => $output_dir
         ]);
 
-        $output = $this->tester->getDisplay();
-        $this->assertNotContains('Running a dry run', $output);
-        $this->assertContains('API version: 1.0', $output);
-        $this->assertContains('API version: 1.1', $output);
-
-        $this->assertSame([
-            '.',
-            '..',
+        $versions = [
             '1.0',
             '1.1',
-            '1.1.1'
-        ], scandir($output_dir));
+            '1.1.1',
+            '1.1.2'
+        ];
+
+        $output = $this->tester->getDisplay();
+        $this->assertNotContains('Running a dry run', $output);
+
+        foreach ($versions as $version) {
+            $this->assertContains('API version: ' . $version, $output);
+        }
+
+        $this->assertSame(array_merge(['.', '..'], $versions), scandir($output_dir));
 
         $blueprints_dir = __DIR__ . '/../../resources/examples/Showtimes/blueprints';
         $representations = [
@@ -75,7 +78,7 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
             'Theaters'
         ];
 
-        foreach (['1.0', '1.1', '1.1.1'] as $version) {
+        foreach ($versions as $version) {
             foreach ($representations as $name) {
                 $this->assertSame(
                     file_get_contents($blueprints_dir . '/' . $version . '/representations/' . $name . '.apib'),

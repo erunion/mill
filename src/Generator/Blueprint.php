@@ -257,7 +257,7 @@ class Blueprint extends Generator
         $blueprint .= $this->line(2);
 
         $blueprint .= $this->tab(3);
-        $blueprint .= sprintf('Content-Type: %s', $action->getContentType());
+        $blueprint .= sprintf('Content-Type: %s', $action->getContentType($this->version));
         $blueprint .= $this->line(2);
 
         // Build up request attributes.
@@ -311,7 +311,7 @@ class Blueprint extends Generator
     {
         $http_code = substr($http_code, 0, 3);
 
-        $blueprint = '+ Response ' . $http_code . ' (' . $action->getContentType() . ')';
+        $blueprint = '+ Response ' . $http_code . ' (' . $action->getContentType($this->version) . ')';
         $blueprint .= $this->line();
 
         $multiple_responses = count($responses) > 1;

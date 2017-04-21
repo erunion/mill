@@ -1,0 +1,27 @@
+## Movie
+- `cast` (array[Person]) - Cast
+- `content_rating` (enum[string]) - MPAA rating
+    + Members
+        + `G`
+        + `NC-17`
+        + `NR`
+        + `PG`
+        + `PG-13`
+        + `R`
+        + `UR`
+        + `X`
+- `description` (string) - Description
+- `director` (Person) - Director
+- `external_urls` (object) - External URLs
+    - `imdb` (string) - IMDB URL
+    - `tickets` (string) - Tickets URL
+    - `trailer` (string) - Trailer URL
+- `genres` (array) - Genres
+- `id` (number) - Unique ID
+- `kid_friendly` (boolean) - Kid friendly?
+- `name` (string) - Name
+- `rotten_tomatoes_score` (number) - Rotten Tomatoes score
+- `runtime` (string) - Runtime
+- `showtimes` (array) - Non-theater specific showtimes
+- `theaters` (array[Theater]) - Theaters the movie is currently showing in
+- `uri` (string) - Movie URI

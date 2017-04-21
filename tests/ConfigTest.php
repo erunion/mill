@@ -12,13 +12,14 @@ class ConfigTest extends TestCase
         $this->assertSame('Mill unit test API, Showtimes', $config->getName());
 
         $this->assertSame('1.0', $config->getFirstApiVersion());
-        $this->assertSame('1.1.1', $config->getDefaultApiVersion());
-        $this->assertSame('1.1.1', $config->getLatestApiVersion());
+        $this->assertSame('1.1.2', $config->getDefaultApiVersion());
+        $this->assertSame('1.1.2', $config->getLatestApiVersion());
 
         $this->assertSame([
             '1.0',
             '1.1',
-            '1.1.1'
+            '1.1.1',
+            '1.1.2'
         ], $config->getApiVersions());
 
         $this->assertSame([

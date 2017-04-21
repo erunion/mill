@@ -13,13 +13,17 @@ class Movies
      *
      * @api-uri:public {Movies} /movies
      *
-     * @api-contentType application/json
-     *
      * @api-param:public {string} location Location you want movies for.
      *
      * @api-return:public {collection} \Mill\Examples\Showtimes\Representations\Movie
      *
      * @api-throws:public {400} \Mill\Examples\Showtimes\Representations\Error If the location is invalid.
+     *
+     * @api-version >=1.1.2
+     * @api-contentType application/mill.example.movie
+     *
+     * @api-version <1.1.2
+     * @api-contentType application/json
      */
     public function GET()
     {
@@ -33,7 +37,6 @@ class Movies
      *
      * @api-uri:public {Movies} /movies
      *
-     * @api-contentType application/json
      * @api-scope create
      *
      * @api-param:public {string} name Name of the movie.
@@ -51,6 +54,12 @@ class Movies
      * @api-throws:public {400} \Mill\Examples\Showtimes\Representations\Error If there is a problem with the
      *      request.
      * @api-throws:public {400} \Mill\Examples\Showtimes\Representations\Error If the IMDB URL could not be validated.
+     *
+     * @api-version >=1.1.2
+     * @api-contentType application/mill.example.movie
+     *
+     * @api-version <1.1.2
+     * @api-contentType application/json
      *
      * @api-version >=1.1
      * @api-param:public {string} imdb (optional) IMDB URL
