@@ -58,7 +58,8 @@ class BlueprintTest extends TestCase
         $this->assertSame([
             '1.0',
             '1.1',
-            '1.1.1'
+            '1.1.1',
+            '1.1.2'
         ], array_keys($generated));
 
         foreach ($generated as $version => $section) {

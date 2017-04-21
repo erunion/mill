@@ -2,23 +2,30 @@
 namespace Mill\Tests\Parser\Annotations;
 
 use Mill\Parser\Annotations\ContentTypeAnnotation;
+use Mill\Parser\Version;
 
 class ContentTypeAnnotationTest extends AnnotationTest
 {
     /**
      * @dataProvider providerAnnotation
      */
-    public function testAnnotation($capability, $expected)
+    public function testAnnotation($content_type, $version, $expected)
     {
-        $annotation = new ContentTypeAnnotation($capability, __CLASS__, __METHOD__);
+        $annotation = new ContentTypeAnnotation($content_type, __CLASS__, __METHOD__, $version);
 
         $this->assertFalse($annotation->requiresVisibilityDecorator());
-        $this->assertFalse($annotation->supportsVersioning());
+        $this->assertTrue($annotation->supportsVersioning());
         $this->assertFalse($annotation->supportsDeprecation());
 
         $this->assertSame($expected, $annotation->toArray());
+        $this->assertSame($content_type, $annotation->getContentType());
         $this->assertFalse($annotation->getCapability());
-        $this->assertFalse($annotation->getVersion());
+
+        if ($expected['version']) {
+            $this->assertInstanceOf('Mill\Parser\Version', $annotation->getVersion());
+        } else {
+            $this->assertFalse($annotation->getVersion());
+        }
     }
 
     /**
@@ -27,10 +34,20 @@ class ContentTypeAnnotationTest extends AnnotationTest
     public function providerAnnotation()
     {
         return [
+            'versioned' => [
+                'content_type' => 'application/vendor.mime.type',
+                'version' => new Version('1.1 - 1.2', __CLASS__, __METHOD__),
+                'expected' => [
+                    'content_type' => 'application/vendor.mime.type',
+                    'version' => '1.1 - 1.2'
+                ]
+            ],
             '_complete' => [
                 'content_type' => 'application/json',
+                'version' => null,
                 'expected' => [
-                    'content_type' => 'application/json'
+                    'content_type' => 'application/json',
+                    'version' => false
                 ]
             ]
         ];

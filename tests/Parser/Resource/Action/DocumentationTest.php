@@ -2,6 +2,7 @@
 namespace Mill\Tests\Parser\Resource\Action;
 
 use Mill\Parser\Resource\Action\Documentation;
+use Mill\Parser\Version;
 use Mill\Tests\ReaderTestingTrait;
 use Mill\Tests\TestCase;
 
@@ -21,7 +22,17 @@ class DocumentationTest extends TestCase
         $this->assertSame($method, $parser->getMethod());
 
         $this->assertSame($expected['label'], $parser->getLabel());
-        $this->assertSame($expected['content_type'], $parser->getContentType());
+        $this->assertSame($expected['content_types'][0]['content_type'], $parser->getContentType());
+
+        if ($expected['content_types.latest-version']) {
+            $this->assertSame(
+                $expected['content_types'][0]['content_type'],
+                $parser->getContentType(
+                    new Version($expected['content_types.latest-version'], __CLASS__, __METHOD__)
+                )
+            );
+        }
+
         $this->assertEmpty($parser->getCapabilities());
 
         /** @var \Mill\Parser\Annotations\MinVersionAnnotation $min_version */
@@ -52,7 +63,7 @@ class DocumentationTest extends TestCase
         $this->assertSame($docs['description'], $parser->getDescription());
         $this->assertSame($expected['description'], $docs['description']);
         $this->assertSame($method, $docs['method']);
-        $this->assertSame($expected['content_type'], $docs['content_type']);
+        $this->assertSame($expected['content_types'], $docs['content_types']);
 
         if (empty($docs['annotations'])) {
             $this->fail('No parsed annotations for ' . $controller_stub);
@@ -128,7 +139,17 @@ class DocumentationTest extends TestCase
                 'expected' => [
                     'label' => 'Get a single movie.',
                     'description' => 'Return information on a specific movie.',
-                    'content_type' => 'application/json',
+                    'content_types.latest-version' => '1.1.2',
+                    'content_types' => [
+                        [
+                            'content_type' => 'application/mill.example.movie',
+                            'version' => '>=1.1.2'
+                        ],
+                        [
+                            'content_type' => 'application/json',
+                            'version' => '<1.1.2'
+                        ]
+                    ],
                     'minimum_version' => false,
                     'responses.length' => 3,
                     'annotations' => [
@@ -185,7 +206,17 @@ class DocumentationTest extends TestCase
                 'expected' => [
                     'label' => 'Update a movie.',
                     'description' => 'Update a movies data.',
-                    'content_type' => 'application/json',
+                    'content_types.latest-version' => '1.1.2',
+                    'content_types' => [
+                        [
+                            'content_type' => 'application/mill.example.movie',
+                            'version' => '>=1.1.2'
+                        ],
+                        [
+                            'content_type' => 'application/json',
+                            'version' => '<1.1.2'
+                        ]
+                    ],
                     'minimum_version' => '1.1',
                     'responses.length' => 4,
                     'annotations' => [
@@ -395,7 +426,13 @@ class DocumentationTest extends TestCase
                 'expected' => [
                     'label' => 'Delete a movie.',
                     'description' => 'Delete a movie.',
-                    'content_type' => 'application/json',
+                    'content_types.latest-version' => null,
+                    'content_types' => [
+                        [
+                            'content_type' => 'application/json',
+                            'version' => false
+                        ]
+                    ],
                     'minimum_version' => false,
                     'responses.length' => 2,
                     'annotations' => [
@@ -556,20 +593,6 @@ class DocumentationTest extends TestCase
                   * @api-uri {Something} /some/page
                   */',
                 'expected.exception' => '\Mill\Exceptions\RequiredAnnotationException',
-                'expected.exception.asserts' => [
-                    'getAnnotation' => 'contentType'
-                ]
-            ],
-            'multiple-content-type-annotations' => [
-                'docblock' => '/**
-                  * Test throwing an exception when multiple `@api-contentType` annotations are present.
-                  *
-                  * @api-label Test method
-                  * @api-uri {Something} /some/page
-                  * @api-contentType application/json
-                  * @api-contentType text/xml
-                  */',
-                'expected.exception' => '\Mill\Exceptions\MultipleAnnotationsException',
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'contentType'
                 ]
