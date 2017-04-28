@@ -71,11 +71,11 @@ class ThrowsAnnotation extends Annotation
     {
         $config = Container::getConfig();
 
-        $doc = trim($this->docblock);
         $parsed = [];
+        $content = trim($this->docblock);
 
         // Capability is surrounded by +plusses+.
-        if (preg_match(self::REGEX_THROW_HTTP_CODE, $doc, $matches)) {
+        if (preg_match(self::REGEX_THROW_HTTP_CODE, $content, $matches)) {
             $parsed['http_code'] = $matches[1];
 
             if (!$this->isValidHttpCode($parsed['http_code'])) {
@@ -83,14 +83,14 @@ class ThrowsAnnotation extends Annotation
             }
 
             $parsed['http_code'] .= ' ' . $this->getHttpCodeMessage($parsed['http_code']);
-            $doc = trim(preg_replace(self::REGEX_THROW_HTTP_CODE, '', $doc));
+            $content = trim(preg_replace(self::REGEX_THROW_HTTP_CODE, '', $content));
         }
 
-        $parts = explode(' ', $doc);
+        $parts = explode(' ', $content);
         $parsed['representation'] = array_shift($parts);
 
         // Representation is by itself, so put the pieces back together so we can do some more regex.
-        $doc = implode(' ', $parts);
+        $content = implode(' ', $parts);
 
         if (!empty($parsed['representation'])) {
             $representation = $parsed['representation'];
@@ -108,7 +108,7 @@ class ThrowsAnnotation extends Annotation
         }
 
         // Error codes are marked with `(\SomeError\Class::CASE)` or `(1337)` parens.
-        if (preg_match(self::REGEX_ERROR_CODE, $doc, $matches)) {
+        if (preg_match(self::REGEX_ERROR_CODE, $content, $matches)) {
             $error_code = substr($matches[1], 1, -1);
             if (is_numeric($error_code)) {
                 $parsed['error_code'] = $error_code;
@@ -120,26 +120,26 @@ class ThrowsAnnotation extends Annotation
                 $parsed['error_code'] = constant($error_code);
             }
 
-            $doc = trim(preg_replace(self::REGEX_ERROR_CODE, '', $doc));
+            $content = trim(preg_replace(self::REGEX_ERROR_CODE, '', $content));
         }
 
         // Capability is surrounded by +plusses+.
-        if (preg_match(self::REGEX_CAPABILITY, $doc, $matches)) {
+        if (preg_match(self::REGEX_CAPABILITY, $content, $matches)) {
             $capability = substr($matches[1], 1, -1);
             $parsed['capability'] = new CapabilityAnnotation($capability, $this->controller, $this->method);
 
-            $doc = trim(preg_replace(self::REGEX_CAPABILITY, '', $doc));
+            $content = trim(preg_replace(self::REGEX_CAPABILITY, '', $content));
         }
 
-        $message = trim($doc);
-        if (!empty($message)) {
-            if (preg_match(self::REGEX_THROW_SUB_TYPE, $message, $matches)) {
-                $message = sprintf('If the %s cannot be found in the %s', $matches[1], $matches[2]);
-            } elseif (preg_match(self::REGEX_THROW_TYPE, $message, $matches)) {
-                $message = sprintf('If the %s cannot be found', $matches[1]);
+        $description = trim($content);
+        if (!empty($description)) {
+            if (preg_match(self::REGEX_THROW_SUB_TYPE, $description, $matches)) {
+                $description = sprintf('If the %s cannot be found in the %s.', $matches[1], $matches[2]);
+            } elseif (preg_match(self::REGEX_THROW_TYPE, $description, $matches)) {
+                $description = sprintf('If the %s cannot be found.', $matches[1]);
             }
 
-            $parsed['description'] = $message;
+            $parsed['description'] = $description;
         }
 
         // Now that we've parsed out both the representation and error code, make sure that a representation that

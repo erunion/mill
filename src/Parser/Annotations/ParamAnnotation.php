@@ -2,10 +2,9 @@
 namespace Mill\Parser\Annotations;
 
 use Mill\Container;
-use Mill\Exceptions\Representation\Types\InvalidTypeException;
-use Mill\Exceptions\Resource\Annotations\BadOptionsListException;
 use Mill\Exceptions\Resource\Annotations\UnsupportedTypeException;
 use Mill\Parser\Annotation;
+use Mill\Parser\MSON;
 
 /**
  * Handler for the `@api-param` annotation.
@@ -16,10 +15,7 @@ class ParamAnnotation extends Annotation
     const REQUIRES_VISIBILITY_DECORATOR = true;
     const SUPPORTS_VERSIONING = true;
     const SUPPORTS_DEPRECATION = true;
-
-    const REGEX_TYPE = '/^({[^}]*})/';
-    const REGEX_OPTIONAL = '/(\(optional\))/';
-    const REGEX_VALUES = '/(\[[^\]]*\])(\ |$)/';
+    const SUPPORTS_MSON = true;
 
     /**
      * Name of this parameter's field.
@@ -27,6 +23,13 @@ class ParamAnnotation extends Annotation
      * @var string
      */
     protected $field;
+
+    /**
+     * Sample data that this parameter might accept.
+     *
+     * @var string
+     */
+    protected $sample_data;
 
     /**
      * Type of data that this parameter supports.
@@ -66,27 +69,10 @@ class ParamAnnotation extends Annotation
         'description',
         'field',
         'required',
+        'sample_data',
         'type',
         'values',
         'visible'
-    ];
-
-    /**
-     * Array of supported parameter types.
-     *
-     * @var array
-     */
-    protected $supported_types = [
-        'array',
-        'boolean',
-        'datetime',
-        'float',
-        'enum',
-        'integer',
-        'number',
-        'object',
-        'string',
-        'timestamp'
     ];
 
     /**
@@ -95,58 +81,36 @@ class ParamAnnotation extends Annotation
      *
      * @return array
      * @throws UnsupportedTypeException If an unsupported parameter type has been supplied.
-     * @throws BadOptionsListException If values are not in the right format.
      */
     protected function parser()
     {
-        $parsed = [];
-        $doc = trim($this->docblock);
+        $content = trim($this->docblock);
 
         // Swap in shortcode tokens (if present).
         $tokens = Container::getConfig()->getParameterTokens();
         if (!empty($tokens)) {
-            $doc = str_replace(array_keys($tokens), array_values($tokens), $doc);
+            $content = str_replace(array_keys($tokens), array_values($tokens), $content);
         }
 
-        // Parameter type is surrounded by `{curly braces}`.
-        if (preg_match(self::REGEX_TYPE, $doc, $matches)) {
-            $parsed['type'] = substr($matches[1], 1, -1);
+        $mson = (new MSON($this->controller, $this->method))->parse($content);
+        $parsed = [
+            'field' => $mson->getField(),
+            'sample_data' => $mson->getSampleData(),
+            'type' => $mson->getType(),
+            'required' => $mson->isRequired(),
+            'capability' => $mson->getCapability(),
+            'description' => $mson->getDescription(),
+            'values' => $mson->getValues()
+        ];
 
-            // Verify that the supplied type is supported.
-            if (!in_array(strtolower($parsed['type']), $this->supported_types)) {
-                throw UnsupportedTypeException::create($doc, $this->controller, $this->method);
-            }
-
-            $doc = trim(preg_replace(self::REGEX_TYPE, '', $doc));
+        // Create a capability annotation if one was supplied.
+        if (!empty($parsed['capability'])) {
+            $parsed['capability'] = new CapabilityAnnotation(
+                $parsed['capability'],
+                $this->controller,
+                $this->method
+            );
         }
-
-        // Parameter capability is surrounded by `+plusses+`.
-        if (preg_match(self::REGEX_CAPABILITY, $doc, $matches)) {
-            $capability = substr($matches[1], 1, -1);
-            $parsed['capability'] = new CapabilityAnnotation($capability, $this->controller, $this->method);
-
-            $doc = trim(preg_replace(self::REGEX_CAPABILITY, '', $doc));
-        }
-
-        // Optional flag is marked with `(optional)` parens.
-        if (preg_match(self::REGEX_OPTIONAL, $doc, $matches)) {
-            $parsed['required'] = false;
-            $doc = trim(preg_replace(self::REGEX_OPTIONAL, '', $doc));
-        } else {
-            $parsed['required'] = true;
-        }
-
-        // Parameter values are provided `[in|braces]`.
-        if (preg_match(self::REGEX_VALUES, $doc, $matches)) {
-            $parsed['values'] = $this->parseEnumValues('param', substr($matches[1], 1, -1));
-            $doc = trim(preg_replace(self::REGEX_VALUES, '', $doc));
-        }
-
-        $parts = explode(' ', $doc);
-
-        // Field and description will be the last two parts, field space description
-        $parsed['field'] = array_shift($parts);
-        $parsed['description'] = trim(implode(' ', $parts));
 
         return $parsed;
     }
@@ -162,6 +126,7 @@ class ParamAnnotation extends Annotation
     protected function interpreter()
     {
         $this->field = $this->required('field');
+        $this->sample_data = $this->optional('sample_data'); // @todo make this required
         $this->type = $this->required('type');
         $this->description = $this->required('description');
         $this->required = $this->boolean('required');
@@ -178,6 +143,16 @@ class ParamAnnotation extends Annotation
     public function getField()
     {
         return $this->field;
+    }
+
+    /**
+     * Get the sample data that this parameter might accept.
+     *
+     * @return string
+     */
+    public function getSampleData()
+    {
+        return $this->sample_data;
     }
 
     /**

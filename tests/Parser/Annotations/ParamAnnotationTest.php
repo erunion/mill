@@ -48,8 +48,61 @@ class ParamAnnotationTest extends AnnotationTest
     public function providerAnnotation()
     {
         return [
+            '_complete' => [
+                'param' => 'content_rating `G` (string, optional, MOVIE_RATINGS) - MPAA rating
+                    + Members
+                        - `G` - G rated
+                        - `PG` - PG rated
+                        - `PG-13` - PG-13 rated',
+                'version' => null,
+                'visible' => true,
+                'deprecated' => false,
+                'expected' => [
+                    'capability' => 'MOVIE_RATINGS',
+                    'deprecated' => false,
+                    'description' => 'MPAA rating',
+                    'field' => 'content_rating',
+                    'required' => false,
+                    'sample_data' => 'G',
+                    'type' => 'string',
+                    'values' => [
+                        'G' => 'G rated',
+                        'PG' => 'PG rated',
+                        'PG-13' => 'PG-13 rated'
+                    ],
+                    'version' => false,
+                    'visible' => true
+                ]
+            ],
+            '_complete-with-markdown-description' => [
+                'param' => 'content_rating `G` (string, optional, MOVIE_RATINGS) - This denotes the 
+                    [MPAA rating](http://www.mpaa.org/film-ratings/) for the movie.
+                    + Members
+                        - `G` - G rated
+                        - `PG` - PG rated
+                        - `PG-13` - PG-13 rated',
+                'version' => null,
+                'visible' => true,
+                'deprecated' => false,
+                'expected' => [
+                    'capability' => 'MOVIE_RATINGS',
+                    'deprecated' => false,
+                    'description' => 'This denotes the [MPAA rating](http://www.mpaa.org/film-ratings/) for the movie.',
+                    'field' => 'content_rating',
+                    'required' => false,
+                    'sample_data' => 'G',
+                    'type' => 'string',
+                    'values' => [
+                        'G' => 'G rated',
+                        'PG' => 'PG rated',
+                        'PG-13' => 'PG-13 rated'
+                    ],
+                    'version' => false,
+                    'visible' => true
+                ]
+            ],
             'capability' => [
-                'param' => '{string} content_rating +MOVIE_RATINGS+ MPAA rating',
+                'param' => 'content_rating `G` (string, REQUIRED, MOVIE_RATINGS) - MPAA rating',
                 'version' => null,
                 'visible' => true,
                 'deprecated' => false,
@@ -59,6 +112,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
                     'required' => true,
+                    'sample_data' => 'G',
                     'type' => 'string',
                     'values' => false,
                     'version' => false,
@@ -66,38 +120,97 @@ class ParamAnnotationTest extends AnnotationTest
                 ]
             ],
             'deprecated' => [
-                'param' => '{page}',
+                'param' => 'content_rating `G` (string, required) - MPAA rating',
                 'version' => null,
-                'visible' => false,
+                'visible' => true,
                 'deprecated' => true,
                 'expected' => [
                     'capability' => false,
                     'deprecated' => true,
-                    'description' => 'The page number to show.',
-                    'field' => 'page',
-                    'required' => false,
-                    'type' => 'integer',
+                    'description' => 'MPAA rating',
+                    'field' => 'content_rating',
+                    'required' => true,
+                    'sample_data' => 'G',
+                    'type' => 'string',
                     'values' => false,
                     'version' => false,
-                    'visible' => false
+                    'visible' => true
+                ]
+            ],
+            'enum-with-no-descriptions' => [
+                'param' => 'is_kid_friendly `yes` (string, optional) - Is this movie kid friendly?
+                    + Members
+                        - `yes`
+                        - `no`',
+                'version' => null,
+                'visible' => true,
+                'deprecated' => false,
+                'expected' => [
+                    'capability' => false,
+                    'deprecated' => false,
+                    'description' => 'Is this movie kid friendly?',
+                    'field' => 'is_kid_friendly',
+                    'required' => false,
+                    'sample_data' => 'yes',
+                    'type' => 'string',
+                    'values' => [
+                        'no' => '',
+                        'yes' => ''
+                    ],
+                    'version' => false,
+                    'visible' => true
+                ]
+            ],
+            'enum-with-no-set-default' => [
+                'param' => 'content_rating `G` (string, optional) - MPAA rating
+                    + Members
+                        - `G` - G rated
+                        - `PG` - PG rated
+                        - `PG-13` - PG-13 rated
+                        - `R` - R rated
+                        - `NC-17` - NC-17 rated
+                        - `X` - X-rated
+                        - `NR` - No rating
+                        - `UR` - Unrated',
+                'version' => null,
+                'visible' => true,
+                'deprecated' => false,
+                'expected' => [
+                    'capability' => false,
+                    'deprecated' => false,
+                    'description' => 'MPAA rating',
+                    'field' => 'content_rating',
+                    'required' => false,
+                    'sample_data' => 'G',
+                    'type' => 'string',
+                    'values' => [
+                        'G' => 'G rated',
+                        'NC-17' => 'NC-17 rated',
+                        'NR' => 'No rating',
+                        'PG' => 'PG rated',
+                        'PG-13' => 'PG-13 rated',
+                        'R' => 'R rated',
+                        'UR' => 'Unrated',
+                        'X' => 'X-rated'
+                    ],
+                    'version' => false,
+                    'visible' => true
                 ]
             ],
             'private' => [
-                'param' => '{string} __testing [true|false] Because reasons',
+                'param' => 'content_rating `G` (string, required) - MPAA rating',
                 'version' => null,
                 'visible' => false,
                 'deprecated' => false,
                 'expected' => [
                     'capability' => false,
                     'deprecated' => false,
-                    'description' => 'Because reasons',
-                    'field' => '__testing',
+                    'description' => 'MPAA rating',
+                    'field' => 'content_rating',
                     'required' => true,
+                    'sample_data' => 'G',
                     'type' => 'string',
-                    'values' => [
-                        'false',
-                        'true'
-                    ],
+                    'values' => false,
                     'version' => false,
                     'visible' => false
                 ]
@@ -113,6 +226,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'description' => 'The page number to show.',
                     'field' => 'page',
                     'required' => false,
+                    'sample_data' => false,
                     'type' => 'integer',
                     'values' => false,
                     'version' => false,
@@ -120,7 +234,10 @@ class ParamAnnotationTest extends AnnotationTest
                 ]
             ],
             'tokens.acceptable_values' => [
-                'param' => '{filter} [embeddable|playable]',
+                'param' => '{filter}
+                    + Members
+                        - `embeddable` - Embeddable
+                        - `playable` - Playable',
                 'version' => null,
                 'visible' => true,
                 'deprecated' => false,
@@ -130,35 +247,76 @@ class ParamAnnotationTest extends AnnotationTest
                     'description' => 'Filter to apply to the results.',
                     'field' => 'filter',
                     'required' => false,
+                    'sample_data' => false,
                     'type' => 'string',
                     'values' => [
-                        'embeddable',
-                        'playable'
+                        'embeddable' => 'Embeddable',
+                        'playable' => 'Playable'
                     ],
                     'version' => false,
                     'visible' => true
                 ]
             ],
             'versioned' => [
-                'param' => '{page}',
+                'param' => 'content_rating `G` (string) - MPAA rating',
                 'version' => new Version('1.1 - 1.2', __CLASS__, __METHOD__),
                 'visible' => true,
                 'deprecated' => false,
                 'expected' => [
                     'capability' => false,
                     'deprecated' => false,
-                    'description' => 'The page number to show.',
-                    'field' => 'page',
+                    'description' => 'MPAA rating',
+                    'field' => 'content_rating',
                     'required' => false,
-                    'type' => 'integer',
+                    'sample_data' => 'G',
+                    'type' => 'string',
                     'values' => false,
                     'version' => '1.1 - 1.2',
                     'visible' => true
                 ]
             ],
-            '_complete' => [
-                'param' => '{string} content_rating [G|PG|PG-13|R|NC-17|X|NR|UR] (optional) +MOVIE_RATINGS+ ' .
-                    'MPAA rating',
+            'with-a-long-description' => [
+                'param' => 'content_rating `G` (string, required) - Voluptate culpa ex, eiusmod rump sint id. Venison 
+                    non ribeye landjaeger laboris, enim jowl culpa meatloaf dolore mollit anim. Bacon shankle eiusmod 
+                    hamburger enim. Laboris lorem pastrami t-bone tempor ullamco swine commodo tri-tip in sirloin.',
+                'version' => null,
+                'visible' => false,
+                'deprecated' => false,
+                'expected' => [
+                    'capability' => false,
+                    'deprecated' => false,
+                    'description' => 'Voluptate culpa ex, eiusmod rump sint id. Venison non ribeye landjaeger ' .
+                        'laboris, enim jowl culpa meatloaf dolore mollit anim. Bacon shankle eiusmod hamburger enim. ' .
+                        'Laboris lorem pastrami t-bone tempor ullamco swine commodo tri-tip in sirloin.',
+                    'field' => 'content_rating',
+                    'required' => true,
+                    'sample_data' => 'G',
+                    'type' => 'string',
+                    'values' => false,
+                    'version' => false,
+                    'visible' => false
+                ]
+            ],
+            'without-defined-requirement' => [
+                'param' => 'content_rating `G` (string) - MPAA rating',
+                'version' => null,
+                'visible' => true,
+                'deprecated' => false,
+                'expected' => [
+                    'capability' => false,
+                    'deprecated' => false,
+                    'description' => 'MPAA rating',
+                    'field' => 'content_rating',
+                    'required' => false,
+                    'sample_data' => 'G',
+                    'type' => 'string',
+                    'values' => false,
+                    'version' => false,
+                    'visible' => true
+                ]
+            ],
+            'without-defined-requirement-but-capability' => [
+                'param' => 'content_rating `G` (string, MOVIE_RATINGS) - MPAA rating',
                 'version' => null,
                 'visible' => true,
                 'deprecated' => false,
@@ -168,44 +326,27 @@ class ParamAnnotationTest extends AnnotationTest
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
                     'required' => false,
+                    'sample_data' => 'G',
                     'type' => 'string',
-                    'values' => [
-                        'G',
-                        'NC-17',
-                        'NR',
-                        'PG',
-                        'PG-13',
-                        'R',
-                        'UR',
-                        'X'
-                    ],
+                    'values' => false,
                     'version' => false,
                     'visible' => true
                 ]
             ],
-            '_complete.with-markdown-description' => [
-                'param' => '{string} content_rating [G|PG|PG-13|R|NC-17|X|NR|UR] (optional) +MOVIE_RATINGS+ ' .
-                    '[MPAA rating](http://www.mpaa.org/film-ratings/)',
+            'without-sample-data' => [
+                'param' => 'content_rating (string) - MPAA rating',
                 'version' => null,
                 'visible' => true,
                 'deprecated' => false,
                 'expected' => [
-                    'capability' => 'MOVIE_RATINGS',
+                    'capability' => false,
                     'deprecated' => false,
-                    'description' => '[MPAA rating](http://www.mpaa.org/film-ratings/)',
+                    'description' => 'MPAA rating',
                     'field' => 'content_rating',
                     'required' => false,
+                    'sample_data' => false,
                     'type' => 'string',
-                    'values' => [
-                        'G',
-                        'NC-17',
-                        'NR',
-                        'PG',
-                        'PG-13',
-                        'R',
-                        'UR',
-                        'X'
-                    ],
+                    'values' => false,
                     'version' => false,
                     'visible' => true
                 ]
@@ -219,59 +360,23 @@ class ParamAnnotationTest extends AnnotationTest
     public function providerAnnotationFailsOnInvalidAnnotations()
     {
         return [
-            'missing-field-name' => [
+            'invalid-mson' => [
                 'annotation' => '\Mill\Parser\Annotations\ParamAnnotation',
-                'docblock' => '{string}',
-                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
+                'docblock' => '',
+                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\InvalidMSONSyntaxException',
                 'expected.exception.asserts' => [
-                    'getRequiredField' => 'field',
                     'getAnnotation' => 'param',
-                    'getDocblock' => '{string}',
+                    'getDocblock' => '',
                     'getValues' => []
                 ]
             ],
-            'missing-type' => [
+            'unsupported-type' => [
                 'annotation' => '\Mill\Parser\Annotations\ParamAnnotation',
-                'docblock' => '__testing',
-                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
-                'expected.exception.asserts' => [
-                    'getRequiredField' => 'type',
-                    'getAnnotation' => 'param',
-                    'getDocblock' => '__testing',
-                    'getValues' => []
-                ]
-            ],
-            'missing-field-name' => [
-                'annotation' => '\Mill\Parser\Annotations\ParamAnnotation',
-                'docblock' => '{int} __testing',
+                'docblock' => 'content_rating `G` (str) - MPAA rating',
                 'expected.exception' => '\Mill\Exceptions\Resource\Annotations\UnsupportedTypeException',
                 'expected.exception.asserts' => [
-                    'getAnnotation' => '{int} __testing',
+                    'getAnnotation' => 'content_rating `G` (str) - MPAA rating',
                     'getDocblock' => null
-                ]
-            ],
-            'values-are-in-the-wrong-format' => [
-                'annotation' => '\Mill\Parser\Annotations\ParamAnnotation',
-                'docblock' => '{string} __testing [true,false] Because reasons',
-                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\BadOptionsListException',
-                'expected.exception.asserts' => [
-                    'getRequiredField' => null,
-                    'getAnnotation' => 'param',
-                    'getDocblock' => '{string} __testing [true,false] Because reasons',
-                    'getValues' => [
-                        'true,false'
-                    ]
-                ]
-            ],
-            'missing-description' => [
-                'annotation' => '\Mill\Parser\Annotations\ParamAnnotation',
-                'docblock' => '{string} __testing [true|false]',
-                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
-                'expected.exception.asserts' => [
-                    'getRequiredField' => 'description',
-                    'getAnnotation' => 'param',
-                    'getDocblock' => '{string} __testing [true|false]',
-                    'getValues' => []
                 ]
             ]
         ];

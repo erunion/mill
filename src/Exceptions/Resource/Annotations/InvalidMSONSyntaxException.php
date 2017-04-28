@@ -1,27 +1,31 @@
 <?php
 namespace Mill\Exceptions\Resource\Annotations;
 
-class UnsupportedTypeException extends \Exception
+class InvalidMSONSyntaxException extends \Exception
 {
     use AnnotationExceptionTrait;
 
     /**
      * @param string $annotation
+     * @param string $docblock
      * @param string $class
      * @param string $method
-     * @return UnsupportedTypeException
+     * @return InvalidMSONSyntaxException
      */
-    public static function create($annotation, $class, $method)
+    public static function create($required_field, $annotation, $docblock, $class, $method)
     {
         $message = sprintf(
-            'The type on `@api-param %s` in %s::%s is unsupported. Please check the documentation for supported types.',
-            $annotation,
+            'Unable to parse a `%s` in the MSON on %s::%s for: `@api-%s %s`',
+            $required_field,
             $class,
-            $method
+            $method,
+            $annotation,
+            $docblock
         );
 
         $exception = new self($message);
         $exception->annotation = $annotation;
+        $exception->docblock = $docblock;
         $exception->class = $class;
         $exception->method = $method;
 

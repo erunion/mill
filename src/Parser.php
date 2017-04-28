@@ -1,9 +1,12 @@
 <?php
 namespace Mill;
 
+use gossi\docblock\Docblock;
 use Mill\Exceptions\Resource\UnsupportedDecoratorException;
 use Mill\Parser\Annotation;
+use Mill\Parser\MSON;
 use Mill\Parser\Version;
+use phootwork\collection\ArrayList;
 use ReflectionClass;
 
 /**
@@ -12,6 +15,7 @@ use ReflectionClass;
  */
 class Parser
 {
+    const REGEX_DECORATOR = '/^(?P<decorator>(:\w+)+)?/u';
     const ANNOTATION_REGEX = '/^\s?@api-(\w+)((:\w+)+)?(\n|\s*([^\n]*))/m';
 
     /**
@@ -93,19 +97,33 @@ class Parser
         $annotations = [];
         $matches = null;
 
-        $docblock = self::cleanDocblock($docblock);
+        $parser = self::getAnnotationsFromDocblock($docblock);
+        $tags = $parser->getTags();
+        if (!empty($tags)) {
+            $annotations = $this->parseAnnotations($tags, $original_docblock);
+        }
+
+        /*$docblock = self::cleanDocblock($docblock);
 
         $matches = self::getAnnotationsFromDocblock($docblock);
         if (is_array($matches)) {
             $docblock = preg_replace('/^\s?@(\w+)\s*([^\n]*)/m', '', $docblock);
             $annotations = $this->parseAnnotations($matches, $original_docblock);
-        }
+        }*/
 
         // Only parse out a `description` annotation if we need to (like in the instance of not parsing a
         // representation).
         if (!$parse_description) {
             return $annotations;
         }
+
+
+        $description = $parser->getLongDescription();
+        if (empty($long_description)) {
+            $description = $parser->getShortDescription();
+        }
+
+        /*$description = $parser->getShortDescription();
 
         // If there's anything left over, clean it up, and store it as the `description` annotation.
         //
@@ -132,7 +150,7 @@ class Parser
         $description = rtrim($description);
 
         // Trim any empty lines off the front, but leave the indent level if there is one.
-        $description = preg_replace('/^\s*\n/', '', $description);
+        $description = preg_replace('/^\s*\n/', '', $description);*/
 
         if (!empty($description)) {
             $annotations['description'][] = $this->buildAnnotationData('description', null, $description);
@@ -144,15 +162,52 @@ class Parser
     /**
      * Parse a group of our custom annotations.
      *
-     * @param array $matches
-     * @param string $original_docblock
+     * @param ArrayList $tags
      * @return array
      */
-    protected function parseAnnotations($matches, $original_docblock)
+    protected function parseAnnotations(ArrayList $tags)
     {
         $annotations = [];
         $version = null;
-        foreach ($matches as $match) {
+
+        /** @var \gossi\docblock\tags\UnknownTag $tag */
+        foreach ($tags as $tag) {
+            $annotation = $tag->getTagName();
+            $data = $tag->getDescription();
+            $decorators = null;
+
+            // If this isn't a Mill annotation, then ignore it.
+            if (substr($annotation, 0, 4) !== 'api-') {
+                continue;
+            }
+
+            $annotation = substr($annotation, 4);
+
+            preg_match_all(self::REGEX_DECORATOR, $data, $matches);
+            if (!empty($matches['decorator'][0])) {
+                $decorators = $matches['decorator'][0];
+                $data = preg_replace(self::REGEX_DECORATOR, '', $data);
+            }
+
+            $data = trim($data);
+            switch ($annotation) {
+                // Handle the `@api-version` annotation block.
+                case 'version':
+                    $version = new Version($data, $this->controller, $this->method);
+                    break;
+
+                // Parse all other annotations.
+                default:
+                    $annotations[$annotation][] = $this->buildAnnotationData(
+                        $annotation,
+                        $decorators,
+                        $data,
+                        $version
+                    );
+            }
+        }
+
+        /*foreach ($matches as $match) {
             list($_, $annotation, $decorators, $_last_decorator, $data) = $match;
 
             if ($annotation !== 'version' && empty($annotations[$annotation])) {
@@ -175,7 +230,7 @@ class Parser
                         $version
                     );
             }
-        }
+        }*/
 
         return $annotations;
     }
@@ -193,6 +248,11 @@ class Parser
     private function buildAnnotationData($name, $decorators, $data, Version $version = null)
     {
         $class = $this->getAnnotationClass($name);
+
+        // If this annotation class does not support MSON, then let's clean up any multi-line content within its data.
+        if (!$class::SUPPORTS_MSON) {
+            $data = preg_replace(MSON::REGEX_CLEAN_MULTILINE, ' ', $data);
+        }
 
         /** @var Annotation $annotation */
         $annotation = new $class($data, $this->controller, $this->method, $version);
@@ -257,50 +317,13 @@ class Parser
     }
 
     /**
-     * Clean a supplied docblock by removing comments and normalizing multi-line annotations.
+     * Parse out annotations from a supplied docblock.
      *
      * @param string $docblock
-     * @return string
-     */
-    public static function cleanDocblock($docblock)
-    {
-        // Strip off comments.
-        $docblock = trim($docblock);
-        $docblock = preg_replace('@^/\*\*@', '', $docblock);
-        $docblock = preg_replace('@\*/$@', '', $docblock);
-        $docblock = preg_replace('@^\s*\*@m', '', $docblock);
-
-        // Normalize multi-line annotations.
-        $lines = explode("\n", $docblock);
-        /** @var boolean|string $last */
-        $last = false;
-        foreach ($lines as $k => $line) {
-            if (preg_match('/^\s?@\w/i', $line)) {
-                $last = $k;
-            } elseif (preg_match('/^\s*$/', $line)) {
-                $last = false;
-            } elseif ($last !== false) {
-                $lines[$last] = rtrim($lines[$last]).' '.trim($line);
-                unset($lines[$k]);
-            }
-        }
-
-        return implode("\n", $lines);
-    }
-
-    /**
-     * Parse out annotations from a supplied, cleaned, docblock.
-     *
-     * @param string $docblock
-     * @return array|false
+     * @return Docblock
      */
     public static function getAnnotationsFromDocblock($docblock)
     {
-        $has_annotations = preg_match_all(self::ANNOTATION_REGEX, $docblock, $matches, PREG_SET_ORDER);
-        if (!$has_annotations) {
-            return false;
-        }
-
-        return $matches;
+        return new Docblock($docblock);
     }
 }

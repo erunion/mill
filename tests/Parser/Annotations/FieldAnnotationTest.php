@@ -1,8 +1,6 @@
 <?php
 namespace Mill\Tests\Parser\Annotations;
 
-use Mill\Tests\TestCase;
-
 class FieldAnnotationTest extends AnnotationTest
 {
     /**

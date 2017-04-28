@@ -1,17 +1,19 @@
 <?php
 namespace Mill\Parser\Annotations;
 
-use Mill\Exceptions\Resource\Annotations\BadOptionsListException;
+use Mill\Parser\Annotation;
+use Mill\Parser\MSON;
 
 /**
  * Handler for the `@api-uriSegment` annotation.
  *
  */
-class UriSegmentAnnotation extends ParamAnnotation
+class UriSegmentAnnotation extends Annotation
 {
     const REQUIRES_VISIBILITY_DECORATOR = false;
     const SUPPORTS_VERSIONING = false;
     const SUPPORTS_DEPRECATION = false;
+    const SUPPORTS_MSON = true;
 
     const REGEX_URI = '/^({[^}]*})/';
 
@@ -40,36 +42,25 @@ class UriSegmentAnnotation extends ParamAnnotation
      * representation.
      *
      * @return array
-     * @throws BadOptionsListException If values are not in the right format.
      */
     protected function parser()
     {
         $parsed = [];
-        $doc = trim($this->docblock);
+        $content = trim($this->docblock);
 
         // URI is surrounded by `{curly braces}`.
-        if (preg_match(self::REGEX_URI, $doc, $matches)) {
+        if (preg_match(self::REGEX_URI, $content, $matches)) {
             $parsed['uri'] = substr($matches[1], 1, -1);
-            $doc = trim(preg_replace(self::REGEX_URI, '', $doc));
+            $content = trim(preg_replace(self::REGEX_URI, '', $content));
         }
 
-        // Parameter type is surrounded by `{curly braces}`.
-        if (preg_match(self::REGEX_TYPE, $doc, $matches)) {
-            $parsed['type'] = substr($matches[1], 1, -1);
-            $doc = trim(preg_replace(self::REGEX_TYPE, '', $doc));
-        }
-
-        // Parameter values are provided `[in|braces]`.
-        if (preg_match(self::REGEX_VALUES, $doc, $matches)) {
-            $parsed['values'] = $this->parseEnumValues('options', substr($matches[1], 1, -1));
-            $doc = trim(preg_replace(self::REGEX_VALUES, '', $doc));
-        }
-
-        $parts = explode(' ', $doc);
-
-        // Field and description will be the last two parts, field space description
-        $parsed['field'] = array_shift($parts);
-        $parsed['description'] = trim(implode(' ', $parts));
+        $mson = (new MSON($this->controller, $this->method))->parse($content);
+        $parsed = array_merge($parsed, [
+            'field' => $mson->getField(),
+            'type' => $mson->getType(),
+            'description' => $mson->getDescription(),
+            'values' => $mson->getValues()
+        ]);
 
         return $parsed;
     }
@@ -84,7 +75,7 @@ class UriSegmentAnnotation extends ParamAnnotation
      */
     protected function interpreter()
     {
-        $this->uri = $this->required('uri');
+        $this->uri = $this->required('uri', false);
 
         $this->field = $this->required('field');
         $this->type = $this->required('type');

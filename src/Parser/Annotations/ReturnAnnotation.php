@@ -58,19 +58,19 @@ class ReturnAnnotation extends Annotation
     protected function parser()
     {
         $parsed = [];
-        $doc = trim($this->docblock);
+        $content = trim($this->docblock);
 
         // Parameter type is surrounded by `{curly braces}`.
-        if (preg_match(self::REGEX_TYPE, $doc, $matches)) {
+        if (preg_match(self::REGEX_TYPE, $content, $matches)) {
             $parsed['type'] = substr($matches[1], 1, -1);
 
             $code = $this->findReturnCodeForType($parsed['type']);
             $parsed['http_code'] = $code . ' ' . $this->getHttpCodeMessage($code);
 
-            $doc = trim(preg_replace(self::REGEX_TYPE, '', $doc));
+            $content = trim(preg_replace(self::REGEX_TYPE, '', $content));
         }
 
-        $parts = explode(' ', $doc);
+        $parts = explode(' ', $content);
         $representation = array_shift($parts);
         $description = trim(implode(' ', $parts));
 

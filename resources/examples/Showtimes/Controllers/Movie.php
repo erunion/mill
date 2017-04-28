@@ -14,7 +14,7 @@ class Movie
      * @api-label Get a single movie.
      *
      * @api-uri:public {Movies} /movies/+id
-     * @api-uriSegment {/movies/+id} {integer} id Movie ID
+     * @api-uriSegment {/movies/+id} id (integer) - Movie ID
      *
      * @api-contentType application/json
      *
@@ -34,22 +34,31 @@ class Movie
      * @api-label Update a movie.
      *
      * @api-uri:public {Movies} /movies/+id
-     * @api-uriSegment {/movies/+id} {integer} id Movie ID
+     * @api-uriSegment {/movies/+id} id (integer) - Movie ID
      *
      * @api-contentType application/json
      * @api-scope edit
      * @api-minVersion 1.1
      *
-     * @api-param:public {string} name Name of the movie.
-     * @api-param:public {string} description Description, or tagline, for the movie.
-     * @api-param:public {string} runtime (optional) Movie runtime, in `HHhr MMmin` format.
-     * @api-param:public {string} content_rating [G|PG|PG-13|R|NC-17|X|NR|UR] (optional) MPAA rating
-     * @api-param:public {array} genres (optional) Array of movie genres.
-     * @api-param:public {string} trailer (optional) Trailer URL
-     * @api-param:public {string} director (optional) Name of the director.
-     * @api-param:public {array} cast (optional) Array of names of the cast.
-     * @api-param:public {boolean} is_kid_friendly (optional) Is this movie kid friendly?
-     * @api-param:public {integer} rotten_tomatoes_score (optional) Rotten Tomatoes score
+     * @api-param:public name (string, required) - Name of the movie.
+     * @api-param:public description (string, required) - Description, or tagline, for the movie.
+     * @api-param:public runtime (string, optional) - Movie runtime, in `HHhr MMmin` format.
+     * @api-param:public content_rating (string, optional) - MPAA rating
+     *  + Members
+     *      - `G`
+     *      - `PG`
+     *      - `PG-13`
+     *      - `R`
+     *      - `NC-17`
+     *      - `X`
+     *      - `NR`
+     *      - `UR`
+     * @api-param:public genres (array, optional) - Array of movie genres.
+     * @api-param:public trailer (string, optional) - Trailer URL
+     * @api-param:public director (string, optional) - Name of the director.
+     * @api-param:public cast (array, optional) - Array of names of the cast.
+     * @api-param:public is_kid_friendly (boolean, optional) - Is this movie kid friendly?
+     * @api-param:public rotten_tomatoes_score (integer, optional) - Rotten Tomatoes score
      *
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Movie
      *
@@ -59,7 +68,7 @@ class Movie
      * @api-throws:public {404} \Mill\Examples\Showtimes\Representations\Error If the movie could not be found.
      *
      * @api-version >=1.1.1
-     * @api-param:public {string} imdb (optional) IMDB URL
+     * @api-param:public imdb (string, optional) - IMDB URL
      */
     public function PATCH()
     {
@@ -72,7 +81,7 @@ class Movie
      * @api-label Delete a movie.
      *
      * @api-uri:private {Movies} /movies/+id
-     * @api-uriSegment {/movies/+id} {integer} id Movie ID
+     * @api-uriSegment {/movies/+id} id (integer) - Movie ID
      *
      * @api-contentType application/json
      * @api-scope delete

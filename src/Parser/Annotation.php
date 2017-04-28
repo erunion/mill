@@ -2,6 +2,7 @@
 namespace Mill\Parser;
 
 use Mill\Exceptions\Resource\Annotations\BadOptionsListException;
+use Mill\Exceptions\Resource\Annotations\InvalidMSONSyntaxException;
 use Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException;
 
 /**
@@ -106,6 +107,13 @@ abstract class Annotation
     const SUPPORTS_DEPRECATION = null;
 
     /**
+     * Is this annotation written using MSON?
+     *
+     * @return bool|null
+     */
+    const SUPPORTS_MSON = null;
+
+    /**
      * @param string $doc
      * @param string $controller
      * @param string|null $method
@@ -133,12 +141,26 @@ abstract class Annotation
      * Extract a required field from the parsed dataset.
      *
      * @param string $field
+     * @param bool $is_mson_field
      * @return mixed
+     * @throws InvalidMSONSyntaxException If the annotation contains invalid MSON.
      * @throws MissingRequiredFieldException If the supplied field is missing in the parsed dataset.
      */
-    protected function required($field)
+    protected function required($field, $is_mson_field = true)
     {
         if (empty($this->parsed_data[$field])) {
+            // If this field was written in MSON, but isn't present, and this annotation supports MSON, let's return an
+            // invalid MSON exception because that means that we just weren't able to parse the MSON that they supplied.
+            if ($is_mson_field && static::SUPPORTS_MSON) {
+                throw InvalidMSONSyntaxException::create(
+                    $field,
+                    $this->getAnnotationName(),
+                    $this->docblock,
+                    $this->controller,
+                    $this->method
+                );
+            }
+
             throw MissingRequiredFieldException::create(
                 $field,
                 $this->getAnnotationName(),

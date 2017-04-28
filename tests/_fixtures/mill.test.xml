@@ -63,9 +63,9 @@
     </capabilities>
 
     <parameterTokens>
-        <token name="page">{integer} page (optional) The page number to show.</token>
-        <token name="per_page">{integer} per_page (optional) Number of items to show on each page. Max 100.</token>
-        <token name="filter">{string} filter (optional) Filter to apply to the results.</token>
+        <token name="page">page (integer, optional) - The page number to show.</token>
+        <token name="per_page">per_page (integer, optional) - Number of items to show on each page. Max 100.</token>
+        <token name="filter">filter (string, optional) - Filter to apply to the results.</token>
     </parameterTokens>
 
     <uriSegments>

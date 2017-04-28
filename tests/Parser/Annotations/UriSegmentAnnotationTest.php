@@ -34,7 +34,7 @@ class UriSegmentAnnotationTest extends AnnotationTest
         return [
             'bare' => [
                 'uri' => '/movies/+id',
-                'segment' => '{/movies/+id} {string} id Movie ID',
+                'segment' => '{/movies/+id} id (string) - Movie ID',
                 'expected' => [
                     'description' => 'Movie ID',
                     'field' => 'id',
@@ -45,16 +45,18 @@ class UriSegmentAnnotationTest extends AnnotationTest
             ],
             '_complete' => [
                 'uri' => '/movies/+id/showtimes/*date',
-                'segment' => '{/movies/+id/showtimes/*date} {string} date [today|tomorrow] Date to look for movie ' .
-                    'showtimes.',
+                'segment' => '{/movies/+id/showtimes/*date} date (string) - Date to look for movie showtimes.
+                    + Members
+                        - `today`
+                        - `tomorrow`',
                 'expected' => [
                     'description' => 'Date to look for movie showtimes.',
                     'field' => 'date',
                     'type' => 'string',
                     'uri' => '/movies/+id/showtimes/*date',
                     'values' => [
-                        'today',
-                        'tomorrow'
+                        'today' => '',
+                        'tomorrow' => ''
                     ]
                 ]
             ]
@@ -67,6 +69,16 @@ class UriSegmentAnnotationTest extends AnnotationTest
     public function providerAnnotationFailsOnInvalidAnnotations()
     {
         return [
+            'invalid-mson' => [
+                'annotation' => '\Mill\Parser\Annotations\UriSegmentAnnotation',
+                'docblock' => '{/movies/+id}',
+                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\InvalidMSONSyntaxException',
+                'expected.exception.asserts' => [
+                    'getAnnotation' => 'urisegment',
+                    'getDocblock' => '{/movies/+id}',
+                    'getValues' => []
+                ]
+            ],
             'missing-uri' => [
                 'annotation' => '\Mill\Parser\Annotations\UriSegmentAnnotation',
                 'docblock' => '',
@@ -78,52 +90,13 @@ class UriSegmentAnnotationTest extends AnnotationTest
                     'getValues' => []
                 ]
             ],
-            'missing-field-name' => [
+            'unsupported-type' => [
                 'annotation' => '\Mill\Parser\Annotations\UriSegmentAnnotation',
-                'docblock' => '{/movies/+id}',
-                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
+                'docblock' => '{/movies/+id} id (str) - Movie ID',
+                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\UnsupportedTypeException',
                 'expected.exception.asserts' => [
-                    'getRequiredField' => 'field',
-                    'getAnnotation' => 'urisegment',
-                    'getDocblock' => '{/movies/+id}',
-                    'getValues' => []
-                ]
-            ],
-            'missing-type' => [
-                'annotation' => '\Mill\Parser\Annotations\UriSegmentAnnotation',
-                'docblock' => '{/movies/+id} id',
-                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
-                'expected.exception.asserts' => [
-                    'getRequiredField' => 'type',
-                    'getAnnotation' => 'urisegment',
-                    'getDocblock' => '{/movies/+id} id',
-                    'getValues' => []
-                ]
-            ],
-            'values-are-in-the-wrong-format' => [
-                'annotation' => '\Mill\Parser\Annotations\UriSegmentAnnotation',
-                'docblock' => '{/movies/+id/showtimes/*date} {string} date [today,tomorrow] Date to look for movie ' .
-                    'showtimes.',
-                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\BadOptionsListException',
-                'expected.exception.asserts' => [
-                    'getRequiredField' => null,
-                    'getAnnotation' => 'options',
-                    'getDocblock' => '{/movies/+id/showtimes/*date} {string} date [today,tomorrow] Date to look ' .
-                        'for movie showtimes.',
-                    'getValues' => [
-                        'today,tomorrow'
-                    ]
-                ]
-            ],
-            'missing-description' => [
-                'annotation' => '\Mill\Parser\Annotations\UriSegmentAnnotation',
-                'docblock' => '{/movies/+id} {string} id',
-                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
-                'expected.exception.asserts' => [
-                    'getRequiredField' => 'description',
-                    'getAnnotation' => 'urisegment',
-                    'getDocblock' => '{/movies/+id} {string} id',
-                    'getValues' => []
+                    'getAnnotation' => 'id (str) - Movie ID',
+                    'getDocblock' => null
                 ]
             ]
         ];
