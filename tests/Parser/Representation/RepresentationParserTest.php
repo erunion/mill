@@ -11,6 +11,10 @@ class RepresentationParserTest extends TestCase
 
     /**
      * @dataProvider providerParseAnnotations
+     * @param string $class
+     * @param string $method
+     * @param string $expected
+     * @return void
      */
     public function testParseAnnotations($class, $method, $expected)
     {
@@ -20,12 +24,12 @@ class RepresentationParserTest extends TestCase
         $this->assertCount(count($expected['annotations']), $annotations);
 
         if (!empty($annotations)) {
-            // Assert that annotations were parsed correctly as `@api-field`.
+            // Assert that annotations were parsed correctly as `@api-data`.
             foreach ($annotations as $name => $annotation) {
                 $this->assertInstanceOf(
-                    '\Mill\Parser\Annotations\FieldAnnotation',
+                    '\Mill\Parser\Annotations\DataAnnotation',
                     $annotation,
-                    sprintf('%s is not a field annotation.', $name)
+                    sprintf('%s is not a data annotation.', $name)
                 );
             }
 
@@ -83,8 +87,13 @@ class RepresentationParserTest extends TestCase
 
     /**
      * @dataProvider providerRepresentationsThatWillFailParsing
+     * @param string $docblock
+     * @param string $exception
+     * @param array $asserts
+     * @throws \Exception
+     * @return void
      */
-    public function testRepresentationsThatWillFailParsing($docblock, $exception, $asserts)
+    public function testRepresentationsThatWillFailParsing($docblock, $exception, array $asserts)
     {
         $this->expectException($exception);
         $this->overrideReadersWithFakeDocblockReturn($docblock);
@@ -103,6 +112,11 @@ class RepresentationParserTest extends TestCase
 
     /**
      * @dataProvider providerRepresentationMethodsThatWillFailParsing
+     * @param string $class
+     * @param string $method
+     * @param string $exception
+     * @throws \Exception
+     * @return void
      */
     public function testRepresentationMethodsThatWillFailParsing($class, $method, $exception)
     {
@@ -126,159 +140,188 @@ class RepresentationParserTest extends TestCase
     public function providerParseAnnotations()
     {
         return [
-            'Movie' => [
+            'movie' => [
                 'class' => '\Mill\Examples\Showtimes\Representations\Movie',
                 'method' => 'create',
                 'expected' => [
                     'annotations' => [
                         'cast' => [
                             'capability' => false,
-                            'field' => 'cast',
-                            'label' => 'Cast',
-                            'options' => false,
+                            'description' => 'Cast',
+                            'identifier' => 'cast',
+                            'sample_data' => false,
                             'subtype' => '\Mill\Examples\Showtimes\Representations\Person',
                             'type' => 'array',
+                            'values' => false,
                             'version' => false
                         ],
                         'content_rating' => [
                             'capability' => false,
-                            'field' => 'content_rating',
-                            'label' => 'MPAA rating',
-                            'options' => [
-                                'G',
-                                'NC-17',
-                                'NR',
-                                'PG',
-                                'PG-13',
-                                'R',
-                                'UR',
-                                'X'
-                            ],
+                            'description' => 'MPAA rating',
+                            'identifier' => 'content_rating',
+                            'sample_data' => false,
+                            'subtype' => false,
                             'type' => 'enum',
+                            'values' => [
+                                'G' => '',
+                                'NC-17' => '',
+                                'NR' => '',
+                                'PG' => '',
+                                'PG-13' => '',
+                                'R' => '',
+                                'UR' => '',
+                                'X' => ''
+                            ],
                             'version' => false
                         ],
                         'description' => [
                             'capability' => false,
-                            'field' => 'description',
-                            'label' => 'Description',
-                            'options' => false,
+                            'description' => 'Description',
+                            'identifier' => 'description',
+                            'sample_data' => false,
+                            'subtype' => false,
                             'type' => 'string',
+                            'values' => false,
                             'version' => false
                         ],
                         'director' => [
                             'capability' => false,
-                            'field' => 'director',
-                            'label' => 'Director',
-                            'options' => false,
-                            'subtype' => '\Mill\Examples\Showtimes\Representations\Person',
-                            'type' => 'representation',
+                            'description' => 'Director',
+                            'identifier' => 'director',
+                            'sample_data' => false,
+                            'subtype' => false,
+                            'type' => '\Mill\Examples\Showtimes\Representations\Person',
+                            'values' => false,
                             'version' => false
                         ],
                         'external_urls' => [
                             'capability' => false,
-                            'field' => 'external_urls',
-                            'label' => 'External URLs',
-                            'options' => false,
+                            'description' => 'External URLs',
+                            'identifier' => 'external_urls',
+                            'sample_data' => false,
+                            'subtype' => false,
                             'type' => 'object',
+                            'values' => false,
                             'version' => '>=1.1'
                         ],
                         'external_urls.imdb' => [
                             'capability' => false,
-                            'field' => 'external_urls.imdb',
-                            'label' => 'IMDB URL',
-                            'options' => false,
+                            'description' => 'IMDB URL',
+                            'identifier' => 'external_urls.imdb',
+                            'sample_data' => false,
+                            'subtype' => false,
                             'type' => 'string',
+                            'values' => false,
                             'version' => '>=1.1'
                         ],
                         'external_urls.tickets' => [
                             'capability' => 'BUY_TICKETS',
-                            'field' => 'external_urls.tickets',
-                            'label' => 'Tickets URL',
-                            'options' => false,
+                            'description' => 'Tickets URL',
+                            'identifier' => 'external_urls.tickets',
+                            'sample_data' => false,
+                            'subtype' => false,
                             'type' => 'string',
+                            'values' => false,
                             'version' => '>=1.1'
                         ],
                         'external_urls.trailer' => [
                             'capability' => false,
-                            'field' => 'external_urls.trailer',
-                            'label' => 'Trailer URL',
-                            'options' => false,
+                            'description' => 'Trailer URL',
+                            'identifier' => 'external_urls.trailer',
+                            'sample_data' => false,
+                            'subtype' => false,
                             'type' => 'string',
+                            'values' => false,
                             'version' => '>=1.1'
                         ],
                         'genres' => [
                             'capability' => false,
-                            'field' => 'genres',
-                            'label' => 'Genres',
-                            'options' => false,
+                            'description' => 'Genres',
+                            'identifier' => 'genres',
+                            'sample_data' => false,
                             'subtype' => false,
                             'type' => 'array',
+                            'values' => false,
                             'version' => false
                         ],
                         'id' => [
                             'capability' => false,
-                            'field' => 'id',
-                            'label' => 'Unique ID',
-                            'options' => false,
+                            'description' => 'Unique ID',
+                            'identifier' => 'id',
+                            'sample_data' => false,
+                            'subtype' => false,
                             'type' => 'number',
+                            'values' => false,
                             'version' => false
                         ],
                         'kid_friendly' => [
                             'capability' => false,
-                            'field' => 'kid_friendly',
-                            'label' => 'Kid friendly?',
-                            'options' => false,
+                            'description' => 'Kid friendly?',
+                            'identifier' => 'kid_friendly',
+                            'sample_data' => false,
+                            'subtype' => false,
                             'type' => 'boolean',
+                            'values' => false,
                             'version' => false
                         ],
                         'name' => [
                             'capability' => false,
-                            'field' => 'name',
-                            'label' => 'Name',
-                            'options' => false,
+                            'description' => 'Name',
+                            'identifier' => 'name',
+                            'sample_data' => false,
+                            'subtype' => false,
                             'type' => 'string',
+                            'values' => false,
                             'version' => false
                         ],
                         'rotten_tomatoes_score' => [
                             'capability' => false,
-                            'field' => 'rotten_tomatoes_score',
-                            'label' => 'Rotten Tomatoes score',
-                            'options' => false,
+                            'description' => 'Rotten Tomatoes score',
+                            'identifier' => 'rotten_tomatoes_score',
+                            'sample_data' => false,
+                            'subtype' => false,
                             'type' => 'number',
+                            'values' => false,
                             'version' => false
                         ],
                         'runtime' => [
                             'capability' => false,
-                            'field' => 'runtime',
-                            'label' => 'Runtime',
-                            'options' => false,
+                            'description' => 'Runtime',
+                            'identifier' => 'runtime',
+                            'sample_data' => false,
+                            'subtype' => false,
                             'type' => 'string',
+                            'values' => false,
                             'version' => false
                         ],
                         'showtimes' => [
                             'capability' => false,
-                            'field' => 'showtimes',
-                            'label' => 'Non-theater specific showtimes',
-                            'options' => false,
+                            'description' => 'Non-theater specific showtimes',
+                            'identifier' => 'showtimes',
+                            'sample_data' => false,
                             'subtype' => false,
                             'type' => 'array',
+                            'values' => false,
                             'version' => false
                         ],
                         'theaters' => [
                             'capability' => false,
-                            'field' => 'theaters',
-                            'label' => 'Theaters the movie is currently showing in',
-                            'options' => false,
+                            'description' => 'Theaters the movie is currently showing in',
+                            'identifier' => 'theaters',
+                            'sample_data' => false,
                             'subtype' => '\Mill\Examples\Showtimes\Representations\Theater',
                             'type' => 'array',
+                            'values' => false,
                             'version' => false
                         ],
                         'uri' => [
                             'capability' => false,
-                            'field' => 'uri',
-                            'label' => 'Movie URI',
-                            'options' => false,
+                            'description' => 'Movie URI',
+                            'identifier' => 'uri',
+                            'sample_data' => false,
+                            'subtype' => false,
                             'type' => 'uri',
+                            'values' => false,
                             'version' => false
                         ]
                     ]
@@ -293,62 +336,20 @@ class RepresentationParserTest extends TestCase
     public function providerRepresentationsThatWillFailParsing()
     {
         return [
-            'docblock-has-duplicate-capability-annotations' => [
+            'docblock-unparseable-mson' => [
                 'docblocks' => '/**
-                  * @api-label Canonical relative URI
-                  * @api-field uri
-                  * @api-type uri
-                  * @api-capability SomeCapability
-                  * @api-capability SomeOtherCapability
+                  * @api-data this is not parseable mson
                   */',
-                'expected.exception' => '\Mill\Exceptions\Representation\DuplicateAnnotationsOnFieldException',
-                'expected.exception.asserts' => [
-                    'getAnnotation' => 'capability'
-                ]
-            ],
-            'docblock-has-duplicate-version-annotations' => [
-                'docblocks' => '/**
-                  * @api-label Canonical relative URI
-                  * @api-field uri
-                  * @api-type uri
-                  * @api-version >3.2
-                  * @api-version 3.4
-                  */',
-                'expected.exception' => '\Mill\Exceptions\Representation\DuplicateAnnotationsOnFieldException',
-                'expected.exception.asserts' => [
-                    'getAnnotation' => 'version'
-                ]
-            ],
-            'docblock-missing-a-field' => [
-                'docblocks' => '/**
-                  * @api-label Canonical relative URI
-                  */',
-                'expected.exception' => '\Mill\Exceptions\Representation\MissingFieldAnnotationException',
-                'expected.exception.asserts' => [
-                    'getAnnotation' => 'field'
-                ]
-            ],
-            'docblock-missing-a-type' => [
-                'docblocks' => '/**
-                  * @api-label Canonical relative URI
-                  * @api-field uri
-                  */',
-                'expected.exception' => '\Mill\Exceptions\Representation\MissingFieldAnnotationException',
-                'expected.exception.asserts' => [
-                    'getAnnotation' => 'type'
-                ]
+                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\InvalidMSONSyntaxException',
+                'expected.exception.asserts' => []
             ],
             'duplicate-fields' => [
                 'docblocks' => '/**
-                  * @api-label Canonical relative URI
-                  * @api-field uri
-                  * @api-type uri
+                  * @api-data uri (uri) - Canonical relative URI
                   */
 
                  /**
-                  * @api-label Canonical relative URI
-                  * @api-field uri
-                  * @api-type uri
+                  * @api-data uri (uri) - Canonical relative URI
                   */',
                 'expected.exception' => '\Mill\Exceptions\Representation\DuplicateFieldException',
                 'expected.exception.asserts' => [

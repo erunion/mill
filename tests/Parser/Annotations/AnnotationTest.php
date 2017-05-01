@@ -13,8 +13,8 @@ abstract class AnnotationTest extends TestCase
         $this->expectException($exception);
 
         try {
-            if ($annotation === '\Mill\Parser\Annotations\FieldAnnotation') {
-                $this->getFieldAnnotationFromDocblock($docblock, __CLASS__, __METHOD__);
+            if ($annotation === '\Mill\Parser\Annotations\DataAnnotation') {
+                $this->getDataAnnotationFromDocblock($docblock, __CLASS__);
             } else {
                 new $annotation($docblock, __CLASS__, __METHOD__);
             }

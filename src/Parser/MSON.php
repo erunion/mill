@@ -1,12 +1,15 @@
 <?php
 namespace Mill\Parser;
 
+use Mill\Container;
+use Mill\Exceptions\Config\UnconfiguredRepresentationException;
+use Mill\Exceptions\Representation\Types\MissingOptionsException;
 use Mill\Exceptions\Resource\Annotations\UnsupportedTypeException;
 
 class MSON
 {
     /**
-     * This is the regex to match a Mill-flavor MSON string.
+     * This is the regex to match a Mill-flavored MSON string.
      *
      * Examples:
      *
@@ -14,14 +17,19 @@ class MSON
      *  - content_rating `G` (string, required) - MPAA rating
      *  - content_rating `G` (string, optional, MOVIE_RATINGS) - MPAA rating
      *  - content_rating `G` (string, MOVIE_RATINGS) - MPAA rating
+     *  - websites.description (string) - The websites' description
+     *  - websites (array<object>) - The users' list of websites.
+     *  - cast (array<\Mill\Examples\Showtimes\Representations\Person>) - Cast
+     *  - director (\Mill\Examples\Showtimes\Representations\Person) - Director
      *
      * @var string
      */
-    const REGEX_MSON = '/((?P<field>\w+) (`(?P<sample_data>.+)` )?' .
-        '\((?P<type>\w+)(, (?P<required>required|optional))?(, (?P<capability>\w+))?\) - (?P<description>.+))/uis';
+    const REGEX_MSON = '/((?P<field>[\w.]+) (`(?P<sample_data>.+)` )?' .
+        '\((?P<type>[\w\\\]+)(<(?P<subtype>[\w\\\]+)>)?(, (?P<required>required|optional))?(, (?P<capability>\w+))?\)' .
+        ' - (?P<description>.+))/uis';
 
     /**
-     * This is the regex to match Mill-flavor MSON enum members.
+     * This is the regex to match Mill-flavored MSON enum members.
      *
      * Examples:
      *
@@ -39,19 +47,19 @@ class MSON
      *          - `PG-13`
      *
      * @var string
+     * @todo Add a test for a member description that exists on multiple lines.
      */
     const REGEX_MSON_ENUM = '/(?:\+ Members\n(?:\s*?))?(?:- `(?P<value>.*?)`( - (?P<description>.*?))?)(?:$|\n)/ui';
 
     /**
-     * Take a multi-line string/pagraph, remove any multi-lines and contract sentences.
+     * Take a multi-line string or paragraph, remove any multi-lines, and contract sentences.
      *
      * Examples:
      *
      *  - "If there is a problem with the
      *      request." becomes "If there is a problem with the request."
      *
-     * @todo This does not currently support multi-paragraph strings as those seem a bit of overkill for their usages,
-     *  but it'd be nice to support at some point regardless.
+     * @todo This does not currently support multi-paragraph strings.
      */
     const REGEX_CLEAN_MULTILINE = '/(\s)?[ \t]*(\r\n|\n)[ \t]*(\s)/';
 
@@ -72,7 +80,7 @@ class MSON
     /**
      * Name of the field that was parsed out of the MSON content.
      *
-     * @var string|false
+     * @var string
      */
     protected $field;
 
@@ -81,14 +89,21 @@ class MSON
      *
      * @var string|false
      */
-    protected $sample_data;
+    protected $sample_data = false;
 
     /**
      * Type of field that this MSON content represents.
      *
-     * @var string|false
+     * @var string
      */
     protected $type;
+
+    /**
+     * Subtype of the type of field that this MSON content represents.
+     *
+     * @var string|false
+     */
+    protected $subtype = false;
 
     /**
      * Is this MSON content designated as being required?
@@ -102,12 +117,12 @@ class MSON
      *
      * @var string|false
      */
-    protected $capability;
+    protected $capability = false;
 
     /**
      * Parsed description from the MSON content.
      *
-     * @var string|false
+     * @var string
      */
     protected $description;
 
@@ -133,7 +148,8 @@ class MSON
         'number',
         'object',
         'string',
-        'timestamp'
+        'timestamp',
+        'uri'
     ];
 
     /**
@@ -152,16 +168,17 @@ class MSON
      * @param string $content
      * @return MSON
      * @throws UnsupportedTypeException If an unsupported MSON field type has been supplied.
+     * @throws MissingOptionsException If a supplied MSON type of `enum` missing corresponding acceptable values.
      */
     public function parse($content)
     {
         preg_match(self::REGEX_MSON, $content, $matches);
 
-        $this->field = (isset($matches['field'])) ? $matches['field'] : false;
-        $this->sample_data = (isset($matches['sample_data'])) ? $matches['sample_data'] : false;
-        $this->type = (isset($matches['type'])) ? $matches['type'] : false;
-        $this->capability = (isset($matches['capability'])) ? $matches['capability'] : false;
-        $this->description = (isset($matches['description'])) ? $matches['description'] : false;
+        foreach (['field', 'type', 'description', 'sample_data', 'subtype', 'capability'] as $name) {
+            if (isset($matches[$name]) && !empty($matches[$name])) {
+                $this->{$name} = $matches[$name];
+            }
+        }
 
         if (isset($matches['required'])) {
             if (!empty($matches['required']) && strtolower($matches['required']) == 'required') {
@@ -169,10 +186,36 @@ class MSON
             }
         }
 
-        // Verify that the supplied type is supported.
+        // Verify that the supplied type, and any subtype if present, is supported.
         if (!empty($this->type)) {
+            $config = Container::getConfig();
+
             if (!in_array(strtolower($this->type), $this->supported_types)) {
-                throw UnsupportedTypeException::create($content, $this->controller, $this->method);
+                try {
+                    // If this isn't a valid representation, then it's an invalid type.
+                    $config->doesRepresentationExist($this->type);
+                } catch (UnconfiguredRepresentationException $e) {
+                    throw UnsupportedTypeException::create($content, $this->controller, $this->method);
+                }
+            }
+
+            if (!empty($this->subtype)) {
+                switch ($this->type) {
+                    case 'array':
+                    case 'object':
+                        if (!in_array(strtolower($this->subtype), $this->supported_types)) {
+                            try {
+                                // If this isn't a valid representation, then it's an invalid type.
+                                $config->doesRepresentationExist($this->subtype);
+                            } catch (UnconfiguredRepresentationException $e) {
+                                throw UnsupportedTypeException::create($content, $this->controller, $this->method);
+                            }
+                        }
+                        break;
+
+                    default:
+                        throw UnsupportedTypeException::create($content, $this->controller, $this->method);
+                }
             }
         }
 
@@ -190,6 +233,10 @@ class MSON
             // The description might be on multiple lines, so let's clean it up a bit.
             // @todo Multi-paragraph descriptions seems like a bit of overkill, but it'd be nice to add support.
             $this->description = preg_replace(self::REGEX_CLEAN_MULTILINE, ' ', $this->description);
+        }
+
+        if ($this->type === 'enum' && empty($this->values)) {
+            throw MissingOptionsException::create($this->type, $this->controller, $this->method);
         }
 
         return $this;
@@ -241,11 +288,21 @@ class MSON
     /**
      * Type of field that this MSON content represents.
      *
-     * @return false|string
+     * @return string
      */
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * Subtype of the type of field that this MSON content represents.
+     *
+     * @return false|string
+     */
+    public function getSubtype()
+    {
+        return $this->subtype;
     }
 
     /**
@@ -261,7 +318,7 @@ class MSON
     /**
      * Application-specific capability that was parsed out of the MSON content.
      *
-     * @return false|string
+     * @return string
      */
     public function getCapability()
     {
@@ -286,5 +343,24 @@ class MSON
     public function getValues()
     {
         return $this->values;
+    }
+
+    /**
+     * Get parsed MSON content in an array.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return [
+            'capability' => $this->getCapability(),
+            'description' => $this->getDescription(),
+            'field' => $this->getField(),
+            'required' => $this->isRequired(),
+            'sample_data' => $this->getSampleData(),
+            'subtype' => $this->getSubtype(),
+            'type' => $this->getType(),
+            'values' => $this->getValues()
+        ];
     }
 }

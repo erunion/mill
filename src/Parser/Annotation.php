@@ -294,21 +294,7 @@ abstract class Annotation
             if ($var === 'visible') {
                 $arr[$var] = $this->isVisible();
             } elseif ($this->{$var} instanceof Annotation) {
-                // If this variable is a `@api-type` annotation, but the specific type does not require a
-                // `@api-subtype`, then don't include that data in the generated array.
-                if ($var === 'type') {
-                    $type_data = $this->{$var}->toArray();
-
-                    /** @var \Mill\Parser\Representation\Type $type_object */
-                    $type_object = $this->{$var}->getObject();
-                    if (!$type_object->requiresSubtype() && !$type_object->allowsSubtype()) {
-                        unset($type_data['subtype']);
-                    }
-
-                    $arr += $type_data;
-                } else {
-                    $arr += $this->{$var}->toArray();
-                }
+                $arr += $this->{$var}->toArray();
             } else {
                 $arr[$var] = $this->{$var};
             }

@@ -10,9 +10,7 @@ class RepresentationWithRequiredLabelAnnotationMissing
     {
         return [
             /**
-             * @api-label The objects's canonical relative URI
-             * @api-field uri
-             * @api-type uri
+             * @api-data uri (uri) - The objects's canonical relative URI
              */
             'uri' => '/some/uri/123'
         ];

@@ -1,78 +1,76 @@
 <?php
 namespace Mill\Parser\Annotations;
 
-use Mill\Container;
-use Mill\Exceptions\Resource\Annotations\UnsupportedTypeException;
+use Mill\Exceptions\Representation\RestrictedFieldNameException;
 use Mill\Parser\Annotation;
 use Mill\Parser\MSON;
 
 /**
- * Handler for the `@api-param` annotation.
+ * Handler for the `@api-data` annotation.
  *
  */
-class ParamAnnotation extends Annotation
+class DataAnnotation extends Annotation
 {
-    const REQUIRES_VISIBILITY_DECORATOR = true;
+    const REQUIRES_VISIBILITY_DECORATOR = false;
     const SUPPORTS_VERSIONING = true;
-    const SUPPORTS_DEPRECATION = true;
+    const SUPPORTS_DEPRECATION = false;
     const SUPPORTS_MSON = true;
 
     /**
-     * Name of this parameter's field.
+     * Identifier for this data.
      *
      * @var string
      */
-    protected $field;
+    protected $identifier;
 
     /**
-     * Sample data that this parameter might accept.
+     * Sample data that this might represent.
      *
      * @var string
      */
     protected $sample_data;
 
     /**
-     * Type of data that this parameter supports.
+     * Type of data that this represents.
      *
      * @var string
      */
     protected $type;
 
     /**
-     * Flag designating if this parameter is required or not.
+     * Subtype of the type of data that this represents.
      *
-     * @var bool
+     * @var string|false
      */
-    protected $required = false;
+    protected $subtype = false;
 
     /**
-     * Array of acceptable values for this parameter.
+     * Array of acceptable values for this data.
      *
      * @var array|null
      */
     protected $values = [];
 
     /**
-     * Description of what this parameter does.
+     * Description of what this data represents.
      *
      * @var string
      */
     protected $description;
 
     /**
-     * Array of items that should be included in an array representation of this annotation.
+     * Return an array of items that should be included in an array representation of this annotation.
      *
      * @var array
      */
     protected $arrayable = [
         'capability',
         'description',
-        'field',
-        'required',
+        'identifier',
         'sample_data',
+        'subtype',
         'type',
         'values',
-        'visible'
     ];
 
     /**
@@ -80,24 +78,18 @@ class ParamAnnotation extends Annotation
      * representation.
      *
      * @return array
-     * @throws UnsupportedTypeException If an unsupported parameter type has been supplied.
+     * @throws RestrictedFieldNameException If a restricted `@api-field` name is detected.
      */
     protected function parser()
     {
         $content = trim($this->docblock);
 
-        // Swap in shortcode tokens (if present).
-        $tokens = Container::getConfig()->getParameterTokens();
-        if (!empty($tokens)) {
-            $content = str_replace(array_keys($tokens), array_values($tokens), $content);
-        }
-
         $mson = (new MSON($this->controller, $this->method))->parse($content);
         $parsed = [
-            'field' => $mson->getField(),
+            'identifier' => $mson->getField(),
             'sample_data' => $mson->getSampleData(),
             'type' => $mson->getType(),
-            'required' => $mson->isRequired(),
+            'subtype' => $mson->getSubtype(),
             'capability' => $mson->getCapability(),
             'description' => $mson->getDescription(),
             'values' => $mson->getValues()
@@ -110,6 +102,10 @@ class ParamAnnotation extends Annotation
                 $this->controller,
                 $this->method
             );
+        }
+
+        if (strtoupper($parsed['identifier']) === '__FIELD_DATA__') {
+            throw RestrictedFieldNameException::create($this->controller, $this->method);
         }
 
         return $parsed;
@@ -125,73 +121,35 @@ class ParamAnnotation extends Annotation
      */
     protected function interpreter()
     {
-        $this->field = $this->required('field');
+        $this->identifier = $this->required('identifier');
         $this->sample_data = $this->optional('sample_data');
         $this->type = $this->required('type');
+        $this->subtype = $this->optional('subtype');
         $this->description = $this->required('description');
-        $this->required = $this->boolean('required');
 
         $this->values = $this->optional('values');
         $this->capability = $this->optional('capability');
     }
 
     /**
-     * Get the field that this parameter represents.
+     * Get the field name.
      *
      * @return string
      */
-    public function getField()
+    public function getIdentifier()
     {
-        return $this->field;
+        return $this->identifier;
     }
 
     /**
-     * Get the sample data that this parameter might accept.
+     * Set a dot notation prefix on the identifier.
      *
-     * @return string
+     * @param string $prefix
+     * @return DataAnnotation
      */
-    public function getSampleData()
+    public function setIdentifierPrefix($prefix)
     {
-        return $this->sample_data;
-    }
-
-    /**
-     * Get the type of variable that this parameter is.
-     *
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * Get the description for this parameter.
-     *
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * Is this parameter required?
-     *
-     * @return bool
-     */
-    public function isRequired()
-    {
-        return $this->required;
-    }
-
-    /**
-     * Get the enumerated values that are allowed on this parameter.
-     *
-     * @return array|null
-     */
-    public function getValues()
-    {
-        return $this->values;
+        $this->identifier = $prefix . '.' . $this->identifier;
+        return $this;
     }
 }

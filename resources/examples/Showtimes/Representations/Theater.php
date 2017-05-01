@@ -14,60 +14,43 @@ class Theater extends Representation
     {
         return [
             /**
-             * @api-label Theater URI
-             * @api-field uri
-             * @api-type uri
+             * @api-data uri (uri) - Theater URI
              */
             'uri' => $this->theater->uri,
 
             /**
-             * @api-label Unique ID
-             * @api-field id
-             * @api-type number
+             * @api-data id (number) - Unique ID
              */
             'id' => $this->theater->id,
 
             /**
-             * @api-label Name
-             * @api-field name
-             * @api-type string
+             * @api-data name (string) - Name
              */
             'name' => $this->theater->name,
 
             /**
-             * @api-label Address
-             * @api-field address
-             * @api-type string
+             * @api-data address (string) - Address
              */
             'address' => $this->theater->address,
 
             /**
-             * @api-label Phone number
-             * @api-field phone_number
-             * @api-type string
+             * @api-data phone_number (string) - Phone number
              */
             'phone_number' => $this->theater->phone_number,
 
             /**
-             * @api-label Website
-             * @api-field website
-             * @api-type string
+             * @api-data website (string) - Website
              * @api-version <1.1
              */
             'website' => $this->theater->website,
 
             /**
-             * @api-label Movies currently playing
-             * @api-field movies
-             * @api-type array
-             * @api-subtype \Mill\Examples\Showtimes\Representations\Movie
+             * @api-data movies (array<\Mill\Examples\Showtimes\Representations\Movie>) - Movies currently playing
              */
             'movies' => $this->theater->getMovies(),
 
             /**
-             * @api-label Non-movie specific showtimes
-             * @api-field showtimes
-             * @api-type array
+             * @api-data showtimes (array) - Non-movie specific showtimes
              */
             'showtimes' => $this->theater->getShowtimes()
         ];

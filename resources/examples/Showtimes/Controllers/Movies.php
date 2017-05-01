@@ -15,7 +15,7 @@ class Movies
      *
      * @api-contentType application/json
      *
-     * @api-param:public location (string) - Location you want movies for.
+     * @api-param:public location (string, required) - Location you want movies for.
      *
      * @api-return:public {collection} \Mill\Examples\Showtimes\Representations\Movie
      *
@@ -37,7 +37,7 @@ class Movies
      * @api-scope create
      *
      * @api-param:public name (string, required) - Name of the movie.
-     * @api-param:public name (string, required) - Description, or tagline, for the movie.
+     * @api-param:public description (string, required) - Description, or tagline, for the movie.
      * @api-param:public runtime (string, optional) - Movie runtime, in `HHhr MMmin` format.
      * @api-param:public content_rating (string, optional) - MPAA rating
      *  + Members

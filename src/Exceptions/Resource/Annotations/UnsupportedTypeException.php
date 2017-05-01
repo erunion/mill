@@ -14,7 +14,7 @@ class UnsupportedTypeException extends \Exception
     public static function create($annotation, $class, $method)
     {
         $message = sprintf(
-            'The type on `@api-param %s` in %s::%s is unsupported. Please check the documentation for supported types.',
+            'The type on `%s` in %s::%s is unsupported. Please check the documentation for supported types.',
             $annotation,
             $class,
             $method

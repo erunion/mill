@@ -14,30 +14,22 @@ class Person extends Representation
     {
         return [
             /**
-             * @api-label Person URI
-             * @api-field uri
-             * @api-type uri
+             * @api-data uri (uri) - Person URI
              */
             'uri' => $this->person->uri,
 
             /**
-             * @api-label Unique ID
-             * @api-field id
-             * @api-type number
+             * @api-data id (number) - Unique ID
              */
             'id' => $this->person->id,
 
             /**
-             * @api-label Name
-             * @api-field name
-             * @api-type string
+             * @api-data name (string) - Name
              */
             'name' => $this->person->name,
 
             /**
-             * @api-label IMDB URL
-             * @api-field imdb
-             * @api-type string
+             * @api-data imdb (string) - IMDB URL
              */
             'imdb' => $this->person->imdb
         ];
