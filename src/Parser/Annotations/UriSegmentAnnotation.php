@@ -25,6 +25,34 @@ class UriSegmentAnnotation extends Annotation
     protected $uri;
 
     /**
+     * Name of this segment's field.
+     *
+     * @var string
+     */
+    protected $field;
+
+    /**
+     * Type of data that this segment supports.
+     *
+     * @var string
+     */
+    protected $type;
+
+    /**
+     * Description of what this segment does.
+     *
+     * @var string
+     */
+    protected $description;
+
+    /**
+     * Array of acceptable values for this parameter.
+     *
+     * @var array|null
+     */
+    protected $values = [];
+
+    /**
      * Return an array of items that should be included in an array representation of this annotation.
      *
      * @var array

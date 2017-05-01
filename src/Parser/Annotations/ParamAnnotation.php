@@ -46,18 +46,18 @@ class ParamAnnotation extends Annotation
     protected $required = false;
 
     /**
-     * Array of acceptable values for this parameter.
-     *
-     * @var array|null
-     */
-    protected $values = [];
-
-    /**
      * Description of what this parameter does.
      *
      * @var string
      */
     protected $description;
+
+    /**
+     * Array of acceptable values for this parameter.
+     *
+     * @var array|null
+     */
+    protected $values = [];
 
     /**
      * Array of items that should be included in an array representation of this annotation.

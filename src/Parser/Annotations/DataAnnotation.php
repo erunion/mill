@@ -104,8 +104,10 @@ class DataAnnotation extends Annotation
             );
         }
 
-        if (strtoupper($parsed['identifier']) === '__FIELD_DATA__') {
-            throw RestrictedFieldNameException::create($this->controller, $this->method);
+        if (!empty($parsed['identifier'])) {
+            if (strtoupper($parsed['identifier']) === '__FIELD_DATA__') {
+                throw RestrictedFieldNameException::create($this->controller, $this->method);
+            }
         }
 
         return $parsed;

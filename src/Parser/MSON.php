@@ -154,7 +154,7 @@ class MSON
 
     /**
      * @param string $controller
-     * @param string$method
+     * @param string $method
      */
     public function __construct($controller, $method)
     {
@@ -247,7 +247,7 @@ class MSON
      *
      * @param array $values
      * @param array $descriptions
-     * @return array
+     * @return array<string, string>
      */
     protected function parseValues($values, $descriptions)
     {
@@ -318,7 +318,7 @@ class MSON
     /**
      * Application-specific capability that was parsed out of the MSON content.
      *
-     * @return string
+     * @return string|false
      */
     public function getCapability()
     {

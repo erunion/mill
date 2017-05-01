@@ -119,7 +119,7 @@ class Parser
         }
 
         $description = $parser->getLongDescription();
-        if (empty($long_description)) {
+        if (empty($description)) {
             $description = $parser->getShortDescription();
         }
 

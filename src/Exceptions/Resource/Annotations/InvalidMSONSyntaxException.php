@@ -6,6 +6,7 @@ class InvalidMSONSyntaxException extends \Exception
     use AnnotationExceptionTrait;
 
     /**
+     * @param string $required_field
      * @param string $annotation
      * @param string $docblock
      * @param string $class
@@ -24,6 +25,7 @@ class InvalidMSONSyntaxException extends \Exception
         );
 
         $exception = new self($message);
+        $exception->required_field = $required_field;
         $exception->annotation = $annotation;
         $exception->docblock = $docblock;
         $exception->class = $class;
