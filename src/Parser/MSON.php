@@ -202,7 +202,6 @@ class MSON
             if (!empty($this->subtype)) {
                 switch ($this->type) {
                     case 'array':
-                    case 'object':
                         if (!in_array(strtolower($this->subtype), $this->supported_types)) {
                             try {
                                 // If this isn't a valid representation, then it's an invalid type.

@@ -18,6 +18,25 @@ class MSONTest extends TestCase
         $this->assertSame($expected, $mson->toArray());
     }
 
+    public function testEnumFailsWithoutValues()
+    {
+        $this->expectException('Mill\Exceptions\MSON\MissingOptionsException');
+
+        $content = 'content_rating (enum) - MPAA rating';
+        (new MSON(__CLASS__, __METHOD__))->parse($content);
+    }
+
+    /**
+     * @dataProvider providerTestParseFailsOnInvalidTypes
+     * @param string $content
+     * @return void
+     */
+    public function testParseFailsOnInvalidTypes($content)
+    {
+        $this->expectException('Mill\Exceptions\Annotations\UnsupportedTypeException');
+        (new MSON(__CLASS__, __METHOD__))->parse($content);
+    }
+
     /**
      * @return array
      */
@@ -224,6 +243,27 @@ class MSONTest extends TestCase
                     'type' => 'string',
                     'values' => []
                 ]
+            ]
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function providerTestParseFailsOnInvalidTypes()
+    {
+        return [
+            'type-unknown-representation' => [
+                'content' => 'cast (\Unknown\Representation) - Cast'
+            ],
+            'type-unsupported-type' => [
+                'content' => 'cast (ARRRRRRR) - Cast'
+            ],
+            'subtype-unknown-representation' => [
+                'content' => 'cast (array<\Unknown\Representation>) - Cast'
+            ],
+            'subtype-with-non-array-type' => [
+                'content' => 'cast (string<string>) - Cast'
             ]
         ];
     }

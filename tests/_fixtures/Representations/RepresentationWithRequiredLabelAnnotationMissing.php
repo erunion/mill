@@ -3,6 +3,7 @@ namespace Mill\Tests\Fixtures\Representations;
 
 /**
  * @deprecated
+ * @api-data uri (uri) - The objects's canonical relative URI
  */
 class RepresentationWithRequiredLabelAnnotationMissing
 {
