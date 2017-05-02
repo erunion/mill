@@ -16,13 +16,17 @@ class Theater
      * @api-uri:public {Theaters} /theaters/+id
      * @api-uriSegment {/theaters/+id} id (integer) - Theater ID
      *
-     * @api-contentType application/json
-     *
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Theater
      * @api-return:public {notmodified} If no content has been modified since the supplied Last-Modified header.
      *
      * @api-throws:public {404} \Mill\Examples\Showtimes\Representations\Error If the movie theater could not be
      *      found.
+     *
+     * @api-version >=1.1.2
+     * @api-contentType application/mill.example.theater
+     *
+     * @api-version <1.1.2
+     * @api-contentType application/json
      */
     public function GET()
     {
@@ -37,7 +41,6 @@ class Theater
      * @api-uri:public {Theaters} /theaters/+id
      * @api-uriSegment {/theaters/+id} id (integer) - Theater ID
      *
-     * @api-contentType application/json
      * @api-scope create
      *
      * @api-param:public name (string, required) - Name of the theater.
@@ -50,6 +53,12 @@ class Theater
      *      request.
      * @api-throws:public {404} \Mill\Examples\Showtimes\Representations\Error If the movie movie could not be
      *      found.
+     *
+     * @api-version >=1.1.2
+     * @api-contentType application/mill.example.theater
+     *
+     * @api-version <1.1.2
+     * @api-contentType application/json
      */
     public function PATCH()
     {

@@ -13,13 +13,17 @@ class Theaters
      *
      * @api-uri:public {Theaters} /theaters
      *
-     * @api-contentType application/json
-     *
      * @api-param:public location (string, required) - Location you want theaters in.
      *
      * @api-return:public {collection} \Mill\Examples\Showtimes\Representations\Theater
      *
      * @api-throws:public {400} \Mill\Examples\Showtimes\Representations\Error If the location is invalid.
+     *
+     * @api-version >=1.1.2
+     * @api-contentType application/mill.example.theater
+     *
+     * @api-version <1.1.2
+     * @api-contentType application/json
      */
     public function GET()
     {
@@ -33,7 +37,6 @@ class Theaters
      *
      * @api-uri:public {Theaters} /theaters
      *
-     * @api-contentType application/json
      * @api-scope create
      *
      * @api-param:public name (string, required) - Name of the theater.
@@ -44,6 +47,12 @@ class Theaters
      *
      * @api-throws:public {400} \Mill\Examples\Showtimes\Representations\Error If there is a problem with the
      *      request.
+     *
+     * @api-version >=1.1.2
+     * @api-contentType application/mill.example.theater
+     *
+     * @api-version <1.1.2
+     * @api-contentType application/json
      */
     public function POST()
     {

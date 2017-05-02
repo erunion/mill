@@ -8,6 +8,7 @@ use Mill\Exceptions\Resource\NoAnnotationsException;
 use Mill\Exceptions\Resource\PublicDecoratorOnPrivateActionException;
 use Mill\Parser;
 use Mill\Parser\Annotations\UriAnnotation;
+use Mill\Parser\Version;
 
 /**
  * Class for parsing a docblock on a given class and method for resource action documentation.
@@ -44,11 +45,11 @@ class Documentation
     protected $description = null;
 
     /**
-     * Content type that this action handles content as.
+     * Content types that this action might return. Multiple may be returned because of versioning.
      *
-     * @var string
+     * @var array
      */
-    protected $content_type;
+    protected $content_types = [];
 
     /**
      * Array of parsed annotations that exist on this action.
@@ -100,7 +101,6 @@ class Documentation
      * @throws RequiredAnnotationException If a required `@api-label` annotation is missing.
      * @throws MultipleAnnotationsException If multiple `@api-label` annotations were found.
      * @throws RequiredAnnotationException If a required `@api-contentType` annotation is missing.
-     * @throws MultipleAnnotationsException If multiple `@api-contentType` annotations were found.
      * @throws MissingVisibilityDecoratorException If an annotation is missing a visibility decorator.
      * @throws RequiredAnnotationException If a required annotation is missing.
      * @throws PublicDecoratorOnPrivateActionException If a `:public` decorator is found on a `:private` action.
@@ -135,12 +135,8 @@ class Documentation
         // Parse out the `@api-contentType` annotation.
         if (!isset($annotations['contentType'])) {
             throw RequiredAnnotationException::create('contentType', $this->class, $this->method);
-        } elseif (count($annotations['contentType']) > 1) {
-            throw MultipleAnnotationsException::create('contentType', $this->class, $this->method);
         } else {
-            /** @var \Mill\Parser\Annotations\ContentTypeAnnotation $annotation */
-            $annotation = reset($annotations['contentType']);
-            $this->content_type = $annotation->getContentType();
+            $this->content_types = $annotations['contentType'];
         }
 
         // Parse out any remaining annotations.
@@ -249,11 +245,29 @@ class Documentation
     /**
      * Get the HTTP Content-Type that this action returns content in.
      *
+     * @param Version|string|null $version
      * @return string
      */
-    public function getContentType()
+    public function getContentType($version = null)
     {
-        return $this->content_type;
+        if ($version instanceof Version) {
+            $version = $version->getConstraint();
+        }
+
+        if (!$version) {
+            return $this->content_types[0]->getContentType();
+        }
+
+        /** @var Parser\Annotations\ContentTypeAnnotation $annotation */
+        foreach ($this->content_types as $annotation) {
+            /** @var Version $annotation_version */
+            $annotation_version = $annotation->getVersion();
+            if (!$annotation_version) {
+                return $annotation->getContentType();
+            } elseif ($version && $annotation_version->matches($version)) {
+                return $annotation->getContentType();
+            }
+        }
     }
 
     /**
@@ -416,10 +430,15 @@ class Documentation
         $data = [
             'label' => $this->label,
             'description' => $this->description,
-            'content_type' => $this->content_type,
+            'content_types' => [],
             'method' => $this->method,
             'annotations' => []
         ];
+
+        foreach ($this->content_types as $content_type) {
+            /** @var \Mill\Parser\Annotations\ContentTypeAnnotation */
+            $data['content_types'][] = $content_type->toArray();
+        }
 
         foreach ($this->annotations as $key => $annotations) {
             foreach ($annotations as $annotation) {

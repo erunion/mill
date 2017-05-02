@@ -5,10 +5,10 @@ Information on a specific movie.
 ### Get a single movie. [GET]
 + Parameters
     - `id` (number, required) - Movie ID
-+ Response 200 (application/json)
++ Response 200 (application/mill.example.movie)
     + Attributes (Movie)
-+ Response 304 (application/json)
-+ Response 404 (application/json)
++ Response 304 (application/mill.example.movie)
++ Response 404 (application/mill.example.movie)
     + Attributes (Error)
 
 ### Update a movie. [PATCH]
@@ -19,7 +19,7 @@ This action requires a bearer token with `edit` scope.
 + Request
     + Headers
 
-            Content-Type: application/json
+            Content-Type: application/mill.example.movie
 
     + Attributes
         - `cast` (array) - Array of names of the cast.
@@ -42,14 +42,14 @@ This action requires a bearer token with `edit` scope.
         - `rotten_tomatoes_score` (number) - Rotten Tomatoes score
         - `runtime` (string) - Movie runtime, in `HHhr MMmin` format.
         - `trailer` (string) - Trailer URL
-+ Response 200 (application/json)
++ Response 200 (application/mill.example.movie)
     + Attributes (Movie)
-+ Response 400 (application/json)
++ Response 400 (application/mill.example.movie)
     There are 2 ways that this status code can be encountered.
          * If there is a problem with the request.
          * If the IMDB URL could not be validated.
     + Attributes (Error)
-+ Response 404 (application/json)
++ Response 404 (application/mill.example.movie)
     + Attributes (Error)
 
 ### Delete a movie. [DELETE]
@@ -68,13 +68,13 @@ Information on a specific movie.
 + Request
     + Headers
 
-            Content-Type: application/json
+            Content-Type: application/mill.example.movie
 
     + Attributes
         - `location` (string, required) - Location you want movies for.
-+ Response 200 (application/json)
++ Response 200 (application/mill.example.movie)
     + Attributes (array[Movie])
-+ Response 400 (application/json)
++ Response 400 (application/mill.example.movie)
     + Attributes (Error)
 
 ### Create a movie. [POST]
@@ -83,7 +83,7 @@ This action requires a bearer token with `create` scope.
 + Request
     + Headers
 
-            Content-Type: application/json
+            Content-Type: application/mill.example.movie
 
     + Attributes
         - `cast` (array) - Array of names of the cast.
@@ -106,9 +106,9 @@ This action requires a bearer token with `create` scope.
         - `rotten_tomatoes_score` (number) - Rotten Tomatoes score
         - `runtime` (string) - Movie runtime, in `HHhr MMmin` format.
         - `trailer` (string) - Trailer URL
-+ Response 200 (application/json)
++ Response 200 (application/mill.example.movie)
     + Attributes (Movie)
-+ Response 400 (application/json)
++ Response 400 (application/mill.example.movie)
     There are 2 ways that this status code can be encountered.
          * If there is a problem with the request.
          * If the IMDB URL could not be validated.

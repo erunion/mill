@@ -16,12 +16,16 @@ class Movie
      * @api-uri:public {Movies} /movies/+id
      * @api-uriSegment {/movies/+id} id (integer) - Movie ID
      *
-     * @api-contentType application/json
-     *
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Movie
      * @api-return:public {notmodified} If no content has been modified since the supplied Last-Modified header.
      *
      * @api-throws:public {404} \Mill\Examples\Showtimes\Representations\Error If the movie could not be found.
+     *
+     * @api-version >=1.1.2
+     * @api-contentType application/mill.example.movie
+     *
+     * @api-version <1.1.2
+     * @api-contentType application/json
      */
     public function GET()
     {
@@ -36,7 +40,6 @@ class Movie
      * @api-uri:public {Movies} /movies/+id
      * @api-uriSegment {/movies/+id} id (integer) - Movie ID
      *
-     * @api-contentType application/json
      * @api-scope edit
      * @api-minVersion 1.1
      *
@@ -66,6 +69,12 @@ class Movie
      *      request.
      * @api-throws:public {400} \Mill\Examples\Showtimes\Representations\Error If the IMDB URL could not be validated.
      * @api-throws:public {404} \Mill\Examples\Showtimes\Representations\Error If the movie could not be found.
+     *
+     * @api-version >=1.1.2
+     * @api-contentType application/mill.example.movie
+     *
+     * @api-version <1.1.2
+     * @api-contentType application/json
      *
      * @api-version >=1.1.1
      * @api-param:public imdb (string, optional) - IMDB URL

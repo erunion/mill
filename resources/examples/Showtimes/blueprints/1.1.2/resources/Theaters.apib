@@ -5,10 +5,10 @@ Information on a specific movie theater.
 ### Get a single movie theater [GET]
 + Parameters
     - `id` (number, required) - Theater ID
-+ Response 200 (application/json)
++ Response 200 (application/mill.example.theater)
     + Attributes (Theater)
-+ Response 304 (application/json)
-+ Response 404 (application/json)
++ Response 304 (application/mill.example.theater)
++ Response 404 (application/mill.example.theater)
     + Attributes (Error)
 
 ### Update a movie theater [PATCH]
@@ -19,17 +19,17 @@ This action requires a bearer token with `create` scope.
 + Request
     + Headers
 
-            Content-Type: application/json
+            Content-Type: application/mill.example.theater
 
     + Attributes
         - `address` (string, required) - Theater address
         - `name` (string, required) - Name of the theater.
         - `phone_number` (string, required) - Theater phone number
-+ Response 200 (application/json)
++ Response 200 (application/mill.example.theater)
     + Attributes (Theater)
-+ Response 400 (application/json)
++ Response 400 (application/mill.example.theater)
     + Attributes (Error)
-+ Response 404 (application/json)
++ Response 404 (application/mill.example.theater)
     + Attributes (Error)
 
 ### Delete a movie movie. [DELETE]
@@ -48,13 +48,13 @@ Information on a specific movie theater.
 + Request
     + Headers
 
-            Content-Type: application/json
+            Content-Type: application/mill.example.theater
 
     + Attributes
         - `location` (string, required) - Location you want theaters in.
-+ Response 200 (application/json)
++ Response 200 (application/mill.example.theater)
     + Attributes (array[Theater])
-+ Response 400 (application/json)
++ Response 400 (application/mill.example.theater)
     + Attributes (Error)
 
 ### Create a movie theater. [POST]
@@ -63,13 +63,13 @@ This action requires a bearer token with `create` scope.
 + Request
     + Headers
 
-            Content-Type: application/json
+            Content-Type: application/mill.example.theater
 
     + Attributes
         - `address` (string, required) - Theater address
         - `name` (string, required) - Name of the theater.
         - `phone_number` (string, required) - Theater phone number
-+ Response 200 (application/json)
++ Response 200 (application/mill.example.theater)
     + Attributes (Theater)
-+ Response 400 (application/json)
++ Response 400 (application/mill.example.theater)
     + Attributes (Error)

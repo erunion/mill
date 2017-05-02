@@ -151,4 +151,14 @@ class UriSegmentAnnotation extends Annotation
     {
         return $this->description;
     }
+
+    /**
+     * Get the enumerated values that are allowed on this URI segment.
+     *
+     * @return array|null
+     */
+    public function getValues()
+    {
+        return $this->values;
+    }
 }

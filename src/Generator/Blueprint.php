@@ -206,15 +206,30 @@ class Blueprint extends Generator
                 $field = str_replace($from, $to, $field);
             }
 
+            $values = $segment->getValues();
+            $type = $this->convertTypeToCompatibleType($segment->getType());
+
             $blueprint .= $this->tab();
             $blueprint .= sprintf(
-                '+ `%s` (%s, required) - %s',
+                '- `%s` (%s, required) - %s',
                 $field,
-                $segment->getType(),
+                (!empty($values)) ? 'enum[' . $type . ']' : $type,
                 $segment->getDescription()
             );
 
             $blueprint .= $this->line();
+
+            if (!empty($values)) {
+                $blueprint .= $this->tab(2);
+                $blueprint .= '+ Members';
+                $blueprint .= $this->line();
+
+                foreach ($values as $value) {
+                    $blueprint .= $this->tab(3);
+                    $blueprint .= '+ `' . $value . '`';
+                    $blueprint .= $this->line();
+                }
+            }
         }
 
         return $blueprint;
@@ -236,6 +251,16 @@ class Blueprint extends Generator
         $blueprint = '+ Request';
         $blueprint .= $this->line();
 
+        // Build up request headers.
+        $blueprint .= $this->tab();
+        $blueprint .= '+ Headers';
+        $blueprint .= $this->line(2);
+
+        $blueprint .= $this->tab(3);
+        $blueprint .= sprintf('Content-Type: %s', $action->getContentType($this->version));
+        $blueprint .= $this->line(2);
+
+        // Build up request attributes.
         $blueprint .= $this->tab();
         $blueprint .= '+ Attributes';
         $blueprint .= $this->line();
@@ -291,7 +316,7 @@ class Blueprint extends Generator
     {
         $http_code = substr($http_code, 0, 3);
 
-        $blueprint = '+ Response ' . $http_code . ' (' . $action->getContentType() . ')';
+        $blueprint = '+ Response ' . $http_code . ' (' . $action->getContentType($this->version) . ')';
         $blueprint .= $this->line();
 
         $multiple_responses = count($responses) > 1;

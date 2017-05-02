@@ -97,7 +97,7 @@ class ParserTest extends TestCase
                 'expected' => [
                     'contentType' => [
                         'class' => '\Mill\Parser\Annotations\ContentTypeAnnotation',
-                        'count' => 1
+                        'count' => 2
                     ],
                     'description' => [
                         'class' => '\Mill\Parser\Annotations\DescriptionAnnotation',
@@ -134,7 +134,7 @@ class ParserTest extends TestCase
                 'expected' => [
                     'contentType' => [
                         'class' => '\Mill\Parser\Annotations\ContentTypeAnnotation',
-                        'count' => 1
+                        'count' => 2
                     ],
                     'description' => [
                         'class' => '\Mill\Parser\Annotations\DescriptionAnnotation',
