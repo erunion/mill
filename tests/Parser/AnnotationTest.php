@@ -1,7 +1,7 @@
 <?php
 namespace Mill\Parser;
 
-use Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException;
+use Mill\Exceptions\Annotations\MissingRequiredFieldException;
 use Mill\Tests\Fixtures\AnnotationStub;
 
 class AnnotationTest extends \PHPUnit_Framework_TestCase

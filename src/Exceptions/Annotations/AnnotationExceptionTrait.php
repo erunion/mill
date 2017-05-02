@@ -1,11 +1,11 @@
 <?php
-namespace Mill\Exceptions\Resource\Annotations;
+namespace Mill\Exceptions\Annotations;
 
-use Mill\Exceptions\Resource\ResourceExceptionTrait;
+use Mill\Exceptions\ExceptionTrait;
 
 trait AnnotationExceptionTrait
 {
-    use ResourceExceptionTrait;
+    use ExceptionTrait;
 
     /**
      * @var string|null

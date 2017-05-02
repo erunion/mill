@@ -8,10 +8,16 @@ class ParamAnnotationTest extends AnnotationTest
 {
     /**
      * @dataProvider providerAnnotation
+     * @param string $content
+     * @param string $version
+     * @param boolean $visible
+     * @param boolean $deprecated
+     * @param array $expected
+     * @return void
      */
-    public function testAnnotation($param, $version, $visible, $deprecated, $expected)
+    public function testAnnotation($content, $version, $visible, $deprecated, array $expected)
     {
-        $annotation = new ParamAnnotation($param, __CLASS__, __METHOD__, $version);
+        $annotation = new ParamAnnotation($content, __CLASS__, __METHOD__, $version);
         $annotation->setVisibility($visible);
         $annotation->setDeprecated($deprecated);
 
@@ -49,7 +55,7 @@ class ParamAnnotationTest extends AnnotationTest
     {
         return [
             '_complete' => [
-                'param' => 'content_rating `G` (string, optional, MOVIE_RATINGS) - MPAA rating
+                'content' => 'content_rating `G` (string, optional, MOVIE_RATINGS) - MPAA rating
                     + Members
                         - `G` - G rated
                         - `PG` - PG rated
@@ -75,7 +81,7 @@ class ParamAnnotationTest extends AnnotationTest
                 ]
             ],
             '_complete-with-markdown-description' => [
-                'param' => 'content_rating `G` (string, optional, MOVIE_RATINGS) - This denotes the 
+                'content' => 'content_rating `G` (string, optional, MOVIE_RATINGS) - This denotes the 
                     [MPAA rating](http://www.mpaa.org/film-ratings/) for the movie.
                     + Members
                         - `G` - G rated
@@ -102,7 +108,7 @@ class ParamAnnotationTest extends AnnotationTest
                 ]
             ],
             'capability' => [
-                'param' => 'content_rating `G` (string, REQUIRED, MOVIE_RATINGS) - MPAA rating',
+                'content' => 'content_rating `G` (string, REQUIRED, MOVIE_RATINGS) - MPAA rating',
                 'version' => null,
                 'visible' => true,
                 'deprecated' => false,
@@ -120,7 +126,7 @@ class ParamAnnotationTest extends AnnotationTest
                 ]
             ],
             'deprecated' => [
-                'param' => 'content_rating `G` (string, required) - MPAA rating',
+                'content' => 'content_rating `G` (string, required) - MPAA rating',
                 'version' => null,
                 'visible' => true,
                 'deprecated' => true,
@@ -138,7 +144,7 @@ class ParamAnnotationTest extends AnnotationTest
                 ]
             ],
             'enum-with-no-descriptions' => [
-                'param' => 'is_kid_friendly `yes` (string, optional) - Is this movie kid friendly?
+                'content' => 'is_kid_friendly `yes` (string, optional) - Is this movie kid friendly?
                     + Members
                         - `yes`
                         - `no`',
@@ -162,7 +168,7 @@ class ParamAnnotationTest extends AnnotationTest
                 ]
             ],
             'enum-with-no-set-default' => [
-                'param' => 'content_rating `G` (string, optional) - MPAA rating
+                'content' => 'content_rating `G` (string, optional) - MPAA rating
                     + Members
                         - `G` - G rated
                         - `PG` - PG rated
@@ -198,7 +204,7 @@ class ParamAnnotationTest extends AnnotationTest
                 ]
             ],
             'private' => [
-                'param' => 'content_rating `G` (string, required) - MPAA rating',
+                'content' => 'content_rating `G` (string, required) - MPAA rating',
                 'version' => null,
                 'visible' => false,
                 'deprecated' => false,
@@ -216,7 +222,7 @@ class ParamAnnotationTest extends AnnotationTest
                 ]
             ],
             'tokens' => [
-                'param' => '{page}',
+                'content' => '{page}',
                 'version' => null,
                 'visible' => true,
                 'deprecated' => false,
@@ -234,7 +240,7 @@ class ParamAnnotationTest extends AnnotationTest
                 ]
             ],
             'tokens.acceptable_values' => [
-                'param' => '{filter}
+                'content' => '{filter}
                     + Members
                         - `embeddable` - Embeddable
                         - `playable` - Playable',
@@ -258,7 +264,7 @@ class ParamAnnotationTest extends AnnotationTest
                 ]
             ],
             'versioned' => [
-                'param' => 'content_rating `G` (string) - MPAA rating',
+                'content' => 'content_rating `G` (string) - MPAA rating',
                 'version' => new Version('1.1 - 1.2', __CLASS__, __METHOD__),
                 'visible' => true,
                 'deprecated' => false,
@@ -276,7 +282,7 @@ class ParamAnnotationTest extends AnnotationTest
                 ]
             ],
             'with-a-long-description' => [
-                'param' => 'content_rating `G` (string, required) - Voluptate culpa ex, eiusmod rump sint id. Venison 
+                'content' => 'content_rating `G` (string, required) - Voluptate culpa ex, eiusmod rump sint id. Venison 
                     non ribeye landjaeger laboris, enim jowl culpa meatloaf dolore mollit anim. Bacon shankle eiusmod 
                     hamburger enim. Laboris lorem pastrami t-bone tempor ullamco swine commodo tri-tip in sirloin.',
                 'version' => null,
@@ -298,7 +304,7 @@ class ParamAnnotationTest extends AnnotationTest
                 ]
             ],
             'without-defined-requirement' => [
-                'param' => 'content_rating `G` (string) - MPAA rating',
+                'content' => 'content_rating `G` (string) - MPAA rating',
                 'version' => null,
                 'visible' => true,
                 'deprecated' => false,
@@ -316,7 +322,7 @@ class ParamAnnotationTest extends AnnotationTest
                 ]
             ],
             'without-defined-requirement-but-capability' => [
-                'param' => 'content_rating `G` (string, MOVIE_RATINGS) - MPAA rating',
+                'content' => 'content_rating `G` (string, MOVIE_RATINGS) - MPAA rating',
                 'version' => null,
                 'visible' => true,
                 'deprecated' => false,
@@ -334,7 +340,7 @@ class ParamAnnotationTest extends AnnotationTest
                 ]
             ],
             'without-sample-data' => [
-                'param' => 'content_rating (string) - MPAA rating',
+                'content' => 'content_rating (string) - MPAA rating',
                 'version' => null,
                 'visible' => true,
                 'deprecated' => false,
@@ -357,13 +363,13 @@ class ParamAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function providerAnnotationFailsOnInvalidAnnotations()
+    public function providerAnnotationFailsOnInvalidContent()
     {
         return [
             'invalid-mson' => [
                 'annotation' => '\Mill\Parser\Annotations\ParamAnnotation',
-                'docblock' => '',
-                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\InvalidMSONSyntaxException',
+                'content' => '',
+                'expected.exception' => '\Mill\Exceptions\Annotations\InvalidMSONSyntaxException',
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'param',
                     'getDocblock' => '',
@@ -372,8 +378,8 @@ class ParamAnnotationTest extends AnnotationTest
             ],
             'unsupported-type' => [
                 'annotation' => '\Mill\Parser\Annotations\ParamAnnotation',
-                'docblock' => 'content_rating `G` (str) - MPAA rating',
-                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\UnsupportedTypeException',
+                'content' => 'content_rating `G` (str) - MPAA rating',
+                'expected.exception' => '\Mill\Exceptions\Annotations\UnsupportedTypeException',
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'content_rating `G` (str) - MPAA rating',
                     'getDocblock' => null

@@ -2,7 +2,7 @@
 namespace Mill\Parser\Annotations;
 
 use Mill\Container;
-use Mill\Exceptions\Resource\Annotations\UnsupportedTypeException;
+use Mill\Exceptions\Annotations\UnsupportedTypeException;
 use Mill\Parser\Annotation;
 use Mill\Parser\MSON;
 
@@ -92,7 +92,7 @@ class ParamAnnotation extends Annotation
             $content = str_replace(array_keys($tokens), array_values($tokens), $content);
         }
 
-        $mson = (new MSON($this->controller, $this->method))->parse($content);
+        $mson = (new MSON($this->class, $this->method))->parse($content);
         $parsed = [
             'field' => $mson->getField(),
             'sample_data' => $mson->getSampleData(),
@@ -107,7 +107,7 @@ class ParamAnnotation extends Annotation
         if (!empty($parsed['capability'])) {
             $parsed['capability'] = new CapabilityAnnotation(
                 $parsed['capability'],
-                $this->controller,
+                $this->class,
                 $this->method
             );
         }

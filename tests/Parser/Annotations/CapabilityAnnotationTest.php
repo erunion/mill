@@ -7,10 +7,13 @@ class CapabilityAnnotationTest extends AnnotationTest
 {
     /**
      * @dataProvider providerAnnotation
+     * @param string $content
+     * @param array $expected
+     * @return void
      */
-    public function testAnnotation($capability, $expected)
+    public function testAnnotation($content, array $expected)
     {
-        $annotation = new CapabilityAnnotation($capability, __CLASS__, __METHOD__);
+        $annotation = new CapabilityAnnotation($content, __CLASS__, __METHOD__);
 
         $this->assertFalse($annotation->requiresVisibilityDecorator());
         $this->assertFalse($annotation->supportsVersioning());
@@ -28,7 +31,7 @@ class CapabilityAnnotationTest extends AnnotationTest
     {
         return [
             '_complete' => [
-                'capability' => 'BUY_TICKETS',
+                'content' => 'BUY_TICKETS',
                 'expected' => [
                     'capability' => 'BUY_TICKETS'
                 ]
@@ -39,13 +42,13 @@ class CapabilityAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function providerAnnotationFailsOnInvalidAnnotations()
+    public function providerAnnotationFailsOnInvalidContent()
     {
         return [
             'missing-capability' => [
                 'annotation' => '\Mill\Parser\Annotations\CapabilityAnnotation',
-                'docblock' => '',
-                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
+                'content' => '',
+                'expected.exception' => '\Mill\Exceptions\Annotations\MissingRequiredFieldException',
                 'expected.exception.asserts' => [
                     'getRequiredField' => 'capability',
                     'getAnnotation' => 'capability',
@@ -55,8 +58,8 @@ class CapabilityAnnotationTest extends AnnotationTest
             ],
             'capability-was-not-configured' => [
                 'annotation' => '\Mill\Parser\Annotations\CapabilityAnnotation',
-                'docblock' => 'UnconfiguredCapability',
-                'expected.exception' => '\Mill\Exceptions\InvalidCapabilitySuppliedException',
+                'content' => 'UnconfiguredCapability',
+                'expected.exception' => '\Mill\Exceptions\Annotations\InvalidCapabilitySuppliedException',
                 'expected.exception.asserts' => [
                     'getCapability' => 'UnconfiguredCapability'
                 ]

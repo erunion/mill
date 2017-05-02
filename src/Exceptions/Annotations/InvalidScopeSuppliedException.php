@@ -1,9 +1,9 @@
 <?php
-namespace Mill\Exceptions;
+namespace Mill\Exceptions\Annotations;
 
 class InvalidScopeSuppliedException extends \Exception
 {
-    use ExceptionTrait;
+    use AnnotationExceptionTrait;
 
     /**
      * @var string

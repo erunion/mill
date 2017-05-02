@@ -1,20 +1,20 @@
 <?php
-namespace Mill\Exceptions\Representation;
+namespace Mill\Exceptions\Annotations;
 
-class DuplicateAnnotationsOnFieldException extends \Exception
+class UnsupportedTypeException extends \Exception
 {
-    use RepresentationExceptionTrait;
+    use AnnotationExceptionTrait;
 
     /**
      * @param string $annotation
      * @param string $class
      * @param string $method
-     * @return DuplicateAnnotationsOnFieldException
+     * @return UnsupportedTypeException
      */
     public static function create($annotation, $class, $method)
     {
         $message = sprintf(
-            'Multiple `@api-%s` annotations were found on the same field in %s::%s. Only one is permissible.',
+            'The type on `%s` in %s::%s is unsupported. Please check the documentation for supported types.',
             $annotation,
             $class,
             $method

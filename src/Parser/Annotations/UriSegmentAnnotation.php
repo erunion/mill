@@ -82,7 +82,7 @@ class UriSegmentAnnotation extends Annotation
             $content = trim(preg_replace(self::REGEX_URI, '', $content));
         }
 
-        $mson = (new MSON($this->controller, $this->method))->parse($content);
+        $mson = (new MSON($this->class, $this->method))->parse($content);
         $parsed = array_merge($parsed, [
             'field' => $mson->getField(),
             'type' => $mson->getType(),

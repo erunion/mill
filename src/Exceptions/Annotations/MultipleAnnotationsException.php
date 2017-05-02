@@ -1,9 +1,9 @@
 <?php
-namespace Mill\Exceptions;
+namespace Mill\Exceptions\Annotations;
 
 class MultipleAnnotationsException extends \Exception
 {
-    use ExceptionTrait;
+    use AnnotationExceptionTrait;
 
     /**
      * @param string $annotation

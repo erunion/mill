@@ -5,13 +5,13 @@ class DataAnnotationTest extends AnnotationTest
 {
     /**
      * @dataProvider providerAnnotation
-     * @param string $docblock
-     * @param string $expected
+     * @param string $content
+     * @param array $expected
      * @return void
      */
-    public function testAnnotation($docblock, $expected)
+    public function testAnnotation($content, array $expected)
     {
-        $annotation = $this->getDataAnnotationFromDocblock($docblock, __CLASS__);
+        $annotation = $this->getDataAnnotationFromDocblock($content, __CLASS__);
 
         $this->assertFalse($annotation->requiresVisibilityDecorator());
         $this->assertTrue($annotation->supportsVersioning());
@@ -43,7 +43,7 @@ class DataAnnotationTest extends AnnotationTest
     {
         return [
             'bare' => [
-                'docblock' => '/**
+                'content' => '/**
                   * @api-data content_rating (string) - MPAA rating
                   */',
                 'expected' => [
@@ -58,7 +58,7 @@ class DataAnnotationTest extends AnnotationTest
                 ]
             ],
             'versioned' => [
-                'docblock' => '/**
+                'content' => '/**
                   * @api-data content_rating (string) - MPAA rating
                   * @api-version 1.0
                   */',
@@ -74,7 +74,7 @@ class DataAnnotationTest extends AnnotationTest
                 ]
             ],
             'capability' => [
-                'docblock' => '/**
+                'content' => '/**
                   * @api-data tickets.url (string, BUY_TICKETS) - URL to purchase tickets
                   */',
                 'expected' => [
@@ -89,7 +89,7 @@ class DataAnnotationTest extends AnnotationTest
                 ]
             ],
             'options' => [
-                'docblock' => '/**
+                'content' => '/**
                   * @api-data content_rating (enum) - MPAA rating
                   *  + Members
                   *    - `G`
@@ -122,7 +122,7 @@ class DataAnnotationTest extends AnnotationTest
                 ]
             ],
             '_complete' => [
-                'docblock' => '/**
+                'content' => '/**
                   * @api-data content_rating (enum, MOVIE_RATINGS) - MPAA rating
                   *  + Members
                   *    - `G`
@@ -161,22 +161,22 @@ class DataAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function providerAnnotationFailsOnInvalidAnnotations()
+    public function providerAnnotationFailsOnInvalidContent()
     {
         return [
             'invalid-type-is-detected' => [
                 'annotation' => '\Mill\Parser\Annotations\DataAnnotation',
-                'docblock' => '/**
+                'content' => '/**
                     * @api-data content_rating (zuul) - MPAA rating
                     */',
-                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\UnsupportedTypeException',
+                'expected.exception' => '\Mill\Exceptions\Annotations\UnsupportedTypeException',
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'content_rating (zuul) - MPAA rating'
                 ]
             ],
             'restricted-field-name-is-detected' => [
                 'annotation' => '\Mill\Parser\Annotations\DataAnnotation',
-                'docblock' => '/**
+                'content' => '/**
                     * @api-data __FIELD_DATA__ (string) - This is an restricted field name
                     */',
                 'expected.exception' => '\Mill\Exceptions\Representation\RestrictedFieldNameException',

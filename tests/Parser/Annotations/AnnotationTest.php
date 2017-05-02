@@ -6,17 +6,23 @@ use Mill\Tests\TestCase;
 abstract class AnnotationTest extends TestCase
 {
     /**
-     * @dataProvider providerAnnotationFailsOnInvalidAnnotations
+     * @dataProvider providerAnnotationFailsOnInvalidContent
+     * @param string $annotation
+     * @param string $content
+     * @param string $exception
+     * @param array $asserts
+     * @throws \Exception
+     * @return void
      */
-    public function testAnnotationFailsOnInvalidAnnotations($annotation, $docblock, $exception, $asserts)
+    public function testAnnotationFailsOnInvalidContent($annotation, $content, $exception, array $asserts)
     {
         $this->expectException($exception);
 
         try {
             if ($annotation === '\Mill\Parser\Annotations\DataAnnotation') {
-                $this->getDataAnnotationFromDocblock($docblock, __CLASS__);
+                $this->getDataAnnotationFromDocblock($content, __CLASS__);
             } else {
-                new $annotation($docblock, __CLASS__, __METHOD__);
+                new $annotation($content, __CLASS__, __METHOD__);
             }
         } catch (\Exception $e) {
             if ('\\' . get_class($e) !== $exception) {
@@ -36,5 +42,5 @@ abstract class AnnotationTest extends TestCase
     /**
      * @return array
      */
-    abstract public function providerAnnotationFailsOnInvalidAnnotations();
+    abstract public function providerAnnotationFailsOnInvalidContent();
 }

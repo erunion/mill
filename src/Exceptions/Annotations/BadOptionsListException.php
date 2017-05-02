@@ -1,33 +1,34 @@
 <?php
-namespace Mill\Exceptions\Resource\Annotations;
+namespace Mill\Exceptions\Annotations;
 
-class MissingRequiredFieldException extends \Exception
+class BadOptionsListException extends \Exception
 {
     use AnnotationExceptionTrait;
 
     /**
-     * @param string $required_field
      * @param string $annotation
      * @param string $docblock
+     * @param array $values
      * @param string $class
      * @param string $method
-     * @return MissingRequiredFieldException
+     * @return BadOptionsListException
      */
-    public static function create($required_field, $annotation, $docblock, $class, $method)
+    public static function create($annotation, $docblock, array $values, $class, $method)
     {
         $message = sprintf(
-            'You must add a `%s` to `@api-%s %s` in %s::%s.',
-            $required_field,
+            'The options list on `@api-%s %s`in %s::%s should written as `[%s]`, not `[%s]`.',
             $annotation,
             $docblock,
             $class,
-            $method
+            $method,
+            preg_replace("/,( )?/uim", "|", implode(',', $values)),
+            implode(',', $values)
         );
 
         $exception = new self($message);
-        $exception->required_field = $required_field;
         $exception->annotation = $annotation;
         $exception->docblock = $docblock;
+        $exception->values = $values;
         $exception->class = $class;
         $exception->method = $method;
 

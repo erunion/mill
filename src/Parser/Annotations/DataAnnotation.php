@@ -84,7 +84,7 @@ class DataAnnotation extends Annotation
     {
         $content = trim($this->docblock);
 
-        $mson = (new MSON($this->controller, $this->method))->parse($content);
+        $mson = (new MSON($this->class, $this->method))->parse($content);
         $parsed = [
             'identifier' => $mson->getField(),
             'sample_data' => $mson->getSampleData(),
@@ -99,14 +99,14 @@ class DataAnnotation extends Annotation
         if (!empty($parsed['capability'])) {
             $parsed['capability'] = new CapabilityAnnotation(
                 $parsed['capability'],
-                $this->controller,
+                $this->class,
                 $this->method
             );
         }
 
         if (!empty($parsed['identifier'])) {
             if (strtoupper($parsed['identifier']) === '__FIELD_DATA__') {
-                throw RestrictedFieldNameException::create($this->controller, $this->method);
+                throw RestrictedFieldNameException::create($this->class, $this->method);
             }
         }
 

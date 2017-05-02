@@ -21,14 +21,14 @@ class Version
     protected $constraint;
 
     /**
-     * Name of the class that this version is within.
+     * Class that this version is within.
      *
      * @var string
      */
     protected $class;
 
     /**
-     * Name of the method that this version is within.
+     * Class method that this version is within.
      *
      * @var string
      */

@@ -2,9 +2,9 @@
 namespace Mill\Parser\Annotations;
 
 use Mill\Container;
+use Mill\Exceptions\Annotations\UnknownRepresentationException;
+use Mill\Exceptions\Annotations\UnknownReturnCodeException;
 use Mill\Exceptions\Config\UnconfiguredRepresentationException;
-use Mill\Exceptions\Resource\Annotations\UnknownRepresentationException;
-use Mill\Exceptions\Resource\Annotations\UnknownReturnCodeException;
 use Mill\Parser\Annotation;
 use Mill\Parser\Annotations\Traits\HasHttpCodeResponseTrait;
 
@@ -86,7 +86,7 @@ class ReturnAnnotation extends Annotation
                 try {
                     Container::getConfig()->doesRepresentationExist($representation);
                 } catch (UnconfiguredRepresentationException $e) {
-                    throw UnknownRepresentationException::create($representation, $this->controller, $this->method);
+                    throw UnknownRepresentationException::create($representation, $this->class, $this->method);
                 }
             } else {
                 $description = trim($representation . ' ' . $description);
@@ -154,7 +154,7 @@ class ReturnAnnotation extends Annotation
                 return 304;
 
             default:
-                throw UnknownReturnCodeException::create('return', $this->docblock, $this->controller, $this->method);
+                throw UnknownReturnCodeException::create('return', $this->docblock, $this->class, $this->method);
         }
     }
 

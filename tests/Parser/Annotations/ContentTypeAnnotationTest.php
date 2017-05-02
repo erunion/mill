@@ -7,10 +7,13 @@ class ContentTypeAnnotationTest extends AnnotationTest
 {
     /**
      * @dataProvider providerAnnotation
+     * @param string $content
+     * @param array $expected
+     * @return void
      */
-    public function testAnnotation($capability, $expected)
+    public function testAnnotation($content, array $expected)
     {
-        $annotation = new ContentTypeAnnotation($capability, __CLASS__, __METHOD__);
+        $annotation = new ContentTypeAnnotation($content, __CLASS__, __METHOD__);
 
         $this->assertFalse($annotation->requiresVisibilityDecorator());
         $this->assertFalse($annotation->supportsVersioning());
@@ -28,7 +31,7 @@ class ContentTypeAnnotationTest extends AnnotationTest
     {
         return [
             '_complete' => [
-                'content_type' => 'application/json',
+                'content' => 'application/json',
                 'expected' => [
                     'content_type' => 'application/json'
                 ]
@@ -39,13 +42,13 @@ class ContentTypeAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function providerAnnotationFailsOnInvalidAnnotations()
+    public function providerAnnotationFailsOnInvalidContent()
     {
         return [
             'missing-content-type' => [
                 'annotation' => '\Mill\Parser\Annotations\ContentTypeAnnotation',
-                'docblock' => '',
-                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
+                'content' => '',
+                'expected.exception' => '\Mill\Exceptions\Annotations\MissingRequiredFieldException',
                 'expected.exception.asserts' => [
                     'getRequiredField' => 'content_type',
                     'getAnnotation' => 'contenttype',

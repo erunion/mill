@@ -7,10 +7,13 @@ class LabelAnnotationTest extends AnnotationTest
 {
     /**
      * @dataProvider providerAnnotation
+     * @param string $content
+     * @param array $expected
+     * @return void
      */
-    public function testAnnotation($label, $expected)
+    public function testAnnotation($content, array $expected)
     {
-        $annotation = new LabelAnnotation($label, __CLASS__, __METHOD__);
+        $annotation = new LabelAnnotation($content, __CLASS__, __METHOD__);
 
         $this->assertFalse($annotation->requiresVisibilityDecorator());
         $this->assertFalse($annotation->supportsVersioning());
@@ -28,7 +31,7 @@ class LabelAnnotationTest extends AnnotationTest
     {
         return [
             '_complete' => [
-                'label' => 'Update a movie.',
+                'content' => 'Update a movie.',
                 'expected' => [
                     'label' => 'Update a movie.'
                 ]
@@ -39,13 +42,13 @@ class LabelAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function providerAnnotationFailsOnInvalidAnnotations()
+    public function providerAnnotationFailsOnInvalidContent()
     {
         return [
             'missing-label' => [
                 'annotation' => '\Mill\Parser\Annotations\LabelAnnotation',
-                'docblock' => '',
-                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
+                'content' => '',
+                'expected.exception' => '\Mill\Exceptions\Annotations\MissingRequiredFieldException',
                 'expected.exception.asserts' => [
                     'getRequiredField' => 'label',
                     'getAnnotation' => 'label',

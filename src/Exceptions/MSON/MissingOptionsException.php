@@ -1,9 +1,16 @@
 <?php
-namespace Mill\Exceptions\Representation\Types;
+namespace Mill\Exceptions\MSON;
+
+use Mill\Exceptions\ExceptionTrait;
 
 class MissingOptionsException extends \Exception
 {
-    use TypeExceptionTrait;
+    use ExceptionTrait;
+
+    /**
+     * @var string|null
+     */
+    public $type = null;
 
     /**
      * @param string $type
@@ -14,7 +21,7 @@ class MissingOptionsException extends \Exception
     public static function create($type, $class, $method)
     {
         $message = sprintf(
-            'Am `@api-type`, `%s`, requires `@api-options`, but none were found in %s::%s.',
+            'A MSON type of `%s` in %s::%s requires accompanying acceptable values.',
             $type,
             $class,
             $method
@@ -26,5 +33,15 @@ class MissingOptionsException extends \Exception
         $exception->method = $method;
 
         return $exception;
+    }
+
+    /**
+     * Get the type that this response exception was triggered for.
+     *
+     * @return string|null
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 }

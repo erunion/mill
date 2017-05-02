@@ -1,7 +1,7 @@
 <?php
 namespace Mill\Parser\Annotations;
 
-use Mill\Exceptions\Resource\Annotations\AbsoluteMinimumVersionException;
+use Mill\Exceptions\Annotations\AbsoluteMinimumVersionException;
 use Mill\Parser\Annotation;
 use Mill\Parser\Version;
 
@@ -46,9 +46,9 @@ class MinVersionAnnotation extends Annotation
      */
     protected function parser()
     {
-        $parsed = new Version($this->docblock, $this->controller, $this->method);
+        $parsed = new Version($this->docblock, $this->class, $this->method);
         if ($parsed->isRange()) {
-            throw AbsoluteMinimumVersionException::create($this->docblock, $this->controller, $this->method);
+            throw AbsoluteMinimumVersionException::create($this->docblock, $this->class, $this->method);
         }
 
         return [

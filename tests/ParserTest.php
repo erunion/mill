@@ -10,8 +10,8 @@ class ParserTest extends TestCase
 
     public function testParseAnnotationsOnClassWithNoMethod()
     {
-        $controller = '\Mill\Examples\Showtimes\Controllers\Movie';
-        $docs = (new Parser($controller))->getAnnotations();
+        $class = '\Mill\Examples\Showtimes\Controllers\Movie';
+        $docs = (new Parser($class))->getAnnotations();
 
         $this->assertCount(2, $docs);
         $this->assertCount(1, $docs['description']);
@@ -28,13 +28,16 @@ class ParserTest extends TestCase
 
     /**
      * @dataProvider providerParseAnnotationsOnClassMethod
+     * @param string $method
+     * @param array $expected
+     * @return void
      */
-    public function testParseAnnotationsOnClassMethod($method, $expected)
+    public function testParseAnnotationsOnClassMethod($method, array $expected)
     {
-        $controller = '\Mill\Examples\Showtimes\Controllers\Movie';
-        $annotations = (new Parser($controller))->getAnnotations($method);
+        $class = '\Mill\Examples\Showtimes\Controllers\Movie';
+        $annotations = (new Parser($class))->getAnnotations($method);
         if (empty($annotations)) {
-            $this->fail('No parsed annotations for ' . $controller);
+            $this->fail('No parsed annotations for ' . $class);
         }
 
         foreach ($annotations as $annotation => $data) {
@@ -73,12 +76,12 @@ class ParserTest extends TestCase
 
     public function testParseAnnotationsOnClassMethodThatDoesntExist()
     {
-        $controller = '\Mill\Examples\Showtimes\Controllers\Movie';
+        $class = '\Mill\Examples\Showtimes\Controllers\Movie';
 
         try {
-            (new Parser($controller))->getAnnotations('POST');
+            (new Parser($class))->getAnnotations('POST');
         } catch (MethodNotImplementedException $e) {
-            $this->assertSame($controller, $e->getClass());
+            $this->assertSame($class, $e->getClass());
             $this->assertSame('POST', $e->getMethod());
         }
     }

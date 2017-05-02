@@ -2,9 +2,9 @@
 namespace Mill\Parser;
 
 use Mill\Container;
+use Mill\Exceptions\Annotations\UnsupportedTypeException;
 use Mill\Exceptions\Config\UnconfiguredRepresentationException;
-use Mill\Exceptions\Representation\Types\MissingOptionsException;
-use Mill\Exceptions\Resource\Annotations\UnsupportedTypeException;
+use Mill\Exceptions\MSON\MissingOptionsException;
 
 class MSON
 {
@@ -64,14 +64,14 @@ class MSON
     const REGEX_CLEAN_MULTILINE = '/(\s)?[ \t]*(\r\n|\n)[ \t]*(\s)/';
 
     /**
-     * Name of the controller that this MSON is being parsed from.
+     * Controller that this MSON is being parsed from.
      *
      * @var string
      */
-    protected $controller;
+    protected $class;
 
     /**
-     * Name of the controller method that MSON is being parsed from.
+     * Controller method that MSON is being parsed from.
      *
      * @var mixed
      */
@@ -153,12 +153,12 @@ class MSON
     ];
 
     /**
-     * @param string $controller
+     * @param string $class
      * @param string $method
      */
-    public function __construct($controller, $method)
+    public function __construct($class, $method)
     {
-        $this->controller = $controller;
+        $this->class = $class;
         $this->method = $method;
     }
 
@@ -195,7 +195,7 @@ class MSON
                     // If this isn't a valid representation, then it's an invalid type.
                     $config->doesRepresentationExist($this->type);
                 } catch (UnconfiguredRepresentationException $e) {
-                    throw UnsupportedTypeException::create($content, $this->controller, $this->method);
+                    throw UnsupportedTypeException::create($content, $this->class, $this->method);
                 }
             }
 
@@ -208,13 +208,13 @@ class MSON
                                 // If this isn't a valid representation, then it's an invalid type.
                                 $config->doesRepresentationExist($this->subtype);
                             } catch (UnconfiguredRepresentationException $e) {
-                                throw UnsupportedTypeException::create($content, $this->controller, $this->method);
+                                throw UnsupportedTypeException::create($content, $this->class, $this->method);
                             }
                         }
                         break;
 
                     default:
-                        throw UnsupportedTypeException::create($content, $this->controller, $this->method);
+                        throw UnsupportedTypeException::create($content, $this->class, $this->method);
                 }
             }
         }
@@ -236,7 +236,7 @@ class MSON
         }
 
         if ($this->type === 'enum' && empty($this->values)) {
-            throw MissingOptionsException::create($this->type, $this->controller, $this->method);
+            throw MissingOptionsException::create($this->type, $this->class, $this->method);
         }
 
         return $this;

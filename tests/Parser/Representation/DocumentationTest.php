@@ -10,10 +10,10 @@ class DocumentationTest extends TestCase
      * @dataProvider providerParseDocumentationReturnsRepresentation
      * @param string $class
      * @param string $method
-     * @param string $expected
+     * @param array $expected
      * @return void
      */
-    public function testParseDocumentationReturnsRepresentation($class, $method, $expected)
+    public function testParseDocumentationReturnsRepresentation($class, $method, array $expected)
     {
         $parsed = (new Documentation($class, $method))->parse();
         $representation = $parsed->toArray();
@@ -490,7 +490,7 @@ class DocumentationTest extends TestCase
             'multiple-label-annotations' => [
                 'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithMultipleLabelAnnotations',
                 'method' => 'create',
-                'expected.exception' => '\Mill\Exceptions\MultipleAnnotationsException'
+                'expected.exception' => '\Mill\Exceptions\Annotations\MultipleAnnotationsException'
             ]
         ];
     }

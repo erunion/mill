@@ -1,9 +1,9 @@
 <?php
 namespace Mill\Parser;
 
-use Mill\Exceptions\Resource\Annotations\BadOptionsListException;
-use Mill\Exceptions\Resource\Annotations\InvalidMSONSyntaxException;
-use Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException;
+use Mill\Exceptions\Annotations\BadOptionsListException;
+use Mill\Exceptions\Annotations\InvalidMSONSyntaxException;
+use Mill\Exceptions\Annotations\MissingRequiredFieldException;
 
 /**
  * Base class for supported annotations.
@@ -21,14 +21,14 @@ abstract class Annotation
     protected $docblock;
 
     /**
-     * Name of the controller that this annotation is within.
+     * Class that this annotation is within.
      *
      * @var string
      */
-    protected $controller;
+    protected $class;
 
     /**
-     * Name of the controller method that this annotation is within.
+     * Class method that this annotation is within.
      *
      * @var mixed
      */
@@ -115,16 +115,16 @@ abstract class Annotation
 
     /**
      * @param string $doc
-     * @param string $controller
+     * @param string $class
      * @param string|null $method
      * @param \Mill\Parser\Version|null $version
      * @param array $extra_data
      */
-    public function __construct($doc, $controller, $method, Version $version = null, $extra_data = [])
+    public function __construct($doc, $class, $method, Version $version = null, $extra_data = [])
     {
         $this->docblock = $doc;
 
-        $this->controller = $controller;
+        $this->class = $class;
         $this->method = $method;
 
         // Since you can't set falsy defaults in methods, and we don't want a `null` version, let's force a false
@@ -156,7 +156,7 @@ abstract class Annotation
                     $field,
                     $this->getAnnotationName(),
                     $this->docblock,
-                    $this->controller,
+                    $this->class,
                     $this->method
                 );
             }
@@ -165,7 +165,7 @@ abstract class Annotation
                 $field,
                 $this->getAnnotationName(),
                 $this->docblock,
-                $this->controller,
+                $this->class,
                 $this->method
             );
         }
@@ -265,7 +265,7 @@ abstract class Annotation
                         $annotation,
                         $this->docblock,
                         $values,
-                        $this->controller,
+                        $this->class,
                         $this->method
                     );
                 }

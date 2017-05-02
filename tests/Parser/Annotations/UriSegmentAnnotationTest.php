@@ -7,8 +7,12 @@ class UriSegmentAnnotationTest extends AnnotationTest
 {
     /**
      * @dataProvider providerAnnotation
+     * @param string $uri
+     * @param string $segment
+     * @param array $expected
+     * @return void
      */
-    public function testAnnotation($uri, $segment, $expected)
+    public function testAnnotation($uri, $segment, array $expected)
     {
         $annotation = new UriSegmentAnnotation($segment, __CLASS__, __METHOD__, null);
 
@@ -66,13 +70,13 @@ class UriSegmentAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function providerAnnotationFailsOnInvalidAnnotations()
+    public function providerAnnotationFailsOnInvalidContent()
     {
         return [
             'invalid-mson' => [
                 'annotation' => '\Mill\Parser\Annotations\UriSegmentAnnotation',
-                'docblock' => '{/movies/+id}',
-                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\InvalidMSONSyntaxException',
+                'content' => '{/movies/+id}',
+                'expected.exception' => '\Mill\Exceptions\Annotations\InvalidMSONSyntaxException',
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'urisegment',
                     'getDocblock' => '{/movies/+id}',
@@ -81,8 +85,8 @@ class UriSegmentAnnotationTest extends AnnotationTest
             ],
             'missing-uri' => [
                 'annotation' => '\Mill\Parser\Annotations\UriSegmentAnnotation',
-                'docblock' => '',
-                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
+                'content' => '',
+                'expected.exception' => '\Mill\Exceptions\Annotations\MissingRequiredFieldException',
                 'expected.exception.asserts' => [
                     'getRequiredField' => 'uri',
                     'getAnnotation' => 'urisegment',
@@ -92,8 +96,8 @@ class UriSegmentAnnotationTest extends AnnotationTest
             ],
             'unsupported-type' => [
                 'annotation' => '\Mill\Parser\Annotations\UriSegmentAnnotation',
-                'docblock' => '{/movies/+id} id (str) - Movie ID',
-                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\UnsupportedTypeException',
+                'content' => '{/movies/+id} id (str) - Movie ID',
+                'expected.exception' => '\Mill\Exceptions\Annotations\UnsupportedTypeException',
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'id (str) - Movie ID',
                     'getDocblock' => null

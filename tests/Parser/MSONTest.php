@@ -1,16 +1,10 @@
 <?php
 namespace Mill\Tests\Parser;
 
-use Mill\Exceptions\Version\UnrecognizedSchemaException;
 use Mill\Parser\MSON;
+use Mill\Tests\TestCase;
 
-/**
- * Since the versioning system is powered by composer/semver, and it has its own test suite, we don't need to do
- * exhaustive testing on our classes; we just that error handling with it is being properly caught.
- *
- * @link https://github.com/composer/semver
- */
-class MSONTest extends \Mill\Tests\TestCase
+class MSONTest extends TestCase
 {
     /**
      * @dataProvider providerTestParse
@@ -219,7 +213,7 @@ class MSONTest extends \Mill\Tests\TestCase
                 ]
             ],
             'without-sample-data' => [
-                'param' => 'content_rating (string) - MPAA rating',
+                'content' => 'content_rating (string) - MPAA rating',
                 'expected' => [
                     'capability' => false,
                     'description' => 'MPAA rating',
@@ -233,35 +227,4 @@ class MSONTest extends \Mill\Tests\TestCase
             ]
         ];
     }
-
-    /*public function testMatches()
-    {
-        $version = '3.*';
-        $parsed = new Version($version, __CLASS__, __METHOD__);
-
-        foreach (['3.0', '3.5'] as $good) {
-            $this->assertTrue($parsed->matches($good), $good . ' did not successfully match ' . $version);
-        }
-
-        foreach (['2.9', '4.0', '4.1'] as $bad) {
-            $this->assertFalse($parsed->matches($bad), $bad . ' improperly matched successfully against ' . $version);
-        }
-    }
-
-    public function testParseFailsOnBadVersionSchemas()
-    {
-        try {
-            new Version('', __CLASS__, __METHOD__);
-        } catch (UnrecognizedSchemaException $e) {
-            $this->assertSame('', $e->getVersion());
-            $this->assertNull($e->getAnnotation());
-            $this->assertSame(__CLASS__, $e->getClass());
-            $this->assertSame(__METHOD__, $e->getMethod());
-
-            $this->assertSame(
-                'The supplied version, ``, has an unrecognized schema. Please consult the versioning documentation.',
-                $e->getValidationMessage()
-            );
-        }
-    }*/
 }

@@ -13,10 +13,10 @@ class RepresentationParserTest extends TestCase
      * @dataProvider providerParseAnnotations
      * @param string $class
      * @param string $method
-     * @param string $expected
+     * @param array $expected
      * @return void
      */
-    public function testParseAnnotations($class, $method, $expected)
+    public function testParseAnnotations($class, $method, array $expected)
     {
         $parser = new RepresentationParser($class);
         $annotations = $parser->getAnnotations($method);
@@ -340,7 +340,7 @@ class RepresentationParserTest extends TestCase
                 'docblocks' => '/**
                   * @api-data this is not parseable mson
                   */',
-                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\InvalidMSONSyntaxException',
+                'expected.exception' => '\Mill\Exceptions\Annotations\InvalidMSONSyntaxException',
                 'expected.exception.asserts' => []
             ],
             'duplicate-fields' => [

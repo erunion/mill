@@ -1,7 +1,7 @@
 <?php
-namespace Mill\Exceptions\Resource\Annotations;
+namespace Mill\Exceptions\Annotations;
 
-class UnknownRepresentationException extends \Exception
+class MissingRepresentationErrorCodeException extends \Exception
 {
     use AnnotationExceptionTrait;
 
@@ -9,12 +9,14 @@ class UnknownRepresentationException extends \Exception
      * @param string $representation
      * @param string $class
      * @param string $method
-     * @return UnknownRepresentationException
+     * @return MissingRepresentationErrorCodeException
      */
     public static function create($representation, $class, $method)
     {
         $message = sprintf(
-            'The `@api-return %s` in %s::%s has an unknown representation. Is it present in your config file?',
+            'The `%s` error representation on `@api-throws %s` in %s::%s is missing an error code, but is required ' .
+                'to have one in your config file.',
+            $representation,
             $representation,
             $class,
             $method

@@ -1,5 +1,5 @@
 <?php
-namespace Mill\Exceptions\Resource\Annotations;
+namespace Mill\Exceptions\Annotations;
 
 class InvalidMSONSyntaxException extends \Exception
 {

@@ -12,12 +12,15 @@ class DocumentationTest extends TestCase
 
     /**
      * @dataProvider providerDocumentation
+     * @param string $class
+     * @param array $expected
+     * @return void
      */
-    public function testDocumentation($controller, $expected)
+    public function testDocumentation($class, array $expected)
     {
-        $docs = (new Documentation($controller))->parse();
+        $docs = (new Documentation($class))->parse();
 
-        $this->assertSame($controller, $docs->getController());
+        $this->assertSame($class, $docs->getClass());
         $this->assertCount($expected['methods.size'], $docs->getMethods());
 
         // Test that it was pulled out of the local cache.
@@ -30,7 +33,7 @@ class DocumentationTest extends TestCase
 
         $class_docs = $docs->toArray();
 
-        $this->assertSame($class_docs['controller'], $controller);
+        $this->assertSame($class_docs['class'], $class);
         $this->assertSame($expected['label'], $class_docs['label']);
         $this->assertSame($expected['description'], $class_docs['description']);
 
@@ -43,15 +46,20 @@ class DocumentationTest extends TestCase
             $docs->getMethod($expected['method.unavailable']);
             $this->fail();
         } catch (MethodNotImplementedException $e) {
-            $this->assertSame($controller, $e->getClass());
+            $this->assertSame($class, $e->getClass());
             $this->assertSame($expected['method.unavailable'], $e->getMethod());
         }
     }
 
     /**
-     * @dataProvider providerDocumentationFailsOnBadControllers
+     * @dataProvider providerDocumentationFailsOnBadClasses
+     * @param string $docblock
+     * @param string $exception
+     * @param array $asserts
+     * @throws \Exception
+     * @return void
      */
-    public function testDocumentationFailsOnBadControllers($docblock, $exception, $asserts)
+    public function testDocumentationFailsOnBadClasses($docblock, $exception, array $asserts)
     {
         $this->expectException($exception);
         $this->overrideReadersWithFakeDocblockReturn($docblock);
@@ -75,10 +83,10 @@ class DocumentationTest extends TestCase
      */
     public function testDocumentationAndGetSpecificMethod()
     {
-        $controller = '\Mill\Examples\Showtimes\Controllers\Movie';
-        $docs = (new Documentation($controller))->parse();
+        $class = '\Mill\Examples\Showtimes\Controllers\Movie';
+        $docs = (new Documentation($class))->parse();
 
-        $this->assertSame($controller, $docs->getController());
+        $this->assertSame($class, $docs->getClass());
         $this->assertInstanceOf('\Mill\Parser\Resource\Action\Documentation', $docs->getMethod('GET'));
     }
 
@@ -89,7 +97,7 @@ class DocumentationTest extends TestCase
     {
         return [
             'Movie' => [
-                'controller' => '\Mill\Examples\Showtimes\Controllers\Movie',
+                'class' => '\Mill\Examples\Showtimes\Controllers\Movie',
                 'expected' => [
                     'methods.size' => 3,
                     'label' => 'Movies',
@@ -108,14 +116,14 @@ class DocumentationTest extends TestCase
     /**
      * @return array
      */
-    public function providerDocumentationFailsOnBadControllers()
+    public function providerDocumentationFailsOnBadClasses()
     {
         return [
             'missing-required-label-annotation' => [
                 'docblock' => '/**
                   *
                   */',
-                'expected.exception' => '\Mill\Exceptions\RequiredAnnotationException',
+                'expected.exception' => '\Mill\Exceptions\Annotations\RequiredAnnotationException',
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'label'
                 ]
@@ -125,7 +133,7 @@ class DocumentationTest extends TestCase
                   * @api-label Something
                   * @api-label Something else
                   */',
-                'expected.exception' => '\Mill\Exceptions\MultipleAnnotationsException',
+                'expected.exception' => '\Mill\Exceptions\Annotations\MultipleAnnotationsException',
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'label'
                 ]

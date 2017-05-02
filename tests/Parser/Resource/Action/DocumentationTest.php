@@ -11,13 +11,16 @@ class DocumentationTest extends TestCase
 
     /**
      * @dataProvider providerParseMethodDocumentation
+     * @param string $method
+     * @param array $expected
+     * @return void
      */
-    public function testParseMethodDocumentation($method, $expected)
+    public function testParseMethodDocumentation($method, array $expected)
     {
-        $controller_stub = '\Mill\Examples\Showtimes\Controllers\Movie';
-        $parser = (new Documentation($controller_stub, $method))->parse();
+        $class_stub = '\Mill\Examples\Showtimes\Controllers\Movie';
+        $parser = (new Documentation($class_stub, $method))->parse();
 
-        $this->assertSame($controller_stub, $parser->getController());
+        $this->assertSame($class_stub, $parser->getClass());
         $this->assertSame($method, $parser->getMethod());
 
         $this->assertSame($expected['label'], $parser->getLabel());
@@ -55,7 +58,7 @@ class DocumentationTest extends TestCase
         $this->assertSame($expected['content_type'], $docs['content_type']);
 
         if (empty($docs['annotations'])) {
-            $this->fail('No parsed annotations for ' . $controller_stub);
+            $this->fail('No parsed annotations for ' . $class_stub);
         }
 
         foreach ($docs['annotations'] as $name => $data) {
@@ -81,8 +84,11 @@ class DocumentationTest extends TestCase
 
     /**
      * @dataProvider providerParsingOfSpecificUseCases
+     * @param string $docblock
+     * @param array $asserts
+     * @return void
      */
-    public function testParsingOfSpecificUseCases($docblock, $asserts)
+    public function testParsingOfSpecificUseCases($docblock, array $asserts)
     {
         $this->overrideReadersWithFakeDocblockReturn($docblock);
 
@@ -99,8 +105,12 @@ class DocumentationTest extends TestCase
 
     /**
      * @dataProvider providerMethodsThatWillFailParsing
+     * @param string $docblock
+     * @param string $exception
+     * @param array $asserts
+     * @throws \Exception
      */
-    public function testMethodsThatWillFailParsing($docblock, $exception, $asserts)
+    public function testMethodsThatWillFailParsing($docblock, $exception, array $asserts)
     {
         $this->expectException($exception);
         $this->overrideReadersWithFakeDocblockReturn($docblock);
@@ -542,7 +552,7 @@ class DocumentationTest extends TestCase
                   *
                   * @api-uri {Something} /some/page
                   */',
-                'expected.exception' => '\Mill\Exceptions\RequiredAnnotationException',
+                'expected.exception' => '\Mill\Exceptions\Annotations\RequiredAnnotationException',
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'label'
                 ]
@@ -554,7 +564,7 @@ class DocumentationTest extends TestCase
                   * @api-label Test method
                   * @api-label Test method
                   */',
-                'expected.exception' => '\Mill\Exceptions\MultipleAnnotationsException',
+                'expected.exception' => '\Mill\Exceptions\Annotations\MultipleAnnotationsException',
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'label'
                 ]
@@ -566,7 +576,7 @@ class DocumentationTest extends TestCase
                   * @api-label Test Method
                   * @api-uri {Something} /some/page
                   */',
-                'expected.exception' => '\Mill\Exceptions\RequiredAnnotationException',
+                'expected.exception' => '\Mill\Exceptions\Annotations\RequiredAnnotationException',
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'contentType'
                 ]
@@ -580,7 +590,7 @@ class DocumentationTest extends TestCase
                   * @api-contentType application/json
                   * @api-contentType text/xml
                   */',
-                'expected.exception' => '\Mill\Exceptions\MultipleAnnotationsException',
+                'expected.exception' => '\Mill\Exceptions\Annotations\MultipleAnnotationsException',
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'contentType'
                 ]
@@ -622,7 +632,7 @@ class DocumentationTest extends TestCase
                   * @api-contentType application/json
                   * @api-param:public {page}
                   */',
-                'expected.exception' => '\Mill\Exceptions\RequiredAnnotationException',
+                'expected.exception' => '\Mill\Exceptions\Annotations\RequiredAnnotationException',
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'uri'
                 ]

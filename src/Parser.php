@@ -11,7 +11,7 @@ use phootwork\collection\ArrayList;
 use ReflectionClass;
 
 /**
- * Class for tokenizing a docblock on a given controller or method.
+ * Class for tokenizing a docblock on a given class or method.
  *
  */
 class Parser
@@ -19,29 +19,29 @@ class Parser
     const REGEX_DECORATOR = '/^(?P<decorator>(:\w+)+)?/u';
 
     /**
-     * The current controller that we're going to be parsing.
+     * The current class that we're going to be parsing.
      *
      * @var string
      */
-    protected $controller;
+    protected $class;
 
     /**
-     * The current method that we're parsing. Used to give better error messaging.
+     * The current class method that we're parsing. Used to give better error messaging.
      *
      * @var string
      */
     protected $method;
 
     /**
-     * @param string $controller
+     * @param string $class
      */
-    public function __construct($controller)
+    public function __construct($class)
     {
-        $this->controller = $controller;
+        $this->class = $class;
     }
 
     /**
-     * Get an array of HTTP (GET, POST, PUT, PATCH, DELETE) methods that are implemented on the current controller.
+     * Get an array of HTTP (GET, POST, PUT, PATCH, DELETE) methods that are implemented on the current class.
      *
      * @return array
      */
@@ -49,7 +49,7 @@ class Parser
     {
         $methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
-        $reflection = new ReflectionClass($this->controller);
+        $reflection = new ReflectionClass($this->class);
 
         $valid_methods = [];
         foreach ($methods as $method) {
@@ -62,7 +62,7 @@ class Parser
     }
 
     /**
-     * Locate, and parse, the annotations for a controller or method.
+     * Locate, and parse, the annotations for a class or method.
      *
      * @param string|null $method_name
      * @return array An array containing all the found annotations.
@@ -74,7 +74,7 @@ class Parser
         }
 
         $reader = Container::getAnnotationReader();
-        $comments = $reader($this->controller, $method_name);
+        $comments = $reader($this->class, $method_name);
 
         if (empty($comments)) {
             return [];
@@ -158,7 +158,7 @@ class Parser
             switch ($annotation) {
                 // Handle the `@api-version` annotation block.
                 case 'version':
-                    $version = new Version($content, $this->controller, $this->method);
+                    $version = new Version($content, $this->class, $this->method);
                     break;
 
                 // Parse all other annotations.
@@ -195,7 +195,7 @@ class Parser
         }
 
         /** @var Annotation $annotation */
-        $annotation = new $class($content, $this->controller, $this->method, $version);
+        $annotation = new $class($content, $this->class, $this->method, $version);
 
         if (!empty($decorators)) {
             $decorators = explode(':', ltrim($decorators, ':'));
@@ -215,7 +215,7 @@ class Parser
                         throw UnsupportedDecoratorException::create(
                             $decorator,
                             $name,
-                            $this->controller,
+                            $this->class,
                             $this->method
                         );
                 }

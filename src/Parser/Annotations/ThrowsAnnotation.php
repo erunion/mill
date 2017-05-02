@@ -2,11 +2,11 @@
 namespace Mill\Parser\Annotations;
 
 use Mill\Container;
+use Mill\Exceptions\Annotations\MissingRepresentationErrorCodeException;
+use Mill\Exceptions\Annotations\UncallableErrorCodeException;
+use Mill\Exceptions\Annotations\UnknownErrorRepresentationException;
+use Mill\Exceptions\Annotations\UnknownReturnCodeException;
 use Mill\Exceptions\Config\UnconfiguredErrorRepresentationException;
-use Mill\Exceptions\Resource\Annotations\MissingRepresentationErrorCodeException;
-use Mill\Exceptions\Resource\Annotations\UncallableErrorCodeException;
-use Mill\Exceptions\Resource\Annotations\UnknownErrorRepresentationException;
-use Mill\Exceptions\Resource\Annotations\UnknownReturnCodeException;
 use Mill\Parser\Annotation;
 use Mill\Parser\Annotations\Traits\HasHttpCodeResponseTrait;
 
@@ -79,7 +79,7 @@ class ThrowsAnnotation extends Annotation
             $parsed['http_code'] = $matches[1];
 
             if (!$this->isValidHttpCode($parsed['http_code'])) {
-                throw UnknownReturnCodeException::create('throws', $this->docblock, $this->controller, $this->method);
+                throw UnknownReturnCodeException::create('throws', $this->docblock, $this->class, $this->method);
             }
 
             $parsed['http_code'] .= ' ' . $this->getHttpCodeMessage($parsed['http_code']);
@@ -103,7 +103,7 @@ class ThrowsAnnotation extends Annotation
             try {
                 $config->doesErrorRepresentationExist($representation);
             } catch (UnconfiguredErrorRepresentationException $e) {
-                throw UnknownErrorRepresentationException::create($representation, $this->controller, $this->method);
+                throw UnknownErrorRepresentationException::create($representation, $this->class, $this->method);
             }
         }
 
@@ -114,7 +114,7 @@ class ThrowsAnnotation extends Annotation
                 $parsed['error_code'] = $error_code;
             } else {
                 if (!defined($error_code)) {
-                    throw UncallableErrorCodeException::create($this->docblock, $this->controller, $this->method);
+                    throw UncallableErrorCodeException::create($this->docblock, $this->class, $this->method);
                 }
 
                 $parsed['error_code'] = constant($error_code);
@@ -126,7 +126,7 @@ class ThrowsAnnotation extends Annotation
         // Capability is surrounded by +plusses+.
         if (preg_match(self::REGEX_CAPABILITY, $content, $matches)) {
             $capability = substr($matches[1], 1, -1);
-            $parsed['capability'] = new CapabilityAnnotation($capability, $this->controller, $this->method);
+            $parsed['capability'] = new CapabilityAnnotation($capability, $this->class, $this->method);
 
             $content = trim(preg_replace(self::REGEX_CAPABILITY, '', $content));
         }
@@ -152,7 +152,7 @@ class ThrowsAnnotation extends Annotation
             if ($config->doesErrorRepresentationNeedAnErrorCode($representation) && !isset($parsed['error_code'])) {
                 throw MissingRepresentationErrorCodeException::create(
                     $representation,
-                    $this->controller,
+                    $this->class,
                     $this->method
                 );
             }

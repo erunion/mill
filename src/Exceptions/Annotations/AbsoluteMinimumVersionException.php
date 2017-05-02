@@ -1,7 +1,7 @@
 <?php
-namespace Mill\Exceptions\Resource\Annotations;
+namespace Mill\Exceptions\Annotations;
 
-class UnsupportedTypeException extends \Exception
+class AbsoluteMinimumVersionException extends \Exception
 {
     use AnnotationExceptionTrait;
 
@@ -9,12 +9,12 @@ class UnsupportedTypeException extends \Exception
      * @param string $annotation
      * @param string $class
      * @param string $method
-     * @return UnsupportedTypeException
+     * @return AbsoluteMinimumVersionException
      */
     public static function create($annotation, $class, $method)
     {
         $message = sprintf(
-            'The type on `%s` in %s::%s is unsupported. Please check the documentation for supported types.',
+            'The version on `@api-minVersion %s` in %s::%s is not an absolute version.',
             $annotation,
             $class,
             $method
