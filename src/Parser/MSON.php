@@ -26,7 +26,7 @@ class MSON
      */
     const REGEX_MSON = '/((?P<field>[\w.]+) (`(?P<sample_data>.+)` )?' .
         '\((?P<type>[\w\\\]+)(<(?P<subtype>[\w\\\]+)>)?(, (?P<required>required|optional))?(, (?P<capability>\w+))?\)' .
-        ' - (?P<description>.+))/uis';
+        '(\n|\s)+-(\n|\s)+(?P<description>.+))/uis';
 
     /**
      * This is the regex to match Mill-flavored MSON enum members.
@@ -220,9 +220,9 @@ class MSON
 
         // Parse out enum values if present, and remove them from the parsed description afterwards.
         if (!empty($this->description)) {
-            preg_match_all(self::REGEX_MSON_ENUM, $this->description, $matches);
-            if (!empty($matches['value']) && !empty($matches['description'])) {
-                $this->values = $this->parseValues($matches['value'], $matches['description']);
+            preg_match_all(self::REGEX_MSON_ENUM, $this->description, $enum_matches);
+            if (!empty($enum_matches['value']) && !empty($enum_matches['description'])) {
+                $this->values = $this->parseValues($enum_matches['value'], $enum_matches['description']);
 
                 // Remove any parsed enum values from the description.
                 $this->description = preg_replace(self::REGEX_MSON_ENUM, '', $this->description);

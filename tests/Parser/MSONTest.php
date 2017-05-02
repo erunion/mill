@@ -116,6 +116,28 @@ class MSONTest extends TestCase
                     ]
                 ]
             ],
+            'description-starts-on-new-line' => [
+                'content' => 'content_rating `G` (string)
+                    - MPAA Rating
+                    + Members
+                        - `G` - G rated
+                        - `PG` - PG rated
+                        - `PG-13` - PG-13 rated',
+                'expected' => [
+                    'capability' => false,
+                    'description' => 'MPAA Rating',
+                    'field' => 'content_rating',
+                    'required' => false,
+                    'sample_data' => 'G',
+                    'subtype' => false,
+                    'type' => 'string',
+                    'values' => [
+                        'G' => 'G rated',
+                        'PG' => 'PG rated',
+                        'PG-13' => 'PG-13 rated'
+                    ]
+                ]
+            ],
             'enum-without-descriptions' => [
                 'content' => 'is_kid_friendly `yes` (string, optional) - Is this movie kid friendly?
                     + Members
