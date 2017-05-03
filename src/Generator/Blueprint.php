@@ -286,9 +286,14 @@ class Blueprint extends Generator
                 $blueprint .= '+ Members';
                 $blueprint .= $this->line();
 
-                foreach ($values as $value) {
+                foreach ($values as $value => $value_description) {
                     $blueprint .= $this->tab(4);
-                    $blueprint .= '+ `' . $value . '`';
+                    $blueprint .= sprintf(
+                        '+ `%s`%s',
+                        $value,
+                        (!empty($value_description)) ? sprintf(' - %s', $value_description) : ''
+                    );
+
                     $blueprint .= $this->line();
                 }
             }
@@ -395,18 +400,30 @@ class Blueprint extends Generator
                     (isset($data['subtype'])) ? $data['subtype'] : false
                 );
 
-                $blueprint .= sprintf('- `%s` (%s) - %s', $field_name, $type, $data['label']);
+                $blueprint .= sprintf(
+                    '- `%s`%s (%s) - %s',
+                    $field_name,
+                    (!empty($data['sample_data'])) ? sprintf(' `%s`', $data['sample_data']) : '',
+                    $type,
+                    $data['description']
+                );
+
                 $blueprint .= $this->line();
 
                 // Only enum's support options/members.
-                if ($data['type'] === 'enum' && !empty($data['options'])) {
+                if ($data['type'] === 'enum' && !empty($data['values'])) {
                     $blueprint .= $this->tab($indent + 1);
                     $blueprint .= '+ Members';
                     $blueprint .= $this->line();
 
-                    foreach ($data['options'] as $value) {
+                    foreach ($data['values'] as $value => $value_description) {
                         $blueprint .= $this->tab($indent + 2);
-                        $blueprint .= '+ `' . $value . '`';
+                        $blueprint .= sprintf(
+                            '+ `%s`%s',
+                            $value,
+                            (!empty($value_description)) ? sprintf(' - %s', $value_description) : ''
+                        );
+
                         $blueprint .= $this->line();
                     }
                 }
@@ -552,8 +569,8 @@ class Blueprint extends Generator
                 return 'array';
                 break;
 
-            case 'representation':
-                $representation = $this->getRepresentation($subtype);
+            default:
+                $representation = $this->getRepresentation($type);
                 if ($representation) {
                     return $representation->getLabel();
                 }

@@ -2,7 +2,7 @@
 namespace Mill\Parser\Annotations;
 
 use Mill\Container;
-use Mill\Exceptions\InvalidScopeSuppliedException;
+use Mill\Exceptions\Annotations\InvalidScopeSuppliedException;
 use Mill\Parser\Annotation;
 
 /**
@@ -57,7 +57,7 @@ class ScopeAnnotation extends Annotation
             // Validate the supplied scope with what has been configured as allowable.
             $scopes = Container::getConfig()->getScopes();
             if (!in_array($scope, $scopes)) {
-                throw InvalidScopeSuppliedException::create($scope, $this->controller, $this->method);
+                throw InvalidScopeSuppliedException::create($scope, $this->class, $this->method);
             }
         }
 

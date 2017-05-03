@@ -7,10 +7,13 @@ class DescriptionAnnotationTest extends AnnotationTest
 {
     /**
      * @dataProvider providerAnnotation
+     * @param string $content
+     * @param array $expected
+     * @return void
      */
-    public function testAnnotation($description, $expected)
+    public function testAnnotation($content, array $expected)
     {
-        $annotation = new DescriptionAnnotation($description, __CLASS__, __METHOD__);
+        $annotation = new DescriptionAnnotation($content, __CLASS__, __METHOD__);
 
         $this->assertFalse($annotation->requiresVisibilityDecorator());
         $this->assertFalse($annotation->supportsVersioning());
@@ -28,7 +31,7 @@ class DescriptionAnnotationTest extends AnnotationTest
     {
         return [
             '_complete' => [
-                'description' => 'This is a description.',
+                'content' => 'This is a description.',
                 'expected' => [
                     'description' => 'This is a description.'
                 ]
@@ -39,13 +42,13 @@ class DescriptionAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function providerAnnotationFailsOnInvalidAnnotations()
+    public function providerAnnotationFailsOnInvalidContent()
     {
         return [
             'missing-description' => [
                 'annotation' => '\Mill\Parser\Annotations\DescriptionAnnotation',
-                'docblock' => '',
-                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
+                'content' => '',
+                'expected.exception' => '\Mill\Exceptions\Annotations\MissingRequiredFieldException',
                 'expected.exception.asserts' => [
                     'getRequiredField' => 'description',
                     'getAnnotation' => 'description',

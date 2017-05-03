@@ -14,7 +14,7 @@ class Theater
      * @api-label Get a single movie theater
      *
      * @api-uri:public {Theaters} /theaters/+id
-     * @api-uriSegment {/theaters/+id} {integer} id Theater ID
+     * @api-uriSegment {/theaters/+id} id (integer) - Theater ID
      *
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Theater
      * @api-return:public {notmodified} If no content has been modified since the supplied Last-Modified header.
@@ -39,13 +39,13 @@ class Theater
      * @api-label Update a movie theater
      *
      * @api-uri:public {Theaters} /theaters/+id
-     * @api-uriSegment {/theaters/+id} {integer} id Theater ID
+     * @api-uriSegment {/theaters/+id} id (integer) - Theater ID
      *
      * @api-scope create
      *
-     * @api-param:public {string} name Name of the theater.
-     * @api-param:public {string} address Theater address
-     * @api-param:public {string} phone_number Theater phone number
+     * @api-param:public name (string, required) - Name of the theater.
+     * @api-param:public address (string, required) - Theater address
+     * @api-param:public phone_number (string, required) - Theater phone number
      *
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Theater
      *
@@ -71,7 +71,7 @@ class Theater
      * @api-label Delete a movie movie.
      *
      * @api-uri:private {Theaters} /theaters/+id
-     * @api-uriSegment {/theaters/+id} {integer} id Theater ID
+     * @api-uriSegment {/theaters/+id} id (integer) - Theater ID
      *
      * @api-contentType application/json
      * @api-scope delete

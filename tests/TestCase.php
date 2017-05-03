@@ -6,7 +6,8 @@ use League\Flysystem\Memory\MemoryAdapter;
 use Mill\Config;
 use Mill\Container;
 use Mill\Parser;
-use Mill\Parser\Annotations\FieldAnnotation;
+use Mill\Parser\Annotations\DataAnnotation;
+use Mill\Parser\Representation\RepresentationParser;
 
 class TestCase extends \PHPUnit_Framework_TestCase
 {
@@ -75,32 +76,20 @@ class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Given a full response field docblock, return a `FieldAnnotation` object.
+     * Given a full response field docblock, return a `DataAnnotation` object.
      *
      * @param string $docblock
      * @param string $class
-     * @param string $method
-     * @return FieldAnnotation
+     * @return DataAnnotation
      */
-    protected function getFieldAnnotationFromDocblock($docblock, $class, $method)
+    protected function getDataAnnotationFromDocblock($docblock, $class)
     {
-        // So we can simplify this test by passing in a full docblock, we can just mimic the work that happens inside
-        // the Parser and ResponseParser classes where they clean a given docblock, and explode it into an actionable
-        // array
-        $clean_docblock = Parser::cleanDocblock($docblock);
-        $lines = Parser::getAnnotationsFromDocblock($clean_docblock);
+        $tags = Parser::getAnnotationsFromDocblock($docblock)->getTags();
+        $annotations = (new RepresentationParser($class))->parseAnnotations($tags, $docblock);
 
-        $annotation = new FieldAnnotation(
-            $docblock,
-            $class,
-            $method,
-            null,
-            [
-                'docblock_lines' => $lines
-            ]
-        );
+        $this->assertCount(1, $annotations);
 
-        return $annotation;
+        return array_shift($annotations);
     }
 
     /**
@@ -113,7 +102,13 @@ class TestCase extends \PHPUnit_Framework_TestCase
     protected function assertExceptionAsserts($exception, $class, $method, $asserts = [])
     {
         $this->assertSame($class, $exception->getClass());
-        $this->assertSame($method, $exception->getMethod());
+
+        // `@api-data` annotation tests don't set up a RepresentationParser with a method, so we don't need to worry
+        // about asserting this.
+        if (get_class($this) !== 'Mill\Tests\Parser\Annotations\DataAnnotationTest') {
+            $this->assertSame($method, $exception->getMethod());
+        }
+
         foreach ($asserts as $method => $expected) {
             $this->assertSame($expected, $exception->{$method}(), $method . '() does not match expected.');
         }

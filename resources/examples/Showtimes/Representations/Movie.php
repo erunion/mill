@@ -14,106 +14,84 @@ class Movie extends Representation
     {
         return [
             /**
-             * @api-label Movie URI
-             * @api-field uri
-             * @api-type uri
+             * @api-data uri (uri) - Movie URI
              */
             'uri' => $this->movie->uri,
 
             /**
-             * @api-label Unique ID
-             * @api-field id
-             * @api-type number
+             * @api-data id (number) - Unique ID
              */
             'id' => $this->movie->id,
 
             /**
-             * @api-label Name
-             * @api-field name
-             * @api-type string
+             * @api-data name (string) - Name
              */
             'name' => $this->movie->name,
 
             /**
-             * @api-label Description
-             * @api-field description
-             * @api-type string
+             * @api-data description (string) - Description
              */
             'description' => $this->movie->description,
 
             /**
-             * @api-label Runtime
-             * @api-field runtime
-             * @api-type string
+             * @api-data runtime (string) - Runtime
              */
             'runtime' => $this->movie->runtime,
 
             /**
-             * @api-label MPAA rating
-             * @api-field content_rating
-             * @api-type enum
-             * @api-options [G|PG|PG-13|R|NC-17|X|NR|UR]
+             * @api-data content_rating (enum) - MPAA rating
+             *      + Members
+             *          - `G`
+             *          - `PG`
+             *          - `PG-13`
+             *          - `R`
+             *          - `NC-17`
+             *          - `X`
+             *          - `NR`
+             *          - `UR`
              */
             'rating' => $this->movie->rating,
 
             /**
-             * @api-label Genres
-             * @api-field genres
-             * @api-type array
+             * @api-data genres (array) - Genres
              */
             'genres' => $this->movie->getGenres(),
 
             /**
-             * @api-label Director
-             * @api-field director
-             * @api-type representation
-             * @api-subtype \Mill\Examples\Showtimes\Representations\Person
+             * @api-data director (\Mill\Examples\Showtimes\Representations\Person) - Director
              */
             'director' => $this->movie->director,
 
             /**
-             * @api-label Cast
-             * @api-field cast
-             * @api-type array
-             * @api-subtype \Mill\Examples\Showtimes\Representations\Person
+             * @api-data cast (array<\Mill\Examples\Showtimes\Representations\Person>) - Cast
              */
             'cast' => $this->movie->getCast(),
 
             /**
-             * @api-label Kid friendly?
-             * @api-field kid_friendly
-             * @api-type boolean
+             * @api-data kid_friendly (boolean) - Kid friendly?
              */
             'kid_friendly' => $this->movie->is_kid_friendly,
 
             /**
-             * @api-label Theaters the movie is currently showing in
-             * @api-field theaters
-             * @api-type array
-             * @api-subtype \Mill\Examples\Showtimes\Representations\Theater
+             * @api-data theaters (array<\Mill\Examples\Showtimes\Representations\Theater>) - Theaters the movie is
+             *      currently showing in
              */
             'theaters' => $this->movie->getTheaters(),
 
             /**
-             * @api-label Non-theater specific showtimes
-             * @api-field showtimes
-             * @api-type array
+             * @api-data showtimes (array) - Non-theater specific showtimes
              */
             'showtimes' => $this->getShowtimes(),
 
             /**
-             * @api-label External URLs
-             * @api-field external_urls
-             * @api-type object
+             * @api-data external_urls (object) - External URLs
              * @api-version >=1.1
              * @api-see \Mill\Examples\Showtimes\Representations\Movie::getExternalUrls external_urls
              */
             'external_urls' => $this->getExternalUrls(),
 
             /**
-             * @api-label Rotten Tomatoes score
-             * @api-field rotten_tomatoes_score
-             * @api-type number
+             * @api-data rotten_tomatoes_score (number) - Rotten Tomatoes score
              */
             'rotten_tomatoes_score' => $this->rotten_tomatoes_score
         ];
@@ -126,24 +104,17 @@ class Movie extends Representation
     {
         return [
             /**
-             * @api-label IMDB URL
-             * @api-field imdb
-             * @api-type string
+             * @api-data imdb (string) - IMDB URL
              */
             'imdb' => $this->movie->imdb,
 
             /**
-             * @api-label Trailer URL
-             * @api-field trailer
-             * @api-type string
+             * @api-data trailer (string) - Trailer URL
              */
             'trailer' => $this->movie->trailer,
 
             /**
-             * @api-label Tickets URL
-             * @api-field tickets
-             * @api-type string
-             * @api-capability BUY_TICKETS
+             * @api-data tickets (string, BUY_TICKETS) - Tickets URL
              */
             'tickets' => $this->movie->tickets_url
         ];

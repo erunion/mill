@@ -1,8 +1,8 @@
 <?php
 namespace Mill\Parser\Resource\Action;
 
-use Mill\Exceptions\MultipleAnnotationsException;
-use Mill\Exceptions\RequiredAnnotationException;
+use Mill\Exceptions\Annotations\MultipleAnnotationsException;
+use Mill\Exceptions\Annotations\RequiredAnnotationException;
 use Mill\Exceptions\Resource\MissingVisibilityDecoratorException;
 use Mill\Exceptions\Resource\NoAnnotationsException;
 use Mill\Exceptions\Resource\PublicDecoratorOnPrivateActionException;
@@ -17,14 +17,14 @@ use Mill\Parser\Version;
 class Documentation
 {
     /**
-     * Name of the controller we're parsing.
+     * Class we're parsing.
      *
      * @var string
      */
-    protected $controller;
+    protected $class;
 
     /**
-     * Name of the controller method we're parsing.
+     * Class method we're parsing.
      *
      * @var string
      */
@@ -84,17 +84,17 @@ class Documentation
     ];
 
     /**
-     * @param string $controller
+     * @param string $class
      * @param string $method
      */
-    public function __construct($controller, $method)
+    public function __construct($class, $method)
     {
-        $this->controller = $controller;
+        $this->class = $class;
         $this->method = $method;
     }
 
     /**
-     * Parse the instance controller and action into actionable annotations and documentation.
+     * Parse the instance class and method into actionable annotations and documentation.
      *
      * @return Documentation
      * @throws NoAnnotationsException If no annotations were found.
@@ -107,18 +107,18 @@ class Documentation
      */
     public function parse()
     {
-        $parser = new Parser($this->controller);
+        $parser = new Parser($this->class);
         $annotations = $parser->getAnnotations($this->method);
 
         if (empty($annotations)) {
-            throw NoAnnotationsException::create($this->controller, $this->method);
+            throw NoAnnotationsException::create($this->class, $this->method);
         }
 
         // Parse out the `@api-label` annotation.
         if (!isset($annotations['label'])) {
-            throw RequiredAnnotationException::create('label', $this->controller, $this->method);
+            throw RequiredAnnotationException::create('label', $this->class, $this->method);
         } elseif (count($annotations['label']) > 1) {
-            throw MultipleAnnotationsException::create('label', $this->controller, $this->method);
+            throw MultipleAnnotationsException::create('label', $this->class, $this->method);
         } else {
             /** @var \Mill\Parser\Annotations\LabelAnnotation $annotation */
             $annotation = reset($annotations['label']);
@@ -134,7 +134,7 @@ class Documentation
 
         // Parse out the `@api-contentType` annotation.
         if (!isset($annotations['contentType'])) {
-            throw RequiredAnnotationException::create('contentType', $this->controller, $this->method);
+            throw RequiredAnnotationException::create('contentType', $this->class, $this->method);
         } else {
             $this->content_types = $annotations['contentType'];
         }
@@ -150,7 +150,7 @@ class Documentation
                 if ($annotation->requiresVisibilityDecorator() && !$annotation->hasVisibility()) {
                     throw MissingVisibilityDecoratorException::create(
                         $key,
-                        $this->controller,
+                        $this->class,
                         $this->method
                     );
                 }
@@ -174,7 +174,7 @@ class Documentation
         // Run through the parsed annotations and verify that we aren't missing any required annotations.
         foreach (self::$REQUIRED_ANNOTATIONS as $required) {
             if (!isset($this->annotations[$required])) {
-                throw RequiredAnnotationException::create($required, $this->controller, $this->method);
+                throw RequiredAnnotationException::create($required, $this->class, $this->method);
             }
         }
 
@@ -204,7 +204,7 @@ class Documentation
                         continue;
                     }
 
-                    throw PublicDecoratorOnPrivateActionException::create($key, $this->controller, $this->method);
+                    throw PublicDecoratorOnPrivateActionException::create($key, $this->class, $this->method);
                 }
             }
         }
@@ -213,17 +213,17 @@ class Documentation
     }
 
     /**
-     * Get the controller that we're parsing.
+     * Get the class that we're parsing.
      *
      * @return string
      */
-    public function getController()
+    public function getClass()
     {
-        return $this->controller;
+        return $this->class;
     }
 
     /**
-     * Get the controller method documented label.
+     * Get the class method documented label.
      *
      * @return string
      */
@@ -233,7 +233,7 @@ class Documentation
     }
 
     /**
-     * Get the controller HTTP method that we're parsing.
+     * Get the HTTP method that we're parsing.
      *
      * @return string
      */

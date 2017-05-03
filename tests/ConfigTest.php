@@ -140,8 +140,13 @@ XML;
 
     /**
      * @dataProvider providerLoadFromXMLFailuresOnVariousBadXMLFiles
+     * @param array $includes
+     * @param array $exception_details
+     * @param string $xml
+     * @throws \Exception
+     * @return void
      */
-    public function testLoadFromXMLFailuresOnVariousBadXMLFiles($includes, $exception_details, $xml)
+    public function testLoadFromXMLFailuresOnVariousBadXMLFiles(array $includes, array $exception_details, $xml)
     {
         if (isset($exception_details['exception'])) {
             $this->expectException($exception_details['exception']);
