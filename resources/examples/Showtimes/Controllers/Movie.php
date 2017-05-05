@@ -13,6 +13,9 @@ class Movie
      *
      * @api-label Get a single movie.
      *
+     * @api-uri:private:alias {Movies} /movie/+id
+     * @api-uriSegment {/movie/+id} id (integer) - Movie ID
+     *
      * @api-uri:public {Movies} /movies/+id
      * @api-uriSegment {/movies/+id} id (integer) - Movie ID
      *

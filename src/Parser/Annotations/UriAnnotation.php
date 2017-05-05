@@ -13,6 +13,7 @@ class UriAnnotation extends Annotation
     const REQUIRES_VISIBILITY_DECORATOR = true;
     const SUPPORTS_VERSIONING = false;
     const SUPPORTS_DEPRECATION = true;
+    const SUPPORTS_ALIASING = true;
 
     const GROUP_REGEX = '/{([\w\/\\\ ]+)}/';
 

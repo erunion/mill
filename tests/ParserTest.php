@@ -121,11 +121,11 @@ class ParserTest extends TestCase
                     ],
                     'uri' => [
                         'class' => '\Mill\Parser\Annotations\UriAnnotation',
-                        'count' => 1
+                        'count' => 2
                     ],
                     'uriSegment' => [
                         'class' => '\Mill\Parser\Annotations\UriSegmentAnnotation',
-                        'count' => 1
+                        'count' => 2
                     ]
                 ]
             ],

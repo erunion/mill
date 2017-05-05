@@ -211,6 +211,10 @@ class Parser
                         $annotation->setDeprecated(true);
                         break;
 
+                    case 'alias':
+                        $annotation->setAliased(true);
+                        break;
+
                     default:
                         throw UnsupportedDecoratorException::create(
                             $decorator,
