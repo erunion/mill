@@ -62,6 +62,20 @@ abstract class Annotation
     protected $deprecated = false;
 
     /**
+     * Array of all available aliases for this annotation.
+     *
+     * @var array
+     */
+    protected $aliases = [];
+
+    /**
+     * Flag designating that this annotation is aliased or not.
+     *
+     * @var bool
+     */
+    protected $aliased = false;
+
+    /**
      * Array of extra data needed to build the annotation.
      *
      * This is used for building representations in the `@api-field` and `@api-type` annotations.
@@ -104,6 +118,13 @@ abstract class Annotation
      * @return bool|null
      */
     const SUPPORTS_DEPRECATION = null;
+
+    /**
+     * Does this annotation support aliasing?
+     *
+     * @return bool
+     */
+    const SUPPORTS_ALIASING = false;
 
     /**
      * @param string $doc
@@ -226,6 +247,16 @@ abstract class Annotation
     }
 
     /**
+     * Does this annotation support aliasing?
+     *
+     * @return bool
+     */
+    public function supportsAliasing()
+    {
+        return static::SUPPORTS_ALIASING;
+    }
+
+    /**
      * Given our common format for describing enumerated values, parse it out and run validation.
      *
      * @param string $annotation
@@ -292,17 +323,27 @@ abstract class Annotation
             }
         }
 
-        // If this annotation supports deprecation, then we should include so in the array representation.
+        // If this annotation supports deprecation, then we should include its designation.
         if ($this->supportsDeprecation()) {
             $arr['deprecated'] = $this->isDeprecated();
         }
 
-        // If this annotation supports versioning, then we should include the version in the array representation.
+        // If this annotation supports versioning, then we should include its version
         if ($this->supportsVersioning()) {
             $arr['version'] = false;
 
             if ($this->version instanceof Version) {
                 $arr['version'] = $this->version->getConstraint();
+            }
+        }
+
+        // If this annotation supports aliasing, then we should include any aliasing data about it.
+        if ($this->supportsAliasing()) {
+            $arr['aliased'] = $this->isAliased();
+            $arr['aliases'] = [];
+
+            foreach ($this->getAliases() as $alias) {
+                $arr['aliases'][] = $alias->toArray();
             }
         }
 
@@ -379,6 +420,50 @@ abstract class Annotation
     {
         $this->deprecated = $deprecated;
         return $this;
+    }
+
+    /**
+     * Is this annotation an alias?
+     *
+     * @return bool
+     */
+    public function isAliased()
+    {
+        return $this->aliased;
+    }
+
+    /**
+     * Set if this annotation is an alias or not.
+     *
+     * @param bool $aliased
+     * @return Annotation
+     */
+    public function setAliased($aliased)
+    {
+        $this->aliased = $aliased;
+        return $this;
+    }
+
+    /**
+     * Set any aliases to this annotation.
+     *
+     * @param array<Annotation> $aliases
+     * @return $this
+     */
+    public function setAliases(array $aliases)
+    {
+        $this->aliases = $aliases;
+        return $this;
+    }
+
+    /**
+     * Get all available aliases for this annotation.
+     *
+     * @return array
+     */
+    public function getAliases()
+    {
+        return $this->aliases;
     }
 
     /**

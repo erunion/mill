@@ -17,6 +17,7 @@ class ThrowsAnnotationTest extends AnnotationTest
         $this->assertTrue($annotation->requiresVisibilityDecorator());
         $this->assertTrue($annotation->supportsVersioning());
         $this->assertFalse($annotation->supportsDeprecation());
+        $this->assertFalse($annotation->supportsAliasing());
 
         $this->assertSame($expected, $annotation->toArray());
         $this->assertSame($expected['description'], $annotation->getDescription());
@@ -38,6 +39,8 @@ class ThrowsAnnotationTest extends AnnotationTest
         } else {
             $this->assertFalse($annotation->getVersion());
         }
+
+        $this->assertEmpty($annotation->getAliases());
     }
 
     /**

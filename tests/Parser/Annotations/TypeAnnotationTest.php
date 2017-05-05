@@ -35,6 +35,8 @@ class TypeAnnotationTest extends TestCase
         $this->assertFalse($annotation->requiresVisibilityDecorator());
         $this->assertFalse($annotation->supportsVersioning());
         $this->assertFalse($annotation->supportsDeprecation());
+        $this->assertFalse($annotation->supportsAliasing());
+
         $this->assertSame($type, $annotation->getType());
         $this->assertSame($object, $annotation->getObject());
 
@@ -42,6 +44,7 @@ class TypeAnnotationTest extends TestCase
         $this->assertSame($expected['subtype'], $annotation->getSubtype());
         $this->assertFalse($annotation->getCapability());
         $this->assertFalse($annotation->getVersion());
+        $this->assertEmpty($annotation->getAliases());
     }
 
     /**

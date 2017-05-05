@@ -155,6 +155,25 @@ class DocumentationTest extends TestCase
                     'annotations' => [
                         'uri' => [
                             [
+                                'aliased' => true,
+                                'aliases' => [],
+                                'deprecated' => false,
+                                'group' => 'Movies',
+                                'path' => '/movie/+id',
+                                'visible' => false
+                            ],
+                            [
+                                'aliased' => false,
+                                'aliases' => [
+                                    [
+                                        'aliased' => true,
+                                        'aliases' => [],
+                                        'deprecated' => false,
+                                        'group' => 'Movies',
+                                        'path' => '/movie/+id',
+                                        'visible' => false
+                                    ]
+                                ],
                                 'deprecated' => false,
                                 'group' => 'Movies',
                                 'path' => '/movies/+id',
@@ -162,6 +181,13 @@ class DocumentationTest extends TestCase
                             ]
                         ],
                         'uriSegment' => [
+                            [
+                                'description' => 'Movie ID',
+                                'field' => 'id',
+                                'type' => 'integer',
+                                'uri' => '/movie/+id',
+                                'values' => false
+                            ],
                             [
                                 'description' => 'Movie ID',
                                 'field' => 'id',
@@ -219,9 +245,12 @@ class DocumentationTest extends TestCase
                     ],
                     'minimum_version' => '1.1',
                     'responses.length' => 4,
+                    'uri.aliases' => [],
                     'annotations' => [
                         'uri' => [
                             [
+                                'aliased' => false,
+                                'aliases' => [],
                                 'deprecated' => false,
                                 'group' => 'Movies',
                                 'path' => '/movies/+id',
@@ -435,9 +464,12 @@ class DocumentationTest extends TestCase
                     ],
                     'minimum_version' => false,
                     'responses.length' => 2,
+                    'uri.aliases' => [],
                     'annotations' => [
                         'uri' => [
                             [
+                                'aliased' => false,
+                                'aliases' => [],
                                 'deprecated' => false,
                                 'group' => 'Movies',
                                 'path' => '/movies/+id',
@@ -491,6 +523,52 @@ class DocumentationTest extends TestCase
     public function providerParsingOfSpecificUseCases()
     {
         return [
+            'with-aliased-uris' => [
+                'docblock' => '/**
+                  * @api-label Update a piece of content.
+                  *
+                  * @api-uri:public {Foo\Bar} /foo
+                  * @api-uri:private:alias {Foo\Bar} /bar
+                  *
+                  * @api-contentType application/json
+                  * @api-scope public
+                  *
+                  * @api-return:public {ok}
+                  */',
+                'asserts' => [
+                    'getUris' => [
+                        'total' => 2,
+                        'annotation.name' => 'uri',
+                        'data' => [
+                            [
+                                'aliased' => false,
+                                'aliases' => [
+                                    [
+                                        'aliased' => true,
+                                        'aliases' => [],
+                                        'deprecated' => false,
+                                        'group' => 'Foo\Bar',
+                                        'path' => '/bar',
+                                        'visible' => false
+                                    ]
+                                ],
+                                'deprecated' => false,
+                                'group' => 'Foo\Bar',
+                                'path' => '/foo',
+                                'visible' => true
+                            ],
+                            [
+                                'aliased' => true,
+                                'aliases' => [],
+                                'deprecated' => false,
+                                'group' => 'Foo\Bar',
+                                'path' => '/bar',
+                                'visible' => false
+                            ]
+                        ]
+                    ]
+                ]
+            ],
             'with-multiple-visibilities' => [
                 'docblock' => '/**
                   * @api-label Update a piece of content.
@@ -509,12 +587,16 @@ class DocumentationTest extends TestCase
                         'annotation.name' => 'uri',
                         'data' => [
                             [
+                                'aliased' => false,
+                                'aliases' => [],
                                 'deprecated' => false,
                                 'group' => 'Foo\Bar',
                                 'path' => '/foo',
                                 'visible' => true
                             ],
                             [
+                                'aliased' => false,
+                                'aliases' => [],
                                 'deprecated' => false,
                                 'group' => 'Foo\Bar',
                                 'path' => '/bar',
@@ -656,6 +738,23 @@ class DocumentationTest extends TestCase
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'throws'
                 ]
+            ],
+            'too-many-aliases' => [
+                'docblock' => '/**
+                  * Test throwing an exception when there are private annotations on a private action.
+                  *
+                  * @api-label Test method
+                  * @api-uri:private:alias {Search} /search
+                  * @api-uri:private:alias {Search} /search2
+                  * @api-contentType application/json
+                  * @api-scope public
+                  * @api-return:private {collection} \Mill\Examples\Showtimes\Representations\Representation
+                  * @api-throws:public {403} \Mill\Examples\Showtimes\Representations\CodedError
+                  *      (Mill\Examples\Showtimes\Representations\CodedError::DISALLOWED) If the user isn\'t allowed to
+                  *      do something.
+                  */',
+                'expected.exception' => '\Mill\Exceptions\Resource\TooManyAliasedUrisException',
+                'expected.exception.asserts' => []
             ]
         ];
     }

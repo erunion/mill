@@ -16,6 +16,7 @@ class ContentTypeAnnotationTest extends AnnotationTest
         $this->assertFalse($annotation->requiresVisibilityDecorator());
         $this->assertTrue($annotation->supportsVersioning());
         $this->assertFalse($annotation->supportsDeprecation());
+        $this->assertFalse($annotation->supportsAliasing());
 
         $this->assertSame($expected, $annotation->toArray());
         $this->assertSame($content_type, $annotation->getContentType());
@@ -26,6 +27,8 @@ class ContentTypeAnnotationTest extends AnnotationTest
         } else {
             $this->assertFalse($annotation->getVersion());
         }
+
+        $this->assertEmpty($annotation->getAliases());
     }
 
     /**

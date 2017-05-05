@@ -144,6 +144,19 @@ class GeneratorTest extends TestCase
     {
         // Save us the effort of copy and pasting the same base endpoints over and over.
         $common_actions = [
+            '/movie/+id::GET' => [
+                'uri' => '/movie/+id',
+                'method' => 'GET',
+                'uriSegment' => [
+                    [
+                        'description' => 'Movie ID',
+                        'field' => 'id',
+                        'type' => 'integer',
+                        'uri' => '/movie/+id',
+                        'values' => false
+                    ]
+                ]
+            ],
             '/movies::GET' => [
                 'uri' => '/movies',
                 'method' => 'GET',
@@ -317,6 +330,9 @@ class GeneratorTest extends TestCase
                                 'resource.name' => 'Movies',
                                 'description.length' => 32,
                                 'actions.data' => [
+                                    '/movie/+id::GET' => array_merge($common_actions['/movie/+id::GET'], [
+                                        'params.keys' => []
+                                    ]),
                                     '/movies::GET' => array_merge($common_actions['/movies::GET'], [
                                         'params.keys' => [
                                             'location'
@@ -439,6 +455,9 @@ class GeneratorTest extends TestCase
                                 'resource.name' => 'Movies',
                                 'description.length' => 32,
                                 'actions.data' => [
+                                    '/movie/+id::GET' => array_merge($common_actions['/movie/+id::GET'], [
+                                        'params.keys' => []
+                                    ]),
                                     '/movies::GET' => array_merge($common_actions['/movies::GET'], [
                                         'params.keys' => [
                                             'location'
@@ -577,6 +596,9 @@ class GeneratorTest extends TestCase
                                 'resource.name' => 'Movies',
                                 'description.length' => 32,
                                 'actions.data' => [
+                                    '/movie/+id::GET' => array_merge($common_actions['/movie/+id::GET'], [
+                                        'params.keys' => []
+                                    ]),
                                     '/movies::GET' => array_merge($common_actions['/movies::GET'], [
                                         'params.keys' => [
                                             'location'
