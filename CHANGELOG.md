@@ -1,4 +1,8 @@
 # Changelog
+## [1.6.8] - 2017-05-05
+### Added
+- Support for a new `alias` decorator on `@api-uri` annotations. [#71](https://github.com/vimeo/mill/pull/71)
+
 ## [1.6.7] - 2017-04-21
 ### Added
 - `@api-contentType` annotations now have support for versioning. [#65](https://github.com/vimeo/mill/pull/65)
