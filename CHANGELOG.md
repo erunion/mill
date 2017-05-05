@@ -75,6 +75,7 @@
 ### Added
 - First release!
 
+[1.6.8]: https://github.com/vimeo/mill/compare/1.6.7...1.6.8
 [1.6.7]: https://github.com/vimeo/mill/compare/1.6.6...1.6.7
 [1.6.6]: https://github.com/vimeo/mill/compare/1.6.5...1.6.6
 [1.6.5]: https://github.com/vimeo/mill/compare/1.6.4...1.6.5
