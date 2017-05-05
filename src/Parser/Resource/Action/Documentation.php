@@ -6,6 +6,7 @@ use Mill\Exceptions\RequiredAnnotationException;
 use Mill\Exceptions\Resource\MissingVisibilityDecoratorException;
 use Mill\Exceptions\Resource\NoAnnotationsException;
 use Mill\Exceptions\Resource\PublicDecoratorOnPrivateActionException;
+use Mill\Exceptions\Resource\TooManyAliasedUrisException;
 use Mill\Parser;
 use Mill\Parser\Annotations\UriAnnotation;
 use Mill\Parser\Version;
@@ -103,6 +104,7 @@ class Documentation
      * @throws RequiredAnnotationException If a required `@api-contentType` annotation is missing.
      * @throws MissingVisibilityDecoratorException If an annotation is missing a visibility decorator.
      * @throws RequiredAnnotationException If a required annotation is missing.
+     * @throws TooManyAliasedUrisException If there are too many URI aliases set.
      * @throws PublicDecoratorOnPrivateActionException If a `:public` decorator is found on a `:private` action.
      */
     public function parse()
@@ -178,12 +180,30 @@ class Documentation
             }
         }
 
-        // Verify that we don't have any public annotations on a private action.
+        // Process any URI aliases, and also verify that we don't have any public annotations on a private action.
         $visibilities = [];
+        $aliases = [];
 
-        /** @var \Mill\Parser\Annotation $action */
-        foreach ($this->annotations['uri'] as $action) {
-            $visibilities[] = ($action->isVisible()) ? 'public' : 'private';
+        /** @var \Mill\Parser\Annotations\UriAnnotation $uri */
+        foreach ($this->annotations['uri'] as $uri) {
+            $visibilities[] = ($uri->isVisible()) ? 'public' : 'private';
+
+            if ($uri->isAliased()) {
+                $aliases[] = $uri;
+            }
+        }
+
+        if (!empty($aliases)) {
+            if (count($aliases) >= count($this->annotations['uri'])) {
+                throw TooManyAliasedUrisException::create($this->controller, $this->method);
+            }
+
+            /** @var \Mill\Parser\Annotations\UriAnnotation $uri */
+            foreach ($this->annotations['uri'] as $uri) {
+                if (!$uri->isAliased()) {
+                    $uri->setAliases($aliases);
+                }
+            }
         }
 
         // If this action has multiple visibilities, then we don't need to bother with these checks.

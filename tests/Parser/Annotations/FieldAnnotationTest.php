@@ -15,6 +15,7 @@ class FieldAnnotationTest extends AnnotationTest
         $this->assertFalse($annotation->requiresVisibilityDecorator());
         $this->assertTrue($annotation->supportsVersioning());
         $this->assertFalse($annotation->supportsDeprecation());
+        $this->assertFalse($annotation->supportsAliasing());
 
         $this->assertSame($expected['field'], $annotation->getFieldName());
         $this->assertSame($expected, $annotation->toArray());
@@ -33,6 +34,8 @@ class FieldAnnotationTest extends AnnotationTest
         } else {
             $this->assertFalse($annotation->getVersion());
         }
+
+        $this->assertEmpty($annotation->getAliases());
     }
 
     /**

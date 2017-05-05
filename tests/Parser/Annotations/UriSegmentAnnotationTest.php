@@ -15,6 +15,7 @@ class UriSegmentAnnotationTest extends AnnotationTest
         $this->assertFalse($annotation->requiresVisibilityDecorator());
         $this->assertFalse($annotation->supportsVersioning());
         $this->assertFalse($annotation->supportsDeprecation());
+        $this->assertFalse($annotation->supportsAliasing());
 
         $this->assertSame($uri, $annotation->getUri());
 
@@ -24,6 +25,7 @@ class UriSegmentAnnotationTest extends AnnotationTest
         $this->assertSame($expected['description'], $annotation->getDescription());
         $this->assertFalse($annotation->getCapability());
         $this->assertFalse($annotation->getVersion());
+        $this->assertEmpty($annotation->getAliases());
     }
 
     /**

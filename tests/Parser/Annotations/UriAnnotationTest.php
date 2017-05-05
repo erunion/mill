@@ -17,11 +17,13 @@ class UriAnnotationTest extends AnnotationTest
         $this->assertTrue($annotation->requiresVisibilityDecorator());
         $this->assertFalse($annotation->supportsVersioning());
         $this->assertTrue($annotation->supportsDeprecation());
+        $this->assertTrue($annotation->supportsAliasing());
 
         $this->assertSame($expected['array'], $annotation->toArray());
         $this->assertSame($expected['clean.path'], $annotation->getCleanPath());
         $this->assertFalse($annotation->getCapability());
         $this->assertFalse($annotation->getVersion());
+        $this->assertEmpty($annotation->getAliases());
     }
 
     public function testConfiguredUriSegmentTranslations()
@@ -47,6 +49,8 @@ class UriAnnotationTest extends AnnotationTest
                 'expected' => [
                     'clean.path' => '/movies/{id}/showtimes',
                     'array' => [
+                        'aliased' => false,
+                        'aliases' => [],
                         'deprecated' => false,
                         'group' => 'Movies\Showtimes',
                         'path' => '/movies/+id/showtimes',
@@ -61,6 +65,8 @@ class UriAnnotationTest extends AnnotationTest
                 'expected' => [
                     'clean.path' => '/movies',
                     'array' => [
+                        'aliased' => false,
+                        'aliases' => [],
                         'deprecated' => false,
                         'group' => 'Movies',
                         'path' => '/movies',
@@ -75,6 +81,8 @@ class UriAnnotationTest extends AnnotationTest
                 'expected' => [
                     'clean.path' => '/movies/{id}/showtimes',
                     'array' => [
+                        'aliased' => false,
+                        'aliases' => [],
                         'deprecated' => false,
                         'group' => 'Movies\Showtimes',
                         'path' => '/movies/+id/showtimes',
@@ -89,6 +97,8 @@ class UriAnnotationTest extends AnnotationTest
                 'expected' => [
                     'clean.path' => '/movies/{id}/showtimes',
                     'array' => [
+                        'aliased' => false,
+                        'aliases' => [],
                         'deprecated' => true,
                         'group' => 'Movies\Showtimes',
                         'path' => '/movies/+id/showtimes',
@@ -103,6 +113,8 @@ class UriAnnotationTest extends AnnotationTest
                 'expected' => [
                     'clean.path' => '/',
                     'array' => [
+                        'aliased' => false,
+                        'aliases' => [],
                         'deprecated' => false,
                         'group' => '/',
                         'path' => '/',

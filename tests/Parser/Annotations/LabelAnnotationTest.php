@@ -15,10 +15,12 @@ class LabelAnnotationTest extends AnnotationTest
         $this->assertFalse($annotation->requiresVisibilityDecorator());
         $this->assertFalse($annotation->supportsVersioning());
         $this->assertFalse($annotation->supportsDeprecation());
+        $this->assertFalse($annotation->supportsAliasing());
 
         $this->assertSame($expected, $annotation->toArray());
         $this->assertFalse($annotation->getCapability());
         $this->assertFalse($annotation->getVersion());
+        $this->assertEmpty($annotation->getAliases());
     }
 
     /**
