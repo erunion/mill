@@ -100,16 +100,20 @@ class Parser
         $parser = self::getAnnotationsFromDocblock($docblock);
         $tags = $parser->getTags();
         if (!empty($tags)) {
+            $annotation_tags = [];
+
             /** @var UnknownTag $tag */
             foreach ($tags as $tag) {
                 // If this isn't a Mill annotation, then ignore it.
                 $annotation = $tag->getTagName();
                 if (substr($annotation, 0, 4) !== 'api-') {
-                    $tags->remove($tag);
+                    continue;
                 }
+
+                $annotation_tags[] = $tag;
             }
 
-            $annotations = $this->parseAnnotations($tags, $original_docblock);
+            $annotations = $this->parseAnnotations($annotation_tags, $original_docblock);
         }
 
         // Only parse out a `description` annotation if we need to (like in the instance of not parsing a
@@ -133,11 +137,11 @@ class Parser
     /**
      * Parse a group of our custom annotations.
      *
-     * @param ArrayList $tags
+     * @param array $tags
      * @param string $original_content
      * @return array
      */
-    protected function parseAnnotations(ArrayList $tags, $original_content)
+    protected function parseAnnotations(array $tags, $original_content)
     {
         $annotations = [];
         $version = null;

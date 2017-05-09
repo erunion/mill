@@ -84,7 +84,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function getDataAnnotationFromDocblock($docblock, $class)
     {
-        $tags = Parser::getAnnotationsFromDocblock($docblock)->getTags();
+        $tags = Parser::getAnnotationsFromDocblock($docblock)->getTags()->toArray();
         $annotations = (new RepresentationParser($class))->parseAnnotations($tags, $docblock);
 
         $this->assertCount(1, $annotations);

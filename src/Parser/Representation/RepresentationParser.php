@@ -70,11 +70,11 @@ class RepresentationParser extends Parser
     /**
      * Parse a group of our custom annotations.
      *
-     * @param ArrayList $tags
+     * @param array $tags
      * @param string $original_content
      * @return array
      */
-    public function parseAnnotations(ArrayList $tags, $original_content)
+    public function parseAnnotations(array $tags, $original_content)
     {
         $has_see = [];
         $annotations = [];
