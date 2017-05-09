@@ -24,7 +24,7 @@ class MSON
      *
      * @var string
      */
-    const REGEX_MSON = '/((?P<field>[\w.]+) (`(?P<sample_data>.+)` )?' .
+    const REGEX_MSON = '/((?P<field>[\w.\*]+) (`(?P<sample_data>.+)` )?' .
         '\((?P<type>[\w\\\]+)(<(?P<subtype>[\w\\\]+)>)?(, (?P<required>required|optional))?(, (?P<capability>\w+))?\)' .
         '(\n|\s)+-(\n|\s)+(?P<description>.+))/uis';
 
