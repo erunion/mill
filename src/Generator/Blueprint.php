@@ -224,9 +224,14 @@ class Blueprint extends Generator
                 $blueprint .= '+ Members';
                 $blueprint .= $this->line();
 
-                foreach ($values as $value) {
+                foreach ($values as $value => $value_description) {
                     $blueprint .= $this->tab(3);
-                    $blueprint .= '+ `' . $value . '`';
+                    $blueprint .= sprintf(
+                        '+ `%s`%s',
+                        $value,
+                        (!empty($value_description)) ? sprintf(' - %s', $value_description) : ''
+                    );
+
                     $blueprint .= $this->line();
                 }
             }
