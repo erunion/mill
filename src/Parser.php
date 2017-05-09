@@ -5,9 +5,9 @@ use gossi\docblock\Docblock;
 use gossi\docblock\tags\UnknownTag;
 use Mill\Exceptions\Resource\UnsupportedDecoratorException;
 use Mill\Parser\Annotation;
+use Mill\Parser\Annotations\DescriptionAnnotation;
 use Mill\Parser\MSON;
 use Mill\Parser\Version;
-use phootwork\collection\ArrayList;
 use ReflectionClass;
 
 /**
@@ -196,7 +196,10 @@ class Parser
 
         // If this annotation class does not support MSON, then let's clean up any multi-line content within its data.
         if (!$class::SUPPORTS_MSON) {
-            $content = preg_replace(MSON::REGEX_CLEAN_MULTILINE, ' ', $content);
+            // Don't remove line breaks from a description annotation.
+            if ($class !== '\Mill\Parser\Annotations\\DescriptionAnnotation') {
+                $content = preg_replace(MSON::REGEX_CLEAN_MULTILINE, ' ', $content);
+            }
         }
 
         /** @var Annotation $annotation */

@@ -4,6 +4,8 @@ namespace Mill\Examples\Showtimes\Controllers;
 /**
  * Information on a specific movie.
  *
+ * These actions will allow you to pull information on a specific movie.
+ *
  * @api-label Movies
  */
 class Movie

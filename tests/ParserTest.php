@@ -23,7 +23,9 @@ class ParserTest extends TestCase
 
         /** @var \Mill\Parser\Annotations\DescriptionAnnotation $annotation */
         $annotation = $docs['description'][0];
-        $this->assertSame('Information on a specific movie.', $annotation->toArray()['description']);
+        $this->assertSame('Information on a specific movie.
+
+These actions will allow you to pull information on a specific movie.', $annotation->toArray()['description']);
     }
 
     /**

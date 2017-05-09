@@ -101,7 +101,9 @@ class DocumentationTest extends TestCase
                 'expected' => [
                     'methods.size' => 3,
                     'label' => 'Movies',
-                    'description' => 'Information on a specific movie.',
+                    'description' => 'Information on a specific movie.
+
+These actions will allow you to pull information on a specific movie.',
                     'methods.available' => [
                         'GET',
                         'PATCH',

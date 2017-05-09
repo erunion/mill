@@ -9,7 +9,6 @@ use Mill\Exceptions\Representation\DuplicateFieldException;
 use Mill\Parser;
 use Mill\Parser\Annotations\DataAnnotation;
 use Mill\Parser\Version;
-use phootwork\collection\ArrayList;
 
 /**
  * Class for parsing the docblock on a representation.
