@@ -213,7 +213,7 @@ class Blueprint extends Generator
             $blueprint .= sprintf(
                 '- `%s` (%s, required) - %s',
                 $field,
-                (!empty($values)) ? 'enum[' . $type . ']' : $type,
+                $type,
                 $segment->getDescription()
             );
 
