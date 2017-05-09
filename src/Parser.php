@@ -122,10 +122,11 @@ class Parser
             return $annotations;
         }
 
-        $description = $parser->getLongDescription();
-        if (empty($description)) {
-            $description = $parser->getShortDescription();
-        }
+        // Reconstruct the description as the developer wrote it.
+        $description = implode("\n\n", array_filter([
+            $parser->getShortDescription(),
+            $parser->getLongDescription()
+        ]));
 
         if (!empty($description)) {
             $annotations['description'][] = $this->buildAnnotation('description', null, $description);
