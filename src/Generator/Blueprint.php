@@ -272,13 +272,15 @@ class Blueprint extends Generator
 
         /** @var ParamAnnotation $param */
         foreach ($params as $param) {
+            $sample_data = $param->getSampleData();
             $values = $param->getValues();
             $type = $this->convertTypeToCompatibleType($param->getType());
 
             $blueprint .= $this->tab(2);
             $blueprint .= sprintf(
-                '- `%s` (%s%s) - %s',
+                '- `%s`%s (%s%s) - %s',
                 $param->getField(),
+                (!empty($sample_data)) ? sprintf(' `%s`', $sample_data) : '',
                 (!empty($values)) ? 'enum[' . $type . ']' : $type,
                 ($param->isRequired()) ? ', required' : null,
                 $param->getDescription()
