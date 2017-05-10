@@ -923,6 +923,7 @@ class Config
      */
     private function getClassFQNFromFile($file)
     {
+        /** @var resource $fp */
         $fp = fopen($file, 'r');
         $class = $namespace = $buffer = '';
         $i = 0;
