@@ -1,4 +1,13 @@
 # Changelog
+## [2.0.0] - 2017-05-10
+### Added
+- `@api-see` annotations now have support for static/self targets. [#76](https://github.com/vimeo/mill/pull/76)
+- Added some API Blueprint validation into the build process. [#64](https://github.com/vimeo/mill/issues/64)
+
+### Changed
+- Introduction of a new Mill-flavored MSON syntax for parameters, URI segments, and representation data. [#42](https://github.com/vimeo/mill/issues/42)
+    - Replacing representation usage of `@api-label`, `@api-field`, `@api-type`, `@api-subtype`, `@api-options`, and `@api-capability` with a new `@api-data` annotation.
+
 ## [1.6.8] - 2017-05-05
 ### Added
 - Support for a new `alias` decorator on `@api-uri` annotations. [#71](https://github.com/vimeo/mill/pull/71)
@@ -75,6 +84,7 @@
 ### Added
 - First release!
 
+[2.0.0]: https://github.com/vimeo/mill/compare/1.6.8...2.0.0
 [1.6.8]: https://github.com/vimeo/mill/compare/1.6.7...1.6.8
 [1.6.7]: https://github.com/vimeo/mill/compare/1.6.6...1.6.7
 [1.6.6]: https://github.com/vimeo/mill/compare/1.6.5...1.6.6
