@@ -86,7 +86,7 @@ class Movie extends Representation
             /**
              * @api-data external_urls (object) - External URLs
              * @api-version >=1.1
-             * @api-see \Mill\Examples\Showtimes\Representations\Movie::getExternalUrls external_urls
+             * @api-see self::getExternalUrls external_urls
              */
             'external_urls' => $this->getExternalUrls(),
 

@@ -110,6 +110,10 @@ class RepresentationParser extends Parser
         // If we matched an `@api-see` annotation, then let's parse it out into viable annotations.
         if (!empty($has_see)) {
             list($see_class, $see_method) = explode('::', array_shift($has_see));
+            if (in_array(strtolower($see_class), ['self', 'static'])) {
+                $see_class = $this->class;
+            }
+
             $prefix = array_shift($has_see);
 
             $parser = new self($see_class);
