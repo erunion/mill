@@ -568,6 +568,8 @@ class Blueprint extends Generator
                     $representation = $this->getRepresentation($subtype);
                     if ($representation) {
                         return 'array[' . $representation->getLabel() . ']';
+                    } elseif ($subtype !== 'object') {
+                        return 'array[' . $subtype . ']';
                     }
                 }
 
