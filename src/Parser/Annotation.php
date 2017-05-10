@@ -1,8 +1,9 @@
 <?php
 namespace Mill\Parser;
 
-use Mill\Exceptions\Resource\Annotations\BadOptionsListException;
-use Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException;
+use Mill\Exceptions\Annotations\BadOptionsListException;
+use Mill\Exceptions\Annotations\InvalidMSONSyntaxException;
+use Mill\Exceptions\Annotations\MissingRequiredFieldException;
 
 /**
  * Base class for supported annotations.
@@ -20,14 +21,14 @@ abstract class Annotation
     protected $docblock;
 
     /**
-     * Name of the controller that this annotation is within.
+     * Class that this annotation is within.
      *
      * @var string
      */
-    protected $controller;
+    protected $class;
 
     /**
-     * Name of the controller method that this annotation is within.
+     * Class method that this annotation is within.
      *
      * @var mixed
      */
@@ -120,6 +121,13 @@ abstract class Annotation
     const SUPPORTS_DEPRECATION = null;
 
     /**
+     * Is this annotation written using MSON?
+     *
+     * @return bool|null
+     */
+    const SUPPORTS_MSON = null;
+
+    /**
      * Does this annotation support aliasing?
      *
      * @return bool
@@ -128,16 +136,16 @@ abstract class Annotation
 
     /**
      * @param string $doc
-     * @param string $controller
+     * @param string $class
      * @param string|null $method
      * @param \Mill\Parser\Version|null $version
      * @param array $extra_data
      */
-    public function __construct($doc, $controller, $method, Version $version = null, $extra_data = [])
+    public function __construct($doc, $class, $method, Version $version = null, $extra_data = [])
     {
         $this->docblock = $doc;
 
-        $this->controller = $controller;
+        $this->class = $class;
         $this->method = $method;
 
         // Since you can't set falsy defaults in methods, and we don't want a `null` version, let's force a false
@@ -154,17 +162,31 @@ abstract class Annotation
      * Extract a required field from the parsed dataset.
      *
      * @param string $field
+     * @param bool $is_mson_field
      * @return mixed
+     * @throws InvalidMSONSyntaxException If the annotation contains invalid MSON.
      * @throws MissingRequiredFieldException If the supplied field is missing in the parsed dataset.
      */
-    protected function required($field)
+    protected function required($field, $is_mson_field = true)
     {
         if (empty($this->parsed_data[$field])) {
+            // If this field was written in MSON, but isn't present, and this annotation supports MSON, let's return an
+            // invalid MSON exception because that means that we just weren't able to parse the MSON that they supplied.
+            if ($is_mson_field && static::SUPPORTS_MSON) {
+                throw InvalidMSONSyntaxException::create(
+                    $field,
+                    $this->getAnnotationName(),
+                    $this->docblock,
+                    $this->class,
+                    $this->method
+                );
+            }
+
             throw MissingRequiredFieldException::create(
                 $field,
                 $this->getAnnotationName(),
                 $this->docblock,
-                $this->controller,
+                $this->class,
                 $this->method
             );
         }
@@ -257,41 +279,6 @@ abstract class Annotation
     }
 
     /**
-     * Given our common format for describing enumerated values, parse it out and run validation.
-     *
-     * @param string $annotation
-     * @param string $values
-     * @return array
-     * @throws BadOptionsListException If the enum values were not written in the proper format.
-     */
-    public function parseEnumValues($annotation, $values)
-    {
-        $values = explode('|', $values);
-        if (!empty($values)) {
-            foreach ($values as $k => $value) {
-                if (strpos($value, ',') !== false) {
-                    throw BadOptionsListException::create(
-                        $annotation,
-                        $this->docblock,
-                        $values,
-                        $this->controller,
-                        $this->method
-                    );
-                }
-
-                // Values might be on multiple lines, or be surrounded with whitespace to make them easier to read,
-                // so let's clean them up a bit.
-                $values[$k] = trim($value);
-            }
-
-            // Keep the array of values alphabetical so it's cleaner when generated into documentation.
-            sort($values);
-        }
-
-        return $values;
-    }
-
-    /**
      * Convert the parsed annotation into an array.
      *
      * @return array
@@ -303,21 +290,7 @@ abstract class Annotation
             if ($var === 'visible') {
                 $arr[$var] = $this->isVisible();
             } elseif ($this->{$var} instanceof Annotation) {
-                // If this variable is a `@api-type` annotation, but the specific type does not require a
-                // `@api-subtype`, then don't include that data in the generated array.
-                if ($var === 'type') {
-                    $type_data = $this->{$var}->toArray();
-
-                    /** @var \Mill\Parser\Representation\Type $type_object */
-                    $type_object = $this->{$var}->getObject();
-                    if (!$type_object->requiresSubtype() && !$type_object->allowsSubtype()) {
-                        unset($type_data['subtype']);
-                    }
-
-                    $arr += $type_data;
-                } else {
-                    $arr += $this->{$var}->toArray();
-                }
+                $arr += $this->{$var}->toArray();
             } else {
                 $arr[$var] = $this->{$var};
             }

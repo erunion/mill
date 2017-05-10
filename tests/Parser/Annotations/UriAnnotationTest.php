@@ -7,10 +7,15 @@ class UriAnnotationTest extends AnnotationTest
 {
     /**
      * @dataProvider providerAnnotation
+     * @param string $content
+     * @param boolean $visible
+     * @param boolean $deprecated
+     * @param array $expected
+     * @return void
      */
-    public function testAnnotation($param, $visible, $deprecated, $expected)
+    public function testAnnotation($content, $visible, $deprecated, array $expected)
     {
-        $annotation = new UriAnnotation($param, __CLASS__, __METHOD__);
+        $annotation = new UriAnnotation($content, __CLASS__, __METHOD__);
         $annotation->setVisibility($visible);
         $annotation->setDeprecated($deprecated);
 
@@ -43,7 +48,7 @@ class UriAnnotationTest extends AnnotationTest
     {
         return [
             'private' => [
-                'param' => '{Movies\Showtimes} /movies/+id/showtimes',
+                'content' => '{Movies\Showtimes} /movies/+id/showtimes',
                 'visible' => false,
                 'deprecated' => false,
                 'expected' => [
@@ -59,7 +64,7 @@ class UriAnnotationTest extends AnnotationTest
                 ]
             ],
             'private.group_with_no_depth' => [
-                'param' => '{Movies} /movies',
+                'content' => '{Movies} /movies',
                 'visible' => false,
                 'deprecated' => false,
                 'expected' => [
@@ -75,7 +80,7 @@ class UriAnnotationTest extends AnnotationTest
                 ]
             ],
             'public' => [
-                'param' => '{Movies\Showtimes} /movies/+id/showtimes',
+                'content' => '{Movies\Showtimes} /movies/+id/showtimes',
                 'visible' => true,
                 'deprecated' => false,
                 'expected' => [
@@ -91,7 +96,7 @@ class UriAnnotationTest extends AnnotationTest
                 ]
             ],
             'public.deprecated' => [
-                'param' => '{Movies\Showtimes} /movies/+id/showtimes',
+                'content' => '{Movies\Showtimes} /movies/+id/showtimes',
                 'visible' => true,
                 'deprecated' => true,
                 'expected' => [
@@ -107,7 +112,7 @@ class UriAnnotationTest extends AnnotationTest
                 ]
             ],
             'public.non-alphanumeric_group' => [
-                'param' => '{/} /',
+                'content' => '{/} /',
                 'visible' => true,
                 'deprecated' => false,
                 'expected' => [
@@ -128,13 +133,13 @@ class UriAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function providerAnnotationFailsOnInvalidAnnotations()
+    public function providerAnnotationFailsOnInvalidContent()
     {
         return [
             'missing-group' => [
                 'annotation' => '\Mill\Parser\Annotations\UriAnnotation',
-                'docblock' => '',
-                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
+                'content' => '',
+                'expected.exception' => '\Mill\Exceptions\Annotations\MissingRequiredFieldException',
                 'expected.exception.asserts' => [
                     'getRequiredField' => 'group',
                     'getAnnotation' => 'uri',
@@ -144,8 +149,8 @@ class UriAnnotationTest extends AnnotationTest
             ],
             'missing-path' => [
                 'annotation' => '\Mill\Parser\Annotations\UriAnnotation',
-                'docblock' => '{Movies}',
-                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
+                'content' => '{Movies}',
+                'expected.exception' => '\Mill\Exceptions\Annotations\MissingRequiredFieldException',
                 'expected.exception.asserts' => [
                     'getRequiredField' => 'path',
                     'getAnnotation' => 'uri',

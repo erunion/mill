@@ -8,8 +8,12 @@ class DocumentationTest extends TestCase
 {
     /**
      * @dataProvider providerParseDocumentationReturnsRepresentation
+     * @param string $class
+     * @param string $method
+     * @param array $expected
+     * @return void
      */
-    public function testParseDocumentationReturnsRepresentation($class, $method, $expected)
+    public function testParseDocumentationReturnsRepresentation($class, $method, array $expected)
     {
         $parsed = (new Documentation($class, $method))->parse();
         $representation = $parsed->toArray();
@@ -37,6 +41,10 @@ class DocumentationTest extends TestCase
 
     /**
      * @dataProvider providerParseDocumentationFailsOnBadRepresentations
+     * @param string $class
+     * @param string $method
+     * @param string $exception
+     * @return void
      */
     public function testParseDocumentationFailsOnBadRepresentations($class, $method, $exception)
     {
@@ -60,152 +68,181 @@ class DocumentationTest extends TestCase
                     'content' => [
                         'cast' => [
                             'capability' => false,
-                            'field' => 'cast',
-                            'label' => 'Cast',
-                            'options' => false,
+                            'description' => 'Cast',
+                            'identifier' => 'cast',
+                            'sample_data' => false,
                             'subtype' => '\Mill\Examples\Showtimes\Representations\Person',
                             'type' => 'array',
+                            'values' => false,
                             'version' => false
                         ],
                         'content_rating' => [
                             'capability' => false,
-                            'field' => 'content_rating',
-                            'label' => 'MPAA rating',
-                            'options' => [
-                                'G',
-                                'NC-17',
-                                'NR',
-                                'PG',
-                                'PG-13',
-                                'R',
-                                'UR',
-                                'X'
-                            ],
+                            'description' => 'MPAA rating',
+                            'identifier' => 'content_rating',
+                            'sample_data' => false,
+                            'subtype' => false,
                             'type' => 'enum',
+                            'values' => [
+                                'G' => '',
+                                'NC-17' => '',
+                                'NR' => '',
+                                'PG' => '',
+                                'PG-13' => '',
+                                'R' => '',
+                                'UR' => '',
+                                'X' => ''
+                            ],
                             'version' => false
                         ],
                         'description' => [
                             'capability' => false,
-                            'field' => 'description',
-                            'label' => 'Description',
-                            'options' => false,
+                            'description' => 'Description',
+                            'identifier' => 'description',
+                            'sample_data' => false,
+                            'subtype' => false,
                             'type' => 'string',
+                            'values' => false,
                             'version' => false
                         ],
                         'director' => [
                             'capability' => false,
-                            'field' => 'director',
-                            'label' => 'Director',
-                            'options' => false,
-                            'subtype' => '\Mill\Examples\Showtimes\Representations\Person',
-                            'type' => 'representation',
+                            'description' => 'Director',
+                            'identifier' => 'director',
+                            'sample_data' => false,
+                            'subtype' => false,
+                            'type' => '\Mill\Examples\Showtimes\Representations\Person',
+                            'values' => false,
                             'version' => false
                         ],
                         'external_urls' => [
                             'capability' => false,
-                            'field' => 'external_urls',
-                            'label' => 'External URLs',
-                            'options' => false,
+                            'description' => 'External URLs',
+                            'identifier' => 'external_urls',
+                            'sample_data' => false,
+                            'subtype' => false,
                             'type' => 'object',
+                            'values' => false,
                             'version' => '>=1.1'
                         ],
                         'external_urls.imdb' => [
                             'capability' => false,
-                            'field' => 'external_urls.imdb',
-                            'label' => 'IMDB URL',
-                            'options' => false,
+                            'description' => 'IMDB URL',
+                            'identifier' => 'external_urls.imdb',
+                            'sample_data' => false,
+                            'subtype' => false,
                             'type' => 'string',
+                            'values' => false,
                             'version' => '>=1.1'
                         ],
                         'external_urls.tickets' => [
                             'capability' => 'BUY_TICKETS',
-                            'field' => 'external_urls.tickets',
-                            'label' => 'Tickets URL',
-                            'options' => false,
+                            'description' => 'Tickets URL',
+                            'identifier' => 'external_urls.tickets',
+                            'sample_data' => false,
+                            'subtype' => false,
                             'type' => 'string',
+                            'values' => false,
                             'version' => '>=1.1'
                         ],
                         'external_urls.trailer' => [
                             'capability' => false,
-                            'field' => 'external_urls.trailer',
-                            'label' => 'Trailer URL',
-                            'options' => false,
+                            'description' => 'Trailer URL',
+                            'identifier' => 'external_urls.trailer',
+                            'sample_data' => false,
+                            'subtype' => false,
                             'type' => 'string',
+                            'values' => false,
                             'version' => '>=1.1'
                         ],
                         'genres' => [
                             'capability' => false,
-                            'field' => 'genres',
-                            'label' => 'Genres',
-                            'options' => false,
+                            'description' => 'Genres',
+                            'identifier' => 'genres',
+                            'sample_data' => false,
                             'subtype' => false,
                             'type' => 'array',
+                            'values' => false,
                             'version' => false
                         ],
                         'id' => [
                             'capability' => false,
-                            'field' => 'id',
-                            'label' => 'Unique ID',
-                            'options' => false,
+                            'description' => 'Unique ID',
+                            'identifier' => 'id',
+                            'sample_data' => false,
+                            'subtype' => false,
                             'type' => 'number',
+                            'values' => false,
                             'version' => false
                         ],
                         'kid_friendly' => [
                             'capability' => false,
-                            'field' => 'kid_friendly',
-                            'label' => 'Kid friendly?',
-                            'options' => false,
+                            'description' => 'Kid friendly?',
+                            'identifier' => 'kid_friendly',
+                            'sample_data' => false,
+                            'subtype' => false,
                             'type' => 'boolean',
+                            'values' => false,
                             'version' => false
                         ],
                         'name' => [
                             'capability' => false,
-                            'field' => 'name',
-                            'label' => 'Name',
-                            'options' => false,
+                            'description' => 'Name',
+                            'identifier' => 'name',
+                            'sample_data' => false,
+                            'subtype' => false,
                             'type' => 'string',
+                            'values' => false,
                             'version' => false
                         ],
                         'rotten_tomatoes_score' => [
                             'capability' => false,
-                            'field' => 'rotten_tomatoes_score',
-                            'label' => 'Rotten Tomatoes score',
-                            'options' => false,
+                            'description' => 'Rotten Tomatoes score',
+                            'identifier' => 'rotten_tomatoes_score',
+                            'sample_data' => false,
+                            'subtype' => false,
                             'type' => 'number',
+                            'values' => false,
                             'version' => false
                         ],
                         'runtime' => [
                             'capability' => false,
-                            'field' => 'runtime',
-                            'label' => 'Runtime',
-                            'options' => false,
+                            'description' => 'Runtime',
+                            'identifier' => 'runtime',
+                            'sample_data' => false,
+                            'subtype' => false,
                             'type' => 'string',
+                            'values' => false,
                             'version' => false
                         ],
                         'showtimes' => [
                             'capability' => false,
-                            'field' => 'showtimes',
-                            'label' => 'Non-theater specific showtimes',
-                            'options' => false,
+                            'description' => 'Non-theater specific showtimes',
+                            'identifier' => 'showtimes',
+                            'sample_data' => false,
                             'subtype' => false,
                             'type' => 'array',
+                            'values' => false,
                             'version' => false
                         ],
                         'theaters' => [
                             'capability' => false,
-                            'field' => 'theaters',
-                            'label' => 'Theaters the movie is currently showing in',
-                            'options' => false,
+                            'description' => 'Theaters the movie is currently showing in',
+                            'identifier' => 'theaters',
+                            'sample_data' => false,
                             'subtype' => '\Mill\Examples\Showtimes\Representations\Theater',
                             'type' => 'array',
+                            'values' => false,
                             'version' => false
                         ],
                         'uri' => [
                             'capability' => false,
-                            'field' => 'uri',
-                            'label' => 'Movie URI',
-                            'options' => false,
+                            'description' => 'Movie URI',
+                            'identifier' => 'uri',
+                            'sample_data' => false,
+                            'subtype' => false,
                             'type' => 'uri',
+                            'values' => false,
                             'version' => false
                         ]
                     ],
@@ -213,90 +250,104 @@ class DocumentationTest extends TestCase
                         'cast' => [
                             '__FIELD_DATA__' => [
                                 'capability' => false,
-                                'field' => 'cast',
-                                'label' => 'Cast',
-                                'options' => false,
+                                'description' => 'Cast',
+                                'identifier' => 'cast',
+                                'sample_data' => false,
                                 'subtype' => '\Mill\Examples\Showtimes\Representations\Person',
                                 'type' => 'array',
+                                'values' => false,
                                 'version' => false
                             ]
                         ],
                         'content_rating' => [
                             '__FIELD_DATA__' => [
                                 'capability' => false,
-                                'field' => 'content_rating',
-                                'label' => 'MPAA rating',
-                                'options' => [
-                                    'G',
-                                    'NC-17',
-                                    'NR',
-                                    'PG',
-                                    'PG-13',
-                                    'R',
-                                    'UR',
-                                    'X'
-                                ],
+                                'description' => 'MPAA rating',
+                                'identifier' => 'content_rating',
+                                'sample_data' => false,
+                                'subtype' => false,
                                 'type' => 'enum',
+                                'values' => [
+                                    'G' => '',
+                                    'NC-17' => '',
+                                    'NR' => '',
+                                    'PG' => '',
+                                    'PG-13' => '',
+                                    'R' => '',
+                                    'UR' => '',
+                                    'X' => ''
+                                ],
                                 'version' => false
                             ]
                         ],
                         'description' => [
                             '__FIELD_DATA__' => [
                                 'capability' => false,
-                                'field' => 'description',
-                                'label' => 'Description',
-                                'options' => false,
+                                'description' => 'Description',
+                                'identifier' => 'description',
+                                'sample_data' => false,
+                                'subtype' => false,
                                 'type' => 'string',
+                                'values' => false,
                                 'version' => false
                             ]
                         ],
                         'director' => [
                             '__FIELD_DATA__' => [
                                 'capability' => false,
-                                'field' => 'director',
-                                'label' => 'Director',
-                                'options' => false,
-                                'subtype' => '\Mill\Examples\Showtimes\Representations\Person',
-                                'type' => 'representation',
+                                'description' => 'Director',
+                                'identifier' => 'director',
+                                'sample_data' => false,
+                                'subtype' => false,
+                                'type' => '\Mill\Examples\Showtimes\Representations\Person',
+                                'values' => false,
                                 'version' => false
                             ]
                         ],
                         'external_urls' => [
                             '__FIELD_DATA__' => [
                                 'capability' => false,
-                                'field' => 'external_urls',
-                                'label' => 'External URLs',
-                                'options' => false,
+                                'description' => 'External URLs',
+                                'identifier' => 'external_urls',
+                                'sample_data' => false,
+                                'subtype' => false,
                                 'type' => 'object',
+                                'values' => false,
                                 'version' => '>=1.1'
                             ],
                             'imdb' => [
                                 '__FIELD_DATA__' => [
                                     'capability' => false,
-                                    'field' => 'external_urls.imdb',
-                                    'label' => 'IMDB URL',
-                                    'options' => false,
+                                    'description' => 'IMDB URL',
+                                    'identifier' => 'external_urls.imdb',
+                                    'sample_data' => false,
+                                    'subtype' => false,
                                     'type' => 'string',
+                                    'values' => false,
                                     'version' => '>=1.1'
                                 ]
                             ],
                             'tickets' => [
                                 '__FIELD_DATA__' => [
                                     'capability' => 'BUY_TICKETS',
-                                    'field' => 'external_urls.tickets',
-                                    'label' => 'Tickets URL',
-                                    'options' => false,
+                                    'description' => 'Tickets URL',
+                                    'identifier' => 'external_urls.tickets',
+                                    'sample_data' => false,
+                                    'subtype' => false,
                                     'type' => 'string',
+                                    'values' => false,
                                     'version' => '>=1.1'
                                 ]
                             ],
                             'trailer' => [
                                 '__FIELD_DATA__' => [
                                     'capability' => false,
-                                    'field' => 'external_urls.trailer',
-                                    'label' => 'Trailer URL',
-                                    'options' => false,
+                                    'description' => 'Trailer URL',
+                                    'identifier' => 'external_urls.trailer',
+                                    'sample_data' => false,
+                                    'subtype' => false,
                                     'type' => 'string',
+                                    'values' => false,
                                     'version' => '>=1.1'
                                 ]
                             ]
@@ -304,93 +355,108 @@ class DocumentationTest extends TestCase
                         'genres' => [
                             '__FIELD_DATA__' => [
                                 'capability' => false,
-                                'field' => 'genres',
-                                'label' => 'Genres',
-                                'options' => false,
+                                'description' => 'Genres',
+                                'identifier' => 'genres',
+                                'sample_data' => false,
                                 'subtype' => false,
                                 'type' => 'array',
+                                'values' => false,
                                 'version' => false
                             ]
                         ],
                         'id' => [
                             '__FIELD_DATA__' => [
                                 'capability' => false,
-                                'field' => 'id',
-                                'label' => 'Unique ID',
-                                'options' => false,
+                                'description' => 'Unique ID',
+                                'identifier' => 'id',
+                                'sample_data' => false,
+                                'subtype' => false,
                                 'type' => 'number',
+                                'values' => false,
                                 'version' => false
                             ]
                         ],
                         'kid_friendly' => [
                             '__FIELD_DATA__' => [
                                 'capability' => false,
-                                'field' => 'kid_friendly',
-                                'label' => 'Kid friendly?',
-                                'options' => false,
+                                'description' => 'Kid friendly?',
+                                'identifier' => 'kid_friendly',
+                                'sample_data' => false,
+                                'subtype' => false,
                                 'type' => 'boolean',
+                                'values' => false,
                                 'version' => false
                             ]
                         ],
                         'name' => [
                             '__FIELD_DATA__' => [
                                 'capability' => false,
-                                'field' => 'name',
-                                'label' => 'Name',
-                                'options' => false,
+                                'description' => 'Name',
+                                'identifier' => 'name',
+                                'sample_data' => false,
+                                'subtype' => false,
                                 'type' => 'string',
+                                'values' => false,
                                 'version' => false
                             ]
                         ],
                         'rotten_tomatoes_score' => [
                             '__FIELD_DATA__' => [
                                 'capability' => false,
-                                'field' => 'rotten_tomatoes_score',
-                                'label' => 'Rotten Tomatoes score',
-                                'options' => false,
+                                'description' => 'Rotten Tomatoes score',
+                                'identifier' => 'rotten_tomatoes_score',
+                                'sample_data' => false,
+                                'subtype' => false,
                                 'type' => 'number',
+                                'values' => false,
                                 'version' => false
                             ]
                         ],
                         'runtime' => [
                             '__FIELD_DATA__' => [
                                 'capability' => false,
-                                'field' => 'runtime',
-                                'label' => 'Runtime',
-                                'options' => false,
+                                'description' => 'Runtime',
+                                'identifier' => 'runtime',
+                                'sample_data' => false,
+                                'subtype' => false,
                                 'type' => 'string',
+                                'values' => false,
                                 'version' => false
                             ]
                         ],
                         'showtimes' => [
                             '__FIELD_DATA__' => [
                                 'capability' => false,
-                                'field' => 'showtimes',
-                                'label' => 'Non-theater specific showtimes',
-                                'options' => false,
+                                'description' => 'Non-theater specific showtimes',
+                                'identifier' => 'showtimes',
+                                'sample_data' => false,
                                 'subtype' => false,
                                 'type' => 'array',
+                                'values' => false,
                                 'version' => false
                             ]
                         ],
                         'theaters' => [
                             '__FIELD_DATA__' => [
                                 'capability' => false,
-                                'field' => 'theaters',
-                                'label' => 'Theaters the movie is currently showing in',
-                                'options' => false,
+                                'description' => 'Theaters the movie is currently showing in',
+                                'identifier' => 'theaters',
+                                'sample_data' => false,
                                 'subtype' => '\Mill\Examples\Showtimes\Representations\Theater',
                                 'type' => 'array',
+                                'values' => false,
                                 'version' => false
                             ]
                         ],
                         'uri' => [
                             '__FIELD_DATA__' => [
                                 'capability' => false,
-                                'field' => 'uri',
-                                'label' => 'Movie URI',
-                                'options' => false,
+                                'description' => 'Movie URI',
+                                'identifier' => 'uri',
+                                'sample_data' => false,
+                                'subtype' => false,
                                 'type' => 'uri',
+                                'values' => false,
                                 'version' => false
                             ]
                         ]
@@ -419,12 +485,15 @@ class DocumentationTest extends TestCase
             'missing-a-required-label-annotation' => [
                 'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithRequiredLabelAnnotationMissing',
                 'method' => 'create',
-                'expected.exception' => '\Mill\Exceptions\RequiredAnnotationException'
+                'expected.exception' => 'Mill\Exceptions\Annotations\RequiredAnnotationException',
+                'asserts' => [
+                    'getAnnotation' => 'label'
+                ]
             ],
             'multiple-label-annotations' => [
                 'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithMultipleLabelAnnotations',
                 'method' => 'create',
-                'expected.exception' => '\Mill\Exceptions\MultipleAnnotationsException'
+                'expected.exception' => '\Mill\Exceptions\Annotations\MultipleAnnotationsException'
             ]
         ];
     }

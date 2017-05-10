@@ -2,7 +2,7 @@
 namespace Mill\Parser\Annotations;
 
 use Mill\Container;
-use Mill\Exceptions\InvalidCapabilitySuppliedException;
+use Mill\Exceptions\Annotations\InvalidCapabilitySuppliedException;
 use Mill\Parser\Annotation;
 
 /**
@@ -39,7 +39,7 @@ class CapabilityAnnotation extends Annotation
             // Validate the supplied capability with what has been configured as allowable.
             $capabilities = Container::getConfig()->getCapabilities();
             if (!in_array($capability, $capabilities)) {
-                throw InvalidCapabilitySuppliedException::create($capability, $this->controller, $this->method);
+                throw InvalidCapabilitySuppliedException::create($capability, $this->class, $this->method);
             }
         }
 

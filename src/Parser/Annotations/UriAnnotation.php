@@ -51,15 +51,15 @@ class UriAnnotation extends Annotation
     protected function parser()
     {
         $parsed = [];
-        $doc = $this->docblock;
+        $content = $this->docblock;
 
         // Group is surrounded by `{curly braces}`.
-        if (preg_match(self::GROUP_REGEX, $doc, $matches)) {
+        if (preg_match(self::GROUP_REGEX, $content, $matches)) {
             $parsed['group'] = $matches[1];
-            $doc = trim(preg_replace(self::GROUP_REGEX, '', $doc));
+            $content = trim(preg_replace(self::GROUP_REGEX, '', $content));
         }
 
-        $parsed['path'] = trim($doc);
+        $parsed['path'] = trim($content);
 
         return $parsed;
     }

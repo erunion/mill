@@ -42,8 +42,12 @@ class GeneratorTest extends TestCase
 
     /**
      * @dataProvider providerGeneratorWithVersion
+     * @param string $version
+     * @param array $expected_representations
+     * @param array $expected_resources
+     * @return void
      */
-    public function testGeneratorWithVersion($version, $expected_representations, $expected_resources)
+    public function testGeneratorWithVersion($version, array $expected_representations, array $expected_resources)
     {
         $version_obj = new Version($version, __CLASS__, __METHOD__);
         $generator = new Generator($this->getConfig(), $version_obj);
@@ -328,7 +332,7 @@ class GeneratorTest extends TestCase
                         'resources' => [
                             [
                                 'resource.name' => 'Movies',
-                                'description.length' => 32,
+                                'description.length' => 103,
                                 'actions.data' => [
                                     '/movie/+id::GET' => array_merge($common_actions['/movie/+id::GET'], [
                                         'params.keys' => []
@@ -365,7 +369,7 @@ class GeneratorTest extends TestCase
                         'resources' => [
                             [
                                 'resource.name' => 'Movie Theaters',
-                                'description.length' => 40,
+                                'description.length' => 119,
                                 'actions.data' => [
                                     '/theaters::GET' => array_merge($common_actions['/theaters::GET'], [
                                         'params.keys' => [
@@ -453,7 +457,7 @@ class GeneratorTest extends TestCase
                         'resources' => [
                             [
                                 'resource.name' => 'Movies',
-                                'description.length' => 32,
+                                'description.length' => 103,
                                 'actions.data' => [
                                     '/movie/+id::GET' => array_merge($common_actions['/movie/+id::GET'], [
                                         'params.keys' => []
@@ -506,7 +510,7 @@ class GeneratorTest extends TestCase
                         'resources' => [
                             [
                                 'resource.name' => 'Movie Theaters',
-                                'description.length' => 40,
+                                'description.length' => 119,
                                 'actions.data' => [
                                     '/theaters::GET' => array_merge($common_actions['/theaters::GET'], [
                                         'params.keys' => [
@@ -594,7 +598,7 @@ class GeneratorTest extends TestCase
                         'resources' => [
                             [
                                 'resource.name' => 'Movies',
-                                'description.length' => 32,
+                                'description.length' => 103,
                                 'actions.data' => [
                                     '/movie/+id::GET' => array_merge($common_actions['/movie/+id::GET'], [
                                         'params.keys' => []
@@ -648,7 +652,7 @@ class GeneratorTest extends TestCase
                         'resources' => [
                             [
                                 'resource.name' => 'Movie Theaters',
-                                'description.length' => 40,
+                                'description.length' => 119,
                                 'actions.data' => [
                                     '/theaters::GET' => array_merge($common_actions['/theaters::GET'], [
                                         'params.keys' => [

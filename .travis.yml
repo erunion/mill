@@ -2,6 +2,8 @@ language: php
 
 php:
   - '5.6'
+  - '7.0'
+  - '7.1'
 
 cache:
   directories:
@@ -9,8 +11,10 @@ cache:
 
 install:
   - composer install
+  - npm install
 
 script:
   - vendor/bin/phpunit
+  - npm test
   - vendor/bin/psalm
   - vendor/bin/phpcs --standard=PSR2 src/ tests/

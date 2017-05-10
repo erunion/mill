@@ -12,16 +12,12 @@ class CodedError extends Representation
     {
         return [
             /**
-             * @api-label User-friendly error message
-             * @api-field error
-             * @api-type string
+             * @api-data error (string) - User-friendly error message
              */
             'error' => $error,
 
             /**
-             * @api-label Error code
-             * @api-field error_code
-             * @api-type number
+             * @api-data error_code (number) - Error code
              */
             'error_code' => $error_code
         ];

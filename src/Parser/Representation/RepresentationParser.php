@@ -1,12 +1,13 @@
 <?php
 namespace Mill\Parser\Representation;
 
+use gossi\docblock\tags\UnknownTag;
 use Mill\Container;
 use Mill\Exceptions\MethodNotImplementedException;
 use Mill\Exceptions\MethodNotSuppliedException;
 use Mill\Exceptions\Representation\DuplicateFieldException;
 use Mill\Parser;
-use Mill\Parser\Annotations\FieldAnnotation;
+use Mill\Parser\Annotations\DataAnnotation;
 use Mill\Parser\Version;
 
 /**
@@ -68,47 +69,57 @@ class RepresentationParser extends Parser
     /**
      * Parse a group of our custom annotations.
      *
-     * @param array $matches
-     * @param string $original_docblock
+     * @param array $tags
+     * @param string $original_content
      * @return array
      */
-    protected function parseAnnotations($matches, $original_docblock)
+    public function parseAnnotations(array $tags, $original_content)
     {
+        $has_see = [];
         $annotations = [];
 
-        // Does this have any `@api-see` pointers?
-        /** @var mixed $has_version */
-        $has_version = false;
-        $has_see = [];
-        foreach ($matches as $k => $match) {
-            list($_, $annotation, $decorator, $_last_decorator, $data) = $match;
+        /** @var string|false $has_content */
+        $has_content = false;
+
+        /** @var Version|null $has_version */
+        $has_version = null;
+
+        // Does this have any `@api-see` pointers or a `@api-version` declaration?
+        /** @var UnknownTag $tag */
+        foreach ($tags as $tag) {
+            $annotation = $this->getAnnotationNameFromTag($tag);
+            $content = $tag->getDescription();
+            $content = trim($content);
+            //$decorators = null;
+
             switch ($annotation) {
+                case 'data':
+                    $has_content = $content;
+                    break;
+
                 case 'see':
-                    $has_see = explode(' ', trim($data));
-                    unset($matches[$k]);
+                    $has_see = explode(' ', $content);
                     break;
 
-                // Do not remove the version from the array of matches, because we'll re-apply the version to the
-                // field annotation that we, maybe, picked up here.
                 case 'version':
-                    $data = trim($data);
-                    $has_version = new Version($data, $this->class, $this->method);
+                    $has_version = new Version($content, $this->class, $this->method);
                     break;
-
-                default:
-                    continue;
             }
         }
 
         // If we matched an `@api-see` annotation, then let's parse it out into viable annotations.
         if (!empty($has_see)) {
             list($see_class, $see_method) = explode('::', array_shift($has_see));
+            if (in_array(strtolower($see_class), ['self', 'static'])) {
+                $see_class = $this->class;
+            }
+
             $prefix = array_shift($has_see);
 
             $parser = new self($see_class);
             $see_annotations = $parser->getAnnotations($see_method);
 
-            /** @var FieldAnnotation $annotation */
+            /** @var DataAnnotation $annotation */
             foreach ($see_annotations as $name => $annotation) {
                 if ($has_version) {
                     // If this `@api-see` is being used with a `@api-version`, then the version here should always
@@ -116,9 +127,9 @@ class RepresentationParser extends Parser
                     $annotation->setVersion($has_version);
                 }
 
-                // If this `@api-see` has a prefix to attach to found annotations, do so.
+                // If this `@api-see` has a prefix to attach to found annotation identifiers, do so.
                 if (!empty($prefix)) {
-                    $see_annotations[$prefix . '.' . $name] = $annotation->setFieldNamePrefix($prefix);
+                    $see_annotations[$prefix . '.' . $name] = $annotation->setIdentifierPrefix($prefix);
                     unset($see_annotations[$name]);
                 }
             }
@@ -126,23 +137,13 @@ class RepresentationParser extends Parser
             $annotations += $see_annotations;
         }
 
-        // If $matches is empty, then we only parsed `@api-see` annotations, so let's drop out.
-        if (empty($matches)) {
+        // If we don't have any `@api-data` content, then don't bother setting up a DataAnnotation.
+        if (empty($has_content)) {
             return $annotations;
         }
 
-        /** @var \Mill\Parser\Annotations\FieldAnnotation $annotation */
-        $annotation = new FieldAnnotation(
-            $original_docblock,
-            $this->class,
-            $this->method,
-            null,
-            [
-                'docblock_lines' => $matches
-            ]
-        );
-
-        $annotations[$annotation->getFieldName()] = $annotation;
+        $annotation = new DataAnnotation($has_content, $this->class, $this->method, $has_version);
+        $annotations[$annotation->getIdentifier()] = $annotation;
 
         return $annotations;
     }

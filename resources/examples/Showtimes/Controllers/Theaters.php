@@ -13,7 +13,7 @@ class Theaters
      *
      * @api-uri:public {Theaters} /theaters
      *
-     * @api-param:public {string} location Location you want theaters in.
+     * @api-param:public location (string, required) - Location you want theaters in.
      *
      * @api-return:public {collection} \Mill\Examples\Showtimes\Representations\Theater
      *
@@ -39,9 +39,9 @@ class Theaters
      *
      * @api-scope create
      *
-     * @api-param:public {string} name Name of the theater.
-     * @api-param:public {string} address Theater address
-     * @api-param:public {string} phone_number Theater phone number
+     * @api-param:public name (string, required) - Name of the theater.
+     * @api-param:public address (string, required) - Theater address
+     * @api-param:public phone_number (string, required) - Theater phone number
      *
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Theater
      *

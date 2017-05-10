@@ -2,8 +2,8 @@
 namespace Mill\Parser\Representation;
 
 use Dflydev\DotAccessData\Data;
-use Mill\Exceptions\MultipleAnnotationsException;
-use Mill\Exceptions\RequiredAnnotationException;
+use Mill\Exceptions\Annotations\MultipleAnnotationsException;
+use Mill\Exceptions\Annotations\RequiredAnnotationException;
 use Mill\Exceptions\Resource\NoAnnotationsException;
 use Mill\Parser;
 

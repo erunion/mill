@@ -8,10 +8,14 @@ class ReturnAnnotationTest extends AnnotationTest
 {
     /**
      * @dataProvider providerAnnotation
+     * @param string $content
+     * @param string $version
+     * @param array $expected
+     * @return void
      */
-    public function testAnnotation($param, $version, $expected)
+    public function testAnnotation($content, $version, array $expected)
     {
-        $annotation = new ReturnAnnotation($param, __CLASS__, __METHOD__, $version);
+        $annotation = new ReturnAnnotation($content, __CLASS__, __METHOD__, $version);
 
         $this->assertTrue($annotation->requiresVisibilityDecorator());
         $this->assertTrue($annotation->supportsVersioning());
@@ -41,7 +45,7 @@ class ReturnAnnotationTest extends AnnotationTest
     {
         return [
             'with-no-representation' => [
-                'param' => '{deleted}',
+                'content' => '{deleted}',
                 'version' => null,
                 'expected' => [
                     'description' => false,
@@ -52,7 +56,7 @@ class ReturnAnnotationTest extends AnnotationTest
                 ]
             ],
             'with-no-representation-and-a-description' => [
-                'param' => '{notmodified} If no data has been changed.',
+                'content' => '{notmodified} If no data has been changed.',
                 'version' => null,
                 'expected' => [
                     'description' => 'If no data has been changed.',
@@ -63,7 +67,7 @@ class ReturnAnnotationTest extends AnnotationTest
                 ]
             ],
             'versioned' => [
-                'param' => '{collection} \Mill\Examples\Showtimes\Representations\Movie',
+                'content' => '{collection} \Mill\Examples\Showtimes\Representations\Movie',
                 'version' => new Version('3.2', __CLASS__, __METHOD__),
                 'expected' => [
                     'description' => false,
@@ -74,7 +78,7 @@ class ReturnAnnotationTest extends AnnotationTest
                 ]
             ],
             '_complete' => [
-                'param' => '{collection} \Mill\Examples\Showtimes\Representations\Movie A collection of movies.',
+                'content' => '{collection} \Mill\Examples\Showtimes\Representations\Movie A collection of movies.',
                 'version' => new Version('3.2', __CLASS__, __METHOD__),
                 'expected' => [
                     'description' => 'A collection of movies.',
@@ -87,7 +91,7 @@ class ReturnAnnotationTest extends AnnotationTest
 
             // 200's
             'collection' => [
-                'param' => '{collection} \Mill\Examples\Showtimes\Representations\Movie',
+                'content' => '{collection} \Mill\Examples\Showtimes\Representations\Movie',
                 'version' => null,
                 'expected' => [
                     'description' => false,
@@ -98,7 +102,7 @@ class ReturnAnnotationTest extends AnnotationTest
                 ]
             ],
             'directory' => [
-                'param' => '{directory} \Mill\Examples\Showtimes\Representations\Movie',
+                'content' => '{directory} \Mill\Examples\Showtimes\Representations\Movie',
                 'version' => null,
                 'expected' => [
                     'description' => false,
@@ -109,7 +113,7 @@ class ReturnAnnotationTest extends AnnotationTest
                 ]
             ],
             'object' => [
-                'param' => '{object} \Mill\Examples\Showtimes\Representations\Movie',
+                'content' => '{object} \Mill\Examples\Showtimes\Representations\Movie',
                 'version' => null,
                 'expected' => [
                     'description' => false,
@@ -120,7 +124,7 @@ class ReturnAnnotationTest extends AnnotationTest
                 ]
             ],
             'ok' => [
-                'param' => '{ok} \Mill\Examples\Showtimes\Representations\Movie',
+                'content' => '{ok} \Mill\Examples\Showtimes\Representations\Movie',
                 'version' => null,
                 'expected' => [
                     'description' => false,
@@ -133,7 +137,7 @@ class ReturnAnnotationTest extends AnnotationTest
 
             // 201's
             'created' => [
-                'param' => '{created} \Mill\Examples\Showtimes\Representations\Movie',
+                'content' => '{created} \Mill\Examples\Showtimes\Representations\Movie',
                 'version' => null,
                 'expected' => [
                     'description' => false,
@@ -146,7 +150,7 @@ class ReturnAnnotationTest extends AnnotationTest
 
             // 202's
             'accepted' => [
-                'param' => '{accepted} \Mill\Examples\Showtimes\Representations\Movie',
+                'content' => '{accepted} \Mill\Examples\Showtimes\Representations\Movie',
                 'version' => null,
                 'expected' => [
                     'description' => false,
@@ -159,7 +163,7 @@ class ReturnAnnotationTest extends AnnotationTest
 
             // 204's
             'added' => [
-                'param' => '{added} \Mill\Examples\Showtimes\Representations\Movie',
+                'content' => '{added} \Mill\Examples\Showtimes\Representations\Movie',
                 'version' => null,
                 'expected' => [
                     'description' => false,
@@ -170,7 +174,7 @@ class ReturnAnnotationTest extends AnnotationTest
                 ]
             ],
             'deleted' => [
-                'param' => '{deleted} \Mill\Examples\Showtimes\Representations\Representation',
+                'content' => '{deleted} \Mill\Examples\Showtimes\Representations\Representation',
                 'version' => null,
                 'expected' => [
                     'description' => false,
@@ -181,7 +185,7 @@ class ReturnAnnotationTest extends AnnotationTest
                 ]
             ],
             'exists' => [
-                'param' => '{exists} \Mill\Examples\Showtimes\Representations\Movie',
+                'content' => '{exists} \Mill\Examples\Showtimes\Representations\Movie',
                 'version' => null,
                 'expected' => [
                     'description' => false,
@@ -192,7 +196,7 @@ class ReturnAnnotationTest extends AnnotationTest
                 ]
             ],
             'updated' => [
-                'param' => '{updated} \Mill\Examples\Showtimes\Representations\Movie',
+                'content' => '{updated} \Mill\Examples\Showtimes\Representations\Movie',
                 'version' => null,
                 'expected' => [
                     'description' => false,
@@ -205,7 +209,7 @@ class ReturnAnnotationTest extends AnnotationTest
 
             // 304's
             'notModified' => [
-                'param' => '{notmodified} \Mill\Examples\Showtimes\Representations\Movie If no data has changed.',
+                'content' => '{notmodified} \Mill\Examples\Showtimes\Representations\Movie If no data has changed.',
                 'version' => null,
                 'expected' => [
                     'description' => 'If no data has changed.',
@@ -221,13 +225,13 @@ class ReturnAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function providerAnnotationFailsOnInvalidAnnotations()
+    public function providerAnnotationFailsOnInvalidContent()
     {
         return [
             'code-could-not-be-found' => [
                 'annotation' => '\Mill\Parser\Annotations\ReturnAnnotation',
-                'docblock' => '\Mill\Examples\Showtimes\Representations\Movie',
-                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
+                'content' => '\Mill\Examples\Showtimes\Representations\Movie',
+                'expected.exception' => '\Mill\Exceptions\Annotations\MissingRequiredFieldException',
                 'expected.exception.asserts' => [
                     'getRequiredField' => 'http_code',
                     'getAnnotation' => 'return',
@@ -237,8 +241,8 @@ class ReturnAnnotationTest extends AnnotationTest
             ],
             'code-is-invalid' => [
                 'annotation' => '\Mill\Parser\Annotations\ReturnAnnotation',
-                'docblock' => '{200 OK} \Mill\Examples\Showtimes\Representations\Movie',
-                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\UnknownReturnCodeException',
+                'content' => '{200 OK} \Mill\Examples\Showtimes\Representations\Movie',
+                'expected.exception' => '\Mill\Exceptions\Annotations\UnknownReturnCodeException',
                 'expected.exception.asserts' => [
                     'getRequiredField' => null,
                     'getAnnotation' => null,
@@ -248,8 +252,8 @@ class ReturnAnnotationTest extends AnnotationTest
             ],
             'representation-is-unknown' => [
                 'annotation' => '\Mill\Parser\Annotations\ReturnAnnotation',
-                'docblock' => '{object} \UnknownRepresentation',
-                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\UnknownRepresentationException',
+                'content' => '{object} \UnknownRepresentation',
+                'expected.exception' => '\Mill\Exceptions\Annotations\UnknownRepresentationException',
                 'expected.exception.asserts' => [
                     'getRequiredField' => null,
                     'getAnnotation' => null,

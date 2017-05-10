@@ -10,9 +10,7 @@ class Error extends Representation
     {
         return [
             /**
-             * @api-label User-friendly error message
-             * @api-field error
-             * @api-type string
+             * @api-data error (string) - User-friendly error message
              */
             'error' => $error
         ];

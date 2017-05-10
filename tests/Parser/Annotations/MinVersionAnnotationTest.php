@@ -7,10 +7,13 @@ class MinVersionAnnotationTest extends AnnotationTest
 {
     /**
      * @dataProvider providerAnnotation
+     * @param string $content
+     * @param array $expected
+     * @return void
      */
-    public function testAnnotation($version, $expected)
+    public function testAnnotation($content, array $expected)
     {
-        $annotation = new MinVersionAnnotation($version, __CLASS__, __METHOD__);
+        $annotation = new MinVersionAnnotation($content, __CLASS__, __METHOD__);
 
         $this->assertFalse($annotation->requiresVisibilityDecorator());
         $this->assertFalse($annotation->supportsVersioning());
@@ -30,7 +33,7 @@ class MinVersionAnnotationTest extends AnnotationTest
     {
         return [
             '_complete' => [
-                'version' => '1.2',
+                'content' => '1.2',
                 'expected' => [
                     'minimum_version' => '1.2'
                 ]
@@ -41,13 +44,13 @@ class MinVersionAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function providerAnnotationFailsOnInvalidAnnotations()
+    public function providerAnnotationFailsOnInvalidContent()
     {
         return [
             'does-not-have-an-absolute-version' => [
                 'annotation' => '\Mill\Parser\Annotations\MinVersionAnnotation',
-                'docblock' => '~1.2',
-                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\AbsoluteMinimumVersionException',
+                'content' => '~1.2',
+                'expected.exception' => '\Mill\Exceptions\Annotations\AbsoluteMinimumVersionException',
                 'expected.exception.asserts' => [
                     'getRequiredField' => null,
                     'getAnnotation' => '~1.2',
@@ -57,7 +60,7 @@ class MinVersionAnnotationTest extends AnnotationTest
             ],
             'missing-minimum-version' => [
                 'annotation' => '\Mill\Parser\Annotations\MinVersionAnnotation',
-                'docblock' => '',
+                'content' => '',
                 'expected.exception' => '\Mill\Exceptions\Version\UnrecognizedSchemaException',
                 'expected.exception.asserts' => [
                     'getVersion' => '',

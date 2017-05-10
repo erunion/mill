@@ -7,10 +7,13 @@ class ScopeAnnotationTest extends AnnotationTest
 {
     /**
      * @dataProvider providerAnnotation
+     * @param string $content
+     * @param array $expected
+     * @return void
      */
-    public function testAnnotation($param, $expected)
+    public function testAnnotation($content, array $expected)
     {
-        $annotation = new ScopeAnnotation($param, __CLASS__, __METHOD__);
+        $annotation = new ScopeAnnotation($content, __CLASS__, __METHOD__);
 
         $this->assertFalse($annotation->requiresVisibilityDecorator());
         $this->assertFalse($annotation->supportsVersioning());
@@ -32,14 +35,14 @@ class ScopeAnnotationTest extends AnnotationTest
     {
         return [
             'bare' => [
-                'param' => 'edit',
+                'content' => 'edit',
                 'expected' => [
                     'description' => false,
                     'scope' => 'edit'
                 ]
             ],
             '_complete' => [
-                'param' => 'create Create scope is required for this action!',
+                'content' => 'create Create scope is required for this action!',
                 'expected' => [
                     'description' => 'Create scope is required for this action!',
                     'scope' => 'create'
@@ -51,13 +54,13 @@ class ScopeAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function providerAnnotationFailsOnInvalidAnnotations()
+    public function providerAnnotationFailsOnInvalidContent()
     {
         return [
             'missing-scope' => [
                 'annotation' => '\Mill\Parser\Annotations\ScopeAnnotation',
-                'docblock' => '',
-                'expected.exception' => '\Mill\Exceptions\Resource\Annotations\MissingRequiredFieldException',
+                'content' => '',
+                'expected.exception' => '\Mill\Exceptions\Annotations\MissingRequiredFieldException',
                 'expected.exception.asserts' => [
                     'getRequiredField' => 'scope',
                     'getAnnotation' => 'scope',
@@ -67,8 +70,8 @@ class ScopeAnnotationTest extends AnnotationTest
             ],
             'scope-was-not-configured' => [
                 'annotation' => '\Mill\Parser\Annotations\ScopeAnnotation',
-                'docblock' => 'unknownScope',
-                'expected.exception' => '\Mill\Exceptions\InvalidScopeSuppliedException',
+                'content' => 'unknownScope',
+                'expected.exception' => '\Mill\Exceptions\Annotations\InvalidScopeSuppliedException',
                 'expected.exception.asserts' => [
                     'getScope' => 'unknownScope',
                     'getAnnotation' => null
