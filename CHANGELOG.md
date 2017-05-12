@@ -1,4 +1,8 @@
 # Changelog
+## [2.0.2] - 2017-05-12
+### Added
+- You can now have multiple `@api-data` annotations within the same docblock. [#79](https://github.com/vimeo/mill/pull/79)
+
 ## [2.0.1] - 2017-05-12
 ### Changed
 - API Blueprint data entries are now suffixed with a colon if they have sample data present.
@@ -88,6 +92,7 @@
 ### Added
 - First release!
 
+[2.0.2]: https://github.com/vimeo/mill/compare/2.0.1...2.0.2
 [2.0.1]: https://github.com/vimeo/mill/compare/2.0.0...2.0.1
 [2.0.0]: https://github.com/vimeo/mill/compare/1.6.8...2.0.0
 [1.6.8]: https://github.com/vimeo/mill/compare/1.6.7...1.6.8
