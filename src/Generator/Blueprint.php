@@ -280,7 +280,7 @@ class Blueprint extends Generator
             $blueprint .= sprintf(
                 '- `%s`%s (%s%s) - %s',
                 $param->getField(),
-                (!empty($sample_data)) ? sprintf(' `%s`', $sample_data) : '',
+                (!empty($sample_data)) ? sprintf(': `%s`', $sample_data) : '',
                 (!empty($values)) ? 'enum[' . $type . ']' : $type,
                 ($param->isRequired()) ? ', required' : null,
                 $param->getDescription()
@@ -410,7 +410,7 @@ class Blueprint extends Generator
                 $blueprint .= sprintf(
                     '- `%s`%s (%s) - %s',
                     $field_name,
-                    (!empty($data['sample_data'])) ? sprintf(' `%s`', $data['sample_data']) : '',
+                    (!empty($data['sample_data'])) ? sprintf(': `%s`', $data['sample_data']) : '',
                     $type,
                     $data['description']
                 );
