@@ -1,4 +1,8 @@
 # Changelog
+## [2.0.1] - 2017-05-12
+### Changed
+- API Blueprint data entries are now suffixed with a colon if they have sample data present.
+
 ## [2.0.0] - 2017-05-10
 ### Added
 - `@api-see` annotations now have support for static/self targets. [#76](https://github.com/vimeo/mill/pull/76)
@@ -84,6 +88,7 @@
 ### Added
 - First release!
 
+[2.0.1]: https://github.com/vimeo/mill/compare/2.0.0...2.0.1
 [2.0.0]: https://github.com/vimeo/mill/compare/1.6.8...2.0.0
 [1.6.8]: https://github.com/vimeo/mill/compare/1.6.7...1.6.8
 [1.6.7]: https://github.com/vimeo/mill/compare/1.6.6...1.6.7
