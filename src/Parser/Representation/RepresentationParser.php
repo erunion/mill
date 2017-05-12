@@ -77,9 +77,7 @@ class RepresentationParser extends Parser
     {
         $has_see = [];
         $annotations = [];
-
-        /** @var string|false $has_content */
-        $has_content = false;
+        $data = [];
 
         /** @var Version|null $has_version */
         $has_version = null;
@@ -90,11 +88,10 @@ class RepresentationParser extends Parser
             $annotation = $this->getAnnotationNameFromTag($tag);
             $content = $tag->getDescription();
             $content = trim($content);
-            //$decorators = null;
 
             switch ($annotation) {
                 case 'data':
-                    $has_content = $content;
+                    $data[] = $content;
                     break;
 
                 case 'see':
@@ -138,12 +135,14 @@ class RepresentationParser extends Parser
         }
 
         // If we don't have any `@api-data` content, then don't bother setting up a DataAnnotation.
-        if (empty($has_content)) {
+        if (empty($data)) {
             return $annotations;
         }
 
-        $annotation = new DataAnnotation($has_content, $this->class, $this->method, $has_version);
-        $annotations[$annotation->getIdentifier()] = $annotation;
+        foreach ($data as $content) {
+            $annotation = new DataAnnotation($content, $this->class, $this->method, $has_version);
+            $annotations[$annotation->getIdentifier()] = $annotation;
+        }
 
         return $annotations;
     }
