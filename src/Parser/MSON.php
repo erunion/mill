@@ -9,26 +9,6 @@ use Mill\Exceptions\MSON\MissingOptionsException;
 class MSON
 {
     /**
-     * This is the regex to match a Mill-flavored MSON string.
-     *
-     * Examples:
-     *
-     *  - content_rating (string) - MPAA rating
-     *  - content_rating `G` (string, required) - MPAA rating
-     *  - content_rating `G` (string, optional, MOVIE_RATINGS) - MPAA rating
-     *  - content_rating `G` (string, MOVIE_RATINGS) - MPAA rating
-     *  - websites.description (string) - The websites' description
-     *  - websites (array<object>) - The users' list of websites.
-     *  - cast (array<\Mill\Examples\Showtimes\Representations\Person>) - Cast
-     *  - director (\Mill\Examples\Showtimes\Representations\Person) - Director
-     *
-     * @var string
-     */
-    const REGEX_MSON = '/((?P<field>[\w.\*]+) (`(?P<sample_data>.+)` )?' .
-        '\((?P<type>[\w\\\]+)(<(?P<subtype>[\w\\\]+)>)?(, (?P<required>required|optional))?(, (?P<capability>\w+))?\)' .
-        '(\n|\s)+-(\n|\s)+(?P<description>.+))/uis';
-
-    /**
      * This is the regex to match Mill-flavored MSON enum members.
      *
      * Examples:
@@ -172,7 +152,27 @@ class MSON
      */
     public function parse($content)
     {
-        preg_match(self::REGEX_MSON, $content, $matches);
+        /**
+         * This is the regex to match a Mill-flavored MSON string.
+         *
+         * Examples:
+         *
+         *  - content_rating (string) - MPAA rating
+         *  - content_rating `G` (string, required) - MPAA rating
+         *  - content_rating `G` (string, optional, MOVIE_RATINGS) - MPAA rating
+         *  - content_rating `G` (string, MOVIE_RATINGS) - MPAA rating
+         *  - websites.description (string) - The websites' description
+         *  - websites (array<object>) - The users' list of websites.
+         *  - cast (array<\Mill\Examples\Showtimes\Representations\Person>) - Cast
+         *  - director (\Mill\Examples\Showtimes\Representations\Person) - Director
+         *
+         * @var string
+         */
+        $regex_mson = '/((?P<field>[\w.\*]+) (`(?P<sample_data>.+)` )?' .
+            '\((?P<type>[\w\\\]+)(<(?P<subtype>[\w\\\]+)>)?(, (?P<required>required|optional))?(, ' .
+            '(?P<capability>\w+))?\)(\n|\s)+-(\n|\s)+(?P<description>.+))/uis';
+
+        preg_match($regex_mson, $content, $matches);
 
         foreach (['field', 'type', 'description', 'sample_data', 'subtype', 'capability'] as $name) {
             if (isset($matches[$name]) && !empty($matches[$name])) {
