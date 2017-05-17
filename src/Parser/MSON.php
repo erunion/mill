@@ -121,6 +121,7 @@ class MSON
     protected $supported_types = [
         'array',
         'boolean',
+        'date',
         'datetime',
         'float',
         'enum',
