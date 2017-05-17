@@ -557,6 +557,7 @@ class Blueprint extends Generator
             // keep that metadata in our documentation (because they might be useful if you're using Mill as an API
             // to display your documentation in some other format), so just convert these on the fly to strings so
             // they're able pass blueprint validation.
+            case 'date':
             case 'datetime':
             case 'timestamp':
             case 'uri':
