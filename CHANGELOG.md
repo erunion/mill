@@ -1,4 +1,8 @@
 # Changelog
+## [2.0.4] - 2017-05-17
+### Added
+- Added support for `date` types in MSON-supported annotations.
+
 ## [2.0.3] - 2017-05-16
 ### Fixed
 Fixed a PHP 5.4 incompatibility with a class constant being broken up on multiple lines with string concatenation.
@@ -96,6 +100,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[2.0.4]: https://github.com/vimeo/mill/compare/2.0.3...2.0.4
 [2.0.3]: https://github.com/vimeo/mill/compare/2.0.2...2.0.3
 [2.0.2]: https://github.com/vimeo/mill/compare/2.0.1...2.0.2
 [2.0.1]: https://github.com/vimeo/mill/compare/2.0.0...2.0.1
