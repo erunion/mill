@@ -450,6 +450,19 @@ abstract class Annotation
     }
 
     /**
+     * Set a capability that this annotation requires. This is specifically used in tandem with representation depth
+     * parsing.
+     *
+     * @param string $capability
+     * @return Annotation
+     */
+    public function setCapability($capability)
+    {
+        $this->capability = $capability;
+        return $this;
+    }
+
+    /**
      * Get the version constraint, if any, that this parameter is part of.
      *
      * @return Version|false
@@ -460,8 +473,8 @@ abstract class Annotation
     }
 
     /**
-     * Set a version that this annotation is available on. This is specifically used in tandem with `@api-see`
-     * annotations.
+     * Set a version that this annotation is available on. This is specifically used in tandem with representation
+     * depth parsing.
      *
      * @param Version $version
      * @return Annotation

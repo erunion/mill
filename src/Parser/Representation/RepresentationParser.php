@@ -60,8 +60,20 @@ class RepresentationParser extends Parser
 
         $annotations = $this->parse($code);
 
-        // Keep things tidy.
-        ksort($annotations);
+        if (count($annotations) > 1) {
+            // Keep things tidy.
+            ksort($annotations);
+
+            // Run through all created annotations and cascade any versioning down into any present child annotations.
+            /** @var DataAnnotation $annotation */
+            foreach ($annotations as $identifier => $annotation) {
+                if (!$annotation->getVersion() && !$annotation->getCapability()) {
+                    continue;
+                }
+
+                $this->carryAnnotationSettingsToChildren($annotation, $annotations);
+            }
+        }
 
         return $annotations;
     }
@@ -104,6 +116,11 @@ class RepresentationParser extends Parser
             }
         }
 
+        foreach ($data as $content) {
+            $annotation = new DataAnnotation($content, $this->class, $this->method, $has_version);
+            $annotations[$annotation->getIdentifier()] = $annotation;
+        }
+
         // If we matched an `@api-see` annotation, then let's parse it out into viable annotations.
         if (!empty($has_see)) {
             list($see_class, $see_method) = explode('::', array_shift($has_see));
@@ -113,6 +130,8 @@ class RepresentationParser extends Parser
 
             $prefix = array_shift($has_see);
 
+            // Pass in the current array (by reference) of found annotations that we have so we can do depth traversal
+            // for version and capability requirements of any implied children, by way of dot-notation.
             $parser = new self($see_class);
             $see_annotations = $parser->getAnnotations($see_method);
 
@@ -132,16 +151,6 @@ class RepresentationParser extends Parser
             }
 
             $annotations += $see_annotations;
-        }
-
-        // If we don't have any `@api-data` content, then don't bother setting up a DataAnnotation.
-        if (empty($data)) {
-            return $annotations;
-        }
-
-        foreach ($data as $content) {
-            $annotation = new DataAnnotation($content, $this->class, $this->method, $has_version);
-            $annotations[$annotation->getIdentifier()] = $annotation;
         }
 
         return $annotations;
@@ -176,5 +185,42 @@ class RepresentationParser extends Parser
         }
 
         return $representation;
+    }
+
+    /**
+     * Given a DataAnnotation object, carry any versioning or capabilities on it down to any dot-notation children in
+     * an array of other annotations.
+     *
+     * @param DataAnnotation $parent
+     * @param array $annotations
+     * @return void
+     */
+    private function carryAnnotationSettingsToChildren(DataAnnotation $parent, array &$annotations = [])
+    {
+        $parent_identifier = $parent->getIdentifier();
+        $parent_version = $parent->getVersion();
+
+        /** @var string $parent_capability */
+        $parent_capability = $parent->getCapability();
+
+        /** @var DataAnnotation $annotation */
+        foreach ($annotations as $identifier => $annotation) {
+            if ($identifier === $parent_identifier) {
+                continue;
+            }
+
+            // Is this annotation a child of what we're looking for?
+            if ($parent_identifier . '.' !== substr($identifier, 0, strlen($parent_identifier . '.'))) {
+                continue;
+            }
+
+            if (!empty($parent_version) && !$annotation->getVersion()) {
+                $annotation->setVersion($parent_version);
+            }
+
+            if (!empty($parent_capability) && !$annotation->getCapability()) {
+                $annotation->setCapability($parent_capability);
+            }
+        }
     }
 }
