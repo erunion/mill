@@ -1,4 +1,12 @@
 # Changelog
+## [2.0.5] - 2017-05-19
+### Changed
+- The first Item in a MSON members is now selected as the available sample data if no sample data was present. [#81](https://github.com/vimeo/mill/issues/81)
+
+### Fixed
+- `@api-version` and `@api-capability` annotations now carry down into their dot-notation child elements. [#80](https://github.com/vimeo/mill/issues/80)
+- Dot-notation elements, with a depth of at least 1, and didn't have any documented parents of siblings, weren't getting compiled into API Blueprint files. [#82](https://github.com/vimeo/mill/issues/82)
+
 ## [2.0.4] - 2017-05-17
 ### Added
 - Added support for `date` types in MSON-supported annotations.
@@ -100,6 +108,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[2.0.5]: https://github.com/vimeo/mill/compare/2.0.4...2.0.5
 [2.0.4]: https://github.com/vimeo/mill/compare/2.0.3...2.0.4
 [2.0.3]: https://github.com/vimeo/mill/compare/2.0.2...2.0.3
 [2.0.2]: https://github.com/vimeo/mill/compare/2.0.1...2.0.2
