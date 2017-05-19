@@ -14,6 +14,12 @@ use Mill\Parser;
 class Documentation
 {
     /**
+     * When building out dot-notation annotation keys for generating API Blueprint files (or any other generator),
+     * we use this key to designate the content of an annotations' data.
+     */
+    const DOT_NOTATION_ANNOTATION_DATA_KEY = '__FIELD_DATA__';
+
+    /**
      * Name of the representation class that we're going to be parsing for documentation.
      *
      * @var string
@@ -175,7 +181,7 @@ class Documentation
         $arr = $this->toArray();
         foreach ($arr['content'] as $field => $data) {
             $content->set($field, [
-                '__FIELD_DATA__' => $data
+                self::DOT_NOTATION_ANNOTATION_DATA_KEY => $data
             ]);
         }
 

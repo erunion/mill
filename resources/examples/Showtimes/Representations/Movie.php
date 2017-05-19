@@ -93,7 +93,14 @@ class Movie extends Representation
             /**
              * @api-data rotten_tomatoes_score (number) - Rotten Tomatoes score
              */
-            'rotten_tomatoes_score' => $this->rotten_tomatoes_score
+            'rotten_tomatoes_score' => $this->rotten_tomatoes_score,
+
+            'purchase' => [
+                /**
+                 * @api-data purchase.url (string) - URL to purchase the film.
+                 */
+                'url' => $this->purchase->digital->url,
+            ]
         ];
     }
 

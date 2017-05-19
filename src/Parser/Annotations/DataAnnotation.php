@@ -4,6 +4,7 @@ namespace Mill\Parser\Annotations;
 use Mill\Exceptions\Representation\RestrictedFieldNameException;
 use Mill\Parser\Annotation;
 use Mill\Parser\MSON;
+use Mill\Parser\Representation\Documentation;
 
 /**
  * Handler for the `@api-data` annotation.
@@ -105,7 +106,7 @@ class DataAnnotation extends Annotation
         }
 
         if (!empty($parsed['identifier'])) {
-            if (strtoupper($parsed['identifier']) === '__FIELD_DATA__') {
+            if (strtoupper($parsed['identifier']) === Documentation::DOT_NOTATION_ANNOTATION_DATA_KEY) {
                 throw RestrictedFieldNameException::create($this->class, $this->method);
             }
         }

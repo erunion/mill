@@ -195,6 +195,16 @@ class DocumentationTest extends TestCase
                             'values' => false,
                             'version' => false
                         ],
+                        'purchase.url' => [
+                            'capability' => false,
+                            'description' => 'URL to purchase the film.',
+                            'identifier' => 'purchase.url',
+                            'sample_data' => false,
+                            'subtype' => false,
+                            'type' => 'string',
+                            'values' => false,
+                            'version' => false
+                        ],
                         'rotten_tomatoes_score' => [
                             'capability' => false,
                             'description' => 'Rotten Tomatoes score',
@@ -398,6 +408,20 @@ class DocumentationTest extends TestCase
                                 'type' => 'string',
                                 'values' => false,
                                 'version' => false
+                            ]
+                        ],
+                        'purchase' => [
+                            'url' => [
+                                '__FIELD_DATA__' => [
+                                    'capability' => false,
+                                    'description' => 'URL to purchase the film.',
+                                    'identifier' => 'purchase.url',
+                                    'sample_data' => false,
+                                    'subtype' => false,
+                                    'type' => 'string',
+                                    'values' => false,
+                                    'version' => false
+                                ]
                             ]
                         ],
                         'rotten_tomatoes_score' => [
