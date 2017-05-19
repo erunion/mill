@@ -110,6 +110,11 @@ class DataAnnotation extends Annotation
             }
         }
 
+        // If we have values present, but no sample data, set the sample as the first item in the values list.
+        if (!empty($parsed['values']) && empty($parsed['sample_data'])) {
+            $parsed['sample_data'] = array_keys($parsed['values'])[0];
+        }
+
         return $parsed;
     }
 

@@ -80,7 +80,7 @@ class DocumentationTest extends TestCase
                             'capability' => false,
                             'description' => 'MPAA rating',
                             'identifier' => 'content_rating',
-                            'sample_data' => false,
+                            'sample_data' => 'G',
                             'subtype' => false,
                             'type' => 'enum',
                             'values' => [
@@ -264,7 +264,7 @@ class DocumentationTest extends TestCase
                                 'capability' => false,
                                 'description' => 'MPAA rating',
                                 'identifier' => 'content_rating',
-                                'sample_data' => false,
+                                'sample_data' => 'G',
                                 'subtype' => false,
                                 'type' => 'enum',
                                 'values' => [
