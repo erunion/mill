@@ -1,4 +1,8 @@
 # Changelog
+## [2.0.6] - 2017-05-19
+### Fixed
+- Representation data with an `enum` subtype wasn't getting any present enum member values compiled into API Blueprint files. [#85](https://github.com/vimeo/mill/issues/85)
+
 ## [2.0.5] - 2017-05-19
 ### Changed
 - The first Item in a MSON members is now selected as the available sample data if no sample data was present. [#81](https://github.com/vimeo/mill/issues/81)
@@ -108,6 +112,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[2.0.6]: https://github.com/vimeo/mill/compare/2.0.5...2.0.6
 [2.0.5]: https://github.com/vimeo/mill/compare/2.0.4...2.0.5
 [2.0.4]: https://github.com/vimeo/mill/compare/2.0.3...2.0.4
 [2.0.3]: https://github.com/vimeo/mill/compare/2.0.2...2.0.3
