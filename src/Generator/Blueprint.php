@@ -8,6 +8,7 @@ use Mill\Parser\Annotations\ReturnAnnotation;
 use Mill\Parser\Annotations\ScopeAnnotation;
 use Mill\Parser\Annotations\ThrowsAnnotation;
 use Mill\Parser\Annotations\UriSegmentAnnotation;
+use Mill\Parser\Representation\Documentation;
 use Mill\Parser\Resource\Action;
 
 class Blueprint extends Generator
@@ -399,9 +400,9 @@ class Blueprint extends Generator
             $blueprint .= $this->tab($indent);
 
             $data = [];
-            if (isset($field['__FIELD_DATA__'])) {
+            if (isset($field[Documentation::DOT_NOTATION_ANNOTATION_DATA_KEY])) {
                 /** @var array $data */
-                $data = $field['__FIELD_DATA__'];
+                $data = $field[Documentation::DOT_NOTATION_ANNOTATION_DATA_KEY];
                 $type = $this->convertTypeToCompatibleType(
                     $data['type'],
                     (isset($data['subtype'])) ? $data['subtype'] : false
@@ -440,9 +441,8 @@ class Blueprint extends Generator
             }
 
             // Process any exploded dot notation children of this field.
-            if (count($field) > 1) {
-                unset($field['__FIELD_DATA__']);
-
+            unset($field[Documentation::DOT_NOTATION_ANNOTATION_DATA_KEY]);
+            if (!empty($field)) {
                 // If this is an array, and has a subtype of object, we should indent a bit so we can properly render
                 // out the array objects.
                 if (!empty($data) && isset($data['subtype']) && $data['subtype'] === 'object') {

@@ -105,7 +105,7 @@ class DataAnnotationTest extends AnnotationTest
                     'capability' => false,
                     'description' => 'MPAA rating',
                     'identifier' => 'content_rating',
-                    'sample_data' => false,
+                    'sample_data' => 'G',
                     'subtype' => false,
                     'type' => 'enum',
                     'values' => [
@@ -139,7 +139,7 @@ class DataAnnotationTest extends AnnotationTest
                     'capability' => 'MOVIE_RATINGS',
                     'description' => 'MPAA rating',
                     'identifier' => 'content_rating',
-                    'sample_data' => false,
+                    'sample_data' => 'G',
                     'subtype' => false,
                     'type' => 'enum',
                     'values' => [

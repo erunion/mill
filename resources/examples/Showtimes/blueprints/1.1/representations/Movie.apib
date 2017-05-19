@@ -1,6 +1,6 @@
 ## Movie
 - `cast` (array[Person]) - Cast
-- `content_rating` (enum[string]) - MPAA rating
+- `content_rating`: `G` (enum[string]) - MPAA rating
     + Members
         + `G`
         + `NC-17`
@@ -20,6 +20,8 @@
 - `id` (number) - Unique ID
 - `kid_friendly` (boolean) - Kid friendly?
 - `name` (string) - Name
+- `purchase` (object)
+    - `url` (string) - URL to purchase the film.
 - `rotten_tomatoes_score` (number) - Rotten Tomatoes score
 - `runtime` (string) - Runtime
 - `showtimes` (array) - Non-theater specific showtimes

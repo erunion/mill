@@ -77,6 +77,7 @@ class RepresentationParserTest extends TestCase
             'id',
             'kid_friendly',
             'name',
+            'purchase.url',
             'rotten_tomatoes_score',
             'runtime',
             'showtimes',
@@ -134,6 +135,33 @@ class RepresentationParserTest extends TestCase
         }
     }
 
+    public function testRepresentationThatHasVersioningAcrossMultipleAnnotations()
+    {
+        $class = '\Mill\Tests\Fixtures\Representations\RepresentationWithVersioningAcrossMultipleAnnotations';
+        $parser = new RepresentationParser($class);
+        $annotations = $parser->getAnnotations('create');
+
+        $this->assertSame([
+            'connections',
+            'connections.things',
+            'connections.things.name',
+            'connections.things.uri',
+            'unrelated'
+        ], array_keys($annotations));
+
+        $this->assertSame('>=3.3', $annotations['connections']->toArray()['version']);
+        $this->assertSame('>=3.3', $annotations['connections.things']->toArray()['version']);
+        $this->assertSame('>=3.3', $annotations['connections.things.name']->toArray()['version']);
+        $this->assertSame('3.4', $annotations['connections.things.uri']->toArray()['version']);
+        $this->assertEmpty($annotations['unrelated']->toArray()['version']);
+
+        $this->assertEmpty($annotations['connections']->toArray()['capability']);
+        $this->assertSame('NONE', $annotations['connections.things']->toArray()['capability']);
+        $this->assertSame('MOVIE_RATINGS', $annotations['connections.things.name']->toArray()['capability']);
+        $this->assertSame('NONE', $annotations['connections.things.uri']->toArray()['capability']);
+        $this->assertEmpty($annotations['unrelated']->toArray()['version']);
+    }
+
     /**
      * @return array
      */
@@ -159,7 +187,7 @@ class RepresentationParserTest extends TestCase
                             'capability' => false,
                             'description' => 'MPAA rating',
                             'identifier' => 'content_rating',
-                            'sample_data' => false,
+                            'sample_data' => 'G',
                             'subtype' => false,
                             'type' => 'enum',
                             'values' => [
@@ -268,6 +296,16 @@ class RepresentationParserTest extends TestCase
                             'capability' => false,
                             'description' => 'Name',
                             'identifier' => 'name',
+                            'sample_data' => false,
+                            'subtype' => false,
+                            'type' => 'string',
+                            'values' => false,
+                            'version' => false
+                        ],
+                        'purchase.url' => [
+                            'capability' => false,
+                            'description' => 'URL to purchase the film.',
+                            'identifier' => 'purchase.url',
                             'sample_data' => false,
                             'subtype' => false,
                             'type' => 'string',
