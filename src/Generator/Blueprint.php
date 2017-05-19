@@ -419,7 +419,9 @@ class Blueprint extends Generator
                 $blueprint .= $this->line();
 
                 // Only enum's support options/members.
-                if ($data['type'] === 'enum' && !empty($data['values'])) {
+                if (($data['type'] === 'enum' || (isset($data['subtype']) && $data['subtype'] === 'enum')) &&
+                    !empty($data['values'])
+                ) {
                     $blueprint .= $this->tab($indent + 1);
                     $blueprint .= '+ Members';
                     $blueprint .= $this->line();
