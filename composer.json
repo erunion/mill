@@ -52,7 +52,7 @@
             "mkdir resources/examples/Showtimes/blueprints",
             "./bin/mill generate --config=resources/examples/mill.xml resources/examples/Showtimes/blueprints/"
         ],
-        "check-style": "phpcs --standard=PSR2 src/ tests/",
+        "check-style": "phpcs --standard=PSR2 bin/ src/ tests/",
         "coverage": "phpunit --coverage-html reports/",
         "tests": "phpunit"
     }

@@ -3,7 +3,6 @@ Mill
 
 [![Packagist](https://img.shields.io/packagist/v/vimeo/mill.svg)](https://packagist.org/packages/vimeo/mill)
 [![Travis CI](http://img.shields.io/travis/vimeo/mill.svg?style=flat)](https://travis-ci.org/vimeo/mill)
-[![StyleCI](https://styleci.io/repos/78773473/shield)](https://styleci.io/repos/78773473/)
 
 Mill is a PHP library for documenting a REST API with a small annotation DSL.
 
