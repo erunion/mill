@@ -157,7 +157,7 @@ class RepresentationParserTest extends TestCase
 
         $this->assertEmpty($annotations['connections']->toArray()['capability']);
         $this->assertSame('NONE', $annotations['connections.things']->toArray()['capability']);
-        $this->assertSame('NONE', $annotations['connections.things.name']->toArray()['capability']);
+        $this->assertSame('MOVIE_RATINGS', $annotations['connections.things.name']->toArray()['capability']);
         $this->assertSame('NONE', $annotations['connections.things.uri']->toArray()['capability']);
         $this->assertEmpty($annotations['unrelated']->toArray()['version']);
     }

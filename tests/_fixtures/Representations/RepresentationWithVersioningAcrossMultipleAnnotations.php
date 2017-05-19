@@ -31,7 +31,7 @@ class RepresentationWithVersioningAcrossMultipleAnnotations
          */
 
         /**
-         * @api-data name (string) - Name of a thing.
+         * @api-data name (string, MOVIE_RATINGS) - Name of a thing.
          */
     }
 }
