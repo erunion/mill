@@ -33,7 +33,7 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         $this->config_file = __DIR__ . '/../../resources/examples/mill.xml';
     }
 
-    public function testGenerate()
+    public function testCommand()
     {
         $output_dir = tempnam(sys_get_temp_dir(), 'mill-generate-test-');
         if (file_exists($output_dir)) {
@@ -97,7 +97,7 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testGenerateWithDryRun()
+    public function testCommandWithDryRun()
     {
         $this->tester->execute([
             'command' => $this->command->getName(),
@@ -128,7 +128,7 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         $this->assertContains('API version: 1.1', $output);
     }
 
-    public function testGenerateWithSpecificConstraint()
+    public function testCommandWithSpecificConstraint()
     {
         $this->tester->execute([
             'command' => $this->command->getName(),
@@ -148,7 +148,7 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage The supplied Mill configuration file does not exist.
      */
-    public function testGenerateFailsOnInvalidConfigFile()
+    public function testCommandFailsOnInvalidConfigFile()
     {
         $this->tester->execute([
             'command' => $this->command->getName(),
@@ -156,7 +156,7 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    public function testGenerateFailsOnInvalidVersionConstraint()
+    public function testCommandFailsOnInvalidVersionConstraint()
     {
         $this->tester->execute([
             'command' => $this->command->getName(),
