@@ -5,7 +5,7 @@ use Mill\Command\Generate;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class GenerateTest extends \PHPUnit_Framework_TestCase
+class GenerateTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Symfony\Component\Console\Command\Command
