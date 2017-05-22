@@ -4,7 +4,7 @@ namespace Mill\Parser;
 use Mill\Exceptions\Annotations\MissingRequiredFieldException;
 use Mill\Tests\Fixtures\AnnotationStub;
 
-class AnnotationTest extends \PHPUnit_Framework_TestCase
+class AnnotationTest extends \PHPUnit\Framework\TestCase
 {
     public function testAnnotationFailsIfARequiredFieldWasNotSuppliedToRequired()
     {

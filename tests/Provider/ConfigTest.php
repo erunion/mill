@@ -6,7 +6,7 @@ use Mill\Provider\Config;
 use Mill\Provider\Filesystem;
 use Pimple\Container;
 
-class ConfigTest extends \PHPUnit_Framework_TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     public function testRegister()
     {
