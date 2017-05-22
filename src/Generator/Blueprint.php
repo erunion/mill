@@ -408,12 +408,30 @@ class Blueprint extends Generator
                     (isset($data['subtype'])) ? $data['subtype'] : false
                 );
 
+                $description = $data['description'];
+                if (!empty($data['scopes'])) {
+                    // If this description doesn't end with punctuation, add a period before we display a list of
+                    // required authentication scopes.
+                    $description .= (!in_array(substr($description, -1), ['.', '!', '?'])) ? '.' : '';
+
+                    $strings = [];
+                    foreach ($data['scopes'] as $scope) {
+                        $strings[] = $scope['scope'];
+                    }
+
+                    $description .= sprintf(
+                        ' This data requires a bearer token with %s scope%s.',
+                        '`' . implode(', ', $strings) . '`',
+                        (count($strings) > 1) ? 's' : null
+                    );
+                }
+
                 $blueprint .= sprintf(
                     '- `%s`%s (%s) - %s',
                     $field_name,
                     (!empty($data['sample_data'])) ? sprintf(': `%s`', $data['sample_data']) : '',
                     $type,
-                    $data['description']
+                    $description
                 );
 
                 $blueprint .= $this->line();

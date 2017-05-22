@@ -17,8 +17,8 @@ class ReturnAnnotation extends Annotation
     use HasHttpCodeResponseTrait;
 
     const REQUIRES_VISIBILITY_DECORATOR = true;
-    const SUPPORTS_VERSIONING = true;
     const SUPPORTS_DEPRECATION = false;
+    const SUPPORTS_VERSIONING = true;
 
     const REGEX_TYPE = '/^({[^}]*})/';
 
