@@ -59,11 +59,13 @@ class Movie extends Representation
 
             /**
              * @api-data director (\Mill\Examples\Showtimes\Representations\Person) - Director
+             * @api-scope public
              */
             'director' => $this->movie->director,
 
             /**
              * @api-data cast (array<\Mill\Examples\Showtimes\Representations\Person>) - Cast
+             * @api-scope public
              */
             'cast' => $this->movie->getCast(),
 

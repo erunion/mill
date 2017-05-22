@@ -13,9 +13,10 @@ use Mill\Parser\Representation\Documentation;
 class DataAnnotation extends Annotation
 {
     const REQUIRES_VISIBILITY_DECORATOR = false;
-    const SUPPORTS_VERSIONING = true;
     const SUPPORTS_DEPRECATION = false;
     const SUPPORTS_MSON = true;
+    const SUPPORTS_SCOPES = true;
+    const SUPPORTS_VERSIONING = true;
 
     /**
      * Identifier for this data.

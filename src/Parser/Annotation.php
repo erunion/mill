@@ -4,6 +4,7 @@ namespace Mill\Parser;
 use Mill\Exceptions\Annotations\BadOptionsListException;
 use Mill\Exceptions\Annotations\InvalidMSONSyntaxException;
 use Mill\Exceptions\Annotations\MissingRequiredFieldException;
+use Mill\Parser\Annotations\ScopeAnnotation;
 
 /**
  * Base class for supported annotations.
@@ -63,6 +64,13 @@ abstract class Annotation
     protected $deprecated = false;
 
     /**
+     * Array of all authentication scopes required for this annotation.
+     *
+     * @var array
+     */
+    protected $scopes = [];
+
+    /**
      * Array of all available aliases for this annotation.
      *
      * @var array
@@ -107,11 +115,11 @@ abstract class Annotation
     const REQUIRES_VISIBILITY_DECORATOR = null;
 
     /**
-     * Does this annotation support versioning?
+     * Does this annotation support aliasing?
      *
-     * @return bool|null
+     * @return bool
      */
-    const SUPPORTS_VERSIONING = null;
+    const SUPPORTS_ALIASING = false;
 
     /**
      * Does this annotation support being deprecated?
@@ -128,11 +136,18 @@ abstract class Annotation
     const SUPPORTS_MSON = null;
 
     /**
-     * Does this annotation support aliasing?
+     * Does this annotation support auth token scopes?
      *
-     * @return bool
+     * @return bool|null
      */
-    const SUPPORTS_ALIASING = false;
+    const SUPPORTS_SCOPES = null;
+
+    /**
+     * Does this annotation support versioning?
+     *
+     * @return bool|null
+     */
+    const SUPPORTS_VERSIONING = null;
 
     /**
      * @param string $doc
@@ -249,13 +264,13 @@ abstract class Annotation
     }
 
     /**
-     * Does this annotation support versioning?
+     * Does this annotation support aliasing?
      *
      * @return bool
      */
-    public function supportsVersioning()
+    public function supportsAliasing()
     {
-        return static::SUPPORTS_VERSIONING;
+        return static::SUPPORTS_ALIASING;
     }
 
     /**
@@ -269,13 +284,23 @@ abstract class Annotation
     }
 
     /**
-     * Does this annotation support aliasing?
+     * Does this annotation support authentication scopes?
      *
      * @return bool
      */
-    public function supportsAliasing()
+    public function supportsScopes()
     {
-        return static::SUPPORTS_ALIASING;
+        return static::SUPPORTS_SCOPES;
+    }
+
+    /**
+     * Does this annotation support versioning?
+     *
+     * @return bool
+     */
+    public function supportsVersioning()
+    {
+        return static::SUPPORTS_VERSIONING;
     }
 
     /**
@@ -296,9 +321,30 @@ abstract class Annotation
             }
         }
 
+        // If this annotation supports aliasing, then we should include any aliasing data about it.
+        if ($this->supportsAliasing()) {
+            $arr['aliased'] = $this->isAliased();
+            $arr['aliases'] = [];
+
+            /** @var Annotation $alias */
+            foreach ($this->getAliases() as $alias) {
+                $arr['aliases'][] = $alias->toArray();
+            }
+        }
+
         // If this annotation supports deprecation, then we should include its designation.
         if ($this->supportsDeprecation()) {
             $arr['deprecated'] = $this->isDeprecated();
+        }
+
+        // If this annotation supports authentication scopes, then we should include those scopes.
+        if ($this->supportsScopes()) {
+            $arr['scopes'] = [];
+
+            /** @var Annotation $scope */
+            foreach ($this->getScopes() as $scope) {
+                $arr['scopes'][] = $scope->toArray();
+            }
         }
 
         // If this annotation supports versioning, then we should include its version
@@ -307,16 +353,6 @@ abstract class Annotation
 
             if ($this->version instanceof Version) {
                 $arr['version'] = $this->version->getConstraint();
-            }
-        }
-
-        // If this annotation supports aliasing, then we should include any aliasing data about it.
-        if ($this->supportsAliasing()) {
-            $arr['aliased'] = $this->isAliased();
-            $arr['aliases'] = [];
-
-            foreach ($this->getAliases() as $alias) {
-                $arr['aliases'][] = $alias->toArray();
             }
         }
 
@@ -437,6 +473,28 @@ abstract class Annotation
     public function getAliases()
     {
         return $this->aliases;
+    }
+
+    /**
+     * Set any required authentication scopes to this annotation.
+     *
+     * @param array<Annotation> $scopes
+     * @return $this
+     */
+    public function setScopes(array $scopes)
+    {
+        $this->scopes = $scopes;
+        return $this;
+    }
+
+    /**
+     * Get all required authentication scopes for this annotation.
+     *
+     * @return array
+     */
+    public function getScopes()
+    {
+        return $this->scopes;
     }
 
     /**

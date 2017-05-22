@@ -11,9 +11,9 @@ use Mill\Parser\MSON;
 class UriSegmentAnnotation extends Annotation
 {
     const REQUIRES_VISIBILITY_DECORATOR = false;
-    const SUPPORTS_VERSIONING = false;
     const SUPPORTS_DEPRECATION = false;
     const SUPPORTS_MSON = true;
+    const SUPPORTS_VERSIONING = false;
 
     const REGEX_URI = '/^({[^}]*})/';
 

@@ -8,6 +8,7 @@ use Mill\Exceptions\MethodNotSuppliedException;
 use Mill\Exceptions\Representation\DuplicateFieldException;
 use Mill\Parser;
 use Mill\Parser\Annotations\DataAnnotation;
+use Mill\Parser\Annotations\ScopeAnnotation;
 use Mill\Parser\Version;
 
 /**
@@ -87,12 +88,13 @@ class RepresentationParser extends Parser
      */
     public function parseAnnotations(array $tags, $original_content)
     {
-        $has_see = [];
+        $scopes = [];
+        $see_pointers = [];
         $annotations = [];
         $data = [];
 
-        /** @var Version|null $has_version */
-        $has_version = null;
+        /** @var Version|null $version */
+        $version = null;
 
         // Does this have any `@api-see` pointers or a `@api-version` declaration?
         /** @var UnknownTag $tag */
@@ -106,29 +108,37 @@ class RepresentationParser extends Parser
                     $data[] = $content;
                     break;
 
+                case 'scope':
+                    $scopes[] = new ScopeAnnotation($content, $this->class, $this->method);
+                    break;
+
                 case 'see':
-                    $has_see = explode(' ', $content);
+                    $see_pointers = explode(' ', $content);
                     break;
 
                 case 'version':
-                    $has_version = new Version($content, $this->class, $this->method);
+                    $version = new Version($content, $this->class, $this->method);
                     break;
             }
         }
 
         foreach ($data as $content) {
-            $annotation = new DataAnnotation($content, $this->class, $this->method, $has_version);
+            $annotation = new DataAnnotation($content, $this->class, $this->method, $version);
+            if (!empty($scopes)) {
+                $annotation->setScopes($scopes);
+            }
+
             $annotations[$annotation->getIdentifier()] = $annotation;
         }
 
         // If we matched an `@api-see` annotation, then let's parse it out into viable annotations.
-        if (!empty($has_see)) {
-            list($see_class, $see_method) = explode('::', array_shift($has_see));
+        if (!empty($see_pointers)) {
+            list($see_class, $see_method) = explode('::', array_shift($see_pointers));
             if (in_array(strtolower($see_class), ['self', 'static'])) {
                 $see_class = $this->class;
             }
 
-            $prefix = array_shift($has_see);
+            $prefix = array_shift($see_pointers);
 
             // Pass in the current array (by reference) of found annotations that we have so we can do depth traversal
             // for version and capability requirements of any implied children, by way of dot-notation.
@@ -137,10 +147,10 @@ class RepresentationParser extends Parser
 
             /** @var DataAnnotation $annotation */
             foreach ($see_annotations as $name => $annotation) {
-                if ($has_version) {
+                if ($version) {
                     // If this `@api-see` is being used with a `@api-version`, then the version here should always
                     // take precedence over any versioning set up within the see.
-                    $annotation->setVersion($has_version);
+                    $annotation->setVersion($version);
                 }
 
                 // If this `@api-see` has a prefix to attach to found annotation identifiers, do so.

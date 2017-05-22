@@ -12,8 +12,8 @@ use Mill\Parser\Annotation;
 class ScopeAnnotation extends Annotation
 {
     const REQUIRES_VISIBILITY_DECORATOR = false;
-    const SUPPORTS_VERSIONING = false;
     const SUPPORTS_DEPRECATION = false;
+    const SUPPORTS_VERSIONING = false;
 
     /**
      * Name of the scope type that is required for this annotations' method.

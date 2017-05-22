@@ -51,6 +51,7 @@ class DataAnnotationTest extends AnnotationTest
                     'description' => 'MPAA rating',
                     'identifier' => 'content_rating',
                     'sample_data' => false,
+                    'scopes' => [],
                     'subtype' => false,
                     'type' => 'string',
                     'values' => false,
@@ -67,6 +68,7 @@ class DataAnnotationTest extends AnnotationTest
                     'description' => 'MPAA rating',
                     'identifier' => 'content_rating',
                     'sample_data' => false,
+                    'scopes' => [],
                     'subtype' => false,
                     'type' => 'string',
                     'values' => false,
@@ -82,6 +84,7 @@ class DataAnnotationTest extends AnnotationTest
                     'description' => 'URL to purchase tickets',
                     'identifier' => 'tickets.url',
                     'sample_data' => false,
+                    'scopes' => [],
                     'subtype' => false,
                     'type' => 'string',
                     'values' => false,
@@ -106,6 +109,7 @@ class DataAnnotationTest extends AnnotationTest
                     'description' => 'MPAA rating',
                     'identifier' => 'content_rating',
                     'sample_data' => 'G',
+                    'scopes' => [],
                     'subtype' => false,
                     'type' => 'enum',
                     'values' => [
@@ -118,6 +122,28 @@ class DataAnnotationTest extends AnnotationTest
                         'UR' => '',
                         'X' => ''
                     ],
+                    'version' => false
+                ]
+            ],
+            'scoped' => [
+                'content' => '/**
+                  * @api-data tickets.url (string) - URL to purchase tickets
+                  * @api-scope public
+                  */',
+                'expected' => [
+                    'capability' => false,
+                    'description' => 'URL to purchase tickets',
+                    'identifier' => 'tickets.url',
+                    'sample_data' => false,
+                    'scopes' => [
+                        [
+                            'description' => false,
+                            'scope' => 'public'
+                        ]
+                    ],
+                    'subtype' => false,
+                    'type' => 'string',
+                    'values' => false,
                     'version' => false
                 ]
             ],
@@ -134,12 +160,19 @@ class DataAnnotationTest extends AnnotationTest
                   *    - `NR`
                   *    - `UR`
                   * @api-version 1.0
+                  * @api-scope public
                   *',
                 'expected' => [
                     'capability' => 'MOVIE_RATINGS',
                     'description' => 'MPAA rating',
                     'identifier' => 'content_rating',
                     'sample_data' => 'G',
+                    'scopes' => [
+                        [
+                            'description' => false,
+                            'scope' => 'public'
+                        ]
+                    ],
                     'subtype' => false,
                     'type' => 'enum',
                     'values' => [

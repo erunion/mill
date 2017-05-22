@@ -19,8 +19,8 @@ class ThrowsAnnotation extends Annotation
     use HasHttpCodeResponseTrait;
 
     const REQUIRES_VISIBILITY_DECORATOR = true;
-    const SUPPORTS_VERSIONING = true;
     const SUPPORTS_DEPRECATION = false;
+    const SUPPORTS_VERSIONING = true;
 
     const REGEX_ERROR_CODE = '/^(\(.*\))/';
     const REGEX_THROW_HTTP_CODE = '/{([\d]+)}/';
