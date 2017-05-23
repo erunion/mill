@@ -149,17 +149,27 @@ class RepresentationParserTest extends TestCase
             'unrelated'
         ], array_keys($annotations));
 
-        $this->assertSame('>=3.3', $annotations['connections']->toArray()['version']);
-        $this->assertSame('>=3.3', $annotations['connections.things']->toArray()['version']);
-        $this->assertSame('>=3.3', $annotations['connections.things.name']->toArray()['version']);
-        $this->assertSame('3.4', $annotations['connections.things.uri']->toArray()['version']);
-        $this->assertEmpty($annotations['unrelated']->toArray()['version']);
+        $annotations = array_map(function ($annotation) {
+            return $annotation->toArray();
+        }, $annotations);
 
-        $this->assertEmpty($annotations['connections']->toArray()['capability']);
-        $this->assertSame('NONE', $annotations['connections.things']->toArray()['capability']);
-        $this->assertSame('MOVIE_RATINGS', $annotations['connections.things.name']->toArray()['capability']);
-        $this->assertSame('NONE', $annotations['connections.things.uri']->toArray()['capability']);
-        $this->assertEmpty($annotations['unrelated']->toArray()['version']);
+        $this->assertEmpty($annotations['connections']['capability']);
+        $this->assertSame('NONE', $annotations['connections.things']['capability']);
+        $this->assertSame('MOVIE_RATINGS', $annotations['connections.things.name']['capability']);
+        $this->assertSame('NONE', $annotations['connections.things.uri']['capability']);
+        $this->assertEmpty($annotations['unrelated']['capability']);
+
+        $this->assertSame('>=3.3', $annotations['connections']['version']);
+        $this->assertSame('>=3.3', $annotations['connections.things']['version']);
+        $this->assertSame('>=3.3', $annotations['connections.things.name']['version']);
+        $this->assertSame('3.4', $annotations['connections.things.uri']['version']);
+        $this->assertEmpty($annotations['unrelated']['version']);
+
+        $this->assertEmpty($annotations['connections']['scopes']);
+        $this->assertSame('public', $annotations['connections.things']['scopes'][0]['scope']);
+        $this->assertSame('public', $annotations['connections.things.name']['scopes'][0]['scope']);
+        $this->assertSame('public', $annotations['connections.things.uri']['scopes'][0]['scope']);
+        $this->assertEmpty($annotations['unrelated']['scopes']);
     }
 
     /**

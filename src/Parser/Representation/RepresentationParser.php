@@ -68,7 +68,7 @@ class RepresentationParser extends Parser
             // Run through all created annotations and cascade any versioning down into any present child annotations.
             /** @var DataAnnotation $annotation */
             foreach ($annotations as $identifier => $annotation) {
-                if (!$annotation->getVersion() && !$annotation->getCapability()) {
+                if (!$annotation->getVersion() && !$annotation->getCapability() && !$annotation->getScopes()) {
                     continue;
                 }
 
@@ -210,6 +210,9 @@ class RepresentationParser extends Parser
         $parent_identifier = $parent->getIdentifier();
         $parent_version = $parent->getVersion();
 
+        /** @var array<ScopeAnnotation> $parent_scopes */
+        $parent_scopes = $parent->getScopes();
+
         /** @var string $parent_capability */
         $parent_capability = $parent->getCapability();
 
@@ -230,6 +233,10 @@ class RepresentationParser extends Parser
 
             if (!empty($parent_capability) && !$annotation->getCapability()) {
                 $annotation->setCapability($parent_capability);
+            }
+
+            if (!empty($parent_scopes) && !$annotation->getScopes()) {
+                $annotation->setScopes($parent_scopes);
             }
         }
     }
