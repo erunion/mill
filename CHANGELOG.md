@@ -1,4 +1,8 @@
 # Changelog
+## [2.1.1] - 2017-05-25
+### Fixed
+- Fixed a bug where `@api-scope` annotations with `@api-data` weren't cascading into dot-notation children. [#92](https://github.com/vimeo/mill/pull/92)
+
 ## [2.1.0] - 2017-05-22
 ### Added
 - Added support for `@api-scope` annotations alongside `@api-data`. [#90](https://github.com/vimeo/mill/issues/90)
@@ -116,6 +120,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[2.1.1]: https://github.com/vimeo/mill/compare/2.1.0...2.1.1
 [2.1.0]: https://github.com/vimeo/mill/compare/2.0.6...2.1.0
 [2.0.6]: https://github.com/vimeo/mill/compare/2.0.5...2.0.6
 [2.0.5]: https://github.com/vimeo/mill/compare/2.0.4...2.0.5
