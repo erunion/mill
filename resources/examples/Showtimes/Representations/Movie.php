@@ -111,14 +111,21 @@ class Movie extends Representation
      */
     private function getExternalUrls()
     {
-        /**
-         * @api-data imdb (string) - IMDB URL
-         * @api-data trailer (string) - Trailer URL
-         * @api-data tickets (string, BUY_TICKETS) - Tickets URL
-         */
         return [
+            /**
+             * @api-data imdb (string) - IMDB URL
+             */
             'imdb' => $this->movie->imdb,
+
+            /**
+             * @api-data trailer (string) - Trailer URL
+             */
             'trailer' => $this->movie->trailer,
+
+            /**
+             * @api-data tickets (string, BUY_TICKETS) - Tickets URL
+             * @api-version <1.1.3
+             */
             'tickets' => $this->movie->tickets_url
         ];
     }

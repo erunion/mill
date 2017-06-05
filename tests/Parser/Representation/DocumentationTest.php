@@ -160,7 +160,7 @@ class DocumentationTest extends TestCase
                             'subtype' => false,
                             'type' => 'string',
                             'values' => false,
-                            'version' => '>=1.1'
+                            'version' => '>=1.1 <1.1.3'
                         ],
                         'external_urls.trailer' => [
                             'capability' => false,
@@ -391,7 +391,7 @@ class DocumentationTest extends TestCase
                                     'subtype' => false,
                                     'type' => 'string',
                                     'values' => false,
-                                    'version' => '>=1.1'
+                                    'version' => '>=1.1 <1.1.3'
                                 ]
                             ],
                             'trailer' => [

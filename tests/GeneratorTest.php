@@ -16,7 +16,8 @@ class GeneratorTest extends TestCase
             '1.0',
             '1.1',
             '1.1.1',
-            '1.1.2'
+            '1.1.2',
+            '1.1.3'
         ], array_keys($generator->getResources()));
     }
 
