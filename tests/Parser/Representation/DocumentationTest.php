@@ -26,6 +26,8 @@ class DocumentationTest extends TestCase
         $this->assertSame($expected['description.length'], strlen($representation['description']));
 
         // Verify content dot notation.
+        $this->assertSame(array_keys($expected['content']), array_keys($parsed->getRawContent()));
+        $this->assertSame(array_keys($expected['content']), array_keys($parsed->getContent()));
         $this->assertSame(array_keys($expected['content']), array_keys($representation['content']));
         $this->assertCount(count($expected['content']), $representation['content']);
         foreach ($representation['content'] as $annotation => $data) {

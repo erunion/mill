@@ -414,8 +414,9 @@ class Config
 
         // Keep things tidy.
         $this->api_versions = array_unique($this->api_versions);
+        $this->api_versions = Semver::sort($this->api_versions);
 
-        $this->first_api_version = Semver::sort($this->api_versions)[0];
+        $this->first_api_version = $this->api_versions[0];
         $this->latest_api_version = Semver::rsort($this->api_versions)[0];
     }
 

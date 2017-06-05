@@ -157,10 +157,11 @@ class RepresentationParser extends Parser
                 // `external_urls.tickets`, but that's versioned at `<1.1.3`, the new parsed constraint for
                 // `external_urls.tickets` will be `>=1.1 <1.1.3`.
                 if ($version) {
-                    if ($annotation->getVersion()) {
+                    $annotation_version = $annotation->getVersion();
+                    if ($annotation_version) {
                         $new_constraint = implode(' ', [
                             $version->getConstraint(),
-                            $annotation->getVersion()->getConstraint()
+                            $annotation_version->getConstraint()
                         ]);
 
                         $updated_version = new Version($new_constraint, $this->class, $this->method);

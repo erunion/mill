@@ -47,6 +47,9 @@
     },
     "scripts": {
         "analysis": "psalm",
+        "build-changelog": [
+          "./bin/mill changelog --config=resources/examples/mill.xml"
+        ],
         "build-examples": [
             "rm -rf resources/examples/Showtimes/blueprints",
             "mkdir resources/examples/Showtimes/blueprints",
