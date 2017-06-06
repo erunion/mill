@@ -79,6 +79,7 @@ class GeneratorTest extends TestCase
                 $this->assertArrayHasKey($resource_name, $actual['resources']);
                 $actual_resource = $actual['resources'][$resource_name];
 
+                $this->assertSame($expected['resource.name'], $actual_resource['label']);
                 $this->assertSame($expected['description.length'], strlen($actual_resource['description']));
                 $this->assertCount(
                     count($expected['actions.data']),

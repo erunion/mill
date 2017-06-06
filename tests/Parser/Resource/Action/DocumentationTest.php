@@ -25,6 +25,8 @@ class DocumentationTest extends TestCase
         $this->assertSame($method, $parser->getMethod());
 
         $this->assertSame($expected['label'], $parser->getLabel());
+
+        $this->assertCount(count($expected['content_types']), $parser->getContentTypes());
         $this->assertSame($expected['content_types'][0]['content_type'], $parser->getContentType());
 
         if ($expected['content_types.latest-version']) {
