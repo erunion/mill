@@ -263,6 +263,16 @@ class Documentation
     }
 
     /**
+     * Get all annotations that this action has been configured with.
+     *
+     * @return array
+     */
+    public function getAnnotations()
+    {
+        return $this->annotations;
+    }
+
+    /**
      * Get the HTTP Content-Type that this action returns content in.
      *
      * @param Version|string|null $version

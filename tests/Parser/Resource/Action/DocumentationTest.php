@@ -47,6 +47,8 @@ class DocumentationTest extends TestCase
             $this->assertNull($min_version);
         }
 
+        $this->assertCount(count($expected['annotations']), $parser->getAnnotations());
+
         if (!isset($expected['annotations']['scope'])) {
             $this->assertEmpty($parser->getScopes());
         } else {
