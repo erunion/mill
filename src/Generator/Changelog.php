@@ -52,7 +52,7 @@ class Changelog extends Generator
         $this->buildResourceChangelog($this->parsed['resources']);
 
         // Keep things tidy
-        ksort($this->changelog);
+        krsort($this->changelog);
         foreach ($this->changelog as $version => $changes) {
             ksort($this->changelog[$version]);
         }

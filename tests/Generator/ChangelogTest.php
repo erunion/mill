@@ -12,86 +12,47 @@ class ChangelogTest extends TestCase
         $generated = $changelog->generate();
 
         $this->assertSame([
-            '1.1',
-            '1.1.1',
+            '1.1.3',
             '1.1.2',
-            '1.1.3'
+            '1.1.1',
+            '1.1'
         ], array_keys($generated));
 
-        // v1.1
+        // v1.1.3
         $this->assertSame([
             'added' => [
                 [
-                    'key' => Changelog::CHANGE_REPRESENTATION_DATA,
+                    'key' => Changelog::CHANGE_ACTION_THROWS,
                     'data' => [
-                        'identifier' => 'external_urls',
-                        'representation' => 'Movie'
+                        'method' => 'PATCH',
+                        'uri' => '/movies/{id}',
+                        'http_code' => '404 Not Found',
+                        'representation' => 'Error',
+                        'description' => 'If the trailer URL could not be validated.'
                     ]
                 ],
                 [
-                    'key' => Changelog::CHANGE_REPRESENTATION_DATA,
+                    'key' => Changelog::CHANGE_ACTION_RETURN,
                     'data' => [
-                        'identifier' => 'external_urls.imdb',
-                        'representation' => 'Movie'
+                        'method' => 'POST',
+                        'uri' => '/movies',
+                        'http_code' => '201 Created',
+                        'representation' => false
                     ]
-                ],
+                ]
+            ],
+            'removed' => [
                 [
                     'key' => Changelog::CHANGE_REPRESENTATION_DATA,
                     'data' => [
                         'identifier' => 'external_urls.tickets',
                         'representation' => 'Movie'
                     ]
-                ],
-                [
-                    'key' => Changelog::CHANGE_REPRESENTATION_DATA,
-                    'data' => [
-                        'identifier' => 'external_urls.trailer',
-                        'representation' => 'Movie'
-                    ]
-                ],
-                [
-                    'key' => Changelog::CHANGE_ACTION,
-                    'data' => [
-                        'method' => 'PATCH',
-                        'uri' => '/movies/{id}'
-                    ]
-                ],
-                [
-                    'key' => Changelog::CHANGE_ACTION_PARAM,
-                    'data' => [
-                        'method' => 'POST',
-                        'uri' => '/movies',
-                        'parameter' => 'imdb',
-                        'description' => 'IMDB URL'
-                    ]
-                ],
-                [
-                    'key' => Changelog::CHANGE_ACTION_PARAM,
-                    'data' => [
-                        'method' => 'POST',
-                        'uri' => '/movies',
-                        'parameter' => 'trailer',
-                        'description' => 'Trailer URL'
-                    ]
                 ]
             ]
-        ], $generated['1.1']);
+        ], $generated['1.1.3']);
 
-        // v1.1.1
-        $this->assertSame([
-            'added' => [
-                [
-                    'key' => Changelog::CHANGE_ACTION_PARAM,
-                    'data' => [
-                        'method' => 'PATCH',
-                        'uri' => '/movies/{id}',
-                        'parameter' => 'imdb',
-                        'description' => 'IMDB URL'
-                    ]
-                ]
-            ]
-        ], $generated['1.1.1']);
-
+        // v1.1.2
         $this->assertSame([
             'changed' => [
                 [
@@ -169,39 +130,79 @@ class ChangelogTest extends TestCase
             ]
         ], $generated['1.1.2']);
 
-        // v1.1.3
+        // v1.1.1
         $this->assertSame([
             'added' => [
                 [
-                    'key' => Changelog::CHANGE_ACTION_THROWS,
+                    'key' => Changelog::CHANGE_ACTION_PARAM,
                     'data' => [
                         'method' => 'PATCH',
                         'uri' => '/movies/{id}',
-                        'http_code' => '404 Not Found',
-                        'representation' => 'Error',
-                        'description' => 'If the trailer URL could not be validated.'
+                        'parameter' => 'imdb',
+                        'description' => 'IMDB URL'
+                    ]
+                ]
+            ]
+        ], $generated['1.1.1']);
+
+        // v1.1
+        $this->assertSame([
+            'added' => [
+                [
+                    'key' => Changelog::CHANGE_REPRESENTATION_DATA,
+                    'data' => [
+                        'identifier' => 'external_urls',
+                        'representation' => 'Movie'
                     ]
                 ],
                 [
-                    'key' => Changelog::CHANGE_ACTION_RETURN,
+                    'key' => Changelog::CHANGE_REPRESENTATION_DATA,
                     'data' => [
-                        'method' => 'POST',
-                        'uri' => '/movies',
-                        'http_code' => '201 Created',
-                        'representation' => false
+                        'identifier' => 'external_urls.imdb',
+                        'representation' => 'Movie'
                     ]
-                ]
-            ],
-            'removed' => [
+                ],
                 [
                     'key' => Changelog::CHANGE_REPRESENTATION_DATA,
                     'data' => [
                         'identifier' => 'external_urls.tickets',
                         'representation' => 'Movie'
                     ]
+                ],
+                [
+                    'key' => Changelog::CHANGE_REPRESENTATION_DATA,
+                    'data' => [
+                        'identifier' => 'external_urls.trailer',
+                        'representation' => 'Movie'
+                    ]
+                ],
+                [
+                    'key' => Changelog::CHANGE_ACTION,
+                    'data' => [
+                        'method' => 'PATCH',
+                        'uri' => '/movies/{id}'
+                    ]
+                ],
+                [
+                    'key' => Changelog::CHANGE_ACTION_PARAM,
+                    'data' => [
+                        'method' => 'POST',
+                        'uri' => '/movies',
+                        'parameter' => 'imdb',
+                        'description' => 'IMDB URL'
+                    ]
+                ],
+                [
+                    'key' => Changelog::CHANGE_ACTION_PARAM,
+                    'data' => [
+                        'method' => 'POST',
+                        'uri' => '/movies',
+                        'parameter' => 'trailer',
+                        'description' => 'Trailer URL'
+                    ]
                 ]
             ]
-        ], $generated['1.1.3']);
+        ], $generated['1.1']);
     }
 
     public function testJsonGeneration()
@@ -210,20 +211,14 @@ class ChangelogTest extends TestCase
         $generated = $changelog->generateJson();
 
         $this->assertSame([
-            '1.1' => [
+            '1.1.3' => [
                 'added' => [
-                    '`external_urls` has been added to the `Movie` representation.',
-                    '`external_urls.imdb` has been added to the `Movie` representation.',
-                    '`external_urls.tickets` has been added to the `Movie` representation.',
-                    '`external_urls.trailer` has been added to the `Movie` representation.',
-                    'PATCH on `/movies/{id}` was added.',
-                    'A `imdb` request parameter was added to POST on `/movies`.',
-                    'A `trailer` request parameter was added to POST on `/movies`.'
-                ]
-            ],
-            '1.1.1' => [
-                'added' => [
-                    'A `imdb` request parameter was added to PATCH on `/movies/{id}`.'
+                    'PATCH on `/movies/{id}` will now return a `404 Not Found` with a `Error` representation: If ' .
+                    'the trailer URL could not be validated.',
+                    'POST on `/movies` now returns a `201 Created`.'
+                ],
+                'removed' => [
+                    '`external_urls.tickets` has been removed from the `Movie` representation.'
                 ]
             ],
             '1.1.2' => [
@@ -239,14 +234,20 @@ class ChangelogTest extends TestCase
                     'POST on `/theaters` will now return a `application/mill.example.theater` content type.'
                 ]
             ],
-            '1.1.3' => [
+            '1.1.1' => [
                 'added' => [
-                    'PATCH on `/movies/{id}` will now return a `404 Not Found` with a `Error` representation: If ' .
-                        'the trailer URL could not be validated.',
-                    'POST on `/movies` now returns a `201 Created`.'
-                ],
-                'removed' => [
-                    '`external_urls.tickets` has been removed from the `Movie` representation.'
+                    'A `imdb` request parameter was added to PATCH on `/movies/{id}`.'
+                ]
+            ],
+            '1.1' => [
+                'added' => [
+                    '`external_urls` has been added to the `Movie` representation.',
+                    '`external_urls.imdb` has been added to the `Movie` representation.',
+                    '`external_urls.tickets` has been added to the `Movie` representation.',
+                    '`external_urls.trailer` has been added to the `Movie` representation.',
+                    'PATCH on `/movies/{id}` was added.',
+                    'A `imdb` request parameter was added to POST on `/movies`.',
+                    'A `trailer` request parameter was added to POST on `/movies`.'
                 ]
             ]
         ], json_decode($generated, true));
