@@ -24,6 +24,9 @@ class Movies
      *
      * @api-version <1.1.2
      * @api-contentType application/json
+     *
+     * @api-version >=1.1
+     * @api-param:public page (integer, optional) - Page of results to pull.
      */
     public function GET()
     {

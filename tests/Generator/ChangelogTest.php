@@ -21,32 +21,39 @@ class ChangelogTest extends TestCase
         // v1.1.3
         $this->assertSame([
             'added' => [
-                [
-                    'key' => Changelog::CHANGE_ACTION_THROWS,
-                    'data' => [
-                        'method' => 'PATCH',
-                        'uri' => '/movies/{id}',
-                        'http_code' => '404 Not Found',
-                        'representation' => 'Error',
-                        'description' => 'If the trailer URL could not be validated.'
-                    ]
-                ],
-                [
-                    'key' => Changelog::CHANGE_ACTION_RETURN,
-                    'data' => [
-                        'method' => 'POST',
-                        'uri' => '/movies',
-                        'http_code' => '201 Created',
-                        'representation' => false
+                'resources' => [
+                    '/movies/{id}' => [
+                        Changelog::CHANGE_ACTION_THROWS => [
+                            [
+                                'method' => 'PATCH',
+                                'uri' => '/movies/{id}',
+                                'http_code' => '404 Not Found',
+                                'representation' => 'Error',
+                                'description' => 'If the trailer URL could not be validated.'
+                            ]
+                        ],
+                    ],
+                    '/movies' => [
+                        Changelog::CHANGE_ACTION_RETURN => [
+                            [
+                                'method' => 'POST',
+                                'uri' => '/movies',
+                                'http_code' => '201 Created',
+                                'representation' => false
+                            ]
+                        ]
                     ]
                 ]
             ],
             'removed' => [
-                [
-                    'key' => Changelog::CHANGE_REPRESENTATION_DATA,
-                    'data' => [
-                        'identifier' => 'external_urls.tickets',
-                        'representation' => 'Movie'
+                'representations' => [
+                    'Movie' => [
+                        Changelog::CHANGE_REPRESENTATION_DATA => [
+                            [
+                                'field' => 'external_urls.tickets',
+                                'representation' => 'Movie'
+                            ]
+                        ]
                     ]
                 ]
             ]
@@ -55,76 +62,71 @@ class ChangelogTest extends TestCase
         // v1.1.2
         $this->assertSame([
             'changed' => [
-                [
-                    'key' => Changelog::CHANGE_CONTENT_TYPE,
-                    'data' => [
-                        'method' => 'GET',
-                        'uri' => '/movie/{id}',
-                        'content_type' => 'application/mill.example.movie'
-                    ]
-                ],
-                [
-                    'key' => Changelog::CHANGE_CONTENT_TYPE,
-                    'data' => [
-                        'method' => 'GET',
-                        'uri' => '/movies/{id}',
-                        'content_type' => 'application/mill.example.movie'
-                    ]
-                ],
-                [
-                    'key' => Changelog::CHANGE_CONTENT_TYPE,
-                    'data' => [
-                        'method' => 'PATCH',
-                        'uri' => '/movies/{id}',
-                        'content_type' => 'application/mill.example.movie'
-                    ]
-                ],
-                [
-                    'key' => Changelog::CHANGE_CONTENT_TYPE,
-                    'data' => [
-                        'method' => 'GET',
-                        'uri' => '/movies',
-                        'content_type' => 'application/mill.example.movie'
-                    ]
-                ],
-                [
-                    'key' => Changelog::CHANGE_CONTENT_TYPE,
-                    'data' => [
-                        'method' => 'POST',
-                        'uri' => '/movies',
-                        'content_type' => 'application/mill.example.movie'
-                    ]
-                ],
-                [
-                    'key' => Changelog::CHANGE_CONTENT_TYPE,
-                    'data' => [
-                        'method' => 'GET',
-                        'uri' => '/theaters/{id}',
-                        'content_type' => 'application/mill.example.theater'
-                    ]
-                ],
-                [
-                    'key' => Changelog::CHANGE_CONTENT_TYPE,
-                    'data' => [
-                        'method' => 'PATCH',
-                        'uri' => '/theaters/{id}',
-                        'content_type' => 'application/mill.example.theater'
-                    ]
-                ],
-                [
-                    'key' => Changelog::CHANGE_CONTENT_TYPE,
-                    'data' => [
-                        'method' => 'GET',
-                        'uri' => '/theaters',
-                        'content_type' => 'application/mill.example.theater'
-                    ]
-                ],
-                [
-                    'key' => Changelog::CHANGE_CONTENT_TYPE,
-                    'data' => [
-                        'method' => 'POST',
-                        'uri' => '/theaters',
-                        'content_type' => 'application/mill.example.theater'
+                'resources' => [
+                    '/movie/{id}' => [
+                        Changelog::CHANGE_CONTENT_TYPE => [
+                            [
+                                'method' => 'GET',
+                                'uri' => '/movie/{id}',
+                                'content_type' => 'application/mill.example.movie'
+                            ]
+                        ]
+                    ],
+                    '/movies/{id}' => [
+                        Changelog::CHANGE_CONTENT_TYPE => [
+                            [
+                                'method' => 'GET',
+                                'uri' => '/movies/{id}',
+                                'content_type' => 'application/mill.example.movie'
+                            ],
+                            [
+                                'method' => 'PATCH',
+                                'uri' => '/movies/{id}',
+                                'content_type' => 'application/mill.example.movie'
+                            ]
+                        ]
+                    ],
+                    '/movies' => [
+                        Changelog::CHANGE_CONTENT_TYPE => [
+                            [
+                                'method' => 'GET',
+                                'uri' => '/movies',
+                                'content_type' => 'application/mill.example.movie'
+                            ],
+                            [
+                                'method' => 'POST',
+                                'uri' => '/movies',
+                                'content_type' => 'application/mill.example.movie'
+                            ]
+                        ]
+                    ],
+                    '/theaters/{id}' => [
+                        Changelog::CHANGE_CONTENT_TYPE => [
+                            [
+                                'method' => 'GET',
+                                'uri' => '/theaters/{id}',
+                                'content_type' => 'application/mill.example.theater'
+                            ],
+                            [
+                                'method' => 'PATCH',
+                                'uri' => '/theaters/{id}',
+                                'content_type' => 'application/mill.example.theater'
+                            ]
+                        ]
+                    ],
+                    '/theaters' => [
+                        Changelog::CHANGE_CONTENT_TYPE => [
+                            [
+                                'method' => 'GET',
+                                'uri' => '/theaters',
+                                'content_type' => 'application/mill.example.theater'
+                            ],
+                            [
+                                'method' => 'POST',
+                                'uri' => '/theaters',
+                                'content_type' => 'application/mill.example.theater'
+                            ]
+                        ]
                     ]
                 ]
             ]
@@ -133,13 +135,16 @@ class ChangelogTest extends TestCase
         // v1.1.1
         $this->assertSame([
             'added' => [
-                [
-                    'key' => Changelog::CHANGE_ACTION_PARAM,
-                    'data' => [
-                        'method' => 'PATCH',
-                        'uri' => '/movies/{id}',
-                        'parameter' => 'imdb',
-                        'description' => 'IMDB URL'
+                'resources' => [
+                    '/movies/{id}' => [
+                        Changelog::CHANGE_ACTION_PARAM => [
+                            [
+                                'method' => 'PATCH',
+                                'uri' => '/movies/{id}',
+                                'parameter' => 'imdb',
+                                'description' => 'IMDB URL'
+                            ]
+                        ]
                     ]
                 ]
             ]
@@ -148,57 +153,58 @@ class ChangelogTest extends TestCase
         // v1.1
         $this->assertSame([
             'added' => [
-                [
-                    'key' => Changelog::CHANGE_REPRESENTATION_DATA,
-                    'data' => [
-                        'identifier' => 'external_urls',
-                        'representation' => 'Movie'
+                'representations' => [
+                    'Movie' => [
+                        Changelog::CHANGE_REPRESENTATION_DATA => [
+                            [
+                                'field' => 'external_urls',
+                                'representation' => 'Movie'
+                            ],
+                            [
+                                'field' => 'external_urls.imdb',
+                                'representation' => 'Movie'
+                            ],
+                            [
+                                'field' => 'external_urls.tickets',
+                                'representation' => 'Movie'
+                            ],
+                            [
+                                'field' => 'external_urls.trailer',
+                                'representation' => 'Movie'
+                            ]
+                        ]
                     ]
                 ],
-                [
-                    'key' => Changelog::CHANGE_REPRESENTATION_DATA,
-                    'data' => [
-                        'identifier' => 'external_urls.imdb',
-                        'representation' => 'Movie'
-                    ]
-                ],
-                [
-                    'key' => Changelog::CHANGE_REPRESENTATION_DATA,
-                    'data' => [
-                        'identifier' => 'external_urls.tickets',
-                        'representation' => 'Movie'
-                    ]
-                ],
-                [
-                    'key' => Changelog::CHANGE_REPRESENTATION_DATA,
-                    'data' => [
-                        'identifier' => 'external_urls.trailer',
-                        'representation' => 'Movie'
-                    ]
-                ],
-                [
-                    'key' => Changelog::CHANGE_ACTION,
-                    'data' => [
-                        'method' => 'PATCH',
-                        'uri' => '/movies/{id}'
-                    ]
-                ],
-                [
-                    'key' => Changelog::CHANGE_ACTION_PARAM,
-                    'data' => [
-                        'method' => 'POST',
-                        'uri' => '/movies',
-                        'parameter' => 'imdb',
-                        'description' => 'IMDB URL'
-                    ]
-                ],
-                [
-                    'key' => Changelog::CHANGE_ACTION_PARAM,
-                    'data' => [
-                        'method' => 'POST',
-                        'uri' => '/movies',
-                        'parameter' => 'trailer',
-                        'description' => 'Trailer URL'
+                'resources' => [
+                    '/movies/{id}' => [
+                        Changelog::CHANGE_ACTION => [
+                            [
+                                'method' => 'PATCH',
+                                'uri' => '/movies/{id}'
+                            ]
+                        ]
+                    ],
+                    '/movies' => [
+                        Changelog::CHANGE_ACTION_PARAM => [
+                            [
+                                'method' => 'GET',
+                                'uri' => '/movies',
+                                'parameter' => 'page',
+                                'description' => 'Page of results to pull.'
+                            ],
+                            [
+                                'method' => 'POST',
+                                'uri' => '/movies',
+                                'parameter' => 'imdb',
+                                'description' => 'IMDB URL'
+                            ],
+                            [
+                                'method' => 'POST',
+                                'uri' => '/movies',
+                                'parameter' => 'trailer',
+                                'description' => 'Trailer URL'
+                            ]
+                        ]
                     ]
                 ]
             ]
@@ -209,47 +215,119 @@ class ChangelogTest extends TestCase
     {
         $changelog = new Changelog($this->getConfig());
         $generated = $changelog->generateJson();
+        $generated = json_decode($generated, true);
 
         $this->assertSame([
-            '1.1.3' => [
-                'added' => [
-                    'PATCH on `/movies/{id}` will now return a `404 Not Found` with a `Error` representation: If ' .
-                    'the trailer URL could not be validated.',
+            '1.1.3',
+            '1.1.2',
+            '1.1.1',
+            '1.1'
+        ], array_keys($generated));
+
+        // v1.1.3
+        $this->assertSame([
+            'added' => [
+                'resources' => [
+                    'PATCH on `/movies/{id}` now returns a `404 Not Found` with a `Error` representation: If the ' .
+                        'trailer URL could not be validated.',
                     'POST on `/movies` now returns a `201 Created`.'
-                ],
-                'removed' => [
+                ]
+            ],
+            'removed' => [
+                'representations' => [
                     '`external_urls.tickets` has been removed from the `Movie` representation.'
                 ]
-            ],
-            '1.1.2' => [
-                'changed' => [
-                    'GET on `/movie/{id}` will now return a `application/mill.example.movie` content type.',
-                    'GET on `/movies/{id}` will now return a `application/mill.example.movie` content type.',
-                    'PATCH on `/movies/{id}` will now return a `application/mill.example.movie` content type.',
-                    'GET on `/movies` will now return a `application/mill.example.movie` content type.',
-                    'POST on `/movies` will now return a `application/mill.example.movie` content type.',
-                    'GET on `/theaters/{id}` will now return a `application/mill.example.theater` content type.',
-                    'PATCH on `/theaters/{id}` will now return a `application/mill.example.theater` content type.',
-                    'GET on `/theaters` will now return a `application/mill.example.theater` content type.',
-                    'POST on `/theaters` will now return a `application/mill.example.theater` content type.'
-                ]
-            ],
-            '1.1.1' => [
-                'added' => [
-                    'A `imdb` request parameter was added to PATCH on `/movies/{id}`.'
-                ]
-            ],
-            '1.1' => [
-                'added' => [
-                    '`external_urls` has been added to the `Movie` representation.',
-                    '`external_urls.imdb` has been added to the `Movie` representation.',
-                    '`external_urls.tickets` has been added to the `Movie` representation.',
-                    '`external_urls.trailer` has been added to the `Movie` representation.',
-                    'PATCH on `/movies/{id}` was added.',
-                    'A `imdb` request parameter was added to POST on `/movies`.',
-                    'A `trailer` request parameter was added to POST on `/movies`.'
+            ]
+        ], $generated['1.1.3']);
+
+        // v1.1.2
+        $this->assertSame([
+            'changed' => [
+                'resources' => [
+                    'GET on `/movie/{id}` now returns a `application/mill.example.movie` Content-Type header.',
+                    [
+                        [
+                            '`/movies/{id}` now returns a `application/mill.example.movie` Content-Type header on ' .
+                                'the following HTTP methods:',
+                            [
+                                '`GET`',
+                                '`PATCH`'
+                            ]
+                        ]
+                    ],
+                    [
+                        [
+                            '`/movies` now returns a `application/mill.example.movie` Content-Type header on the ' .
+                                'following HTTP methods:',
+                            [
+                                '`GET`',
+                                '`POST`'
+                            ]
+                        ]
+                    ],
+                    [
+                        [
+                            '`/theaters/{id}` now returns a `application/mill.example.theater` Content-Type header ' .
+                                'on the following HTTP methods:',
+                            [
+                                '`GET`',
+                                '`PATCH`'
+                            ]
+                        ]
+                    ],
+                    [
+                        [
+                            '`/theaters` now returns a `application/mill.example.theater` Content-Type header on the ' .
+                                'following HTTP methods:',
+                            [
+                                '`GET`',
+                                '`POST`'
+                            ]
+                        ]
+                    ]
                 ]
             ]
-        ], json_decode($generated, true));
+        ], $generated['1.1.2']);
+
+        // v1.1.1
+        $this->assertSame([
+            'added' => [
+                'resources' => [
+                    'A `imdb` request parameter was added to PATCH on `/movies/{id}`.'
+                ]
+            ]
+        ], $generated['1.1.1']);
+
+        // v1.1
+        $this->assertSame([
+            'added' => [
+                'representations' => [
+                    [
+                        [
+                            'The following fields have been added to the `Movie` representation:',
+                            [
+                                '`external_urls`',
+                                '`external_urls.imdb`',
+                                '`external_urls.tickets`',
+                                '`external_urls.trailer`'
+                            ]
+                        ]
+                    ],
+                ],
+                'resources' => [
+                    'PATCH on `/movies/{id}` was added.',
+                    [
+                        'A `page` request parameter was added to GET on `/movies`.',
+                        [
+                            'The following parameters have been added to POST on `/movies`:',
+                            [
+                                '`imdb`',
+                                '`trailer`'
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ], $generated['1.1']);
     }
 }

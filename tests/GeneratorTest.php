@@ -468,7 +468,8 @@ class GeneratorTest extends TestCase
                                     ]),
                                     '/movies::GET' => array_merge($common_actions['/movies::GET'], [
                                         'params.keys' => [
-                                            'location'
+                                            'location',
+                                            'page'
                                         ]
                                     ]),
                                     '/movies::POST' => array_merge($common_actions['/movies::POST'], [
@@ -610,7 +611,8 @@ class GeneratorTest extends TestCase
                                     ]),
                                     '/movies::GET' => array_merge($common_actions['/movies::GET'], [
                                         'params.keys' => [
-                                            'location'
+                                            'location',
+                                            'page'
                                         ]
                                     ]),
                                     '/movies::POST' => array_merge($common_actions['/movies::POST'], [

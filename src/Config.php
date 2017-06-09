@@ -132,7 +132,7 @@ class Config
      *
      * @param Filesystem $filesystem
      * @param string $config_file
-     * @param boolean $load_bootstrap
+     * @param bool $load_bootstrap
      * @return Config
      * @throws InvalidArgumentException If the config file can't be read.
      * @throws InvalidArgumentException If the config file does not exist.
@@ -905,7 +905,7 @@ class Config
      * Check if a given error representation requires an error code.
      *
      * @param string $representation
-     * @return boolean
+     * @return bool
      */
     public function doesErrorRepresentationNeedAnErrorCode($representation)
     {

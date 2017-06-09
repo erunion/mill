@@ -2,6 +2,8 @@
 namespace Mill\Generator;
 
 use Mill\Generator;
+use Mill\Generator\Changelog\Json;
+use Mill\Generator\Changelog\Markdown;
 use Mill\Parser\Annotation;
 use Mill\Parser\Annotations\ContentTypeAnnotation;
 use Mill\Parser\Annotations\ParamAnnotation;
@@ -12,8 +14,6 @@ use Mill\Parser\Resource\Action;
 
 class Changelog extends Generator
 {
-    use Generator\Traits\Markdown;
-
     const CHANGE_ACTION = 'action';
     const CHANGE_ACTION_PARAM = 'action_param';
     const CHANGE_ACTION_RETURN = 'action_return';
@@ -67,39 +67,8 @@ class Changelog extends Generator
      */
     public function generateJson()
     {
-        $json = [];
-
-        $changelog = $this->generate();
-        foreach ($changelog as $version => $data) {
-            foreach ($data as $type => $changes) {
-                foreach ($changes as $changeset) {
-                    switch ($type) {
-                        case 'added':
-                            $entry = $this->getEntryForAddedChange($changeset);
-                            if ($entry) {
-                                $json[$version]['added'][] = $entry;
-                            }
-                            break;
-
-                        case 'changed':
-                            $entry = $this->getEntryForChangedItem($changeset);
-                            if ($entry) {
-                                $json[$version]['changed'][] = $entry;
-                            }
-                            break;
-
-                        case 'removed':
-                            $entry = $this->getEntryForRemovedItem($changeset);
-                            if ($entry) {
-                                $json[$version]['removed'][] = $entry;
-                            }
-                            break;
-                    }
-                }
-            }
-        }
-
-        return json_encode($json);
+        $json = new Json($this->config, $this->version);
+        return $json->generate();
     }
 
     /**
@@ -109,36 +78,8 @@ class Changelog extends Generator
      */
     public function generateMarkdown()
     {
-        $markdown = '';
-
-        $api_name = $this->config->getName();
-        if (!empty($api_name)) {
-            $markdown .= sprintf('# Changelog: %s', $api_name);
-            $markdown .= $this->line(2);
-        } else {
-            $markdown .= sprintf('# Changelog', $api_name);
-            $markdown .= $this->line(2);
-        }
-
-        $changelog = json_decode($this->generateJson(), true);
-        foreach ($changelog as $version => $data) {
-            $markdown .= sprintf('## %s', $version);
-            $markdown .= $this->line();
-
-            foreach ($data as $type => $changes) {
-                $markdown .= sprintf('### %s', ucwords($type));
-                $markdown .= $this->line();
-
-                foreach ($changes as $changeset) {
-                    $markdown .= sprintf('- %s', $changeset);
-                    $markdown .= $this->line();
-                }
-
-                $markdown .= $this->line();
-            }
-        }
-
-        return $markdown;
+        $markdown = new Markdown($this->config, $this->version);
+        return $markdown->generate();
     }
 
     /**
@@ -158,7 +99,7 @@ class Changelog extends Generator
                 $introduced = $this->getVersionIntroduced($annotation);
                 if ($introduced) {
                     $this->logAdded($introduced, self::CHANGE_REPRESENTATION_DATA, [
-                        'identifier' => $identifier,
+                        'field' => $identifier,
                         'representation' => $representation->getLabel()
                     ]);
                 }
@@ -166,7 +107,7 @@ class Changelog extends Generator
                 $removed = $this->getVersionRemoved($annotation);
                 if ($removed) {
                     $this->logRemoved($removed, self::CHANGE_REPRESENTATION_DATA, [
-                        'identifier' => $identifier,
+                        'field' => $identifier,
                         'representation' => $representation->getLabel()
                     ]);
                 }
@@ -229,19 +170,19 @@ class Changelog extends Generator
                             ];
 
                             if ($annotation instanceof ParamAnnotation) {
-                                $removed_key = $introduced_key = self::CHANGE_ACTION_PARAM;
+                                $change_identifier = self::CHANGE_ACTION_PARAM;
 
                                 /** @var ParamAnnotation $annotation */
                                 $data['parameter'] = $annotation->getField();
                                 $data['description'] = $annotation->getDescription();
                             } elseif ($annotation instanceof ReturnAnnotation) {
-                                $removed_key = $introduced_key = self::CHANGE_ACTION_RETURN;
+                                $change_identifier = self::CHANGE_ACTION_RETURN;
 
                                 /** @var ReturnAnnotation $annotation */
                                 $data['http_code'] = $annotation->getHttpCode();
                                 $data['representation'] = $annotation->getRepresentation();
                             } elseif ($annotation instanceof ThrowsAnnotation) {
-                                $removed_key = $introduced_key = self::CHANGE_ACTION_THROWS;
+                                $change_identifier = self::CHANGE_ACTION_THROWS;
 
                                 /** @var Documentation $representation */
                                 $representation = $this->parsed['representations'][$annotation->getRepresentation()];
@@ -256,11 +197,11 @@ class Changelog extends Generator
                             }
 
                             if ($introduced) {
-                                $this->logAdded($introduced, $introduced_key, $data);
+                                $this->logAdded($introduced, $change_identifier, $data);
                             }
 
                             if ($removed) {
-                                $this->logRemoved($removed, $removed_key, $data);
+                                $this->logRemoved($removed, $change_identifier, $data);
                             }
                         }
                     }
@@ -273,16 +214,19 @@ class Changelog extends Generator
      * Log an addition into the changelog.
      *
      * @param string $version
-     * @param string $key
+     * @param string $identifier
      * @param array $data
      * @return Changelog
      */
-    private function logAdded($version, $key, array $data = [])
+    private function logAdded($version, $identifier, array $data = [])
     {
-        $this->changelog[$version]['added'][] = [
-            'key' => $key,
-            'data' => $data
-        ];
+        if ($identifier === self::CHANGE_REPRESENTATION_DATA) {
+            $representation = $data['representation'];
+            $this->changelog[$version]['added']['representations'][$representation][$identifier][] = $data;
+        } else {
+            $uri = $data['uri'];
+            $this->changelog[$version]['added']['resources'][$uri][$identifier][] = $data;
+        }
 
         return $this;
     }
@@ -291,16 +235,19 @@ class Changelog extends Generator
      * Log an altered piece of data into the changelog.
      *
      * @param string $version
-     * @param string $key
+     * @param string $identifier
      * @param array $data
      * @return Changelog
      */
-    private function logChanged($version, $key, array $data = [])
+    private function logChanged($version, $identifier, array $data = [])
     {
-        $this->changelog[$version]['changed'][] = [
-            'key' => $key,
-            'data' => $data
-        ];
+        if ($identifier === self::CHANGE_REPRESENTATION_DATA) {
+            $representation = $data['representation'];
+            $this->changelog[$version]['changed']['representations'][$representation][$identifier] = $data;
+        } else {
+            $uri = $data['uri'];
+            $this->changelog[$version]['changed']['resources'][$uri][$identifier][] = $data;
+        }
 
         return $this;
     }
@@ -309,175 +256,21 @@ class Changelog extends Generator
      * Log a removal into the changelog.
      *
      * @param string $version
-     * @param string $key
+     * @param string $identifier
      * @param array $data
      * @return Changelog
      */
-    private function logRemoved($version, $key, array $data = [])
+    private function logRemoved($version, $identifier, array $data = [])
     {
-        $this->changelog[$version]['removed'][] = [
-            'key' => $key,
-            'data' => $data
-        ];
+        if ($identifier === self::CHANGE_REPRESENTATION_DATA) {
+            $representation = $data['representation'];
+            $this->changelog[$version]['removed']['representations'][$representation][$identifier][] = $data;
+        } else {
+            $uri = $data['uri'];
+            $this->changelog[$version]['removed']['resources'][$uri][$identifier][] = $data;
+        }
 
         return $this;
-    }
-
-    /**
-     * Get a changelog entry for a changeset that was added into the API.
-     *
-     * @param array $changeset
-     * @return null|string
-     */
-    private function getEntryForAddedChange(array $changeset)
-    {
-        $description = null;
-
-        // `CHANGE_CONTENT_TYPE` is missing from this switch because it's a required annotation on resource actions,
-        // so it'll never be "added" in a changelog, just "changed".
-        switch ($changeset['key']) {
-            case self::CHANGE_ACTION:
-                $description = sprintf(
-                    '%s on `%s` was added.',
-                    $changeset['data']['method'],
-                    $changeset['data']['uri']
-                );
-                break;
-
-            case self::CHANGE_ACTION_PARAM:
-                $description = sprintf(
-                    'A `%s` request parameter was added to %s on `%s`.',
-                    $changeset['data']['parameter'],
-                    $changeset['data']['method'],
-                    $changeset['data']['uri']
-                );
-                break;
-
-            case self::CHANGE_ACTION_RETURN:
-                if ($changeset['data']['representation']) {
-                    $description = sprintf(
-                        '%s on `%s` now return a `%s` with a `%s` representation.',
-                        $changeset['data']['method'],
-                        $changeset['data']['uri'],
-                        $changeset['data']['http_code'],
-                        $changeset['data']['representation']
-                    );
-                } else {
-                    $description = sprintf(
-                        '%s on `%s` now returns a `%s`.',
-                        $changeset['data']['method'],
-                        $changeset['data']['uri'],
-                        $changeset['data']['http_code']
-                    );
-                }
-                break;
-
-            case self::CHANGE_ACTION_THROWS:
-                $description = sprintf(
-                    '%s on `%s` will now return a `%s` with a `%s` representation: %s',
-                    $changeset['data']['method'],
-                    $changeset['data']['uri'],
-                    $changeset['data']['http_code'],
-                    $changeset['data']['representation'],
-                    $changeset['data']['description']
-                );
-                break;
-
-            case self::CHANGE_REPRESENTATION_DATA:
-                $description = sprintf(
-                    '`%s` has been added to the `%s` representation.',
-                    $changeset['data']['identifier'],
-                    $changeset['data']['representation']
-                );
-                break;
-        }
-
-        return $description;
-    }
-
-    /**
-     * Get a changelog entry for a changeset that was changed in the API.
-     *
-     * @param array $changeset
-     * @return null|string
-     */
-    private function getEntryForChangedItem(array $changeset)
-    {
-        $description = null;
-
-        // Due to versioning restrictions in the Mill syntax (that will be fixed), only `@api-contentType` annotations
-        // will generate a "changed" entry in the changelog.
-        switch ($changeset['key']) {
-            case self::CHANGE_CONTENT_TYPE:
-                $description = sprintf(
-                    '%s on `%s` will now return a `%s` content type.',
-                    $changeset['data']['method'],
-                    $changeset['data']['uri'],
-                    $changeset['data']['content_type']
-                );
-                break;
-        }
-
-        return $description;
-    }
-
-    /**
-     * Get a changelog entry for a changeset that was removed from the API.
-     *
-     * @param array $changeset
-     * @return null|string
-     */
-    private function getEntryForRemovedItem(array $changeset)
-    {
-        $description = null;
-
-        switch ($changeset['key']) {
-            case self::CHANGE_REPRESENTATION_DATA:
-                $description = sprintf(
-                    '`%s` has been removed from the `%s` representation.',
-                    $changeset['data']['identifier'],
-                    $changeset['data']['representation']
-                );
-                break;
-            case self::CHANGE_ACTION_PARAM:
-                $description = sprintf(
-                    'The `%s` request parameter has been removed from %s requests on `%s`.',
-                    $changeset['data']['parameter'],
-                    $changeset['data']['method'],
-                    $changeset['data']['uri']
-                );
-                break;
-            case self::CHANGE_ACTION_RETURN:
-                if ($changeset['data']['representation']) {
-                    $description = sprintf(
-                        '%s on `%s` no longer will return a `%s` with a `%s` representation.',
-                        $changeset['data']['method'],
-                        $changeset['data']['uri'],
-                        $changeset['data']['http_code'],
-                        $changeset['data']['representation']
-                    );
-                } else {
-                    $description = sprintf(
-                        '%s on `%s` no longer will return a `%s`.',
-                        $changeset['data']['method'],
-                        $changeset['data']['uri'],
-                        $changeset['data']['http_code']
-                    );
-                }
-                break;
-            case self::CHANGE_ACTION_THROWS:
-                $description = sprintf(
-                    '%s on `%s` longer will return a `%s` with a `%s` representation: %s',
-                    $changeset['data']['method'],
-                    $changeset['data']['uri'],
-                    $changeset['data']['http_code'],
-                    $changeset['data']['representation'],
-                    $changeset['data']['description']
-                );
-                break;
-        }
-
-        return $description;
     }
 
     /**
