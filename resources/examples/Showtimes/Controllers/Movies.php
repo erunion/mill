@@ -73,6 +73,9 @@ class Movies
      * @api-version >=1.1
      * @api-param:public imdb (string, optional) - IMDB URL
      * @api-param:public trailer (string, optional) - Trailer URL
+     *
+     * @api-version >=1.1.3
+     * @api-return:public {created}
      */
     public function POST()
     {

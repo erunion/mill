@@ -258,7 +258,7 @@ class DocumentationTest extends TestCase
                         ]
                     ],
                     'minimum_version' => '1.1',
-                    'responses.length' => 4,
+                    'responses.length' => 5,
                     'uri.aliases' => [],
                     'annotations' => [
                         'uri' => [
@@ -469,6 +469,15 @@ class DocumentationTest extends TestCase
                                 'http_code' => '404 Not Found',
                                 'representation' => '\Mill\Examples\Showtimes\Representations\Error',
                                 'version' => false,
+                                'visible' => true
+                            ],
+                            [
+                                'capability' => false,
+                                'description' => 'If the trailer URL could not be validated.',
+                                'error_code' => false,
+                                'http_code' => '404 Not Found',
+                                'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                                'version' => '>=1.1.3',
                                 'visible' => true
                             ]
                         ]

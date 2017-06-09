@@ -83,6 +83,10 @@ class Movie
      *
      * @api-version >=1.1.1
      * @api-param:public imdb (string, optional) - IMDB URL
+     *
+     * @api-version >=1.1.3
+     * @api-throws:public {404} \Mill\Examples\Showtimes\Representations\Error If the trailer URL could not be
+     *      validated.
      */
     public function PATCH()
     {

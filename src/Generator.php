@@ -86,7 +86,7 @@ class Generator
      *
      * @return array
      */
-    public function parseResources()
+    protected function parseResources()
     {
         $resources = [];
         foreach ($this->config->getControllers() as $controller) {
@@ -170,7 +170,6 @@ class Generator
                             ];
                         }
 
-
                         // Filter down the annotations on this action for just those of the current version we're
                         // generating documentation for.
                         $cloned = clone $action;
@@ -202,7 +201,7 @@ class Generator
      *
      * @return array
      */
-    public function parseRepresentations()
+    protected function parseRepresentations()
     {
         $representations = [];
         $error_representations = $this->config->getErrorRepresentations();

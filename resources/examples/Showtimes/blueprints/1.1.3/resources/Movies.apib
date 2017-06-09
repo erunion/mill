@@ -66,6 +66,9 @@ This action requires a bearer token with `edit` scope.
          * If the IMDB URL could not be validated.
     + Attributes (Error)
 + Response 404 (application/mill.example.movie)
+    There are 2 ways that this status code can be encountered.
+         * If the movie could not be found.
+         * If the trailer URL could not be validated.
     + Attributes (Error)
 
 ### Delete a movie. [DELETE]
@@ -126,6 +129,7 @@ This action requires a bearer token with `create` scope.
         - `trailer` (string) - Trailer URL
 + Response 200 (application/mill.example.movie)
     + Attributes (Movie)
++ Response 201 (application/mill.example.movie)
 + Response 400 (application/mill.example.movie)
     There are 2 ways that this status code can be encountered.
          * If there is a problem with the request.
