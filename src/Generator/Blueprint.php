@@ -13,6 +13,8 @@ use Mill\Parser\Resource\Action;
 
 class Blueprint extends Generator
 {
+    use Generator\Traits\Markdown;
+
     /**
      * Current list of representations for the current API version we're working with.
      * @var array
@@ -529,28 +531,6 @@ class Blueprint extends Generator
         $blueprint = trim($blueprint);
 
         return $blueprint;
-    }
-
-    /**
-     * Return a repeated new line character.
-     *
-     * @param integer $repeat
-     * @return string
-     */
-    protected function line($repeat = 1)
-    {
-        return str_repeat("\n", $repeat);
-    }
-
-    /**
-     * Return a repeated tab character.
-     *
-     * @param integer $repeat
-     * @return string
-     */
-    protected function tab($repeat = 1)
-    {
-        return str_repeat('    ', $repeat);
     }
 
     /**

@@ -171,15 +171,6 @@ class ChangelogTest extends TestCase
 
         // v1.1.3
         $this->assertSame([
-            'removed' => [
-                [
-                    'key' => Changelog::CHANGE_REPRESENTATION_DATA,
-                    'data' => [
-                        'identifier' => 'external_urls.tickets',
-                        'representation' => 'Movie'
-                    ]
-                ]
-            ],
             'added' => [
                 [
                     'key' => Changelog::CHANGE_ACTION_THROWS,
@@ -198,6 +189,15 @@ class ChangelogTest extends TestCase
                         'uri' => '/movies',
                         'http_code' => '201 Created',
                         'representation' => false
+                    ]
+                ]
+            ],
+            'removed' => [
+                [
+                    'key' => Changelog::CHANGE_REPRESENTATION_DATA,
+                    'data' => [
+                        'identifier' => 'external_urls.tickets',
+                        'representation' => 'Movie'
                     ]
                 ]
             ]
@@ -240,13 +240,13 @@ class ChangelogTest extends TestCase
                 ]
             ],
             '1.1.3' => [
-                'removed' => [
-                    '`external_urls.tickets` has been removed from the `Movie` representation.'
-                ],
                 'added' => [
                     'PATCH on `/movies/{id}` will now return a `404 Not Found` with a `Error` representation: If ' .
                         'the trailer URL could not be validated.',
                     'POST on `/movies` now returns a `201 Created`.'
+                ],
+                'removed' => [
+                    '`external_urls.tickets` has been removed from the `Movie` representation.'
                 ]
             ]
         ], json_decode($generated, true));

@@ -1,7 +1,6 @@
 <?php
 namespace Mill\Generator;
 
-use Mill\Examples\Showtimes\Representations\Representation;
 use Mill\Generator;
 use Mill\Parser\Annotation;
 use Mill\Parser\Annotations\ContentTypeAnnotation;
@@ -13,6 +12,8 @@ use Mill\Parser\Resource\Action;
 
 class Changelog extends Generator
 {
+    use Generator\Traits\Markdown;
+
     const CHANGE_ACTION = 'action';
     const CHANGE_ACTION_PARAM = 'action_param';
     const CHANGE_ACTION_RETURN = 'action_return';
@@ -50,7 +51,11 @@ class Changelog extends Generator
         $this->buildRepresentationChangelog($this->parsed['representations']);
         $this->buildResourceChangelog($this->parsed['resources']);
 
+        // Keep things tidy
         ksort($this->changelog);
+        foreach ($this->changelog as $version => $changes) {
+            ksort($this->changelog[$version]);
+        }
 
         return $this->changelog;
     }
@@ -95,6 +100,45 @@ class Changelog extends Generator
         }
 
         return json_encode($json);
+    }
+
+    /**
+     * Take compiled API documentation and generate a Markdown-based changelog over the life of the API.
+     *
+     * @return string
+     */
+    public function generateMarkdown()
+    {
+        $markdown = '';
+
+        $api_name = $this->config->getName();
+        if (!empty($api_name)) {
+            $markdown .= sprintf('# Changelog: %s', $api_name);
+            $markdown .= $this->line(2);
+        } else {
+            $markdown .= sprintf('# Changelog', $api_name);
+            $markdown .= $this->line(2);
+        }
+
+        $changelog = json_decode($this->generateJson(), true);
+        foreach ($changelog as $version => $data) {
+            $markdown .= sprintf('## %s', $version);
+            $markdown .= $this->line();
+
+            foreach ($data as $type => $changes) {
+                $markdown .= sprintf('### %s', ucwords($type));
+                $markdown .= $this->line();
+
+                foreach ($changes as $changeset) {
+                    $markdown .= sprintf('- %s', $changeset);
+                    $markdown .= $this->line();
+                }
+
+                $markdown .= $this->line();
+            }
+        }
+
+        return $markdown;
     }
 
     /**

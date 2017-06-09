@@ -6,7 +6,6 @@ use Mill\Container;
 use Mill\Generator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -33,15 +32,12 @@ class Changelog extends Command
                 InputOption::VALUE_OPTIONAL,
                 'Path to your `mill.xml` config file.',
                 'mill.xml'
-            );
-            /*->addOption(
-                'dry-run',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Execute a dry run (do not save any files).',
-                false
             )
-            ->addArgument('output', InputArgument::REQUIRED, 'Directory to output your generated `.apib` files in.');*/
+            ->addArgument(
+                'output',
+                InputArgument::REQUIRED,
+                'Directory to output your generated `changelog.md` file in.'
+            );
     }
 
     /**
@@ -54,17 +50,30 @@ class Changelog extends Command
         $style = new OutputFormatterStyle('green', null, ['bold']);
         $output->getFormatter()->setStyle('success', $style);
 
+        $output_dir = realpath($input->getArgument('output'));
+        $config_file = realpath($input->getOption('config'));
+
         // @todo This should be pulled from the core Application instead, so we can inject the dependency in tests.
         $container = new Container([
-            'config.path' => realpath($input->getOption('config'))
+            'config.path' => $config_file
         ]);
 
         /** @var Config $config */
         $config = $container['config'];
 
-        $changelog = new Generator\Changelog($config);
-        $changelog->generate();
+        /** @var \League\Flysystem\Filesystem $filesystem */
+        $filesystem = $container['filesystem'];
 
-//print_r($this->changelog);
+        $output->writeln('<comment>Generating a changelog…</comment>');
+
+        $changelog = new Generator\Changelog($config);
+        $markdown = $changelog->generateMarkdown();
+
+        $filesystem->put(
+            $output_dir . self::DS . 'changelog.md',
+            trim($markdown)
+        );
+
+        $output->writeln(['', '<success>Done!</success>']);
     }
 }
