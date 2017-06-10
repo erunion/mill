@@ -67,7 +67,8 @@ class Changelog extends Generator
      */
     public function generateJson()
     {
-        $json = new Json($this->config, $this->version);
+        $json = new Json($this->config);
+        $json->setChangelog($this->generate());
         return $json->generate();
     }
 
@@ -78,7 +79,8 @@ class Changelog extends Generator
      */
     public function generateMarkdown()
     {
-        $markdown = new Markdown($this->config, $this->version);
+        $markdown = new Markdown($this->config);
+        $markdown->setChangelog($this->generate());
         return $markdown->generate();
     }
 
@@ -182,8 +184,10 @@ class Changelog extends Generator
                                 $data['http_code'] = $annotation->getHttpCode();
 
                                 if ($annotation->getRepresentation()) {
+                                    $representation = $annotation->getRepresentation();
+
                                     /** @var Documentation $representation */
-                                    $representation = $this->parsed['representations'][$annotation->getRepresentation()];
+                                    $representation = $this->parsed['representations'][$representation];
                                     $data['representation'] = $representation->getLabel();
                                 } else {
                                     $data['representation'] = false;

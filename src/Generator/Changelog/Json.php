@@ -1,10 +1,11 @@
 <?php
 namespace Mill\Generator\Changelog;
 
+use Mill\Generator;
 use Mill\Generator\Changelog;
 use StringTemplate\Engine;
 
-class Json extends Changelog
+class Json extends Generator
 {
     /**
      * Template string engine.
@@ -14,61 +15,80 @@ class Json extends Changelog
     protected $template_engine;
 
     /**
+     * Generated changelog.
+     *
+     * @var array
+     */
+    protected $changelog = [];
+
+    /**
      * Changelog changeset templates.
      *
      * @var array
      */
     protected $changeset_templates = [
         'plural' => [
-            self::CHANGE_ACTION => [
+            Changelog::CHANGE_ACTION => [
                 'added' => '`{uri}` has been added with support for the following HTTP methods:'
             ],
-            self::CHANGE_ACTION_PARAM => [
+            Changelog::CHANGE_ACTION_PARAM => [
                 'added' => 'The following parameters have been added to {method} on `{uri}`:'
             ],
-            self::CHANGE_ACTION_THROWS => [
+            Changelog::CHANGE_ACTION_THROWS => [
                 'added' => 'The {method} on `{uri}` can now throw the following errors:'
             ],
-            self::CHANGE_CONTENT_TYPE => [
+            Changelog::CHANGE_CONTENT_TYPE => [
                 'changed' => '`{uri}` now returns a `{content_type}` Content-Type header on the following HTTP ' .
                     'methods:'
             ],
-            self::CHANGE_REPRESENTATION_DATA => [
+            Changelog::CHANGE_REPRESENTATION_DATA => [
                 'added' => 'The following fields have been added to the `{representation}` representation:'
             ]
         ],
         'singular' => [
-            self::CHANGE_ACTION => [
+            Changelog::CHANGE_ACTION => [
                 'added' => '{method} on `{uri}` was added.'
             ],
-            self::CHANGE_ACTION_PARAM => [
+            Changelog::CHANGE_ACTION_PARAM => [
                 'added' => 'A `{parameter}` request parameter was added to {method} on `{uri}`.',
                 'removed' => 'The `{parameter}` request parameter has been removed from {method} requests on `{uri}`.'
             ],
-            self::CHANGE_ACTION_RETURN => [
+            Changelog::CHANGE_ACTION_RETURN => [
                 'added' => '{method} on `{uri}` now returns a `{http_code}` with a `{representation}` representation.',
                 'removed' => '{method} on `{uri}` no longer will return a `{http_code}` with a `{representation}` ' .
                     'representation.'
             ],
-            self::CHANGE_ACTION_RETURN . '_no_representation' => [
+            Changelog::CHANGE_ACTION_RETURN . '_no_representation' => [
                 'added' => '{method} on `{uri}` now returns a `{http_code}`.',
                 'removed' => '{method} on `{uri}` no longer will return a `{http_code}`.'
             ],
-            self::CHANGE_ACTION_THROWS => [
+            Changelog::CHANGE_ACTION_THROWS => [
                 'added' => '{method} on `{uri}` now returns a `{http_code}` with a `{representation}` ' .
                     'representation: {description}',
                 'removed' => '{method} on `{uri}` longer will return a `{http_code}` with a `{representation}` ' .
                     'representation: {description}'
             ],
-            self::CHANGE_CONTENT_TYPE => [
+            Changelog::CHANGE_CONTENT_TYPE => [
                 'changed' => '{method} on `{uri}` now returns a `{content_type}` Content-Type header.'
             ],
-            self::CHANGE_REPRESENTATION_DATA => [
+            Changelog::CHANGE_REPRESENTATION_DATA => [
                 'added' => '`{field}` has been added to the `{representation}` representation.',
                 'removed' => '`{field}` has been removed from the `{representation}` representation.'
             ]
         ]
     ];
+
+    /**
+     * Set the current changelog we're goign to build a representation for.
+     *
+     * @param array $changelog
+     * @return Json
+     */
+    public function setChangelog(array $changelog = [])
+    {
+        $this->changelog = $changelog;
+        return $this;
+    }
 
     /**
      * Take compiled API documentation and generate a JSON-encoded changelog over the life of the API.
@@ -80,8 +100,7 @@ class Json extends Changelog
         $this->template_engine = new Engine;
         $json = [];
 
-        $changelog = parent::generate();
-        foreach ($changelog as $version => $version_changes) {
+        foreach ($this->changelog as $version => $version_changes) {
             foreach ($version_changes as $change_type => $data) {
                 foreach ($data as $section => $section_changes) {
                     foreach ($section_changes as $header => $changes) {
@@ -118,7 +137,7 @@ class Json extends Changelog
     {
         if (count($changesets) > 1) {
             switch ($identifier) {
-                case self::CHANGE_ACTION:
+                case Changelog::CHANGE_ACTION:
                     $methods = [];
                     foreach ($changesets as $change) {
                         $methods[] = sprintf('`%s`', $change['method']);
@@ -135,7 +154,7 @@ class Json extends Changelog
                     ];
                     break;
 
-                case self::CHANGE_ACTION_PARAM:
+                case Changelog::CHANGE_ACTION_PARAM:
                     $methods = [];
                     foreach ($changesets as $change) {
                         $methods[$change['method']][] = sprintf('`%s`', $change['parameter']);
@@ -167,11 +186,11 @@ class Json extends Changelog
                     return $entry;
                     break;
 
-                case self::CHANGE_ACTION_RETURN:
+                case Changelog::CHANGE_ACTION_RETURN:
                     throw new \Exception('No support yet for multiple ADDED `' . $identifier . '`` in a changelog.');
                     break;
 
-                case self::CHANGE_ACTION_THROWS:
+                case Changelog::CHANGE_ACTION_THROWS:
                     $methods = [];
                     foreach ($changesets as $change) {
                         $methods[$change['method']][] = $change;
@@ -210,7 +229,7 @@ class Json extends Changelog
                     return $entry;
                     break;
 
-                case self::CHANGE_REPRESENTATION_DATA:
+                case Changelog::CHANGE_REPRESENTATION_DATA:
                     $fields = [];
                     foreach ($changesets as $change) {
                         $fields[] = sprintf('`%s`', $change['field']);
@@ -233,19 +252,19 @@ class Json extends Changelog
 
         $changeset = array_shift($changesets);
         switch ($identifier) {
-            case self::CHANGE_ACTION:
-            case self::CHANGE_ACTION_PARAM:
-            case self::CHANGE_ACTION_THROWS:
-            case self::CHANGE_REPRESENTATION_DATA:
+            case Changelog::CHANGE_ACTION:
+            case Changelog::CHANGE_ACTION_PARAM:
+            case Changelog::CHANGE_ACTION_THROWS:
+            case Changelog::CHANGE_REPRESENTATION_DATA:
                 $template = $this->changeset_templates['singular'][$identifier]['added'];
                 return $this->template_engine->render($template, $changeset);
                 break;
 
-            case self::CHANGE_ACTION_RETURN:
+            case Changelog::CHANGE_ACTION_RETURN:
                 if ($changeset['representation']) {
-                    $template = $this->changeset_templates['singular'][self::CHANGE_ACTION_RETURN]['added'];
+                    $template = $this->changeset_templates['singular'][Changelog::CHANGE_ACTION_RETURN]['added'];
                 } else {
-                    $template_key = self::CHANGE_ACTION_RETURN . '_no_representation';
+                    $template_key = Changelog::CHANGE_ACTION_RETURN . '_no_representation';
                     $template = $this->changeset_templates['singular'][$template_key]['added'];
                 }
 
@@ -269,7 +288,7 @@ class Json extends Changelog
         // Due to versioning restrictions in the Mill syntax (that will be fixed), only `@api-contentType` annotations
         // will generate a "changed" entry in the changelog.
         switch ($identifier) {
-            case self::CHANGE_CONTENT_TYPE:
+            case Changelog::CHANGE_CONTENT_TYPE:
                 if (count($changesets) > 1) {
                     $content_types = [];
                     foreach ($changesets as $changeset) {
@@ -317,10 +336,10 @@ class Json extends Changelog
 
         $changeset = array_shift($changesets);
         switch ($identifier) {
-            case self::CHANGE_REPRESENTATION_DATA:
-            case self::CHANGE_ACTION_PARAM:
-            case self::CHANGE_ACTION_RETURN:
-            case self::CHANGE_ACTION_THROWS:
+            case Changelog::CHANGE_REPRESENTATION_DATA:
+            case Changelog::CHANGE_ACTION_PARAM:
+            case Changelog::CHANGE_ACTION_RETURN:
+            case Changelog::CHANGE_ACTION_THROWS:
                 $template = $this->changeset_templates['singular'][$identifier]['removed'];
                 return $this->template_engine->render($template, $changeset);
                 break;
