@@ -26,6 +26,9 @@ class Json extends Changelog
             self::CHANGE_ACTION_PARAM => [
                 'added' => 'The following parameters have been added to {method} on `{uri}`:'
             ],
+            self::CHANGE_ACTION_THROWS => [
+                'added' => 'The {method} on `{uri}` can now throw the following errors:'
+            ],
             self::CHANGE_CONTENT_TYPE => [
                 'changed' => '`{uri}` now returns a `{content_type}` Content-Type header on the following HTTP ' .
                     'methods:'
@@ -83,8 +86,6 @@ class Json extends Changelog
                 foreach ($data as $section => $section_changes) {
                     foreach ($section_changes as $header => $changes) {
                         foreach ($changes as $identifier => $changesets) {
-                            $entry = false;
-
                             if ($change_type === 'added') {
                                 $entry = $this->getEntryForAddedChange($header, $identifier, $changesets);
                             } elseif ($change_type === 'changed') {
@@ -167,8 +168,46 @@ class Json extends Changelog
                     break;
 
                 case self::CHANGE_ACTION_RETURN:
-                case self::CHANGE_ACTION_THROWS:
                     throw new \Exception('No support yet for multiple ADDED `' . $identifier . '`` in a changelog.');
+                    break;
+
+                case self::CHANGE_ACTION_THROWS:
+                    $methods = [];
+                    foreach ($changesets as $change) {
+                        $methods[$change['method']][] = $change;
+                    }
+
+                    $entry = [];
+                    foreach ($methods as $method => $changes) {
+                        if (count($changes) > 1) {
+                            $errors = [];
+                            foreach ($changes as $change) {
+                                $errors[] = sprintf(
+                                    '`%s` with a `%s` representation: %s',
+                                    $change['http_code'],
+                                    $change['representation'],
+                                    $change['description']
+                                );
+                            }
+
+                            $template = $this->changeset_templates['plural'][$identifier]['added'];
+                            $entry[] = [
+                                $this->template_engine->render($template, [
+                                    'method' => $method,
+                                    'uri' => $header
+                                ]),
+                                $errors
+                            ];
+
+                            continue;
+                        }
+
+                        $change = array_shift($changes);
+                        $template = $this->changeset_templates['singular'][$identifier]['added'];
+                        $entry[] = $this->template_engine->render($template, $change);
+                    }
+
+                    return $entry;
                     break;
 
                 case self::CHANGE_REPRESENTATION_DATA:

@@ -22,8 +22,40 @@ class ChangelogTest extends TestCase
         $this->assertSame([
             'added' => [
                 'resources' => [
+                    '/movie/{id}' => [
+                        Changelog::CHANGE_ACTION_THROWS => [
+                            [
+                                'method' => 'GET',
+                                'uri' => '/movie/{id}',
+                                'http_code' => '404 Not Found',
+                                'representation' => 'Error',
+                                'description' => 'For no reason.'
+                            ],
+                            [
+                                'method' => 'GET',
+                                'uri' => '/movie/{id}',
+                                'http_code' => '404 Not Found',
+                                'representation' => 'Error',
+                                'description' => 'For some other reason.'
+                            ]
+                        ]
+                    ],
                     '/movies/{id}' => [
                         Changelog::CHANGE_ACTION_THROWS => [
+                            [
+                                'method' => 'GET',
+                                'uri' => '/movies/{id}',
+                                'http_code' => '404 Not Found',
+                                'representation' => 'Error',
+                                'description' => 'For no reason.'
+                            ],
+                            [
+                                'method' => 'GET',
+                                'uri' => '/movies/{id}',
+                                'http_code' => '404 Not Found',
+                                'representation' => 'Error',
+                                'description' => 'For some other reason.'
+                            ],
                             [
                                 'method' => 'PATCH',
                                 'uri' => '/movies/{id}',
@@ -32,6 +64,14 @@ class ChangelogTest extends TestCase
                                 'description' => 'If the trailer URL could not be validated.'
                             ]
                         ],
+                        Changelog::CHANGE_ACTION_RETURN => [
+                            [
+                                'method' => 'PATCH',
+                                'uri' => '/movies/{id}',
+                                'http_code' => '202 Accepted',
+                                'representation' => 'Movie'
+                            ]
+                        ]
                     ],
                     '/movies' => [
                         Changelog::CHANGE_ACTION_RETURN => [
@@ -181,6 +221,10 @@ class ChangelogTest extends TestCase
                             [
                                 'method' => 'PATCH',
                                 'uri' => '/movies/{id}'
+                            ],
+                            [
+                                'method' => 'DELETE',
+                                'uri' => '/movies/{id}'
                             ]
                         ]
                     ],
@@ -228,8 +272,27 @@ class ChangelogTest extends TestCase
         $this->assertSame([
             'added' => [
                 'resources' => [
-                    'PATCH on `/movies/{id}` now returns a `404 Not Found` with a `Error` representation: If the ' .
-                        'trailer URL could not be validated.',
+                    [
+                        [
+                            'The GET on `/movie/{id}` can now throw the following errors:',
+                            [
+                                '`404 Not Found` with a `Error` representation: For no reason.',
+                                '`404 Not Found` with a `Error` representation: For some other reason.'
+                            ]
+                        ]
+                    ],
+                    [
+                        [
+                            'The GET on `/movies/{id}` can now throw the following errors:',
+                            [
+                                '`404 Not Found` with a `Error` representation: For no reason.',
+                                '`404 Not Found` with a `Error` representation: For some other reason.'
+                            ]
+                        ],
+                        'PATCH on `/movies/{id}` now returns a `404 Not Found` with a `Error` representation: If ' .
+                            'the trailer URL could not be validated.'
+                    ],
+                    'PATCH on `/movies/{id}` now returns a `202 Accepted` with a `Movie` representation.',
                     'POST on `/movies` now returns a `201 Created`.'
                 ]
             ],
@@ -315,7 +378,15 @@ class ChangelogTest extends TestCase
                     ],
                 ],
                 'resources' => [
-                    'PATCH on `/movies/{id}` was added.',
+                    [
+                        [
+                            '`/movies/{id}` has been added with support for the following HTTP methods:',
+                            [
+                                '`PATCH`',
+                                '`DELETE`'
+                            ]
+                        ]
+                    ],
                     [
                         'A `page` request parameter was added to GET on `/movies`.',
                         [

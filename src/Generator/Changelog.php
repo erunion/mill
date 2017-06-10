@@ -180,7 +180,14 @@ class Changelog extends Generator
 
                                 /** @var ReturnAnnotation $annotation */
                                 $data['http_code'] = $annotation->getHttpCode();
-                                $data['representation'] = $annotation->getRepresentation();
+
+                                if ($annotation->getRepresentation()) {
+                                    /** @var Documentation $representation */
+                                    $representation = $this->parsed['representations'][$annotation->getRepresentation()];
+                                    $data['representation'] = $representation->getLabel();
+                                } else {
+                                    $data['representation'] = false;
+                                }
                             } elseif ($annotation instanceof ThrowsAnnotation) {
                                 $change_identifier = self::CHANGE_ACTION_THROWS;
 

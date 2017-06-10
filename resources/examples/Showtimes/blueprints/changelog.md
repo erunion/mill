@@ -3,7 +3,14 @@
 ## 1.1.3
 ### Added
 #### Resources
+- The GET on `/movie/{id}` can now throw the following errors:
+    - `404 Not Found` with a `Error` representation: For no reason.
+    - `404 Not Found` with a `Error` representation: For some other reason.
+- The GET on `/movies/{id}` can now throw the following errors:
+    - `404 Not Found` with a `Error` representation: For no reason.
+    - `404 Not Found` with a `Error` representation: For some other reason.
 - PATCH on `/movies/{id}` now returns a `404 Not Found` with a `Error` representation: If the trailer URL could not be validated.
+- PATCH on `/movies/{id}` now returns a `202 Accepted` with a `Movie` representation.
 - POST on `/movies` now returns a `201 Created`.
 
 ### Removed
@@ -42,7 +49,9 @@
     - `external_urls.trailer`
 
 #### Resources
-- PATCH on `/movies/{id}` was added.
+- `/movies/{id}` has been added with support for the following HTTP methods:
+    - `PATCH`
+    - `DELETE`
 - A `page` request parameter was added to GET on `/movies`.
 - The following parameters have been added to POST on `/movies`:
     - `imdb`

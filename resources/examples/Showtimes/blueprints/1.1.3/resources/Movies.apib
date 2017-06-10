@@ -11,6 +11,10 @@ These actions will allow you to pull information on a specific movie.
     + Attributes (Movie)
 + Response 304 (application/mill.example.movie)
 + Response 404 (application/mill.example.movie)
+    There are 3 ways that this status code can be encountered.
+         * If the movie could not be found.
+         * For no reason.
+         * For some other reason.
     + Attributes (Error)
 
 ## Movies [/movies/{id}]
@@ -25,6 +29,10 @@ These actions will allow you to pull information on a specific movie.
     + Attributes (Movie)
 + Response 304 (application/mill.example.movie)
 + Response 404 (application/mill.example.movie)
+    There are 3 ways that this status code can be encountered.
+         * If the movie could not be found.
+         * For no reason.
+         * For some other reason.
     + Attributes (Error)
 
 ### Update a movie. [PATCH]
@@ -59,6 +67,8 @@ This action requires a bearer token with `edit` scope.
         - `runtime` (string) - Movie runtime, in `HHhr MMmin` format.
         - `trailer` (string) - Trailer URL
 + Response 200 (application/mill.example.movie)
+    + Attributes (Movie)
++ Response 202 (application/mill.example.movie)
     + Attributes (Movie)
 + Response 400 (application/mill.example.movie)
     There are 2 ways that this status code can be encountered.

@@ -360,9 +360,6 @@ class GeneratorTest extends TestCase
                                     ]),
                                     '/movies/+id::GET' => array_merge($common_actions['/movies/+id::GET'], [
                                         'params.keys' => []
-                                    ]),
-                                    '/movies/+id::DELETE' => array_merge($common_actions['/movies/+id::DELETE'], [
-                                        'params.keys' => []
                                     ])
                                 ]
                             ]
