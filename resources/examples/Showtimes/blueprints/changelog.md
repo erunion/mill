@@ -56,3 +56,7 @@
 - The following parameters have been added to POST on `/movies`:
     - `imdb`
     - `trailer`
+
+### Removed
+#### Representations
+- `website` has been removed from the `Theater` representation.

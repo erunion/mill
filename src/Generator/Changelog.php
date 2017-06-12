@@ -342,11 +342,6 @@ class Changelog extends Generator
         }
 
         $recent_version_key = array_flip($this->supported_versions)[$recent_version];
-        $removed = $this->supported_versions[++$recent_version_key];
-        if ($removed !== $this->config->getLatestApiVersion()) {
-            return false;
-        }
-
-        return $removed;
+        return $this->supported_versions[++$recent_version_key];
     }
 }

@@ -8,15 +8,15 @@ class ChangelogTest extends TestCase
 {
     public function testGeneration()
     {
-        $changelog = new Changelog($this->getConfig());
-        $generated = $changelog->generate();
+        $generator = new Changelog($this->getConfig());
+        $changelog = $generator->generate();
 
         $this->assertSame([
             '1.1.3',
             '1.1.2',
             '1.1.1',
             '1.1'
-        ], array_keys($generated));
+        ], array_keys($changelog));
 
         // v1.1.3
         $this->assertSame([
@@ -97,7 +97,7 @@ class ChangelogTest extends TestCase
                     ]
                 ]
             ]
-        ], $generated['1.1.3']);
+        ], $changelog['1.1.3']);
 
         // v1.1.2
         $this->assertSame([
@@ -170,7 +170,7 @@ class ChangelogTest extends TestCase
                     ]
                 ]
             ]
-        ], $generated['1.1.2']);
+        ], $changelog['1.1.2']);
 
         // v1.1.1
         $this->assertSame([
@@ -188,7 +188,7 @@ class ChangelogTest extends TestCase
                     ]
                 ]
             ]
-        ], $generated['1.1.1']);
+        ], $changelog['1.1.1']);
 
         // v1.1
         $this->assertSame([
@@ -251,154 +251,36 @@ class ChangelogTest extends TestCase
                         ]
                     ]
                 ]
+            ],
+            'removed' => [
+                'representations' => [
+                    'Theater' => [
+                        'representation_data' => [
+                            [
+                                'field' => 'website',
+                                'representation' => 'Theater'
+                            ]
+                        ]
+                    ]
+                ]
             ]
-        ], $generated['1.1']);
+        ], $changelog['1.1']);
     }
 
     public function testJsonGeneration()
     {
-        $changelog = new Changelog($this->getConfig());
-        $generated = $changelog->generateJson();
-        $generated = json_decode($generated, true);
+        $generator = new Changelog($this->getConfig());
+        $changelog = $generator->generateJson();
+        $changelog = json_decode($changelog, true);
 
+        // We don't need to test the full functionality of the JSON extension to the Changelog generator, since that's
+        // being done in `Generator\Changelog\JsonTest`, we just want to make sure that we at least have the expected
+        // array keys.
         $this->assertSame([
             '1.1.3',
             '1.1.2',
             '1.1.1',
             '1.1'
-        ], array_keys($generated));
-
-        // v1.1.3
-        $this->assertSame([
-            'added' => [
-                'resources' => [
-                    [
-                        [
-                            'The GET on `/movie/{id}` can now throw the following errors:',
-                            [
-                                '`404 Not Found` with a `Error` representation: For no reason.',
-                                '`404 Not Found` with a `Error` representation: For some other reason.'
-                            ]
-                        ]
-                    ],
-                    [
-                        [
-                            'The GET on `/movies/{id}` can now throw the following errors:',
-                            [
-                                '`404 Not Found` with a `Error` representation: For no reason.',
-                                '`404 Not Found` with a `Error` representation: For some other reason.'
-                            ]
-                        ],
-                        'PATCH on `/movies/{id}` now returns a `404 Not Found` with a `Error` representation: If ' .
-                            'the trailer URL could not be validated.'
-                    ],
-                    'PATCH on `/movies/{id}` now returns a `202 Accepted` with a `Movie` representation.',
-                    'POST on `/movies` now returns a `201 Created`.'
-                ]
-            ],
-            'removed' => [
-                'representations' => [
-                    '`external_urls.tickets` has been removed from the `Movie` representation.'
-                ]
-            ]
-        ], $generated['1.1.3']);
-
-        // v1.1.2
-        $this->assertSame([
-            'changed' => [
-                'resources' => [
-                    'GET on `/movie/{id}` now returns a `application/mill.example.movie` Content-Type header.',
-                    [
-                        [
-                            '`/movies/{id}` now returns a `application/mill.example.movie` Content-Type header on ' .
-                                'the following HTTP methods:',
-                            [
-                                '`GET`',
-                                '`PATCH`'
-                            ]
-                        ]
-                    ],
-                    [
-                        [
-                            '`/movies` now returns a `application/mill.example.movie` Content-Type header on the ' .
-                                'following HTTP methods:',
-                            [
-                                '`GET`',
-                                '`POST`'
-                            ]
-                        ]
-                    ],
-                    [
-                        [
-                            '`/theaters/{id}` now returns a `application/mill.example.theater` Content-Type header ' .
-                                'on the following HTTP methods:',
-                            [
-                                '`GET`',
-                                '`PATCH`'
-                            ]
-                        ]
-                    ],
-                    [
-                        [
-                            '`/theaters` now returns a `application/mill.example.theater` Content-Type header on the ' .
-                                'following HTTP methods:',
-                            [
-                                '`GET`',
-                                '`POST`'
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        ], $generated['1.1.2']);
-
-        // v1.1.1
-        $this->assertSame([
-            'added' => [
-                'resources' => [
-                    'A `imdb` request parameter was added to PATCH on `/movies/{id}`.'
-                ]
-            ]
-        ], $generated['1.1.1']);
-
-        // v1.1
-        $this->assertSame([
-            'added' => [
-                'representations' => [
-                    [
-                        [
-                            'The following fields have been added to the `Movie` representation:',
-                            [
-                                '`external_urls`',
-                                '`external_urls.imdb`',
-                                '`external_urls.tickets`',
-                                '`external_urls.trailer`'
-                            ]
-                        ]
-                    ],
-                ],
-                'resources' => [
-                    [
-                        [
-                            '`/movies/{id}` has been added with support for the following HTTP methods:',
-                            [
-                                '`PATCH`',
-                                '`DELETE`'
-                            ]
-                        ]
-                    ],
-                    [
-                        'A `page` request parameter was added to GET on `/movies`.',
-                        [
-                            'The following parameters have been added to POST on `/movies`:',
-                            [
-                                '`imdb`',
-                                '`trailer`'
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        ], $generated['1.1']);
+        ], array_keys($changelog));
     }
 }

@@ -29,20 +29,27 @@ class Json extends Generator
     protected $changeset_templates = [
         'plural' => [
             Changelog::CHANGE_ACTION => [
-                'added' => '`{uri}` has been added with support for the following HTTP methods:'
+                'added' => '`{uri}` has been added with support for the following HTTP methods:',
             ],
             Changelog::CHANGE_ACTION_PARAM => [
-                'added' => 'The following parameters have been added to {method} on `{uri}`:'
+                'added' => 'The following parameters have been added to {method} on `{uri}`:',
+                'removed' => 'The following parameters have been removed to {method} on `{uri}`:'
+            ],
+            Changelog::CHANGE_ACTION_RETURN => [
+                'added' => 'The {method} on `{uri}` will now return the following responses:',
+                'removed' => 'The {method} on `{uri}` no longer returns the following responses:'
             ],
             Changelog::CHANGE_ACTION_THROWS => [
-                'added' => 'The {method} on `{uri}` can now throw the following errors:'
+                'added' => 'The {method} on `{uri}` can now throw the following errors:',
+                'removed' => 'The {method} on `{uri}` will no longer throw the following errors:'
             ],
             Changelog::CHANGE_CONTENT_TYPE => [
                 'changed' => '`{uri}` now returns a `{content_type}` Content-Type header on the following HTTP ' .
-                    'methods:'
+                    'methods:',
             ],
             Changelog::CHANGE_REPRESENTATION_DATA => [
-                'added' => 'The following fields have been added to the `{representation}` representation:'
+                'added' => 'The following fields have been added to the `{representation}` representation:',
+                'removed' => 'The following fields have been removed from the `{representation}` representation:'
             ]
         ],
         'singular' => [
@@ -55,7 +62,7 @@ class Json extends Generator
             ],
             Changelog::CHANGE_ACTION_RETURN => [
                 'added' => '{method} on `{uri}` now returns a `{http_code}` with a `{representation}` representation.',
-                'removed' => '{method} on `{uri}` no longer will return a `{http_code}` with a `{representation}` ' .
+                'removed' => '{method} on `{uri}` no longer returns a `{http_code}` with a `{representation}` ' .
                     'representation.'
             ],
             Changelog::CHANGE_ACTION_RETURN . '_no_representation' => [
@@ -79,7 +86,7 @@ class Json extends Generator
     ];
 
     /**
-     * Set the current changelog we're goign to build a representation for.
+     * Set the current changelog we're going to build a representation for.
      *
      * @param array $changelog
      * @return Json
@@ -105,12 +112,15 @@ class Json extends Generator
                 foreach ($data as $section => $section_changes) {
                     foreach ($section_changes as $header => $changes) {
                         foreach ($changes as $identifier => $changesets) {
-                            if ($change_type === 'added') {
-                                $entry = $this->getEntryForAddedChange($header, $identifier, $changesets);
-                            } elseif ($change_type === 'changed') {
-                                $entry = $this->getEntryForChangedItem($header, $identifier, $changesets);
+                            if ($change_type === 'added' || $change_type === 'removed') {
+                                $entry = $this->getEntryForAddedOrRemovedChange(
+                                    $change_type,
+                                    $header,
+                                    $identifier,
+                                    $changesets
+                                );
                             } else {
-                                $entry = $this->getEntryForRemovedItem($header, $identifier, $changesets);
+                                $entry = $this->getEntryForChangedItem($header, $identifier, $changesets);
                             }
 
                             if ($entry) {
@@ -128,12 +138,13 @@ class Json extends Generator
     /**
      * Get a changelog entry for a changeset that was added into the API.
      *
+     * @param string $change_type
      * @param string $header
      * @param string $identifier
      * @param array $changesets
      * @return bool|string|array
      */
-    private function getEntryForAddedChange($header, $identifier, array $changesets)
+    private function getEntryForAddedOrRemovedChange($change_type, $header, $identifier, array $changesets)
     {
         if (count($changesets) > 1) {
             switch ($identifier) {
@@ -143,7 +154,7 @@ class Json extends Generator
                         $methods[] = sprintf('`%s`', $change['method']);
                     }
 
-                    $template = $this->changeset_templates['plural'][$identifier]['added'];
+                    $template = $this->changeset_templates['plural'][$identifier][$change_type];
                     return [
                         [
                             $this->template_engine->render($template, [
@@ -163,7 +174,7 @@ class Json extends Generator
                     $entry = [];
                     foreach ($methods as $method => $params) {
                         if (count($params) > 1) {
-                            $template = $this->changeset_templates['plural'][$identifier]['added'];
+                            $template = $this->changeset_templates['plural'][$identifier][$change_type];
                             $entry[] = [
                                 $this->template_engine->render($template, [
                                     'method' => $method,
@@ -175,7 +186,7 @@ class Json extends Generator
                             continue;
                         }
 
-                        $template = $this->changeset_templates['singular'][$identifier]['added'];
+                        $template = $this->changeset_templates['singular'][$identifier][$change_type];
                         $entry[] = $this->template_engine->render($template, [
                             'parameter' => rtrim(ltrim(array_shift($params), '`'), '`'),
                             'method' => $method,
@@ -187,7 +198,45 @@ class Json extends Generator
                     break;
 
                 case Changelog::CHANGE_ACTION_RETURN:
-                    throw new \Exception('No support yet for multiple ADDED `' . $identifier . '`` in a changelog.');
+                    $methods = [];
+                    foreach ($changesets as $change) {
+                        $methods[$change['method']][] = $change;
+                    }
+
+                    $entry = [];
+                    foreach ($methods as $method => $changes) {
+                        if (count($changes) > 1) {
+                            $returns = [];
+                            foreach ($changes as $change) {
+                                if ($change['representation']) {
+                                    $returns[] = sprintf(
+                                        '`%s` with a `%s` representation',
+                                        $change['http_code'],
+                                        $change['representation']
+                                    );
+                                } else {
+                                    $returns[] = sprintf('`%s`', $change['http_code']);
+                                }
+                            }
+
+                            $template = $this->changeset_templates['plural'][$identifier][$change_type];
+                            $entry[] = [
+                                $this->template_engine->render($template, [
+                                    'method' => $method,
+                                    'uri' => $header
+                                ]),
+                                $returns
+                            ];
+
+                            continue;
+                        }
+
+                        $change = array_shift($changes);
+                        $template = $this->changeset_templates['singular'][$identifier][$change_type];
+                        $entry[] = $this->template_engine->render($template, $change);
+                    }
+
+                    return $entry;
                     break;
 
                 case Changelog::CHANGE_ACTION_THROWS:
@@ -209,7 +258,7 @@ class Json extends Generator
                                 );
                             }
 
-                            $template = $this->changeset_templates['plural'][$identifier]['added'];
+                            $template = $this->changeset_templates['plural'][$identifier][$change_type];
                             $entry[] = [
                                 $this->template_engine->render($template, [
                                     'method' => $method,
@@ -222,7 +271,7 @@ class Json extends Generator
                         }
 
                         $change = array_shift($changes);
-                        $template = $this->changeset_templates['singular'][$identifier]['added'];
+                        $template = $this->changeset_templates['singular'][$identifier][$change_type];
                         $entry[] = $this->template_engine->render($template, $change);
                     }
 
@@ -235,7 +284,7 @@ class Json extends Generator
                         $fields[] = sprintf('`%s`', $change['field']);
                     }
 
-                    $template = $this->changeset_templates['plural'][$identifier]['added'];
+                    $template = $this->changeset_templates['plural'][$identifier][$change_type];
                     return [
                         [
                             $this->template_engine->render($template, [
@@ -256,16 +305,16 @@ class Json extends Generator
             case Changelog::CHANGE_ACTION_PARAM:
             case Changelog::CHANGE_ACTION_THROWS:
             case Changelog::CHANGE_REPRESENTATION_DATA:
-                $template = $this->changeset_templates['singular'][$identifier]['added'];
+                $template = $this->changeset_templates['singular'][$identifier][$change_type];
                 return $this->template_engine->render($template, $changeset);
                 break;
 
             case Changelog::CHANGE_ACTION_RETURN:
                 if ($changeset['representation']) {
-                    $template = $this->changeset_templates['singular'][Changelog::CHANGE_ACTION_RETURN]['added'];
+                    $template = $this->changeset_templates['singular'][Changelog::CHANGE_ACTION_RETURN][$change_type];
                 } else {
                     $template_key = Changelog::CHANGE_ACTION_RETURN . '_no_representation';
-                    $template = $this->changeset_templates['singular'][$template_key]['added'];
+                    $template = $this->changeset_templates['singular'][$template_key][$change_type];
                 }
 
                 return $this->template_engine->render($template, $changeset);
@@ -312,35 +361,6 @@ class Json extends Generator
 
                 $changeset = array_shift($changesets);
                 $template = $this->changeset_templates['singular'][$identifier]['changed'];
-                return $this->template_engine->render($template, $changeset);
-                break;
-        }
-
-        return false;
-    }
-
-    /**
-     * Get a changelog entry for a changeset that was removed from the API.
-     *
-     * @param string $header
-     * @param string $identifier
-     * @param array $changesets
-     * @return bool|string
-     */
-    private function getEntryForRemovedItem($header, $identifier, array $changesets)
-    {
-        if (count($changesets) > 1) {
-            throw new \Exception('No support yet for multiple REMOVED `' . $identifier . '`` in a changelog.');
-            exit;
-        }
-
-        $changeset = array_shift($changesets);
-        switch ($identifier) {
-            case Changelog::CHANGE_REPRESENTATION_DATA:
-            case Changelog::CHANGE_ACTION_PARAM:
-            case Changelog::CHANGE_ACTION_RETURN:
-            case Changelog::CHANGE_ACTION_THROWS:
-                $template = $this->changeset_templates['singular'][$identifier]['removed'];
                 return $this->template_engine->render($template, $changeset);
                 break;
         }
