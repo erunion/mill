@@ -22,3 +22,4 @@ composer require vimeo/mill
 * [Configuration](https://github.com/vimeo/mill/wiki/Configuration)
 * [Language Syntax](https://github.com/vimeo/mill/wiki/Language%20Syntax)
 * [Generating Documentation](https://github.com/vimeo/mill/wiki/Generating%20Documentation)
+* [Generating Changelogs](https://github.com/vimeo/mill/wiki/Generating%20Changelogs)
