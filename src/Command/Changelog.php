@@ -25,7 +25,7 @@ class Changelog extends Command
     protected function configure()
     {
         $this->setName('changelog')
-            ->setDescription('Compile a changelog off your API documentation.')
+            ->setDescription('Compiles a changelog from your API documentation.')
             ->addOption(
                 'config',
                 null,

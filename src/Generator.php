@@ -60,9 +60,7 @@ class Generator
         $resources = $this->compileResources($this->parseResources());
         foreach ($resources as $version => $groups) {
             // Alphabetize the versioned resource groups!
-            uksort($resources[$version], function ($a, $b) {
-                return ($a > $b) ? 1 : -1;
-            });
+            ksort($resources[$version]);
         }
 
         $this->compiled['resources'] = $resources;
@@ -71,9 +69,7 @@ class Generator
         $representations = $this->compileRepresentations($this->parseRepresentations());
         foreach ($representations as $version => $data) {
             // Alphabetize the versioned representations!
-            uksort($representations[$version], function ($a, $b) {
-                return ($a > $b) ? 1 : -1;
-            });
+            ksort($representations[$version]);
         }
 
         $this->compiled['representations'] = $representations;
