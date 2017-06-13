@@ -13,13 +13,14 @@ class ConfigTest extends TestCase
 
         $this->assertSame('1.0', $config->getFirstApiVersion());
         $this->assertSame('1.1.2', $config->getDefaultApiVersion());
-        $this->assertSame('1.1.2', $config->getLatestApiVersion());
+        $this->assertSame('1.1.3', $config->getLatestApiVersion());
 
         $this->assertSame([
             '1.0',
             '1.1',
             '1.1.1',
-            '1.1.2'
+            '1.1.2',
+            '1.1.3'
         ], $config->getApiVersions());
 
         $this->assertSame([

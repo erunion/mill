@@ -147,10 +147,28 @@ class RepresentationParser extends Parser
 
             /** @var DataAnnotation $annotation */
             foreach ($see_annotations as $name => $annotation) {
+                // If this `@api-see` is being used with an `@api-version`, then the version here should always be
+                // applied to any annotations we're including with the `@api-see`.
+                //
+                // If, however, an annotation we're loading has its own versioning set, we'll combine the pointers
+                // version with the annotations version to create a new constraint specifically for that annotation.
+                //
+                // For example, if `external_urls` is versioned at `>=1.1`, and points to a method to load
+                // `external_urls.tickets`, but that's versioned at `<1.1.3`, the new parsed constraint for
+                // `external_urls.tickets` will be `>=1.1 <1.1.3`.
                 if ($version) {
-                    // If this `@api-see` is being used with a `@api-version`, then the version here should always
-                    // take precedence over any versioning set up within the see.
-                    $annotation->setVersion($version);
+                    $annotation_version = $annotation->getVersion();
+                    if ($annotation_version) {
+                        $new_constraint = implode(' ', [
+                            $version->getConstraint(),
+                            $annotation_version->getConstraint()
+                        ]);
+
+                        $updated_version = new Version($new_constraint, $this->class, $this->method);
+                        $annotation->setVersion($updated_version);
+                    } else {
+                        $annotation->setVersion($version);
+                    }
                 }
 
                 // If this `@api-see` has a prefix to attach to found annotation identifiers, do so.

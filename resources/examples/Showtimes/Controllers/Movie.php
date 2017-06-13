@@ -31,6 +31,10 @@ class Movie
      *
      * @api-version <1.1.2
      * @api-contentType application/json
+     *
+     * @api-version >=1.1.3
+     * @api-throws:public {404} \Mill\Examples\Showtimes\Representations\Error For no reason.
+     * @api-throws:public {404} \Mill\Examples\Showtimes\Representations\Error For some other reason.
      */
     public function GET()
     {
@@ -83,6 +87,11 @@ class Movie
      *
      * @api-version >=1.1.1
      * @api-param:public imdb (string, optional) - IMDB URL
+     *
+     * @api-version >=1.1.3
+     * @api-return:public {accepted} \Mill\Examples\Showtimes\Representations\Movie
+     * @api-throws:public {404} \Mill\Examples\Showtimes\Representations\Error If the trailer URL could not be
+     *      validated.
      */
     public function PATCH()
     {
@@ -99,6 +108,7 @@ class Movie
      *
      * @api-contentType application/json
      * @api-scope delete
+     * @api-minVersion 1.1
      *
      * @api-return:private {deleted}
      *

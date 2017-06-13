@@ -119,7 +119,7 @@ These actions will allow you to pull information on a specific movie.', $annotat
                     ],
                     'throws' => [
                         'class' => '\Mill\Parser\Annotations\ThrowsAnnotation',
-                        'count' => 1
+                        'count' => 3
                     ],
                     'uri' => [
                         'class' => '\Mill\Parser\Annotations\UriAnnotation',
@@ -156,7 +156,7 @@ These actions will allow you to pull information on a specific movie.', $annotat
                     ],
                     'return' => [
                         'class' => '\Mill\Parser\Annotations\ReturnAnnotation',
-                        'count' => 1
+                        'count' => 2
                     ],
                     'scope' => [
                         'class' => '\Mill\Parser\Annotations\ScopeAnnotation',
@@ -164,7 +164,7 @@ These actions will allow you to pull information on a specific movie.', $annotat
                     ],
                     'throws' => [
                         'class' => '\Mill\Parser\Annotations\ThrowsAnnotation',
-                        'count' => 3
+                        'count' => 4
                     ],
                     'uri' => [
                         'class' => '\Mill\Parser\Annotations\UriAnnotation',
@@ -189,6 +189,10 @@ These actions will allow you to pull information on a specific movie.', $annotat
                     ],
                     'label' => [
                         'class' => '\Mill\Parser\Annotations\LabelAnnotation',
+                        'count' => 1
+                    ],
+                    'minVersion' => [
+                        'class' => '\Mill\Parser\Annotations\MinVersionAnnotation',
                         'count' => 1
                     ],
                     'return' => [

@@ -25,6 +25,8 @@ class DocumentationTest extends TestCase
         $this->assertSame($method, $parser->getMethod());
 
         $this->assertSame($expected['label'], $parser->getLabel());
+
+        $this->assertCount(count($expected['content_types']), $parser->getContentTypes());
         $this->assertSame($expected['content_types'][0]['content_type'], $parser->getContentType());
 
         if ($expected['content_types.latest-version']) {
@@ -46,6 +48,8 @@ class DocumentationTest extends TestCase
         } else {
             $this->assertNull($min_version);
         }
+
+        $this->assertCount(count($expected['annotations']), $parser->getAnnotations());
 
         if (!isset($expected['annotations']['scope'])) {
             $this->assertEmpty($parser->getScopes());
@@ -74,7 +78,7 @@ class DocumentationTest extends TestCase
 
         foreach ($docs['annotations'] as $name => $data) {
             if (!isset($expected['annotations'][$name])) {
-                $this->fail('A parsed `' . $name . '` annotation was not present in the expected data.');
+                $this->fail('Parsed `' . $name . '` annotations were not present in the expected data.');
             }
 
             foreach ($data as $k => $annotation) {
@@ -82,6 +86,10 @@ class DocumentationTest extends TestCase
                 if ($name === 'param') {
                     // Param annotations are keyed off of the field name.
                     $annotation_key = $annotation['field'];
+                }
+
+                if (!isset($expected['annotations'][$name][$annotation_key])) {
+                    $this->fail('A parsed `' . $name . '` annotation was not present in the expected data.');
                 }
 
                 $this->assertSame(
@@ -161,7 +169,7 @@ class DocumentationTest extends TestCase
                         ]
                     ],
                     'minimum_version' => false,
-                    'responses.length' => 3,
+                    'responses.length' => 5,
                     'annotations' => [
                         'uri' => [
                             [
@@ -232,6 +240,24 @@ class DocumentationTest extends TestCase
                                 'representation' => '\Mill\Examples\Showtimes\Representations\Error',
                                 'version' => false,
                                 'visible' => true
+                            ],
+                            [
+                                'capability' => false,
+                                'description' => 'For no reason.',
+                                'error_code' => false,
+                                'http_code' => '404 Not Found',
+                                'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                                'version' => '>=1.1.3',
+                                'visible' => true
+                            ],
+                            [
+                                'capability' => false,
+                                'description' => 'For some other reason.',
+                                'error_code' => false,
+                                'http_code' => '404 Not Found',
+                                'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                                'version' => '>=1.1.3',
+                                'visible' => true
                             ]
                         ]
                     ]
@@ -254,7 +280,7 @@ class DocumentationTest extends TestCase
                         ]
                     ],
                     'minimum_version' => '1.1',
-                    'responses.length' => 4,
+                    'responses.length' => 6,
                     'uri.aliases' => [],
                     'annotations' => [
                         'uri' => [
@@ -431,6 +457,13 @@ class DocumentationTest extends TestCase
                                 'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
                                 'type' => 'object',
                                 'version' => false
+                            ],
+                            [
+                                'description' => false,
+                                'http_code' => '202 Accepted',
+                                'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
+                                'type' => 'accepted',
+                                'version' => '>=1.1.3'
                             ]
                         ],
                         'scope' => [
@@ -466,6 +499,15 @@ class DocumentationTest extends TestCase
                                 'representation' => '\Mill\Examples\Showtimes\Representations\Error',
                                 'version' => false,
                                 'visible' => true
+                            ],
+                            [
+                                'capability' => false,
+                                'description' => 'If the trailer URL could not be validated.',
+                                'error_code' => false,
+                                'http_code' => '404 Not Found',
+                                'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                                'version' => '>=1.1.3',
+                                'visible' => true
                             ]
                         ]
                     ]
@@ -483,7 +525,7 @@ class DocumentationTest extends TestCase
                             'version' => false
                         ]
                     ],
-                    'minimum_version' => false,
+                    'minimum_version' => '1.1',
                     'responses.length' => 2,
                     'uri.aliases' => [],
                     'annotations' => [
@@ -495,6 +537,11 @@ class DocumentationTest extends TestCase
                                 'group' => 'Movies',
                                 'path' => '/movies/+id',
                                 'visible' => false
+                            ]
+                        ],
+                        'minVersion' => [
+                            [
+                                'minimum_version' => '1.1'
                             ]
                         ],
                         'uriSegment' => [

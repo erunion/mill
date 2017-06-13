@@ -132,7 +132,7 @@ class Config
      *
      * @param Filesystem $filesystem
      * @param string $config_file
-     * @param boolean $load_bootstrap
+     * @param bool $load_bootstrap
      * @return Config
      * @throws InvalidArgumentException If the config file can't be read.
      * @throws InvalidArgumentException If the config file does not exist.
@@ -414,8 +414,9 @@ class Config
 
         // Keep things tidy.
         $this->api_versions = array_unique($this->api_versions);
+        $this->api_versions = Semver::sort($this->api_versions);
 
-        $this->first_api_version = Semver::sort($this->api_versions)[0];
+        $this->first_api_version = $this->api_versions[0];
         $this->latest_api_version = Semver::rsort($this->api_versions)[0];
     }
 
@@ -904,7 +905,7 @@ class Config
      * Check if a given error representation requires an error code.
      *
      * @param string $representation
-     * @return boolean
+     * @return bool
      */
     public function doesErrorRepresentationNeedAnErrorCode($representation)
     {

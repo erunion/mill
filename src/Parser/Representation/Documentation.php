@@ -160,7 +160,17 @@ class Documentation
     }
 
     /**
-     * Pull the content of this representation.
+     * Pull the raw content of this representation. This will be an array of Annotation objects.
+     *
+     * @return array
+     */
+    public function getRawContent()
+    {
+        return $this->representation;
+    }
+
+    /**
+     * Pull the content of this representation. This will be an array of `toArray`'d Annotation objects.
      *
      * @return array
      */

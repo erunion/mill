@@ -52,7 +52,8 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
             '1.0',
             '1.1',
             '1.1.1',
-            '1.1.2'
+            '1.1.2',
+            '1.1.3'
         ];
 
         $output = $this->tester->getDisplay();
