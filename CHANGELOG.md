@@ -1,4 +1,8 @@
 # Changelog
+## [2.2.1] - 2017-06-15
+### Changed
+- No longer adding `Content-Type` header sections into generated API Blueprint files.
+
 ## [2.2.0] - 2017-06-12
 ### Added
 - A new `changelog` command that will generate a Markdown-representation changelog from your API docs. [#10](https://github.com/vimeo/mill/issues/10)
@@ -124,6 +128,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[2.2.1]: https://github.com/vimeo/mill/compare/2.2.0...2.2.1
 [2.2.0]: https://github.com/vimeo/mill/compare/2.1.1...2.2.0
 [2.1.1]: https://github.com/vimeo/mill/compare/2.1.0...2.1.1
 [2.1.0]: https://github.com/vimeo/mill/compare/2.0.6...2.1.0
