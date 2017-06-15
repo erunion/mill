@@ -19,10 +19,6 @@ This action requires a bearer token with `create` scope.
 + Parameters
     - `id` (number, required) - Theater ID
 + Request
-    + Headers
-
-            Content-Type: application/mill.example.theater
-
     + Attributes
         - `address` (string, required) - Theater address
         - `name` (string, required) - Name of the theater.
@@ -50,10 +46,6 @@ These actions will allow you to pull information on a specific movie theater.
 
 ### Get movie theaters. [GET]
 + Request
-    + Headers
-
-            Content-Type: application/mill.example.theater
-
     + Attributes
         - `location` (string, required) - Location you want theaters in.
 + Response 200 (application/mill.example.theater)
@@ -65,10 +57,6 @@ These actions will allow you to pull information on a specific movie theater.
 This action requires a bearer token with `create` scope.
 
 + Request
-    + Headers
-
-            Content-Type: application/mill.example.theater
-
     + Attributes
         - `address` (string, required) - Theater address
         - `name` (string, required) - Name of the theater.
