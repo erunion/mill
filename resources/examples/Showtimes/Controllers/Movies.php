@@ -24,6 +24,9 @@ class Movies
      *
      * @api-version <1.1.2
      * @api-contentType application/json
+     *
+     * @api-version >=1.1
+     * @api-param:public page (integer, optional) - Page of results to pull.
      */
     public function GET()
     {
@@ -73,6 +76,9 @@ class Movies
      * @api-version >=1.1
      * @api-param:public imdb (string, optional) - IMDB URL
      * @api-param:public trailer (string, optional) - Trailer URL
+     *
+     * @api-version >=1.1.3
+     * @api-return:public {created}
      */
     public function POST()
     {

@@ -27,15 +27,6 @@ These actions will allow you to pull information on a specific movie.
 + Response 404 (application/json)
     + Attributes (Error)
 
-### Delete a movie. [DELETE]
-This action requires a bearer token with `delete` scope.
-
-+ Parameters
-    - `id` (number, required) - Movie ID
-+ Response 204 (application/json)
-+ Response 404 (application/json)
-    + Attributes (Error)
-
 ## Movies [/movies]
 Information on a specific movie.
 
@@ -43,10 +34,6 @@ These actions will allow you to pull information on a specific movie.
 
 ### Get movies. [GET]
 + Request
-    + Headers
-
-            Content-Type: application/json
-
     + Attributes
         - `location` (string, required) - Location you want movies for.
 + Response 200 (application/json)
@@ -58,10 +45,6 @@ These actions will allow you to pull information on a specific movie.
 This action requires a bearer token with `create` scope.
 
 + Request
-    + Headers
-
-            Content-Type: application/json
-
     + Attributes
         - `cast` (array) - Array of names of the cast.
         - `content_rating` (enum[string]) - MPAA rating

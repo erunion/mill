@@ -13,9 +13,9 @@ use Mill\Parser\MSON;
 class ParamAnnotation extends Annotation
 {
     const REQUIRES_VISIBILITY_DECORATOR = true;
-    const SUPPORTS_VERSIONING = true;
     const SUPPORTS_DEPRECATION = true;
     const SUPPORTS_MSON = true;
+    const SUPPORTS_VERSIONING = true;
 
     /**
      * Name of this parameter's field.

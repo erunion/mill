@@ -10,8 +10,8 @@ use Mill\Parser\Annotation;
 class ContentTypeAnnotation extends Annotation
 {
     const REQUIRES_VISIBILITY_DECORATOR = false;
-    const SUPPORTS_VERSIONING = true;
     const SUPPORTS_DEPRECATION = false;
+    const SUPPORTS_VERSIONING = true;
 
     /**
      * Content type.

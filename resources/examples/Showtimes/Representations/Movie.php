@@ -59,11 +59,13 @@ class Movie extends Representation
 
             /**
              * @api-data director (\Mill\Examples\Showtimes\Representations\Person) - Director
+             * @api-scope public
              */
             'director' => $this->movie->director,
 
             /**
              * @api-data cast (array<\Mill\Examples\Showtimes\Representations\Person>) - Cast
+             * @api-scope public
              */
             'cast' => $this->movie->getCast(),
 
@@ -109,14 +111,21 @@ class Movie extends Representation
      */
     private function getExternalUrls()
     {
-        /**
-         * @api-data imdb (string) - IMDB URL
-         * @api-data trailer (string) - Trailer URL
-         * @api-data tickets (string, BUY_TICKETS) - Tickets URL
-         */
         return [
+            /**
+             * @api-data imdb (string) - IMDB URL
+             */
             'imdb' => $this->movie->imdb,
+
+            /**
+             * @api-data trailer (string) - Trailer URL
+             */
             'trailer' => $this->movie->trailer,
+
+            /**
+             * @api-data tickets (string, BUY_TICKETS) - Tickets URL
+             * @api-version <1.1.3
+             */
             'tickets' => $this->movie->tickets_url
         ];
     }

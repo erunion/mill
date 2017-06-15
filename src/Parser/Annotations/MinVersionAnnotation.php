@@ -18,8 +18,8 @@ use Mill\Parser\Version;
 class MinVersionAnnotation extends Annotation
 {
     const REQUIRES_VISIBILITY_DECORATOR = false;
-    const SUPPORTS_VERSIONING = false;
     const SUPPORTS_DEPRECATION = false;
+    const SUPPORTS_VERSIONING = false;
 
     /**
      * Minimum version.

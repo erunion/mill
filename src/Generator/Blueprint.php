@@ -13,6 +13,8 @@ use Mill\Parser\Resource\Action;
 
 class Blueprint extends Generator
 {
+    use Generator\Traits\Markdown;
+
     /**
      * Current list of representations for the current API version we're working with.
      * @var array
@@ -257,15 +259,6 @@ class Blueprint extends Generator
         $blueprint = '+ Request';
         $blueprint .= $this->line();
 
-        // Build up request headers.
-        $blueprint .= $this->tab();
-        $blueprint .= '+ Headers';
-        $blueprint .= $this->line(2);
-
-        $blueprint .= $this->tab(3);
-        $blueprint .= sprintf('Content-Type: %s', $action->getContentType($this->version));
-        $blueprint .= $this->line(2);
-
         // Build up request attributes.
         $blueprint .= $this->tab();
         $blueprint .= '+ Attributes';
@@ -408,12 +401,30 @@ class Blueprint extends Generator
                     (isset($data['subtype'])) ? $data['subtype'] : false
                 );
 
+                $description = $data['description'];
+                if (!empty($data['scopes'])) {
+                    // If this description doesn't end with punctuation, add a period before we display a list of
+                    // required authentication scopes.
+                    $description .= (!in_array(substr($description, -1), ['.', '!', '?'])) ? '.' : '';
+
+                    $strings = [];
+                    foreach ($data['scopes'] as $scope) {
+                        $strings[] = $scope['scope'];
+                    }
+
+                    $description .= sprintf(
+                        ' This data requires a bearer token with %s scope%s.',
+                        '`' . implode(', ', $strings) . '`',
+                        (count($strings) > 1) ? 's' : null
+                    );
+                }
+
                 $blueprint .= sprintf(
                     '- `%s`%s (%s) - %s',
                     $field_name,
                     (!empty($data['sample_data'])) ? sprintf(': `%s`', $data['sample_data']) : '',
                     $type,
-                    $data['description']
+                    $description
                 );
 
                 $blueprint .= $this->line();
@@ -511,28 +522,6 @@ class Blueprint extends Generator
         $blueprint = trim($blueprint);
 
         return $blueprint;
-    }
-
-    /**
-     * Return a repeated new line character.
-     *
-     * @param integer $repeat
-     * @return string
-     */
-    protected function line($repeat = 1)
-    {
-        return str_repeat("\n", $repeat);
-    }
-
-    /**
-     * Return a repeated tab character.
-     *
-     * @param integer $repeat
-     * @return string
-     */
-    protected function tab($repeat = 1)
-    {
-        return str_repeat('    ', $repeat);
     }
 
     /**

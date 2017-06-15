@@ -8,6 +8,7 @@ use Mill\Exceptions\MethodNotSuppliedException;
 use Mill\Exceptions\Representation\DuplicateFieldException;
 use Mill\Parser;
 use Mill\Parser\Annotations\DataAnnotation;
+use Mill\Parser\Annotations\ScopeAnnotation;
 use Mill\Parser\Version;
 
 /**
@@ -67,7 +68,7 @@ class RepresentationParser extends Parser
             // Run through all created annotations and cascade any versioning down into any present child annotations.
             /** @var DataAnnotation $annotation */
             foreach ($annotations as $identifier => $annotation) {
-                if (!$annotation->getVersion() && !$annotation->getCapability()) {
+                if (!$annotation->getVersion() && !$annotation->getCapability() && !$annotation->getScopes()) {
                     continue;
                 }
 
@@ -87,12 +88,13 @@ class RepresentationParser extends Parser
      */
     public function parseAnnotations(array $tags, $original_content)
     {
-        $has_see = [];
+        $scopes = [];
+        $see_pointers = [];
         $annotations = [];
         $data = [];
 
-        /** @var Version|null $has_version */
-        $has_version = null;
+        /** @var Version|null $version */
+        $version = null;
 
         // Does this have any `@api-see` pointers or a `@api-version` declaration?
         /** @var UnknownTag $tag */
@@ -106,29 +108,37 @@ class RepresentationParser extends Parser
                     $data[] = $content;
                     break;
 
+                case 'scope':
+                    $scopes[] = new ScopeAnnotation($content, $this->class, $this->method);
+                    break;
+
                 case 'see':
-                    $has_see = explode(' ', $content);
+                    $see_pointers = explode(' ', $content);
                     break;
 
                 case 'version':
-                    $has_version = new Version($content, $this->class, $this->method);
+                    $version = new Version($content, $this->class, $this->method);
                     break;
             }
         }
 
         foreach ($data as $content) {
-            $annotation = new DataAnnotation($content, $this->class, $this->method, $has_version);
+            $annotation = new DataAnnotation($content, $this->class, $this->method, $version);
+            if (!empty($scopes)) {
+                $annotation->setScopes($scopes);
+            }
+
             $annotations[$annotation->getIdentifier()] = $annotation;
         }
 
         // If we matched an `@api-see` annotation, then let's parse it out into viable annotations.
-        if (!empty($has_see)) {
-            list($see_class, $see_method) = explode('::', array_shift($has_see));
+        if (!empty($see_pointers)) {
+            list($see_class, $see_method) = explode('::', array_shift($see_pointers));
             if (in_array(strtolower($see_class), ['self', 'static'])) {
                 $see_class = $this->class;
             }
 
-            $prefix = array_shift($has_see);
+            $prefix = array_shift($see_pointers);
 
             // Pass in the current array (by reference) of found annotations that we have so we can do depth traversal
             // for version and capability requirements of any implied children, by way of dot-notation.
@@ -137,10 +147,28 @@ class RepresentationParser extends Parser
 
             /** @var DataAnnotation $annotation */
             foreach ($see_annotations as $name => $annotation) {
-                if ($has_version) {
-                    // If this `@api-see` is being used with a `@api-version`, then the version here should always
-                    // take precedence over any versioning set up within the see.
-                    $annotation->setVersion($has_version);
+                // If this `@api-see` is being used with an `@api-version`, then the version here should always be
+                // applied to any annotations we're including with the `@api-see`.
+                //
+                // If, however, an annotation we're loading has its own versioning set, we'll combine the pointers
+                // version with the annotations version to create a new constraint specifically for that annotation.
+                //
+                // For example, if `external_urls` is versioned at `>=1.1`, and points to a method to load
+                // `external_urls.tickets`, but that's versioned at `<1.1.3`, the new parsed constraint for
+                // `external_urls.tickets` will be `>=1.1 <1.1.3`.
+                if ($version) {
+                    $annotation_version = $annotation->getVersion();
+                    if ($annotation_version) {
+                        $new_constraint = implode(' ', [
+                            $version->getConstraint(),
+                            $annotation_version->getConstraint()
+                        ]);
+
+                        $updated_version = new Version($new_constraint, $this->class, $this->method);
+                        $annotation->setVersion($updated_version);
+                    } else {
+                        $annotation->setVersion($version);
+                    }
                 }
 
                 // If this `@api-see` has a prefix to attach to found annotation identifiers, do so.
@@ -200,6 +228,9 @@ class RepresentationParser extends Parser
         $parent_identifier = $parent->getIdentifier();
         $parent_version = $parent->getVersion();
 
+        /** @var array<ScopeAnnotation> $parent_scopes */
+        $parent_scopes = $parent->getScopes();
+
         /** @var string $parent_capability */
         $parent_capability = $parent->getCapability();
 
@@ -220,6 +251,10 @@ class RepresentationParser extends Parser
 
             if (!empty($parent_capability) && !$annotation->getCapability()) {
                 $annotation->setCapability($parent_capability);
+            }
+
+            if (!empty($parent_scopes) && !$annotation->getScopes()) {
+                $annotation->setScopes($parent_scopes);
             }
         }
     }

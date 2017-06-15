@@ -50,26 +50,40 @@ class Generator
     }
 
     /**
-     * Compile API documentation into a parseable array.
+     * Compile API documentation into a parseable collection.
      *
      * @return array
      */
     public function generate()
     {
-        $this->compileResources();
-        $this->compileRepresentations();
+        // Generate resources.
+        $resources = $this->compileResources($this->parseResources());
+        foreach ($resources as $version => $groups) {
+            // Alphabetize the versioned resource groups!
+            ksort($resources[$version]);
+        }
+
+        $this->compiled['resources'] = $resources;
+
+        // Generate representations.
+        $representations = $this->compileRepresentations($this->parseRepresentations());
+        foreach ($representations as $version => $data) {
+            // Alphabetize the versioned representations!
+            ksort($representations[$version]);
+        }
+
+        $this->compiled['representations'] = $representations;
 
         return $this->compiled;
     }
 
     /**
-     * Compile API resources.
+     * Run through configured controllers, parse them, and generate a collection of resource action documentation.
      *
-     * @return void
+     * @return array
      */
-    private function compileResources()
+    protected function parseResources()
     {
-        // Run through parsed controllers, and generate a versioned array of parseable resource action documentation.
         $resources = [];
         foreach ($this->config->getControllers() as $controller) {
             $docs = (new Resource\Documentation($controller))->parse();
@@ -80,9 +94,17 @@ class Generator
                 /** @var \Mill\Parser\Annotations\UriAnnotation $uri */
                 foreach ($method->getUris() as $uri) {
                     $uri_data = $uri->toArray();
-
                     $group = $uri_data['group'];
+
                     $resource_label = $annotations['label'];
+
+                    if (!isset($resources[$group]['resources'][$resource_label])) {
+                        $resources[$group]['resources'][$resource_label] = [
+                            'label' => $annotations['label'],
+                            'description' => $annotations['description'],
+                            'actions' => []
+                        ];
+                    }
 
                     // Set any segments that belong to this URI on onto this action.
                     $segments = [];
@@ -94,6 +116,35 @@ class Generator
                         }
                     }
 
+                    // Set the lone URI that this action and group run under.
+                    $action = clone $method;
+                    $action->setUri($uri);
+                    $action->setUriSegments($segments);
+
+                    // Hash the action so we don't happen to double up and end up with dupes.
+                    $identifier = $action->getUri()->getPath() . '::' . $action->getMethod();
+
+                    $resources[$group]['resources'][$resource_label]['actions'][$identifier] = $action;
+                }
+            }
+        }
+
+        return $resources;
+    }
+
+    /**
+     * Compile parsed resources into a versioned collection.
+     *
+     * @param array $parsed
+     * @return array
+     */
+    private function compileResources(array $parsed = [])
+    {
+        $resources = [];
+        foreach ($parsed as $group => $group_data) {
+            foreach ($group_data['resources'] as $resource_label => $resource) {
+                foreach ($resource['actions'] as $identifier => $action) {
+                    // Run through every supported API version and flatten out documentation for it.
                     foreach ($this->supported_versions as $version) {
                         // If we're generating documentation for a specific version range, and this doesn't fall in
                         // that, then skip it.
@@ -102,7 +153,7 @@ class Generator
                         }
 
                         // If this method has a minimum version specified, and we aren't generating for that, skip it.
-                        $min_version = $method->getMinimumVersion();
+                        $min_version = $action->getMinimumVersion();
                         if ($min_version && $min_version->getMinimumVersion() > $version) {
                             continue;
                         }
@@ -115,52 +166,40 @@ class Generator
                             ];
                         }
 
-                        // Set the lone URI that this action and group run under.
-                        $action = clone $method;
-                        $action->setUri($uri);
-                        $action->setUriSegments($segments);
-
                         // Filter down the annotations on this action for just those of the current version we're
                         // generating documentation for.
-                        $action->filterAnnotationsForVersion($version);
+                        $cloned = clone $action;
+                        $cloned->filterAnnotationsForVersion($version);
 
                         if (!isset($resources[$version][$group]['resources'][$resource_label])) {
                             $resources[$version][$group]['resources'][$resource_label] = [
-                                'label' => $annotations['label'],
-                                'description' => $annotations['description'],
+                                'label' => $resource['label'],
+                                'description' => $resource['description'],
                                 'actions' => []
                             ];
                         }
 
                         // Hash the action so we don't happen to double up and end up with dupes, and then remove the
                         // currently non-hash index from the action array.
-                        $index = $action->getUri()->getPath() . '::' . $action->getMethod();
+                        $identifier = $cloned->getUri()->getPath() . '::' . $cloned->getMethod();
 
-                        $resources[$version][$group]['resources'][$resource_label]['actions'][$index] = $action;
+                        $resources[$version][$group]['resources'][$resource_label]['actions'][$identifier] = $cloned;
                     }
                 }
             }
         }
 
-        // Alphabetize the versioned resource groups!
-        foreach ($resources as $version => $groups) {
-            uksort($resources[$version], function ($a, $b) {
-                return ($a > $b) ? 1 : -1;
-            });
-        }
-
-        $this->compiled['resources'] = $resources;
+        return $resources;
     }
 
     /**
-     * Compile API representations.
+     * Run through configured representations, parse them, and generate a collection of representation documentation.
      *
-     * @return void
+     * @return array
      */
-    private function compileRepresentations()
+    protected function parseRepresentations()
     {
         $representations = [];
-
         $error_representations = $this->config->getErrorRepresentations();
 
         /** @var array $representation */
@@ -174,8 +213,25 @@ class Generator
                 }
             }
 
-            $docs = (new Representation\Documentation($class, $representation['method']))->parse();
+            $parsed = (new Representation\Documentation($class, $representation['method']))->parse();
+            $representations[$class] = $parsed;
+        }
 
+        return $representations;
+    }
+
+    /**
+     * Compile parsed representations into a versioned collection.
+     *
+     * @param array $parsed
+     * @return array
+     */
+    private function compileRepresentations(array $parsed = [])
+    {
+        $representations = [];
+
+        foreach ($parsed as $identifier => $representation) {
+            // Run through every supported API version and flatten out documentation for it.
             foreach ($this->supported_versions as $version) {
                 // If we're generating documentation for a specific version range, and this doesn't fall in
                 // that, then skip it.
@@ -185,21 +241,14 @@ class Generator
 
                 // Filter down the annotations on this action for just those of the current version we're
                 // generating documentation for.
-                $cloned = clone $docs;
+                $cloned = clone $representation;
                 $cloned->filterRepresentationForVersion($version);
 
-                $representations[$version][$class] = $cloned;
+                $representations[$version][$identifier] = $cloned;
             }
         }
 
-        // Alphabetize the versioned representations!
-        foreach ($representations as $version => $data) {
-            uksort($representations[$version], function ($a, $b) {
-                return ($a > $b) ? 1 : -1;
-            });
-        }
-
-        $this->compiled['representations'] = $representations;
+        return $representations;
     }
 
     /**

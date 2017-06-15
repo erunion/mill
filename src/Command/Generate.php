@@ -71,14 +71,14 @@ class Generate extends Command
         $output->getFormatter()->setStyle('success', $style);
 
         $output_dir = realpath($input->getArgument('output'));
-        $config = realpath($input->getOption('config'));
+        $config_file = realpath($input->getOption('config'));
         $version = $input->getOption('constraint');
         $dry_run = $input->getOption('dry-run');
 
         // Generate!
         // @todo This should be pulled from the core Application instead, so we can inject the dependency in tests.
         $container = new Container([
-            'config.path' => $config
+            'config.path' => $config_file
         ]);
 
         if ($dry_run) {

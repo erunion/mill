@@ -149,17 +149,27 @@ class RepresentationParserTest extends TestCase
             'unrelated'
         ], array_keys($annotations));
 
-        $this->assertSame('>=3.3', $annotations['connections']->toArray()['version']);
-        $this->assertSame('>=3.3', $annotations['connections.things']->toArray()['version']);
-        $this->assertSame('>=3.3', $annotations['connections.things.name']->toArray()['version']);
-        $this->assertSame('3.4', $annotations['connections.things.uri']->toArray()['version']);
-        $this->assertEmpty($annotations['unrelated']->toArray()['version']);
+        $annotations = array_map(function ($annotation) {
+            return $annotation->toArray();
+        }, $annotations);
 
-        $this->assertEmpty($annotations['connections']->toArray()['capability']);
-        $this->assertSame('NONE', $annotations['connections.things']->toArray()['capability']);
-        $this->assertSame('MOVIE_RATINGS', $annotations['connections.things.name']->toArray()['capability']);
-        $this->assertSame('NONE', $annotations['connections.things.uri']->toArray()['capability']);
-        $this->assertEmpty($annotations['unrelated']->toArray()['version']);
+        $this->assertEmpty($annotations['connections']['capability']);
+        $this->assertSame('NONE', $annotations['connections.things']['capability']);
+        $this->assertSame('MOVIE_RATINGS', $annotations['connections.things.name']['capability']);
+        $this->assertSame('NONE', $annotations['connections.things.uri']['capability']);
+        $this->assertEmpty($annotations['unrelated']['capability']);
+
+        $this->assertSame('>=3.3', $annotations['connections']['version']);
+        $this->assertSame('>=3.3', $annotations['connections.things']['version']);
+        $this->assertSame('>=3.3', $annotations['connections.things.name']['version']);
+        $this->assertSame('3.4', $annotations['connections.things.uri']['version']);
+        $this->assertEmpty($annotations['unrelated']['version']);
+
+        $this->assertEmpty($annotations['connections']['scopes']);
+        $this->assertSame('public', $annotations['connections.things']['scopes'][0]['scope']);
+        $this->assertSame('public', $annotations['connections.things.name']['scopes'][0]['scope']);
+        $this->assertSame('public', $annotations['connections.things.uri']['scopes'][0]['scope']);
+        $this->assertEmpty($annotations['unrelated']['scopes']);
     }
 
     /**
@@ -178,6 +188,12 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Cast',
                             'identifier' => 'cast',
                             'sample_data' => false,
+                            'scopes' => [
+                                [
+                                    'description' => false,
+                                    'scope' => 'public'
+                                ]
+                            ],
                             'subtype' => '\Mill\Examples\Showtimes\Representations\Person',
                             'type' => 'array',
                             'values' => false,
@@ -188,6 +204,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'MPAA rating',
                             'identifier' => 'content_rating',
                             'sample_data' => 'G',
+                            'scopes' => [],
                             'subtype' => false,
                             'type' => 'enum',
                             'values' => [
@@ -207,6 +224,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Description',
                             'identifier' => 'description',
                             'sample_data' => false,
+                            'scopes' => [],
                             'subtype' => false,
                             'type' => 'string',
                             'values' => false,
@@ -217,6 +235,12 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Director',
                             'identifier' => 'director',
                             'sample_data' => false,
+                            'scopes' => [
+                                [
+                                    'description' => false,
+                                    'scope' => 'public'
+                                ]
+                            ],
                             'subtype' => false,
                             'type' => '\Mill\Examples\Showtimes\Representations\Person',
                             'values' => false,
@@ -227,6 +251,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'External URLs',
                             'identifier' => 'external_urls',
                             'sample_data' => false,
+                            'scopes' => [],
                             'subtype' => false,
                             'type' => 'object',
                             'values' => false,
@@ -237,6 +262,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'IMDB URL',
                             'identifier' => 'external_urls.imdb',
                             'sample_data' => false,
+                            'scopes' => [],
                             'subtype' => false,
                             'type' => 'string',
                             'values' => false,
@@ -247,16 +273,18 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Tickets URL',
                             'identifier' => 'external_urls.tickets',
                             'sample_data' => false,
+                            'scopes' => [],
                             'subtype' => false,
                             'type' => 'string',
                             'values' => false,
-                            'version' => '>=1.1'
+                            'version' => '>=1.1 <1.1.3'
                         ],
                         'external_urls.trailer' => [
                             'capability' => false,
                             'description' => 'Trailer URL',
                             'identifier' => 'external_urls.trailer',
                             'sample_data' => false,
+                            'scopes' => [],
                             'subtype' => false,
                             'type' => 'string',
                             'values' => false,
@@ -267,6 +295,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Genres',
                             'identifier' => 'genres',
                             'sample_data' => false,
+                            'scopes' => [],
                             'subtype' => false,
                             'type' => 'array',
                             'values' => false,
@@ -277,6 +306,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Unique ID',
                             'identifier' => 'id',
                             'sample_data' => false,
+                            'scopes' => [],
                             'subtype' => false,
                             'type' => 'number',
                             'values' => false,
@@ -287,6 +317,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Kid friendly?',
                             'identifier' => 'kid_friendly',
                             'sample_data' => false,
+                            'scopes' => [],
                             'subtype' => false,
                             'type' => 'boolean',
                             'values' => false,
@@ -297,6 +328,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Name',
                             'identifier' => 'name',
                             'sample_data' => false,
+                            'scopes' => [],
                             'subtype' => false,
                             'type' => 'string',
                             'values' => false,
@@ -307,6 +339,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'URL to purchase the film.',
                             'identifier' => 'purchase.url',
                             'sample_data' => false,
+                            'scopes' => [],
                             'subtype' => false,
                             'type' => 'string',
                             'values' => false,
@@ -317,6 +350,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Rotten Tomatoes score',
                             'identifier' => 'rotten_tomatoes_score',
                             'sample_data' => false,
+                            'scopes' => [],
                             'subtype' => false,
                             'type' => 'number',
                             'values' => false,
@@ -327,6 +361,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Runtime',
                             'identifier' => 'runtime',
                             'sample_data' => false,
+                            'scopes' => [],
                             'subtype' => false,
                             'type' => 'string',
                             'values' => false,
@@ -337,6 +372,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Non-theater specific showtimes',
                             'identifier' => 'showtimes',
                             'sample_data' => false,
+                            'scopes' => [],
                             'subtype' => false,
                             'type' => 'array',
                             'values' => false,
@@ -347,6 +383,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Theaters the movie is currently showing in',
                             'identifier' => 'theaters',
                             'sample_data' => false,
+                            'scopes' => [],
                             'subtype' => '\Mill\Examples\Showtimes\Representations\Theater',
                             'type' => 'array',
                             'values' => false,
@@ -357,6 +394,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Movie URI',
                             'identifier' => 'uri',
                             'sample_data' => false,
+                            'scopes' => [],
                             'subtype' => false,
                             'type' => 'uri',
                             'values' => false,

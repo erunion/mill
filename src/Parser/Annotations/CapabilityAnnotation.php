@@ -12,8 +12,8 @@ use Mill\Parser\Annotation;
 class CapabilityAnnotation extends Annotation
 {
     const REQUIRES_VISIBILITY_DECORATOR = false;
-    const SUPPORTS_VERSIONING = false;
     const SUPPORTS_DEPRECATION = false;
+    const SUPPORTS_VERSIONING = false;
 
     /**
      * Return an array of items that should be included in an array representation of this annotation.

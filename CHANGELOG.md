@@ -1,4 +1,20 @@
 # Changelog
+## [2.2.1] - 2017-06-15
+### Changed
+- No longer adding `Content-Type` header sections into generated API Blueprint files.
+
+## [2.2.0] - 2017-06-12
+### Added
+- A new `changelog` command that will generate a Markdown-representation changelog from your API docs. [#10](https://github.com/vimeo/mill/issues/10)
+
+## [2.1.1] - 2017-05-25
+### Fixed
+- Fixed a bug where `@api-scope` annotations with `@api-data` weren't cascading into dot-notation children. [#92](https://github.com/vimeo/mill/pull/92)
+
+## [2.1.0] - 2017-05-22
+### Added
+- Added support for `@api-scope` annotations alongside `@api-data`. [#90](https://github.com/vimeo/mill/issues/90)
+
 ## [2.0.6] - 2017-05-19
 ### Fixed
 - Representation data with an `enum` subtype wasn't getting any present enum member values compiled into API Blueprint files. [#85](https://github.com/vimeo/mill/issues/85)
@@ -112,6 +128,10 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[2.2.1]: https://github.com/vimeo/mill/compare/2.2.0...2.2.1
+[2.2.0]: https://github.com/vimeo/mill/compare/2.1.1...2.2.0
+[2.1.1]: https://github.com/vimeo/mill/compare/2.1.0...2.1.1
+[2.1.0]: https://github.com/vimeo/mill/compare/2.0.6...2.1.0
 [2.0.6]: https://github.com/vimeo/mill/compare/2.0.5...2.0.6
 [2.0.5]: https://github.com/vimeo/mill/compare/2.0.4...2.0.5
 [2.0.4]: https://github.com/vimeo/mill/compare/2.0.3...2.0.4

@@ -16,7 +16,8 @@ class GeneratorTest extends TestCase
             '1.0',
             '1.1',
             '1.1.1',
-            '1.1.2'
+            '1.1.2',
+            '1.1.3'
         ], array_keys($generator->getResources()));
     }
 
@@ -78,6 +79,7 @@ class GeneratorTest extends TestCase
                 $this->assertArrayHasKey($resource_name, $actual['resources']);
                 $actual_resource = $actual['resources'][$resource_name];
 
+                $this->assertSame($expected['resource.name'], $actual_resource['label']);
                 $this->assertSame($expected['description.length'], strlen($actual_resource['description']));
                 $this->assertCount(
                     count($expected['actions.data']),
@@ -358,9 +360,6 @@ class GeneratorTest extends TestCase
                                     ]),
                                     '/movies/+id::GET' => array_merge($common_actions['/movies/+id::GET'], [
                                         'params.keys' => []
-                                    ]),
-                                    '/movies/+id::DELETE' => array_merge($common_actions['/movies/+id::DELETE'], [
-                                        'params.keys' => []
                                     ])
                                 ]
                             ]
@@ -466,7 +465,8 @@ class GeneratorTest extends TestCase
                                     ]),
                                     '/movies::GET' => array_merge($common_actions['/movies::GET'], [
                                         'params.keys' => [
-                                            'location'
+                                            'location',
+                                            'page'
                                         ]
                                     ]),
                                     '/movies::POST' => array_merge($common_actions['/movies::POST'], [
@@ -608,7 +608,8 @@ class GeneratorTest extends TestCase
                                     ]),
                                     '/movies::GET' => array_merge($common_actions['/movies::GET'], [
                                         'params.keys' => [
-                                            'location'
+                                            'location',
+                                            'page'
                                         ]
                                     ]),
                                     '/movies::POST' => array_merge($common_actions['/movies::POST'], [

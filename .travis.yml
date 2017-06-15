@@ -8,6 +8,7 @@ cache:
     - ./vendor
 
 install:
+  - composer clear-cache
   - composer install
   - npm install
 
