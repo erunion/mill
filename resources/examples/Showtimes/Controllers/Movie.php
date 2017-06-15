@@ -13,6 +13,17 @@ class Movie
     /**
      * Return information on a specific movie.
      *
+     * Donec id elit non mi porta gravida at eget metus. Cras mattis consectetur purus sit amet fermentum. Lorem
+     * ipsum dolor sit amet, consectetur adipiscing elit. Etiam porta sem malesuada magna mollis euismod. Duis
+     * mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Etiam porta
+     * sem malesuada magna mollis euismod.
+     *
+     * ```
+     * [
+     *   {"id": "fizzbuzz"}
+     * ]
+     * ```
+     *
      * @api-label Get a single movie.
      *
      * @api-uri:private:alias {Movies} /movie/+id

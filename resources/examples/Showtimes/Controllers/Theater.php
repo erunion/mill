@@ -13,7 +13,7 @@ class Theater
     /**
      * Return information on a specific movie theater.
      *
-     * @api-label Get a single movie theater
+     * @api-label Get a single movie theater.
      *
      * @api-uri:public {Theaters} /theaters/+id
      * @api-uriSegment {/theaters/+id} id (integer) - Theater ID
@@ -38,7 +38,7 @@ class Theater
     /**
      * Update a movie theaters' data.
      *
-     * @api-label Update a movie theater
+     * @api-label Update a movie theater.
      *
      * @api-uri:public {Theaters} /theaters/+id
      * @api-uriSegment {/theaters/+id} id (integer) - Theater ID
@@ -70,7 +70,7 @@ class Theater
     /**
      * Delete a movie theater.
      *
-     * @api-label Delete a movie movie.
+     * @api-label Delete a movie theater.
      *
      * @api-uri:private {Theaters} /theaters/+id
      * @api-uriSegment {/theaters/+id} id (integer) - Theater ID
