@@ -56,6 +56,9 @@
         ],
         "check-style": "phpcs --standard=PSR2 bin/ src/ tests/",
         "coverage": "phpunit --coverage-html reports/",
-        "tests": "phpunit"
+        "tests": [
+            "phpunit",
+            "npm test"
+        ]
     }
 }

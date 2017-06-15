@@ -67,8 +67,16 @@ class Blueprint extends Generator
                             ];
                         }
 
+                        $action_contents = '';
+
+                        $description = $action->getDescription();
+                        if (!empty($description)) {
+                            $action_contents .= $description;
+                            $action_contents .= $this->line(2);
+                        }
+
                         // Generate scopes
-                        $action_contents = $this->processScopes($action);
+                        $action_contents .= $this->processScopes($action);
 
                         // Process parameters
                         $action_contents .= $this->processParameters($action);
