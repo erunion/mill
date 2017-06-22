@@ -54,9 +54,7 @@ class GeneratorTest extends TestCase
         $generator = new Generator($this->getConfig(), $version_obj);
         $generator->generate();
 
-        /**
-         * Verify resources
-         */
+        // Verify resources
         $resources = $generator->getResources();
         $this->assertArrayHasKey($version, $resources);
 
@@ -99,6 +97,11 @@ class GeneratorTest extends TestCase
 
                     $this->assertSame($expected_action['method'], $action->getMethod());
                     $this->assertSame($annotations['uri'][0]['path'], $expected_action['uri']);
+                    $this->assertSame(
+                        $annotations['uri'][0]['visible'],
+                        $expected_action['uri.visible'],
+                        $expected_action['uri'] . '::' . $expected_action['method']
+                    );
 
                     if ($expected_action['uriSegment'] === false) {
                         $this->assertArrayNotHasKey(
@@ -119,9 +122,7 @@ class GeneratorTest extends TestCase
             }
         }
 
-        /**
-         * Verify representations
-         */
+        // Verify representations
         $representations = $generator->getRepresentations();
         $this->assertArrayHasKey($version, $representations);
 
@@ -148,8 +149,8 @@ class GeneratorTest extends TestCase
      */
     public function providerGeneratorWithVersion()
     {
-        // Save us the effort of copy and pasting the same base endpoints over and over.
-        $common_actions = [
+        // Save us the effort of copy and pasting the same base actions over and over.
+        $actions = [
             '/movie/+id::GET' => [
                 'uri' => '/movie/+id',
                 'method' => 'GET',
@@ -161,17 +162,35 @@ class GeneratorTest extends TestCase
                         'uri' => '/movie/+id',
                         'values' => false
                     ]
-                ]
+                ],
+                'uri.visible' => false,
+                'params.keys' => []
             ],
             '/movies::GET' => [
                 'uri' => '/movies',
                 'method' => 'GET',
-                'uriSegment' => false
+                'uriSegment' => false,
+                'uri.visible' => true,
+                'params.keys' => [
+                    'location'
+                ]
             ],
             '/movies::POST' => [
                 'uri' => '/movies',
                 'method' => 'POST',
-                'uriSegment' => false
+                'uriSegment' => false,
+                'uri.visible' => true,
+                'params.keys' => [
+                    'cast',
+                    'content_rating',
+                    'description',
+                    'director',
+                    'genres',
+                    'is_kid_friendly',
+                    'name',
+                    'rotten_tomatoes_score',
+                    'runtime'
+                ]
             ],
             '/movies/+id::GET' => [
                 'uri' => '/movies/+id',
@@ -184,7 +203,9 @@ class GeneratorTest extends TestCase
                         'uri' => '/movies/+id',
                         'values' => false
                     ]
-                ]
+                ],
+                'uri.visible' => true,
+                'params.keys' => []
             ],
             '/movies/+id::PATCH' => [
                 'uri' => '/movies/+id',
@@ -197,6 +218,19 @@ class GeneratorTest extends TestCase
                         'uri' => '/movies/+id',
                         'values' => false
                     ]
+                ],
+                'uri.visible' => true,
+                'params.keys' => [
+                    'cast',
+                    'content_rating',
+                    'description',
+                    'director',
+                    'genres',
+                    'is_kid_friendly',
+                    'name',
+                    'rotten_tomatoes_score',
+                    'runtime',
+                    'trailer'
                 ]
             ],
             '/movies/+id::DELETE' => [
@@ -210,17 +244,29 @@ class GeneratorTest extends TestCase
                         'uri' => '/movies/+id',
                         'values' => false
                     ]
-                ]
+                ],
+                'uri.visible' => false,
+                'params.keys' => []
             ],
             '/theaters::GET' => [
                 'uri' => '/theaters',
                 'method' => 'GET',
-                'uriSegment' => false
+                'uriSegment' => false,
+                'uri.visible' => true,
+                'params.keys' => [
+                    'location'
+                ]
             ],
             '/theaters::POST' => [
                 'uri' => '/theaters',
                 'method' => 'POST',
-                'uriSegment' => false
+                'uriSegment' => false,
+                'uri.visible' => true,
+                'params.keys' => [
+                    'address',
+                    'name',
+                    'phone_number'
+                ]
             ],
             '/theaters/+id::GET' => [
                 'uri' => '/theaters/+id',
@@ -233,7 +279,9 @@ class GeneratorTest extends TestCase
                         'uri' => '/theaters/+id',
                         'values' => false
                     ]
-                ]
+                ],
+                'uri.visible' => true,
+                'params.keys' => []
             ],
             '/theaters/+id::PATCH' => [
                 'uri' => '/theaters/+id',
@@ -246,6 +294,12 @@ class GeneratorTest extends TestCase
                         'uri' => '/theaters/+id',
                         'values' => false
                     ]
+                ],
+                'uri.visible' => true,
+                'params.keys' => [
+                    'address',
+                    'name',
+                    'phone_number'
                 ]
             ],
             '/theaters/+id::DELETE' => [
@@ -259,6 +313,54 @@ class GeneratorTest extends TestCase
                         'uri' => '/theaters/+id',
                         'values' => false
                     ]
+                ],
+                'uri.visible' => false,
+                'params.keys' => []
+            ]
+        ];
+
+        $representations = [
+            'Movie' => [
+                'label' => 'Movie',
+                'description.length' => 41,
+                'content.keys' => [
+                    'cast',
+                    'content_rating',
+                    'description',
+                    'director',
+                    'genres',
+                    'id',
+                    'kid_friendly',
+                    'name',
+                    'purchase.url',
+                    'rotten_tomatoes_score',
+                    'runtime',
+                    'showtimes',
+                    'theaters',
+                    'uri'
+                ]
+            ],
+            'Person' => [
+                'label' => 'Person',
+                'description.length' => 42,
+                'content.keys' => [
+                    'id',
+                    'imdb',
+                    'name',
+                    'uri'
+                ]
+            ],
+            'Theater' => [
+                'label' => 'Theater',
+                'description.length' => 49,
+                'content.keys' => [
+                    'address',
+                    'id',
+                    'movies',
+                    'name',
+                    'phone_number',
+                    'showtimes',
+                    'uri',
                 ]
             ]
         ];
@@ -285,50 +387,19 @@ class GeneratorTest extends TestCase
             'version-1.0' => [
                 'version' => '1.0',
                 'expected.representations' => array_merge($error_representations, [
-                    '\Mill\Examples\Showtimes\Representations\Movie' => [
-                        'label' => 'Movie',
-                        'description.length' => 41,
-                        'content.keys' => [
-                            'cast',
-                            'content_rating',
-                            'description',
-                            'director',
-                            'genres',
-                            'id',
-                            'kid_friendly',
-                            'name',
-                            'purchase.url',
-                            'rotten_tomatoes_score',
-                            'runtime',
-                            'showtimes',
-                            'theaters',
-                            'uri'
-                        ]
-                    ],
-                    '\Mill\Examples\Showtimes\Representations\Person' => [
-                        'label' => 'Person',
-                        'description.length' => 42,
-                        'content.keys' => [
-                            'id',
-                            'imdb',
-                            'name',
-                            'uri'
-                        ]
-                    ],
-                    '\Mill\Examples\Showtimes\Representations\Theater' => [
-                        'label' => 'Theater',
-                        'description.length' => 49,
-                        'content.keys' => [
-                            'address',
-                            'id',
-                            'movies',
-                            'name',
-                            'phone_number',
-                            'showtimes',
-                            'uri',
-                            'website'
-                        ]
-                    ]
+                    '\Mill\Examples\Showtimes\Representations\Movie' => $representations['Movie'],
+                    '\Mill\Examples\Showtimes\Representations\Person' => $representations['Person'],
+                    '\Mill\Examples\Showtimes\Representations\Theater' => call_user_func(
+                        function () use ($representations) {
+                            $representation = $representations['Theater'];
+                            $representation['content.keys'] = array_merge($representation['content.keys'], [
+                                'website'
+                            ]);
+
+                            sort($representation['content.keys']);
+                            return $representation;
+                        }
+                    )
                 ]),
                 'expected.resources' => [
                     'Movies' => [
@@ -337,30 +408,10 @@ class GeneratorTest extends TestCase
                                 'resource.name' => 'Movies',
                                 'description.length' => 103,
                                 'actions.data' => [
-                                    '/movie/+id::GET' => array_merge($common_actions['/movie/+id::GET'], [
-                                        'params.keys' => []
-                                    ]),
-                                    '/movies::GET' => array_merge($common_actions['/movies::GET'], [
-                                        'params.keys' => [
-                                            'location'
-                                        ]
-                                    ]),
-                                    '/movies::POST' => array_merge($common_actions['/movies::POST'], [
-                                        'params.keys' => [
-                                            'cast',
-                                            'content_rating',
-                                            'description',
-                                            'director',
-                                            'genres',
-                                            'is_kid_friendly',
-                                            'name',
-                                            'rotten_tomatoes_score',
-                                            'runtime'
-                                        ]
-                                    ]),
-                                    '/movies/+id::GET' => array_merge($common_actions['/movies/+id::GET'], [
-                                        'params.keys' => []
-                                    ])
+                                    '/movie/+id::GET' => $actions['/movie/+id::GET'],
+                                    '/movies::GET' => $actions['/movies::GET'],
+                                    '/movies::POST' => $actions['/movies::POST'],
+                                    '/movies/+id::GET' => $actions['/movies/+id::GET']
                                 ]
                             ]
                         ]
@@ -371,87 +422,36 @@ class GeneratorTest extends TestCase
                                 'resource.name' => 'Movie Theaters',
                                 'description.length' => 119,
                                 'actions.data' => [
-                                    '/theaters::GET' => array_merge($common_actions['/theaters::GET'], [
-                                        'params.keys' => [
-                                            'location'
-                                        ]
-                                    ]),
-                                    '/theaters::POST' => array_merge($common_actions['/theaters::POST'], [
-                                        'params.keys' => [
-                                            'address',
-                                            'name',
-                                            'phone_number'
-                                        ]
-                                    ]),
-                                    '/theaters/+id::GET' => array_merge($common_actions['/theaters/+id::GET'], [
-                                        'params.keys' => []
-                                    ]),
-                                    '/theaters/+id::PATCH' => array_merge($common_actions['/theaters/+id::PATCH'], [
-                                        'params.keys' => [
-                                            'address',
-                                            'name',
-                                            'phone_number'
-                                        ]
-                                    ]),
-                                    '/theaters/+id::DELETE' => array_merge($common_actions['/theaters/+id::DELETE'], [
-                                        'params.keys' => []
-                                    ])
+                                    '/theaters::GET' => $actions['/theaters::GET'],
+                                    '/theaters::POST' => $actions['/theaters::POST'],
+                                    '/theaters/+id::GET' => $actions['/theaters/+id::GET'],
+                                    '/theaters/+id::PATCH' => $actions['/theaters/+id::PATCH'],
+                                    '/theaters/+id::DELETE' => $actions['/theaters/+id::DELETE']
                                 ]
                             ]
                         ]
-                    ],
+                    ]
                 ]
             ],
             'version-1.1' => [
                 'version' => '1.1',
                 'expected.representations' => array_merge($error_representations, [
-                    '\Mill\Examples\Showtimes\Representations\Movie' => [
-                        'label' => 'Movie',
-                        'description.length' => 41,
-                        'content.keys' => [
-                            'cast',
-                            'content_rating',
-                            'description',
-                            'director',
-                            'external_urls',
-                            'external_urls.imdb',
-                            'external_urls.tickets',
-                            'external_urls.trailer',
-                            'genres',
-                            'id',
-                            'kid_friendly',
-                            'name',
-                            'purchase.url',
-                            'rotten_tomatoes_score',
-                            'runtime',
-                            'showtimes',
-                            'theaters',
-                            'uri'
-                        ]
-                    ],
-                    '\Mill\Examples\Showtimes\Representations\Person' => [
-                        'label' => 'Person',
-                        'description.length' => 42,
-                        'content.keys' => [
-                            'id',
-                            'imdb',
-                            'name',
-                            'uri'
-                        ]
-                    ],
-                    '\Mill\Examples\Showtimes\Representations\Theater' => [
-                        'label' => 'Theater',
-                        'description.length' => 49,
-                        'content.keys' => [
-                            'address',
-                            'id',
-                            'movies',
-                            'name',
-                            'phone_number',
-                            'showtimes',
-                            'uri'
-                        ]
-                    ]
+                    '\Mill\Examples\Showtimes\Representations\Movie' => call_user_func(
+                        function () use ($representations) {
+                            $representation = $representations['Movie'];
+                            $representation['content.keys'] = array_merge($representation['content.keys'], [
+                                'external_urls',
+                                'external_urls.imdb',
+                                'external_urls.tickets',
+                                'external_urls.trailer'
+                            ]);
+
+                            sort($representation['content.keys']);
+                            return $representation;
+                        }
+                    ),
+                    '\Mill\Examples\Showtimes\Representations\Person' => $representations['Person'],
+                    '\Mill\Examples\Showtimes\Representations\Theater' => $representations['Theater']
                 ]),
                 'expected.resources' => [
                     'Movies' => [
@@ -460,50 +460,25 @@ class GeneratorTest extends TestCase
                                 'resource.name' => 'Movies',
                                 'description.length' => 103,
                                 'actions.data' => [
-                                    '/movie/+id::GET' => array_merge($common_actions['/movie/+id::GET'], [
-                                        'params.keys' => []
-                                    ]),
-                                    '/movies::GET' => array_merge($common_actions['/movies::GET'], [
-                                        'params.keys' => [
-                                            'location',
-                                            'page'
-                                        ]
-                                    ]),
-                                    '/movies::POST' => array_merge($common_actions['/movies::POST'], [
-                                        'params.keys' => [
-                                            'cast',
-                                            'content_rating',
-                                            'description',
-                                            'director',
-                                            'genres',
-                                            'imdb',
-                                            'is_kid_friendly',
-                                            'name',
-                                            'rotten_tomatoes_score',
-                                            'runtime',
-                                            'trailer'
-                                        ]
-                                    ]),
-                                    '/movies/+id::GET' => array_merge($common_actions['/movies/+id::GET'], [
-                                        'params.keys' => []
-                                    ]),
-                                    '/movies/+id::PATCH' => array_merge($common_actions['/movies/+id::PATCH'], [
-                                        'params.keys' => [
-                                            'cast',
-                                            'content_rating',
-                                            'description',
-                                            'director',
-                                            'genres',
-                                            'is_kid_friendly',
-                                            'name',
-                                            'rotten_tomatoes_score',
-                                            'runtime',
-                                            'trailer'
-                                        ]
-                                    ]),
-                                    '/movies/+id::DELETE' => array_merge($common_actions['/movies/+id::DELETE'], [
-                                        'params.keys' => []
-                                    ])
+                                    '/movie/+id::GET' => $actions['/movie/+id::GET'],
+                                    '/movies::GET' => call_user_func(function () use ($actions) {
+                                        $action = $actions['/movies::GET'];
+                                        $action['params.keys'][] = 'page';
+
+                                        return $action;
+                                    }),
+                                    '/movies::POST' => call_user_func(function () use ($actions) {
+                                        $action = $actions['/movies::POST'];
+                                        $action['params.keys'][] = 'imdb';
+                                        $action['params.keys'][] = 'trailer';
+
+                                        sort($action['params.keys']);
+
+                                        return $action;
+                                    }),
+                                    '/movies/+id::GET' => $actions['/movies/+id::GET'],
+                                    '/movies/+id::PATCH' => $actions['/movies/+id::PATCH'],
+                                    '/movies/+id::DELETE' => $actions['/movies/+id::DELETE']
                                 ]
                             ]
                         ]
@@ -514,31 +489,11 @@ class GeneratorTest extends TestCase
                                 'resource.name' => 'Movie Theaters',
                                 'description.length' => 119,
                                 'actions.data' => [
-                                    '/theaters::GET' => array_merge($common_actions['/theaters::GET'], [
-                                        'params.keys' => [
-                                            'location'
-                                        ]
-                                    ]),
-                                    '/theaters::POST' => array_merge($common_actions['/theaters::POST'], [
-                                        'params.keys' => [
-                                            'address',
-                                            'name',
-                                            'phone_number'
-                                        ]
-                                    ]),
-                                    '/theaters/+id::GET' => array_merge($common_actions['/theaters/+id::GET'], [
-                                        'params.keys' => []
-                                    ]),
-                                    '/theaters/+id::PATCH' => array_merge($common_actions['/theaters/+id::PATCH'], [
-                                        'params.keys' => [
-                                            'address',
-                                            'name',
-                                            'phone_number'
-                                        ]
-                                    ]),
-                                    '/theaters/+id::DELETE' => array_merge($common_actions['/theaters/+id::DELETE'], [
-                                        'params.keys' => []
-                                    ])
+                                    '/theaters::GET' => $actions['/theaters::GET'],
+                                    '/theaters::POST' => $actions['/theaters::POST'],
+                                    '/theaters/+id::GET' => $actions['/theaters/+id::GET'],
+                                    '/theaters/+id::PATCH' => $actions['/theaters/+id::PATCH'],
+                                    '/theaters/+id::DELETE' => $actions['/theaters/+id::DELETE']
                                 ]
                             ]
                         ]
@@ -548,53 +503,22 @@ class GeneratorTest extends TestCase
             'version-1.1.1' => [
                 'version' => '1.1.1',
                 'expected.representations' => array_merge($error_representations, [
-                    '\Mill\Examples\Showtimes\Representations\Movie' => [
-                        'label' => 'Movie',
-                        'description.length' => 41,
-                        'content.keys' => [
-                            'cast',
-                            'content_rating',
-                            'description',
-                            'director',
-                            'external_urls',
-                            'external_urls.imdb',
-                            'external_urls.tickets',
-                            'external_urls.trailer',
-                            'genres',
-                            'id',
-                            'kid_friendly',
-                            'name',
-                            'purchase.url',
-                            'rotten_tomatoes_score',
-                            'runtime',
-                            'showtimes',
-                            'theaters',
-                            'uri'
-                        ]
-                    ],
-                    '\Mill\Examples\Showtimes\Representations\Person' => [
-                        'label' => 'Person',
-                        'description.length' => 42,
-                        'content.keys' => [
-                            'id',
-                            'imdb',
-                            'name',
-                            'uri'
-                        ]
-                    ],
-                    '\Mill\Examples\Showtimes\Representations\Theater' => [
-                        'label' => 'Theater',
-                        'description.length' => 49,
-                        'content.keys' => [
-                            'address',
-                            'id',
-                            'movies',
-                            'name',
-                            'phone_number',
-                            'showtimes',
-                            'uri'
-                        ]
-                    ]
+                    '\Mill\Examples\Showtimes\Representations\Movie' => call_user_func(
+                        function () use ($representations) {
+                            $representation = $representations['Movie'];
+                            $representation['content.keys'] = array_merge($representation['content.keys'], [
+                                'external_urls',
+                                'external_urls.imdb',
+                                'external_urls.tickets',
+                                'external_urls.trailer'
+                            ]);
+
+                            sort($representation['content.keys']);
+                            return $representation;
+                        }
+                    ),
+                    '\Mill\Examples\Showtimes\Representations\Person' => $representations['Person'],
+                    '\Mill\Examples\Showtimes\Representations\Theater' => $representations['Theater']
                 ]),
                 'expected.resources' => [
                     'Movies' => [
@@ -603,51 +527,32 @@ class GeneratorTest extends TestCase
                                 'resource.name' => 'Movies',
                                 'description.length' => 103,
                                 'actions.data' => [
-                                    '/movie/+id::GET' => array_merge($common_actions['/movie/+id::GET'], [
-                                        'params.keys' => []
-                                    ]),
-                                    '/movies::GET' => array_merge($common_actions['/movies::GET'], [
-                                        'params.keys' => [
-                                            'location',
-                                            'page'
-                                        ]
-                                    ]),
-                                    '/movies::POST' => array_merge($common_actions['/movies::POST'], [
-                                        'params.keys' => [
-                                            'cast',
-                                            'content_rating',
-                                            'description',
-                                            'director',
-                                            'genres',
-                                            'imdb',
-                                            'is_kid_friendly',
-                                            'name',
-                                            'rotten_tomatoes_score',
-                                            'runtime',
-                                            'trailer'
-                                        ]
-                                    ]),
-                                    '/movies/+id::GET' => array_merge($common_actions['/movies/+id::GET'], [
-                                        'params.keys' => []
-                                    ]),
-                                    '/movies/+id::PATCH' => array_merge($common_actions['/movies/+id::PATCH'], [
-                                        'params.keys' => [
-                                            'cast',
-                                            'content_rating',
-                                            'description',
-                                            'director',
-                                            'genres',
-                                            'imdb',
-                                            'is_kid_friendly',
-                                            'name',
-                                            'rotten_tomatoes_score',
-                                            'runtime',
-                                            'trailer'
-                                        ]
-                                    ]),
-                                    '/movies/+id::DELETE' => array_merge($common_actions['/movies/+id::DELETE'], [
-                                        'params.keys' => []
-                                    ])
+                                    '/movie/+id::GET' => $actions['/movie/+id::GET'],
+                                    '/movies::GET' => call_user_func(function () use ($actions) {
+                                        $action = $actions['/movies::GET'];
+                                        $action['params.keys'][] = 'page';
+
+                                        return $action;
+                                    }),
+                                    '/movies::POST' => call_user_func(function () use ($actions) {
+                                        $action = $actions['/movies::POST'];
+                                        $action['params.keys'][] = 'imdb';
+                                        $action['params.keys'][] = 'trailer';
+
+                                        sort($action['params.keys']);
+
+                                        return $action;
+                                    }),
+                                    '/movies/+id::GET' => $actions['/movies/+id::GET'],
+                                    '/movies/+id::PATCH' => call_user_func(function () use ($actions) {
+                                        $action = $actions['/movies/+id::PATCH'];
+                                        $action['params.keys'][] = 'imdb';
+
+                                        sort($action['params.keys']);
+
+                                        return $action;
+                                    }),
+                                    '/movies/+id::DELETE' => $actions['/movies/+id::DELETE']
                                 ]
                             ]
                         ]
@@ -658,31 +563,11 @@ class GeneratorTest extends TestCase
                                 'resource.name' => 'Movie Theaters',
                                 'description.length' => 119,
                                 'actions.data' => [
-                                    '/theaters::GET' => array_merge($common_actions['/theaters::GET'], [
-                                        'params.keys' => [
-                                            'location'
-                                        ]
-                                    ]),
-                                    '/theaters::POST' => array_merge($common_actions['/theaters::POST'], [
-                                        'params.keys' => [
-                                            'address',
-                                            'name',
-                                            'phone_number'
-                                        ]
-                                    ]),
-                                    '/theaters/+id::GET' => array_merge($common_actions['/theaters/+id::GET'], [
-                                        'params.keys' => []
-                                    ]),
-                                    '/theaters/+id::PATCH' => array_merge($common_actions['/theaters/+id::PATCH'], [
-                                        'params.keys' => [
-                                            'address',
-                                            'name',
-                                            'phone_number'
-                                        ]
-                                    ]),
-                                    '/theaters/+id::DELETE' => array_merge($common_actions['/theaters/+id::DELETE'], [
-                                        'params.keys' => []
-                                    ])
+                                    '/theaters::GET' => $actions['/theaters::GET'],
+                                    '/theaters::POST' => $actions['/theaters::POST'],
+                                    '/theaters/+id::GET' => $actions['/theaters/+id::GET'],
+                                    '/theaters/+id::PATCH' => $actions['/theaters/+id::PATCH'],
+                                    '/theaters/+id::DELETE' => $actions['/theaters/+id::DELETE']
                                 ]
                             ]
                         ]
