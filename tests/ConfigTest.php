@@ -29,6 +29,7 @@ class ConfigTest extends TestCase
 
         $this->assertSame([
             'BUY_TICKETS',
+            'DELETE_CONTENT',
             'MOVIE_RATINGS',
             'NONE'
         ], $config->getCapabilities());

@@ -60,6 +60,7 @@
 
     <capabilities>
         <capability name="BUY_TICKETS" />
+        <capability name="DELETE_CONTENT" />
         <capability name="MOVIE_RATINGS" />
         <capability name="NONE" />
     </capabilities>

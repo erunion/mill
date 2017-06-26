@@ -1,6 +1,8 @@
 <?php
 namespace Mill;
 
+use Mill\Parser\Annotations\CapabilityAnnotation;
+use Mill\Parser\Annotations\UriAnnotation;
 use Mill\Parser\Representation;
 use Mill\Parser\Resource;
 use Mill\Parser\Version;
@@ -36,6 +38,23 @@ class Generator
         'representations' => [],
         'resources' => []
     ];
+
+    /**
+     * Setting to generate documentation for documentation that's been marked, through a `:private` decorator, as
+     * private.
+     *
+     * @var bool
+     */
+    protected $load_private_docs = true;
+
+    /**
+     * Capabilities to generate documentation against. If this array contains capabilities, only public and
+     * documentation that have that capability will be generated. If this is empty, this will be disregarded, and
+     * everything will be generated.
+     *
+     * @var array
+     */
+    protected $load_capability_docs = [];
 
     /**
      * @param Config $config
@@ -96,8 +115,12 @@ class Generator
                     $uri_data = $uri->toArray();
                     $group = $uri_data['group'];
 
-                    $resource_label = $annotations['label'];
+                    // Are we generating documentation for a private or protected resource?
+                    if (!$this->shouldParseUri($method, $uri)) {
+                        continue;
+                    }
 
+                    $resource_label = $annotations['label'];
                     if (!isset($resources[$group]['resources'][$resource_label])) {
                         $resources[$group]['resources'][$resource_label] = [
                             'label' => $annotations['label'],
@@ -143,6 +166,7 @@ class Generator
         $resources = [];
         foreach ($parsed as $group => $group_data) {
             foreach ($group_data['resources'] as $resource_label => $resource) {
+                /** @var Resource\Action\Documentation $action */
                 foreach ($resource['actions'] as $identifier => $action) {
                     // Run through every supported API version and flatten out documentation for it.
                     foreach ($this->supported_versions as $version) {
@@ -170,6 +194,7 @@ class Generator
                         // generating documentation for.
                         $cloned = clone $action;
                         $cloned->filterAnnotationsForVersion($version);
+                        $cloned->FilterAnnotationsForVisibility($this->load_private_docs, $this->load_capability_docs);
 
                         if (!isset($resources[$version][$group]['resources'][$resource_label])) {
                             $resources[$version][$group]['resources'][$resource_label] = [
@@ -283,5 +308,68 @@ class Generator
         }
 
         return $this->compiled['resources'][$version];
+    }
+
+    /**
+     * Set if we'll be loading documentation that's been marked as being private.
+     *
+     * @param bool $load_private_docs
+     * @return $this
+     */
+    public function setLoadPrivateDocs($load_private_docs = true)
+    {
+        $this->load_private_docs = $load_private_docs;
+        return $this;
+    }
+
+    /**
+     * Set an array of capabilities that we'll be generating documentation against.
+     *
+     * @param array $capabilities
+     * @return $this
+     */
+    public function setLoadCapabilityDocs(array $capabilities = [])
+    {
+        $this->load_capability_docs = $capabilities;
+        return $this;
+    }
+
+    /**
+     * With the rules set up on the Generator, should we parse a supplied URI?
+     *
+     * @param Resource\Action\Documentation $method
+     * @param UriAnnotation $uri
+     * @return bool
+     */
+    private function shouldParseUri(Resource\Action\Documentation $method, UriAnnotation $uri)
+    {
+        $uri_data = $uri->toArray();
+        $capabilities = $method->getCapabilities();
+
+        // Should we generate documentation that is locked behind a capability?
+        if (!empty($capabilities) && !empty($this->load_capability_docs)) {
+            $all_found = true;
+
+            /** @var CapabilityAnnotation $capability */
+            foreach ($capabilities as $capability) {
+                if (!in_array($capability->getCapability(), $this->load_capability_docs)) {
+                    $all_found = false;
+                }
+            }
+
+            // This URI should only be parsed if it has every capability we're looking for.
+            if ($all_found) {
+                return true;
+            }
+
+            return false;
+        }
+
+        // If we aren't generating docs for private resource, but this URI is private, we shouldn't parse it.
+        if (!$this->load_private_docs && !$uri_data['visible']) {
+            return false;
+        }
+
+        return true;
     }
 }
