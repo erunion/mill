@@ -49,7 +49,7 @@ class GeneratorTest extends TestCase
      * @dataProvider providerGeneratorWithVersion
      * @param string $version
      * @param boolean $private_objects
-     * @param array|null $capabilities
+     * @param array $capabilities
      * @param array $expected_representations
      * @param array $expected_resources
      * @return void
@@ -680,7 +680,7 @@ class GeneratorTest extends TestCase
                 'private_objects' => false,
                 'capabilities' => [
                     'BUY_TICKETS',
-                    'NONE'
+                    'FEATURE_FLAG'
                 ],
                 'expected.representations' => array_merge($error_representations, [
                     '\Mill\Examples\Showtimes\Representations\Movie' => call_user_func(

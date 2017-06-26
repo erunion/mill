@@ -705,7 +705,7 @@ DESCRIPTION;
                   *
                   * @api-contentType application/json
                   * @api-scope delete
-                  * @api-capability NONE
+                  * @api-capability DELETE_CONTENT
                   *
                   * @api-return:private {deleted}
                   */',
@@ -715,7 +715,7 @@ DESCRIPTION;
                         'annotation.name' => 'capability',
                         'data' => [
                             [
-                                'capability' => 'NONE'
+                                'capability' => 'DELETE_CONTENT'
                             ]
                         ]
                     ]

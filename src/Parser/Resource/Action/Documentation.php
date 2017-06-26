@@ -488,9 +488,11 @@ class Documentation
                 if ((!empty($capability) || !empty($method_capabilities)) && !empty($only_capabilities)) {
                     $all_found = true;
 
-                    /** @var CapabilityAnnotation $method_capability */
+                    /** @var Parser\Annotations\CapabilityAnnotation $method_capability */
                     foreach ($method_capabilities as $method_capability) {
-                        if (!in_array($method_capability->getCapability(), $only_capabilities)) {
+                        /** @var string $capability */
+                        $capability = $method_capability->getCapability();
+                        if (!in_array($capability, $only_capabilities)) {
                             $all_found = false;
                         }
                     }

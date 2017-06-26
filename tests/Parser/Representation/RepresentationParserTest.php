@@ -154,9 +154,9 @@ class RepresentationParserTest extends TestCase
         }, $annotations);
 
         $this->assertEmpty($annotations['connections']['capability']);
-        $this->assertSame('NONE', $annotations['connections.things']['capability']);
+        $this->assertSame('FEATURE_FLAG', $annotations['connections.things']['capability']);
         $this->assertSame('MOVIE_RATINGS', $annotations['connections.things.name']['capability']);
-        $this->assertSame('NONE', $annotations['connections.things.uri']['capability']);
+        $this->assertSame('FEATURE_FLAG', $annotations['connections.things.uri']['capability']);
         $this->assertEmpty($annotations['unrelated']['capability']);
 
         $this->assertSame('>=3.3', $annotations['connections']['version']);
