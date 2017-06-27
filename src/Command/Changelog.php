@@ -59,6 +59,7 @@ class Changelog extends Application
         $output_dir = realpath($input->getArgument('output'));
 
         $private_docs = ($private_docs === true || strtolower($private_docs) == 'true') ? true : false;
+        $capabilities = (!empty($capabilities)) ? $capabilities : null;
 
         /** @var Config $config */
         $config = $this->container['config'];
