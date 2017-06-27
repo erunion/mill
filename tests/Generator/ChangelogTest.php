@@ -308,7 +308,7 @@ class ChangelogTest extends TestCase
             // Complete changelog. All documentation parsed.
             'complete-changelog' => [
                 'private_objects' => true,
-                'capabilities' => [],
+                'capabilities' => null,
                 'expected' => [
                     '1.1.3' => [
                         'added' => [
@@ -372,7 +372,12 @@ class ChangelogTest extends TestCase
             // Changelog with public-only parsed docs and all capabilities.
             'changelog-public-docs-with-all-capabilities' => [
                 'private_objects' => false,
-                'capabilities' => [],
+                'capabilities' => [
+                    'BUY_TICKETS',
+                    'DELETE_CONTENT',
+                    'FEATURE_FLAG',
+                    'MOVIE_RATINGS'
+                ],
                 'expected' => [
                     '1.1.3' => [
                         'added' => [
@@ -408,9 +413,18 @@ class ChangelogTest extends TestCase
                         'added' => [
                             'representations' => [
                                 'Movie' => $representations['Movie']['1.1']['added']
+
                             ],
                             'resources' => [
-                                '/movies/{id}' => $actions['/movies/{id}']['1.1']['added'],
+                                '/movies/{id}' => call_user_func(function () use ($actions) {
+                                    $action = $actions['/movies/{id}']['1.1']['added'];
+                                    $action[Changelog::CHANGE_ACTION][] = [
+                                        'method' => 'DELETE',
+                                        'uri' => '/movies/{id}'
+                                    ];
+
+                                    return $action;
+                                }),
                                 '/movies' => $actions['/movies']['1.1']['added']
                             ]
                         ],
@@ -542,7 +556,61 @@ class ChangelogTest extends TestCase
                         ]
                     ]
                 ]
-            ]
+            ],
+
+            // Changelog with public-only parsed docs
+            'changelog-public-docs-with-unmatched-capabilities' => [
+                'private_objects' => false,
+                'capabilities' => [],
+                'expected' => [
+                    '1.1.3' => [
+                        'added' => [
+                            'resources' => [
+                                '/movies/{id}' => $actions['/movies/{id}']['1.1.3']['added'],
+                                '/movies' => $actions['/movies']['1.1.3']['added']
+                            ]
+                        ],
+                        'removed' => [
+                            'representations' => [
+                                'Movie' => $representations['Movie']['1.1.3']['removed']
+                            ]
+                        ]
+                    ],
+                    '1.1.2' => [
+                        'changed' => [
+                            'resources' => [
+                                '/movies/{id}' => $actions['/movies/{id}']['1.1.2']['changed'],
+                                '/movies' => $actions['/movies']['1.1.2']['changed'],
+                                '/theaters/{id}' => $actions['/theaters/{id}']['1.1.2']['changed'],
+                                '/theaters' => $actions['/theaters']['1.1.2']['changed']
+                            ]
+                        ]
+                    ],
+                    '1.1.1' => [
+                        'added' => [
+                            'resources' => [
+                                '/movies/{id}' => $actions['/movies/{id}']['1.1.1']['added']
+                            ]
+                        ]
+                    ],
+                    '1.1' => [
+                        'added' => [
+                            'representations' => [
+                                'Movie' => $representations['Movie']['1.1']['added']
+                            ],
+                            'resources' => [
+                                '/movies/{id}' => $actions['/movies/{id}']['1.1']['added'],
+                                '/movies' => $actions['/movies']['1.1']['added']
+                            ]
+                        ],
+                        'removed' => [
+                            'representations' => [
+                                'Theater' => $representations['Theater']['1.1']['removed']
+                            ]
+                        ]
+                    ]
+                ],
+            ],
         ];
     }
 }

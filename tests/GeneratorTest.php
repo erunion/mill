@@ -499,7 +499,7 @@ class GeneratorTest extends TestCase
             'version-1.0' => [
                 'version' => '1.0',
                 'private_objects' => true,
-                'capabilities' => [],
+                'capabilities' => null,
                 'expected.representations' => array_merge($error_representations, [
                     '\Mill\Examples\Showtimes\Representations\Movie' => $representations['Movie'],
                     '\Mill\Examples\Showtimes\Representations\Person' => $representations['Person'],
@@ -552,7 +552,12 @@ class GeneratorTest extends TestCase
             'version-1.0-public-docs-with-all-capabilities' => [
                 'version' => '1.0',
                 'private_objects' => false,
-                'capabilities' => [],
+                'capabilities' => [
+                    'BUY_TICKETS',
+                    'DELETE_CONTENT',
+                    'FEATURE_FLAG',
+                    'MOVIE_RATINGS'
+                ],
                 'expected.representations' => array_merge($error_representations, [
                     '\Mill\Examples\Showtimes\Representations\Movie' => $representations['Movie'],
                     '\Mill\Examples\Showtimes\Representations\Person' => $representations['Person'],
@@ -603,7 +608,7 @@ class GeneratorTest extends TestCase
             'version-1.1' => [
                 'version' => '1.1',
                 'private_objects' => true,
-                'capabilities' => [],
+                'capabilities' => null,
                 'expected.representations' => array_merge($error_representations, [
                     '\Mill\Examples\Showtimes\Representations\Movie' => call_user_func(
                         function () use ($representations) {
@@ -828,7 +833,7 @@ class GeneratorTest extends TestCase
             'version-1.1.1' => [
                 'version' => '1.1.1',
                 'private_objects' => true,
-                'capabilities' => [],
+                'capabilities' => null,
                 'expected.representations' => array_merge($error_representations, [
                     '\Mill\Examples\Showtimes\Representations\Movie' => call_user_func(
                         function () use ($representations) {
@@ -867,6 +872,89 @@ class GeneratorTest extends TestCase
                                         return $action;
                                     }),
                                     '/movies/+id::DELETE' => $actions['/movies/+id::DELETE'],
+                                    '/movies::GET' => call_user_func(function () use ($actions) {
+                                        $action = $actions['/movies::GET'];
+                                        $action['params.keys'][] = 'page';
+                                        $action['annotations.sum']['param']++;
+
+                                        return $action;
+                                    }),
+                                    '/movies::POST' => call_user_func(function () use ($actions) {
+                                        $action = $actions['/movies::POST'];
+                                        $action['params.keys'][] = 'imdb';
+                                        $action['params.keys'][] = 'trailer';
+
+                                        $action['annotations.sum']['param']++;
+                                        $action['annotations.sum']['param']++;
+
+                                        sort($action['params.keys']);
+
+                                        return $action;
+                                    })
+                                ]
+                            ]
+                        ]
+                    ],
+                    'Theaters' => [
+                        'resources' => [
+                            [
+                                'resource.name' => 'Movie Theaters',
+                                'description.length' => 119,
+                                'actions.data' => [
+                                    '/theaters/+id::GET' => $actions['/theaters/+id::GET'],
+                                    '/theaters/+id::PATCH' => $actions['/theaters/+id::PATCH'],
+                                    '/theaters/+id::DELETE' => $actions['/theaters/+id::DELETE'],
+                                    '/theaters::GET' => $actions['/theaters::GET'],
+                                    '/theaters::POST' => $actions['/theaters::POST']
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+
+            // API v1.1.1 with public-only documentation
+            'version-1.1.1-public-only-documentation' => [
+                'version' => '1.1.1',
+                'private_objects' => true,
+                'capabilities' => [],
+                'expected.representations' => array_merge($error_representations, [
+                    '\Mill\Examples\Showtimes\Representations\Movie' => call_user_func(
+                        function () use ($representations) {
+                            $representation = $representations['Movie'];
+                            $representation['content.keys'] = array_merge($representation['content.keys'], [
+                                'external_urls',
+                                'external_urls.imdb',
+                                'external_urls.tickets',
+                                'external_urls.trailer'
+                            ]);
+
+                            sort($representation['content.keys']);
+                            return $representation;
+                        }
+                    ),
+                    '\Mill\Examples\Showtimes\Representations\Person' => $representations['Person'],
+                    '\Mill\Examples\Showtimes\Representations\Theater' => $representations['Theater']
+                ]),
+                'expected.resources' => [
+                    'Movies' => [
+                        'resources' => [
+                            [
+                                'resource.name' => 'Movies',
+                                'description.length' => 103,
+                                'actions.data' => [
+                                    '/movie/+id::GET' => $actions['/movie/+id::GET'],
+                                    '/movies/+id::GET' => $actions['/movies/+id::GET'],
+                                    '/movies/+id::PATCH' => call_user_func(function () use ($actions) {
+                                        $action = $actions['/movies/+id::PATCH'];
+                                        $action['params.keys'][] = 'imdb';
+
+                                        $action['annotations.sum']['param']++;
+
+                                        sort($action['params.keys']);
+
+                                        return $action;
+                                    }),
                                     '/movies::GET' => call_user_func(function () use ($actions) {
                                         $action = $actions['/movies::GET'];
                                         $action['params.keys'][] = 'page';

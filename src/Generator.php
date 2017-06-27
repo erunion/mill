@@ -49,12 +49,12 @@ class Generator
 
     /**
      * Capabilities to generate documentation against. If this array contains capabilities, only public and
-     * documentation that have that capability will be generated. If this is empty, this will be disregarded, and
+     * documentation that have that capability will be generated. If this is null, this will be disregarded, and
      * everything will be generated.
      *
-     * @var array
+     * @var array|null
      */
-    protected $load_capability_docs = [];
+    protected $load_capability_docs = null;
 
     /**
      * @param Config $config
@@ -325,10 +325,10 @@ class Generator
     /**
      * Set an array of capabilities that we'll be generating documentation against.
      *
-     * @param array $capabilities
+     * @param array|null $capabilities
      * @return $this
      */
-    public function setLoadCapabilityDocs(array $capabilities = [])
+    public function setLoadCapabilityDocs($capabilities = null)
     {
         $this->load_capability_docs = $capabilities;
         return $this;
@@ -347,7 +347,12 @@ class Generator
         $capabilities = $method->getCapabilities();
 
         // Should we generate documentation that is locked behind a capability?
-        if (!empty($capabilities) && !empty($this->load_capability_docs)) {
+        if (!empty($capabilities) && !is_null($this->load_capability_docs)) {
+            // We don't have any configured capabilities to pull documentation for, so this URI shouldn't be parsed.
+            if (empty($this->load_capability_docs)) {
+                return false;
+            }
+
             $all_found = true;
 
             /** @var CapabilityAnnotation $capability */
