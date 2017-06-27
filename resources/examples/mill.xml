@@ -43,7 +43,8 @@
 
     <capabilities>
         <capability name="BUY_TICKETS" />
+        <capability name="DELETE_CONTENT" />
+        <capability name="FEATURE_FLAG" />
         <capability name="MOVIE_RATINGS" />
-        <capability name="NONE" />
     </capabilities>
 </mill>

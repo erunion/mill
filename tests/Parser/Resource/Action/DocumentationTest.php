@@ -38,7 +38,7 @@ class DocumentationTest extends TestCase
             );
         }
 
-        $this->assertEmpty($parser->getCapabilities());
+        $this->assertCount($expected['capabilities.total'], $parser->getCapabilities());
 
         /** @var \Mill\Parser\Annotations\MinVersionAnnotation $min_version */
         $min_version = $parser->getMinimumVersion();
@@ -172,6 +172,7 @@ DESCRIPTION;
                 'expected' => [
                     'label' => 'Get a single movie.',
                     'description' => $get_description,
+                    'capabilities.total' => 0,
                     'content_types.latest-version' => '1.1.2',
                     'content_types' => [
                         [
@@ -283,6 +284,7 @@ DESCRIPTION;
                 'expected' => [
                     'label' => 'Update a movie.',
                     'description' => 'Update a movies data.',
+                    'capabilities.total' => 0,
                     'content_types.latest-version' => '1.1.2',
                     'content_types' => [
                         [
@@ -533,6 +535,7 @@ DESCRIPTION;
                 'expected' => [
                     'label' => 'Delete a movie.',
                     'description' => 'Delete a movie.',
+                    'capabilities.total' => 1,
                     'content_types.latest-version' => null,
                     'content_types' => [
                         [
@@ -544,6 +547,11 @@ DESCRIPTION;
                     'responses.length' => 2,
                     'uri.aliases' => [],
                     'annotations' => [
+                        'capability' => [
+                            [
+                                'capability' => 'DELETE_CONTENT'
+                            ]
+                        ],
                         'uri' => [
                             [
                                 'aliased' => false,
@@ -697,7 +705,7 @@ DESCRIPTION;
                   *
                   * @api-contentType application/json
                   * @api-scope delete
-                  * @api-capability NONE
+                  * @api-capability DELETE_CONTENT
                   *
                   * @api-return:private {deleted}
                   */',
@@ -707,7 +715,7 @@ DESCRIPTION;
                         'annotation.name' => 'capability',
                         'data' => [
                             [
-                                'capability' => 'NONE'
+                                'capability' => 'DELETE_CONTENT'
                             ]
                         ]
                     ]

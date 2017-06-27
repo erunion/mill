@@ -461,6 +461,65 @@ class Documentation
     }
 
     /**
+     * Filter down, and return, all annotations on this action that match a specific visibility. This can either be
+     * public, public+private, or capability-locked.
+     *
+     * @param boolean $allow_private
+     * @param null|array $only_capabilities
+     * @return array
+     */
+    public function filterAnnotationsForVisibility($allow_private, $only_capabilities)
+    {
+        if ($allow_private && empty($only_capabilities)) {
+            return $this->annotations;
+        }
+
+        $method_capabilities = $this->getCapabilities();
+
+        foreach ($this->annotations as $name => $data) {
+            /** @var Parser\Annotation $annotation */
+            foreach ($data as $k => $annotation) {
+                // URI annotations are already filtered within the generator, so we don't need to further filter them
+                // out from the list of annotations.
+                if ($annotation instanceof UriAnnotation) {
+                    continue;
+                }
+
+                // If this annotation has a capability, but that capability isn't in the set of capabilities we're
+                // generating documentation for, filter it out.
+                $capability = $annotation->getCapability();
+                if ((!empty($capability) || !empty($method_capabilities)) && !empty($only_capabilities)) {
+                    $all_found = true;
+
+                    /** @var Parser\Annotations\CapabilityAnnotation $method_capability */
+                    foreach ($method_capabilities as $method_capability) {
+                        /** @var string $capability */
+                        $capability = $method_capability->getCapability();
+                        if (!in_array($capability, $only_capabilities)) {
+                            $all_found = false;
+                        }
+                    }
+
+                    if (!$all_found || (!empty($capability) && !in_array($capability, $only_capabilities))) {
+                        unset($this->annotations[$name][$k]);
+                        continue;
+                    }
+
+                    // Capabilities override individual annotation visibility.
+                    continue;
+                }
+
+                // If this annotation isn't visible, and we don't want private documentation, filter it out.
+                if (!$allow_private && $annotation->hasVisibility() && !$annotation->isVisible()) {
+                    unset($this->annotations[$name][$k]);
+                }
+            }
+        }
+
+        return $this->annotations;
+    }
+
+    /**
      * Convert the parsed resource action documentation into an array.
      *
      * @return array

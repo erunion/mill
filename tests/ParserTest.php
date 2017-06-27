@@ -44,7 +44,7 @@ These actions will allow you to pull information on a specific movie.', $annotat
 
         foreach ($annotations as $annotation => $data) {
             if (!isset($expected[$annotation])) {
-                $this->fail('A parsed `' . $annotation . '`` annotation was not present in the expected data.');
+                $this->fail('A parsed `' . $annotation . '` annotation was not present in the expected data.');
             }
 
             $this->assertCount($expected[$annotation]['count'], $data, '`' . $annotation . '` mismatch');
@@ -179,6 +179,10 @@ These actions will allow you to pull information on a specific movie.', $annotat
             'DELETE' => [
                 'method' => 'DELETE',
                 'expected' => [
+                    'capability' => [
+                        'class' => '\Mill\Parser\Annotations\CapabilityAnnotation',
+                        'count' => 1
+                    ],
                     'contentType' => [
                         'class' => '\Mill\Parser\Annotations\ContentTypeAnnotation',
                         'count' => 1

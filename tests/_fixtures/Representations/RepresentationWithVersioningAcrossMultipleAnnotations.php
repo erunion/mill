@@ -18,7 +18,7 @@ class RepresentationWithVersioningAcrossMultipleAnnotations
          */
 
         /**
-         * @api-data connections.things (object, NONE) - Information about this thing.
+         * @api-data connections.things (object, FEATURE_FLAG) - Information about this thing.
          * @api-scope public
          * @api-see self::someMethod connections.things
          */
