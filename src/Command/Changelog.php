@@ -1,11 +1,9 @@
 <?php
 namespace Mill\Command;
 
+use Mill\Application;
 use Mill\Config;
-use Mill\Container;
 use Mill\Generator;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -15,23 +13,30 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Generate command for a changelog off your API documentation.
  *
  */
-class Changelog extends Command
+class Changelog extends Application
 {
-    const DS = DIRECTORY_SEPARATOR;
-
     /**
      * @return void
      */
     protected function configure()
     {
+        parent::configure();
+
         $this->setName('changelog')
             ->setDescription('Compiles a changelog from your API documentation.')
             ->addOption(
-                'config',
+                'private',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Path to your `mill.xml` config file.',
-                'mill.xml'
+                'Flag designating if you want to generate a changelog that includes private documentation.',
+                true
+            )
+            ->addOption(
+                'capability',
+                null,
+                InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
+                'The name of a capability if you want to generate a changelog that includes capability-locked ' .
+                    'documentation.'
             )
             ->addArgument(
                 'output',
@@ -47,26 +52,25 @@ class Changelog extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $style = new OutputFormatterStyle('green', null, ['bold']);
-        $output->getFormatter()->setStyle('success', $style);
+        parent::execute($input, $output);
 
+        $private_docs = $input->getOption('private');
+        $capabilities = $input->getOption('capability');
         $output_dir = realpath($input->getArgument('output'));
-        $config_file = realpath($input->getOption('config'));
 
-        // @todo This should be pulled from the core Application instead, so we can inject the dependency in tests.
-        $container = new Container([
-            'config.path' => $config_file
-        ]);
+        $private_docs = ($private_docs === true || strtolower($private_docs) == 'true') ? true : false;
 
         /** @var Config $config */
-        $config = $container['config'];
+        $config = $this->container['config'];
 
         /** @var \League\Flysystem\Filesystem $filesystem */
-        $filesystem = $container['filesystem'];
+        $filesystem = $this->container['filesystem'];
 
         $output->writeln('<comment>Generating a changelog…</comment>');
 
         $changelog = new Generator\Changelog($config);
+        $changelog->setLoadPrivateDocs($private_docs);
+        $changelog->setLoadCapabilityDocs($capabilities);
         $markdown = $changelog->generateMarkdown();
 
         $filesystem->put(

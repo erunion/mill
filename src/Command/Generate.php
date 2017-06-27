@@ -1,12 +1,10 @@
 <?php
 namespace Mill\Command;
 
-use Mill\Container;
+use Mill\Application;
 use Mill\Exceptions\Version\UnrecognizedSchemaException;
 use Mill\Generator\Blueprint;
 use Mill\Parser\Version;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Generate command for generating API Blueprint documentation.
  *
  */
-class Generate extends Command
+class Generate extends Application
 {
     const DS = DIRECTORY_SEPARATOR;
 
@@ -26,15 +24,10 @@ class Generate extends Command
      */
     protected function configure()
     {
+        parent::configure();
+
         $this->setName('generate')
             ->setDescription('Generate API Blueprint documentation.')
-            ->addOption(
-                'config',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Path to your `mill.xml` config file.',
-                'mill.xml'
-            )
             ->addOption(
                 'constraint',
                 null,
@@ -67,26 +60,19 @@ class Generate extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $style = new OutputFormatterStyle('green', null, ['bold']);
-        $output->getFormatter()->setStyle('success', $style);
+        parent::execute($input, $output);
 
         $output_dir = realpath($input->getArgument('output'));
-        $config_file = realpath($input->getOption('config'));
         $version = $input->getOption('constraint');
         $dry_run = $input->getOption('dry-run');
 
         // Generate!
-        // @todo This should be pulled from the core Application instead, so we can inject the dependency in tests.
-        $container = new Container([
-            'config.path' => $config_file
-        ]);
-
         if ($dry_run) {
             $output->writeln('<info>Running a dry run…</info>');
         }
 
         if ($input->getOption('default')) {
-            $version = $container['config']->getDefaultApiVersion();
+            $version = $this->container['config']->getDefaultApiVersion();
         }
 
         // Validate the current version generation constraint.
@@ -100,10 +86,10 @@ class Generate extends Command
         }
 
         /** @var \League\Flysystem\Filesystem $filesystem */
-        $filesystem = $container['filesystem'];
+        $filesystem = $this->container['filesystem'];
 
         $output->writeln('<comment>Compiling controllers and representations…</comment>');
-        $generator = new Blueprint($container['config'], $version);
+        $generator = new Blueprint($this->container['config'], $version);
 
         $output->writeln('<comment>Generating API Blueprint files…</comment>');
         $blueprints = $generator->generate();

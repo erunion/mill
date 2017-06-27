@@ -4,7 +4,9 @@ Information on a specific movie theater.
 
 These actions will allow you to pull information on a specific movie theater.
 
-### Get a single movie theater [GET]
+### Get a single movie theater. [GET]
+Return information on a specific movie theater.
+
 + Parameters
     - `id` (number, required) - Theater ID
 + Response 200 (application/mill.example.theater)
@@ -13,7 +15,9 @@ These actions will allow you to pull information on a specific movie theater.
 + Response 404 (application/mill.example.theater)
     + Attributes (Error)
 
-### Update a movie theater [PATCH]
+### Update a movie theater. [PATCH]
+Update a movie theaters' data.
+
 This action requires a bearer token with `create` scope.
 
 + Parameters
@@ -30,7 +34,9 @@ This action requires a bearer token with `create` scope.
 + Response 404 (application/mill.example.theater)
     + Attributes (Error)
 
-### Delete a movie movie. [DELETE]
+### Delete a movie theater. [DELETE]
+Delete a movie theater.
+
 This action requires a bearer token with `delete` scope.
 
 + Parameters
@@ -45,6 +51,8 @@ Information on a specific movie theater.
 These actions will allow you to pull information on a specific movie theater.
 
 ### Get movie theaters. [GET]
+Returns all movie theatres for a specific location.
+
 + Request
     + Attributes
         - `location` (string, required) - Location you want theaters in.
@@ -54,6 +62,8 @@ These actions will allow you to pull information on a specific movie theater.
     + Attributes (Error)
 
 ### Create a movie theater. [POST]
+Create a new movie theater.
+
 This action requires a bearer token with `create` scope.
 
 + Request

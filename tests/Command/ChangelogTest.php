@@ -33,7 +33,14 @@ class ChangelogTest extends \PHPUnit_Framework_TestCase
         $this->config_file = __DIR__ . '/../../resources/examples/mill.xml';
     }
 
-    public function testChangelog()
+    /**
+     * @dataProvider providerTestChangelog
+     * @param boolean $private_objects
+     * @param array $capabilities
+     * @param string $expected_file
+     * @return void
+     */
+    public function testChangelog($private_objects, $capabilities, $expected_file)
     {
         $output_dir = tempnam(sys_get_temp_dir(), 'mill-generate-test-');
         if (file_exists($output_dir)) {
@@ -42,15 +49,30 @@ class ChangelogTest extends \PHPUnit_Framework_TestCase
 
         mkdir($output_dir);
 
-        $this->tester->execute([
+        $params = [
             'command' => $this->command->getName(),
             '--config' => $this->config_file,
             'output' => $output_dir
-        ]);
+        ];
+
+        if (!$private_objects) {
+            $params['--private'] = $private_objects;
+        }
+
+        if (!empty($capabilities)) {
+            $params['--capability'] = $capabilities;
+        }
+
+//print_r($params);exit;
+
+        $this->tester->execute($params);
 
         $blueprints_dir = __DIR__ . '/../../resources/examples/Showtimes/blueprints';
+
+//print_r(file_get_contents($blueprints_dir . '/' . $expected_file));
+
         $this->assertSame(
-            file_get_contents($blueprints_dir . '/changelog.md'),
+            file_get_contents($blueprints_dir . '/' . $expected_file),
             file_get_contents($output_dir . '/changelog.md'),
             'Generated changelog does not match.'
         );
@@ -66,5 +88,46 @@ class ChangelogTest extends \PHPUnit_Framework_TestCase
             'command' => $this->command->getName(),
             'output' => sys_get_temp_dir()
         ]);
+    }
+
+    /**
+     * @return array
+     */
+    public function providerTestChangelog()
+    {
+        return [
+            // Complete changelog. All documentation parsed.
+            'complete-changelog' => [
+                'private_objects' => true,
+                'capabilities' => [],
+                'expected_file' => 'changelog.md'
+            ],
+
+            // Changelog with public-only parsed docs and all capabilities.
+            'changelog-public-docs-with-all-capabilities' => [
+                'private_objects' => false,
+                'capabilities' => [],
+                'expected' => 'changelog-public-only-all-capabilities.md'
+            ],
+
+            // Changelog with public-only parsed docs and unmatched capabilities
+            'changelog-public-docs-with-unmatched-capabilities' => [
+                'private_objects' => false,
+                'capabilities' => [
+                    'BUY_TICKETS',
+                    'FEATURE_FLAG'
+                ],
+                'expected' => 'changelog-public-only-unmatched-capabilities.md'
+            ],
+
+            // Changelog with public-only parsed docs and matched capabilities
+            'changelog-public-docs-with-matched-capabilities' => [
+                'private_objects' => false,
+                'capabilities' => [
+                    'DELETE_CONTENT'
+                ],
+                'expected' => 'changelog-public-only-matched-capabilities.md'
+            ]
+        ];
     }
 }

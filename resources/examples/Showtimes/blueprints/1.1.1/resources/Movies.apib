@@ -5,6 +5,19 @@ Information on a specific movie.
 These actions will allow you to pull information on a specific movie.
 
 ### Get a single movie. [GET]
+Return information on a specific movie.
+
+Donec id elit non mi porta gravida at eget metus. Cras mattis consectetur purus sit amet fermentum. Lorem
+ipsum dolor sit amet, consectetur adipiscing elit. Etiam porta sem malesuada magna mollis euismod. Duis
+mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Etiam porta
+sem malesuada magna mollis euismod.
+
+```
+[
+  {"id": "fizzbuzz"}
+]
+```
+
 + Parameters
     - `id` (number, required) - Movie ID
 + Response 200 (application/json)
@@ -19,6 +32,19 @@ Information on a specific movie.
 These actions will allow you to pull information on a specific movie.
 
 ### Get a single movie. [GET]
+Return information on a specific movie.
+
+Donec id elit non mi porta gravida at eget metus. Cras mattis consectetur purus sit amet fermentum. Lorem
+ipsum dolor sit amet, consectetur adipiscing elit. Etiam porta sem malesuada magna mollis euismod. Duis
+mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Etiam porta
+sem malesuada magna mollis euismod.
+
+```
+[
+  {"id": "fizzbuzz"}
+]
+```
+
 + Parameters
     - `id` (number, required) - Movie ID
 + Response 200 (application/json)
@@ -28,6 +54,8 @@ These actions will allow you to pull information on a specific movie.
     + Attributes (Error)
 
 ### Update a movie. [PATCH]
+Update a movies data.
+
 This action requires a bearer token with `edit` scope.
 
 + Parameters
@@ -65,6 +93,8 @@ This action requires a bearer token with `edit` scope.
     + Attributes (Error)
 
 ### Delete a movie. [DELETE]
+Delete a movie.
+
 This action requires a bearer token with `delete` scope.
 
 + Parameters
@@ -79,6 +109,8 @@ Information on a specific movie.
 These actions will allow you to pull information on a specific movie.
 
 ### Get movies. [GET]
+Returns all movies for a specific location.
+
 + Request
     + Attributes
         - `location` (string, required) - Location you want movies for.
@@ -89,6 +121,8 @@ These actions will allow you to pull information on a specific movie.
     + Attributes (Error)
 
 ### Create a movie. [POST]
+Create a new movie.
+
 This action requires a bearer token with `create` scope.
 
 + Request

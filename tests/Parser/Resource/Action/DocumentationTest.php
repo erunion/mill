@@ -38,7 +38,7 @@ class DocumentationTest extends TestCase
             );
         }
 
-        $this->assertEmpty($parser->getCapabilities());
+        $this->assertCount($expected['capabilities.total'], $parser->getCapabilities());
 
         /** @var \Mill\Parser\Annotations\MinVersionAnnotation $min_version */
         $min_version = $parser->getMinimumVersion();
@@ -151,12 +151,28 @@ class DocumentationTest extends TestCase
      */
     public function providerParseMethodDocumentation()
     {
+        $get_description = <<<DESCRIPTION
+Return information on a specific movie.
+
+Donec id elit non mi porta gravida at eget metus. Cras mattis consectetur purus sit amet fermentum. Lorem
+ipsum dolor sit amet, consectetur adipiscing elit. Etiam porta sem malesuada magna mollis euismod. Duis
+mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Etiam porta
+sem malesuada magna mollis euismod.
+
+```
+[
+  {"id": "fizzbuzz"}
+]
+```
+DESCRIPTION;
+
         return [
             'GET' => [
                 'method' => 'GET',
                 'expected' => [
                     'label' => 'Get a single movie.',
-                    'description' => 'Return information on a specific movie.',
+                    'description' => $get_description,
+                    'capabilities.total' => 0,
                     'content_types.latest-version' => '1.1.2',
                     'content_types' => [
                         [
@@ -268,6 +284,7 @@ class DocumentationTest extends TestCase
                 'expected' => [
                     'label' => 'Update a movie.',
                     'description' => 'Update a movies data.',
+                    'capabilities.total' => 0,
                     'content_types.latest-version' => '1.1.2',
                     'content_types' => [
                         [
@@ -518,6 +535,7 @@ class DocumentationTest extends TestCase
                 'expected' => [
                     'label' => 'Delete a movie.',
                     'description' => 'Delete a movie.',
+                    'capabilities.total' => 1,
                     'content_types.latest-version' => null,
                     'content_types' => [
                         [
@@ -529,6 +547,11 @@ class DocumentationTest extends TestCase
                     'responses.length' => 2,
                     'uri.aliases' => [],
                     'annotations' => [
+                        'capability' => [
+                            [
+                                'capability' => 'DELETE_CONTENT'
+                            ]
+                        ],
                         'uri' => [
                             [
                                 'aliased' => false,
@@ -682,7 +705,7 @@ class DocumentationTest extends TestCase
                   *
                   * @api-contentType application/json
                   * @api-scope delete
-                  * @api-capability NONE
+                  * @api-capability DELETE_CONTENT
                   *
                   * @api-return:private {deleted}
                   */',
@@ -692,7 +715,7 @@ class DocumentationTest extends TestCase
                         'annotation.name' => 'capability',
                         'data' => [
                             [
-                                'capability' => 'NONE'
+                                'capability' => 'DELETE_CONTENT'
                             ]
                         ]
                     ]
