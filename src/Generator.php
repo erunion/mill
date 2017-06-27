@@ -194,7 +194,7 @@ class Generator
                         // generating documentation for.
                         $cloned = clone $action;
                         $cloned->filterAnnotationsForVersion($version);
-                        $cloned->FilterAnnotationsForVisibility($this->load_private_docs, $this->load_capability_docs);
+                        $cloned->filterAnnotationsForVisibility($this->load_private_docs, $this->load_capability_docs);
 
                         if (!isset($resources[$version][$group]['resources'][$resource_label])) {
                             $resources[$version][$group]['resources'][$resource_label] = [

@@ -461,6 +461,9 @@ class Documentation
     }
 
     /**
+     * Filter down, and return, all annotations on this action that match a specific visibility. This can either be
+     * public, public+private, or capability-locked.
+     *
      * @param boolean $allow_private
      * @param null|array $only_capabilities
      * @return array
