@@ -1,4 +1,8 @@
 # Changelog
+## [2.3.0] - 2017-06-27
+### Added
+- Added support for generating visibility-specific changelogs. [#97](https://github.com/vimeo/mill/issues/97)
+
 ## [2.2.2] - 2017-06-15
 ### Added
 - Added resource action descriptions into generated API Blueprint files.
@@ -132,6 +136,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[2.3.0]: https://github.com/vimeo/mill/compare/2.2.2...2.3.0
 [2.2.2]: https://github.com/vimeo/mill/compare/2.2.1...2.2.2
 [2.2.1]: https://github.com/vimeo/mill/compare/2.2.0...2.2.1
 [2.2.0]: https://github.com/vimeo/mill/compare/2.1.1...2.2.0
