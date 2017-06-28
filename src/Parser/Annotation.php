@@ -73,7 +73,7 @@ abstract class Annotation
     /**
      * Array of all available aliases for this annotation.
      *
-     * @var array
+     * @var array<Annotation>
      */
     protected $aliases = [];
 
@@ -468,7 +468,7 @@ abstract class Annotation
     /**
      * Get all available aliases for this annotation.
      *
-     * @return array
+     * @return array<Annotation>
      */
     public function getAliases()
     {
