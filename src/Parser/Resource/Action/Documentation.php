@@ -479,9 +479,22 @@ class Documentation
         foreach ($this->annotations as $name => $data) {
             /** @var Parser\Annotation $annotation */
             foreach ($data as $k => $annotation) {
-                // URI annotations are already filtered within the generator, so we don't need to further filter them
-                // out from the list of annotations.
+                // While URI annotations are already filtered within the generator, so we don't need to further filter
+                // them out, we do need to filter URI aliases as those can have their independent visibilities.
                 if ($annotation instanceof UriAnnotation) {
+                    $aliases = $annotation->getAliases();
+                    if (!empty($aliases)) {
+                        /** @var UriAnnotation $alias */
+                        foreach ($aliases as $k => $alias) {
+                            // If this annotation isn't visible, and we don't want private documentation, filter it out.
+                            if (!$allow_private && $alias->hasVisibility() && !$alias->isVisible()) {
+                                unset($aliases[$k]);
+                            }
+                        }
+
+                        $annotation->setAliases($aliases);
+                    }
+
                     continue;
                 }
 
