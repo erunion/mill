@@ -1,4 +1,8 @@
 # Changelog
+## [2.4.0] - 2017-06-29
+### Changed
+- JSON changelog generation content now has important pieces of information wrapped in styleable HTML elements.
+
 ## [2.3.2] - 2017-06-28
 ### Fixed
 - URI aliases are now filtered according to your filter settings when generating documentation.
@@ -144,6 +148,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[2.4.0]: https://github.com/vimeo/mill/compare/2.3.2...2.4.0
 [2.3.2]: https://github.com/vimeo/mill/compare/2.3.1...2.3.2
 [2.3.1]: https://github.com/vimeo/mill/compare/2.3.0...2.3.1
 [2.3.0]: https://github.com/vimeo/mill/compare/2.2.2...2.3.0
