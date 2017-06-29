@@ -7,6 +7,8 @@ use StringTemplate\Engine;
 
 class Json extends Generator
 {
+    const CSS_NAMESPACE = 'mill-changelog';
+
     /**
      * Template string engine.
      *
@@ -29,58 +31,57 @@ class Json extends Generator
     protected $changeset_templates = [
         'plural' => [
             Changelog::CHANGE_ACTION => [
-                'added' => '`{uri}` has been added with support for the following HTTP methods:',
+                'added' => '{uri} has been added with support for the following HTTP methods:',
             ],
             Changelog::CHANGE_ACTION_PARAM => [
-                'added' => 'The following parameters have been added to {method} on `{uri}`:',
-                'removed' => 'The following parameters have been removed to {method} on `{uri}`:'
+                'added' => 'The following parameters have been added to {method} on {uri}:',
+                'removed' => 'The following parameters have been removed to {method} on {uri}:'
             ],
             Changelog::CHANGE_ACTION_RETURN => [
-                'added' => 'The {method} on `{uri}` will now return the following responses:',
-                'removed' => 'The {method} on `{uri}` no longer returns the following responses:'
+                'added' => 'The {method} on {uri} will now return the following responses:',
+                'removed' => 'The {method} on {uri} no longer returns the following responses:'
             ],
             Changelog::CHANGE_ACTION_THROWS => [
-                'added' => 'The {method} on `{uri}` can now throw the following errors:',
-                'removed' => 'The {method} on `{uri}` will no longer throw the following errors:'
+                'added' => 'The {method} on {uri} can now throw the following errors:',
+                'removed' => 'The {method} on {uri} will no longer throw the following errors:'
             ],
             Changelog::CHANGE_CONTENT_TYPE => [
-                'changed' => '`{uri}` now returns a `{content_type}` Content-Type header on the following HTTP ' .
+                'changed' => '{uri} now returns a {content_type} Content-Type header on the following HTTP ' .
                     'methods:',
             ],
             Changelog::CHANGE_REPRESENTATION_DATA => [
-                'added' => 'The following fields have been added to the `{representation}` representation:',
-                'removed' => 'The following fields have been removed from the `{representation}` representation:'
+                'added' => 'The following fields have been added to the {representation} representation:',
+                'removed' => 'The following fields have been removed from the {representation} representation:'
             ]
         ],
         'singular' => [
             Changelog::CHANGE_ACTION => [
-                'added' => '{method} on `{uri}` was added.'
+                'added' => '{method} on {uri} was added.'
             ],
             Changelog::CHANGE_ACTION_PARAM => [
-                'added' => 'A `{parameter}` request parameter was added to {method} on `{uri}`.',
-                'removed' => 'The `{parameter}` request parameter has been removed from {method} requests on `{uri}`.'
+                'added' => 'A {parameter} request parameter was added to {method} on {uri}.',
+                'removed' => 'The {parameter} request parameter has been removed from {method} requests on {uri}.'
             ],
             Changelog::CHANGE_ACTION_RETURN => [
-                'added' => '{method} on `{uri}` now returns a `{http_code}` with a `{representation}` representation.',
-                'removed' => '{method} on `{uri}` no longer returns a `{http_code}` with a `{representation}` ' .
-                    'representation.'
+                'added' => '{method} on {uri} now returns a {http_code} with a {representation} representation.',
+                'removed' => '{method} on {uri} no longer returns a {http_code} with a {representation} representation.'
             ],
             Changelog::CHANGE_ACTION_RETURN . '_no_representation' => [
-                'added' => '{method} on `{uri}` now returns a `{http_code}`.',
-                'removed' => '{method} on `{uri}` no longer will return a `{http_code}`.'
+                'added' => '{method} on {uri} now returns a {http_code}.',
+                'removed' => '{method} on {uri} no longer will return a {http_code}.'
             ],
             Changelog::CHANGE_ACTION_THROWS => [
-                'added' => '{method} on `{uri}` now returns a `{http_code}` with a `{representation}` ' .
-                    'representation: {description}',
-                'removed' => '{method} on `{uri}` longer will return a `{http_code}` with a `{representation}` ' .
+                'added' => '{method} on {uri} now returns a {http_code} with a {representation} representation: ' .
+                    '{description}',
+                'removed' => '{method} on {uri} longer will return a {http_code} with a {representation} ' .
                     'representation: {description}'
             ],
             Changelog::CHANGE_CONTENT_TYPE => [
-                'changed' => '{method} on `{uri}` now returns a `{content_type}` Content-Type header.'
+                'changed' => '{method} on {uri} now returns a {content_type} Content-Type header.'
             ],
             Changelog::CHANGE_REPRESENTATION_DATA => [
-                'added' => '`{field}` has been added to the `{representation}` representation.',
-                'removed' => '`{field}` has been removed from the `{representation}` representation.'
+                'added' => '{field} has been added to the {representation} representation.',
+                'removed' => '{field} has been removed from the {representation} representation.'
             ]
         ]
     ];
@@ -151,13 +152,13 @@ class Json extends Generator
                 case Changelog::CHANGE_ACTION:
                     $methods = [];
                     foreach ($changesets as $change) {
-                        $methods[] = sprintf('`%s`', $change['method']);
+                        $methods[] = $this->renderText('{method}', $change);
                     }
 
                     $template = $this->changeset_templates['plural'][$identifier][$change_type];
                     return [
                         [
-                            $this->template_engine->render($template, [
+                            $this->renderText($template, [
                                 'uri' => $header
                             ]),
                             $methods
@@ -168,7 +169,7 @@ class Json extends Generator
                 case Changelog::CHANGE_ACTION_PARAM:
                     $methods = [];
                     foreach ($changesets as $change) {
-                        $methods[$change['method']][] = sprintf('`%s`', $change['parameter']);
+                        $methods[$change['method']][] = $this->renderText('{parameter}', $change);
                     }
 
                     $entry = [];
@@ -176,7 +177,7 @@ class Json extends Generator
                         if (count($params) > 1) {
                             $template = $this->changeset_templates['plural'][$identifier][$change_type];
                             $entry[] = [
-                                $this->template_engine->render($template, [
+                                $this->renderText($template, [
                                     'method' => $method,
                                     'uri' => $header
                                 ]),
@@ -187,7 +188,7 @@ class Json extends Generator
                         }
 
                         $template = $this->changeset_templates['singular'][$identifier][$change_type];
-                        $entry[] = $this->template_engine->render($template, [
+                        $entry[] = $this->renderText($template, [
                             'parameter' => rtrim(ltrim(array_shift($params), '`'), '`'),
                             'method' => $method,
                             'uri' => $header
@@ -209,19 +210,18 @@ class Json extends Generator
                             $returns = [];
                             foreach ($changes as $change) {
                                 if ($change['representation']) {
-                                    $returns[] = sprintf(
-                                        '`%s` with a `%s` representation',
-                                        $change['http_code'],
-                                        $change['representation']
+                                    $returns[] = $this->renderText(
+                                        '{http_code} with a {representation} representation',
+                                        $change
                                     );
                                 } else {
-                                    $returns[] = sprintf('`%s`', $change['http_code']);
+                                    $returns[] = $this->renderText('{http_code}', $change);
                                 }
                             }
 
                             $template = $this->changeset_templates['plural'][$identifier][$change_type];
                             $entry[] = [
-                                $this->template_engine->render($template, [
+                                $this->renderText($template, [
                                     'method' => $method,
                                     'uri' => $header
                                 ]),
@@ -233,7 +233,7 @@ class Json extends Generator
 
                         $change = array_shift($changes);
                         $template = $this->changeset_templates['singular'][$identifier][$change_type];
-                        $entry[] = $this->template_engine->render($template, $change);
+                        $entry[] = $this->renderText($template, $change);
                     }
 
                     return $entry;
@@ -250,17 +250,15 @@ class Json extends Generator
                         if (count($changes) > 1) {
                             $errors = [];
                             foreach ($changes as $change) {
-                                $errors[] = sprintf(
-                                    '`%s` with a `%s` representation: %s',
-                                    $change['http_code'],
-                                    $change['representation'],
-                                    $change['description']
+                                $errors[] = $this->renderText(
+                                    '{http_code} with a {representation} representation: {description}',
+                                    $change
                                 );
                             }
 
                             $template = $this->changeset_templates['plural'][$identifier][$change_type];
                             $entry[] = [
-                                $this->template_engine->render($template, [
+                                $this->renderText($template, [
                                     'method' => $method,
                                     'uri' => $header
                                 ]),
@@ -272,7 +270,7 @@ class Json extends Generator
 
                         $change = array_shift($changes);
                         $template = $this->changeset_templates['singular'][$identifier][$change_type];
-                        $entry[] = $this->template_engine->render($template, $change);
+                        $entry[] = $this->renderText($template, $change);
                     }
 
                     return $entry;
@@ -281,13 +279,13 @@ class Json extends Generator
                 case Changelog::CHANGE_REPRESENTATION_DATA:
                     $fields = [];
                     foreach ($changesets as $change) {
-                        $fields[] = sprintf('`%s`', $change['field']);
+                        $fields[] = $this->renderText('{field}', $change);
                     }
 
                     $template = $this->changeset_templates['plural'][$identifier][$change_type];
                     return [
                         [
-                            $this->template_engine->render($template, [
+                            $this->renderText($template, [
                                 'representation' => $header
                             ]),
                             $fields
@@ -306,7 +304,7 @@ class Json extends Generator
             case Changelog::CHANGE_ACTION_THROWS:
             case Changelog::CHANGE_REPRESENTATION_DATA:
                 $template = $this->changeset_templates['singular'][$identifier][$change_type];
-                return $this->template_engine->render($template, $changeset);
+                return $this->renderText($template, $changeset);
                 break;
 
             case Changelog::CHANGE_ACTION_RETURN:
@@ -317,7 +315,7 @@ class Json extends Generator
                     $template = $this->changeset_templates['singular'][$template_key][$change_type];
                 }
 
-                return $this->template_engine->render($template, $changeset);
+                return $this->renderText($template, $changeset);
                 break;
         }
 
@@ -341,14 +339,14 @@ class Json extends Generator
                 if (count($changesets) > 1) {
                     $content_types = [];
                     foreach ($changesets as $changeset) {
-                        $content_types[$changeset['content_type']][] = sprintf('`%s`', $changeset['method']);
+                        $content_types[$changeset['content_type']][] = $this->renderText('{method}', $changeset);
                     }
 
                     $entry = [];
                     $template = $this->changeset_templates['plural'][$identifier]['changed'];
                     foreach ($content_types as $content_type => $methods) {
                         $entry[] = [
-                            $this->template_engine->render($template, [
+                            $this->renderText($template, [
                                 'uri' => $header,
                                 'content_type' => $content_type
                             ]),
@@ -361,10 +359,53 @@ class Json extends Generator
 
                 $changeset = array_shift($changesets);
                 $template = $this->changeset_templates['singular'][$identifier]['changed'];
-                return $this->template_engine->render($template, $changeset);
+                return $this->renderText($template, $changeset);
                 break;
         }
 
         return false;
+    }
+
+    /**
+     * Render a changelog template with some content.
+     *
+     * @param string $template
+     * @param array $content
+     * @return string
+     */
+    public function renderText($template, array $content)
+    {
+        $searches = [];
+        $replacements = [];
+        foreach ($content as $key => $value) {
+            switch ($key) {
+                case 'content_type':
+                case 'field':
+                case 'http_code':
+                case 'method':
+                case 'parameter':
+                case 'representation':
+                case 'uri':
+                    $searches[] = '{' . $key . '}';
+                    $replacements[] = sprintf(
+                        '<span class="{css_namespace}_%s" data-mill-%s="{%s}">{%s}</span>',
+                        $key,
+                        str_replace('_', '-', $key),
+                        $key,
+                        $key
+                    );
+                    break;
+
+                case 'description':
+                default:
+                    // do nothing
+            }
+        }
+
+        $template = str_replace($searches, $replacements, $template);
+
+        $content['css_namespace'] = self::CSS_NAMESPACE;
+
+        return $this->template_engine->render($template, $content);
     }
 }
