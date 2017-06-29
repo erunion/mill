@@ -27,92 +27,137 @@ class JsonTest extends TestCase
                 'resources' => [
                     [
                         [
-                            'The GET on `/movie/{id}` can now throw the following errors:',
+                            'The <span class="mill-changelog_method" data-mill-method="GET">GET</span> on <span ' .
+                                'class="mill-changelog_uri" data-mill-uri="/movie/{id}">/movie/{id}</span> can now ' .
+                                'throw the following errors:',
                             [
-                                '`404 Not Found` with a `Error` representation: For no reason.',
-                                '`404 Not Found` with a `Error` representation: For some other reason.'
+                                '<span class="mill-changelog_http_code" data-mill-http-code="404 Not Found">404 Not ' .
+                                    'Found</span> with a <span class="mill-changelog_representation" ' .
+                                    'data-mill-representation="Error">Error</span> representation: For no reason.',
+                                '<span class="mill-changelog_http_code" data-mill-http-code="404 Not Found">404 Not ' .
+                                    'Found</span> with a <span class="mill-changelog_representation" ' .
+                                    'data-mill-representation="Error">Error</span> representation: For some other ' .
+                                    'reason.'
                             ]
                         ]
                     ],
                     [
                         [
-                            'The GET on `/movies/{id}` can now throw the following errors:',
+                            'The <span class="mill-changelog_method" data-mill-method="GET">GET</span> on <span ' .
+                                'class="mill-changelog_uri" data-mill-uri="/movies/{id}">/movies/{id}</span> can ' .
+                                'now throw the following errors:',
                             [
-                                '`404 Not Found` with a `Error` representation: For no reason.',
-                                '`404 Not Found` with a `Error` representation: For some other reason.'
+                                '<span class="mill-changelog_http_code" data-mill-http-code="404 Not Found">404 Not ' .
+                                    'Found</span> with a <span class="mill-changelog_representation" ' .
+                                    'data-mill-representation="Error">Error</span> representation: For no reason.',
+                                '<span class="mill-changelog_http_code" data-mill-http-code="404 Not Found">404 Not ' .
+                                    'Found</span> with a <span class="mill-changelog_representation" ' .
+                                    'data-mill-representation="Error">Error</span> representation: For some other ' .
+                                    'reason.'
                             ]
                         ],
-                        'PATCH on `/movies/{id}` now returns a `404 Not Found` with a `Error` representation: If ' .
-                        'the trailer URL could not be validated.'
+                        '<span class="mill-changelog_method" data-mill-method="PATCH">PATCH</span> on ' .
+                            '<span class="mill-changelog_uri" data-mill-uri="/movies/{id}">/movies/{id}</span> now ' .
+                            'returns a <span class="mill-changelog_http_code" data-mill-http-code="404 Not Found">' .
+                            '404 Not Found</span> with a <span class="mill-changelog_representation" ' .
+                            'data-mill-representation="Error">Error</span> representation: If the trailer URL could ' .
+                            'not be validated.'
                     ],
-                    'PATCH on `/movies/{id}` now returns a `202 Accepted` with a `Movie` representation.',
-                    'POST on `/movies` now returns a `201 Created`.'
+                    '<span class="mill-changelog_method" data-mill-method="PATCH">PATCH</span> on <span ' .
+                        'class="mill-changelog_uri" data-mill-uri="/movies/{id}">/movies/{id}</span> now returns a ' .
+                        '<span class="mill-changelog_http_code" data-mill-http-code="202 Accepted">202 ' .
+                        'Accepted</span> with a <span class="mill-changelog_representation" ' .
+                        'data-mill-representation="Movie">Movie</span> representation.',
+                    '<span class="mill-changelog_method" data-mill-method="POST">POST</span> on <span ' .
+                        'class="mill-changelog_uri" data-mill-uri="/movies">/movies</span> now returns a <span ' .
+                        'class="mill-changelog_http_code" data-mill-http-code="201 Created">201 Created</span>.'
                 ]
             ],
             'removed' => [
                 'representations' => [
-                    '`external_urls.tickets` has been removed from the `Movie` representation.'
+                    //'external_urls.tickets has been removed from the Movie representation.'
+                    '<span class="mill-changelog_field" data-mill-field="external_urls.tickets">external_urls.tickets' .
+                        '</span> has been removed from the <span class="mill-changelog_representation" ' .
+                        'data-mill-representation="Movie">Movie</span> representation.'
                 ]
             ]
-        ], $generated['1.1.3']);
+        ], $generated['1.1.3'], '1.1.3 changelog does not match');
 
         // v1.1.2
         $this->assertSame([
             'changed' => [
                 'resources' => [
-                    'GET on `/movie/{id}` now returns a `application/mill.example.movie` Content-Type header.',
+                    '<span class="mill-changelog_method" data-mill-method="GET">GET</span> on <span ' .
+                        'class="mill-changelog_uri" data-mill-uri="/movie/{id}">/movie/{id}</span> now returns a ' .
+                        '<span class="mill-changelog_content_type" ' .
+                        'data-mill-content-type="application/mill.example.movie">application/mill.example.movie' .
+                        '</span> Content-Type header.',
                     [
                         [
-                            '`/movies/{id}` now returns a `application/mill.example.movie` Content-Type header on ' .
-                            'the following HTTP methods:',
+                            '<span class="mill-changelog_uri" data-mill-uri="/movies/{id}">/movies/{id}</span> now ' .
+                                'returns a <span class="mill-changelog_content_type" ' .
+                                'data-mill-content-type="application/mill.example.movie">' .
+                                'application/mill.example.movie</span> Content-Type header on the following HTTP ' .
+                                'methods:',
                             [
-                                '`GET`',
-                                '`PATCH`'
+                                '<span class="mill-changelog_method" data-mill-method="GET">GET</span>',
+                                '<span class="mill-changelog_method" data-mill-method="PATCH">PATCH</span>'
                             ]
                         ]
                     ],
                     [
                         [
-                            '`/movies` now returns a `application/mill.example.movie` Content-Type header on the ' .
-                            'following HTTP methods:',
+                            '<span class="mill-changelog_uri" data-mill-uri="/movies">/movies</span> now returns a ' .
+                                '<span class="mill-changelog_content_type" ' .
+                                'data-mill-content-type="application/mill.example.movie">' .
+                                'application/mill.example.movie</span> Content-Type header on the following HTTP ' .
+                                'methods:',
                             [
-                                '`GET`',
-                                '`POST`'
+                                '<span class="mill-changelog_method" data-mill-method="GET">GET</span>',
+                                '<span class="mill-changelog_method" data-mill-method="POST">POST</span>'
                             ]
                         ]
                     ],
                     [
                         [
-                            '`/theaters/{id}` now returns a `application/mill.example.theater` Content-Type header ' .
-                            'on the following HTTP methods:',
+                            '<span class="mill-changelog_uri" data-mill-uri="/theaters/{id}">/theaters/{id}</span> ' .
+                                'now returns a <span class="mill-changelog_content_type" ' .
+                                'data-mill-content-type="application/mill.example.theater">' .
+                                'application/mill.example.theater</span> Content-Type header on the following HTTP ' .
+                                'methods:',
                             [
-                                '`GET`',
-                                '`PATCH`'
+                                '<span class="mill-changelog_method" data-mill-method="GET">GET</span>',
+                                '<span class="mill-changelog_method" data-mill-method="PATCH">PATCH</span>'
                             ]
                         ]
                     ],
                     [
                         [
-                            '`/theaters` now returns a `application/mill.example.theater` Content-Type header on the ' .
-                            'following HTTP methods:',
+                            '<span class="mill-changelog_uri" data-mill-uri="/theaters">/theaters</span> now ' .
+                                'returns a <span class="mill-changelog_content_type" ' .
+                                'data-mill-content-type="application/mill.example.theater">' .
+                                'application/mill.example.theater</span> Content-Type header on the following HTTP ' .
+                                'methods:',
                             [
-                                '`GET`',
-                                '`POST`'
+                                '<span class="mill-changelog_method" data-mill-method="GET">GET</span>',
+                                '<span class="mill-changelog_method" data-mill-method="POST">POST</span>'
                             ]
                         ]
                     ]
                 ]
             ]
-        ], $generated['1.1.2']);
+        ], $generated['1.1.2'], '1.1.2 changelog does not match');
 
         // v1.1.1
         $this->assertSame([
             'added' => [
                 'resources' => [
-                    'A `imdb` request parameter was added to PATCH on `/movies/{id}`.'
+                    'A <span class="mill-changelog_parameter" data-mill-parameter="imdb">imdb</span> request ' .
+                        'parameter was added to <span class="mill-changelog_method" data-mill-method="PATCH">PATCH' .
+                        '</span> on <span class="mill-changelog_uri" data-mill-uri="/movies/{id}">/movies/{id}</span>.'
                 ]
             ]
-        ], $generated['1.1.1']);
+        ], $generated['1.1.1'], '1.1.1 changelog does not match');
 
         // v1.1
         $this->assertSame([
@@ -120,33 +165,45 @@ class JsonTest extends TestCase
                 'representations' => [
                     [
                         [
-                            'The following fields have been added to the `Movie` representation:',
+                            'The following fields have been added to the <span class="mill-changelog_representation" ' .
+                                'data-mill-representation="Movie">Movie</span> representation:',
                             [
-                                '`external_urls`',
-                                '`external_urls.imdb`',
-                                '`external_urls.tickets`',
-                                '`external_urls.trailer`'
+                                '<span class="mill-changelog_field" data-mill-field="external_urls">external_urls' .
+                                    '</span>',
+                                '<span class="mill-changelog_field" data-mill-field="external_urls.imdb">' .
+                                    'external_urls.imdb</span>',
+                                '<span class="mill-changelog_field" data-mill-field="external_urls.tickets">' .
+                                    'external_urls.tickets</span>',
+                                '<span class="mill-changelog_field" data-mill-field="external_urls.trailer">' .
+                                    'external_urls.trailer</span>'
                             ]
                         ]
-                    ],
+                    ]
                 ],
                 'resources' => [
                     [
                         [
-                            '`/movies/{id}` has been added with support for the following HTTP methods:',
+                            '<span class="mill-changelog_uri" data-mill-uri="/movies/{id}">/movies/{id}</span> has ' .
+                                'been added with support for the following HTTP methods:',
                             [
-                                '`PATCH`',
-                                '`DELETE`'
+                                '<span class="mill-changelog_method" data-mill-method="PATCH">PATCH</span>',
+                                '<span class="mill-changelog_method" data-mill-method="DELETE">DELETE</span>'
                             ]
                         ]
                     ],
                     [
-                        'A `page` request parameter was added to GET on `/movies`.',
+                        'A <span class="mill-changelog_parameter" data-mill-parameter="<span ' .
+                            'class="mill-changelog_parameter" data-mill-parameter="page">page</span>"><span ' .
+                            'class="mill-changelog_parameter" data-mill-parameter="page">page</span></span> request ' .
+                            'parameter was added to <span class="mill-changelog_method" data-mill-method="GET">GET' .
+                            '</span> on <span class="mill-changelog_uri" data-mill-uri="/movies">/movies</span>.',
                         [
-                            'The following parameters have been added to POST on `/movies`:',
+                            'The following parameters have been added to <span class="mill-changelog_method" ' .
+                                'data-mill-method="POST">POST</span> on <span class="mill-changelog_uri" ' .
+                                'data-mill-uri="/movies">/movies</span>:',
                             [
-                                '`imdb`',
-                                '`trailer`'
+                                '<span class="mill-changelog_parameter" data-mill-parameter="imdb">imdb</span>',
+                                '<span class="mill-changelog_parameter" data-mill-parameter="trailer">trailer</span>'
                             ]
                         ]
                     ]
@@ -154,10 +211,12 @@ class JsonTest extends TestCase
             ],
             'removed' => [
                 'representations' => [
-                    '`website` has been removed from the `Theater` representation.'
+                    '<span class="mill-changelog_field" data-mill-field="website">website</span> has been removed ' .
+                        'from the <span class="mill-changelog_representation" data-mill-representation="Theater">' .
+                        'Theater</span> representation.'
                 ]
             ]
-        ], $generated['1.1']);
+        ], $generated['1.1'], '1.1 changelog does not match');
     }
 
     /**
@@ -219,13 +278,24 @@ class JsonTest extends TestCase
                             'resources' => [
                                 [
                                     [
-                                        'The POST on `/movies` will now return the following responses:',
+                                        'The <span class="mill-changelog_method" data-mill-method="POST">POST' .
+                                            '</span> on <span class="mill-changelog_uri" data-mill-uri="/movies">' .
+                                            '/movies</span> will now return the following responses:',
                                         [
-                                            '`201 Created`',
-                                            '`200 OK` with a `Movie` representation'
+                                            '<span class="mill-changelog_http_code" ' .
+                                                'data-mill-http-code="201 Created">201 Created</span>',
+                                            '<span class="mill-changelog_http_code" ' .
+                                                'data-mill-http-code="200 OK">200 OK</span> with a <span ' .
+                                                'class="mill-changelog_representation" ' .
+                                                'data-mill-representation="Movie">Movie</span> representation'
                                         ]
                                     ],
-                                    'GET on `/movies` now returns a `200 OK` with a `Movie` representation.'
+                                    '<span class="mill-changelog_method" data-mill-method="GET">GET</span> on <span ' .
+                                        'class="mill-changelog_uri" data-mill-uri="/movies">/movies</span> now ' .
+                                        'returns a <span class="mill-changelog_http_code" ' .
+                                        'data-mill-http-code="200 OK">200 OK</span> with a <span ' .
+                                        'class="mill-changelog_representation" ' .
+                                        'data-mill-representation="Movie">Movie</span> representation.'
                                 ]
                             ]
                         ]
@@ -269,13 +339,23 @@ class JsonTest extends TestCase
                             'resources' => [
                                 [
                                     [
-                                        'The POST on `/movies` no longer returns the following responses:',
+                                        'The <span class="mill-changelog_method" data-mill-method="POST">POST</span> ' .
+                                            'on <span class="mill-changelog_uri" data-mill-uri="/movies">/movies' .
+                                            '</span> no longer returns the following responses:',
                                         [
-                                            '`201 Created`',
-                                            '`200 OK` with a `Movie` representation'
+                                            '<span class="mill-changelog_http_code" ' .
+                                                'data-mill-http-code="201 Created">201 Created</span>',
+                                            '<span class="mill-changelog_http_code" data-mill-http-code="200 OK">' .
+                                                '200 OK</span> with a <span class="mill-changelog_representation" ' .
+                                                'data-mill-representation="Movie">Movie</span> representation'
                                         ]
                                     ],
-                                    'GET on `/movies` no longer returns a `200 OK` with a `Movie` representation.'
+                                    '<span class="mill-changelog_method" data-mill-method="GET">GET</span> on <span ' .
+                                        'class="mill-changelog_uri" data-mill-uri="/movies">/movies</span> no longer ' .
+                                        'returns a <span class="mill-changelog_http_code" ' .
+                                        'data-mill-http-code="200 OK">200 OK</span> with a <span ' .
+                                        'class="mill-changelog_representation" data-mill-representation="Movie">' .
+                                        'Movie</span> representation.'
                                 ]
                             ]
                         ]

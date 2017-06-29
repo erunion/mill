@@ -3,15 +3,15 @@
 ## 1.1.3
 ### Added
 #### Resources
-- The GET on `/movie/{id}` can now throw the following errors:
+- The `GET` on `/movie/{id}` can now throw the following errors:
     - `404 Not Found` with a `Error` representation: For no reason.
     - `404 Not Found` with a `Error` representation: For some other reason.
-- The GET on `/movies/{id}` can now throw the following errors:
+- The `GET` on `/movies/{id}` can now throw the following errors:
     - `404 Not Found` with a `Error` representation: For no reason.
     - `404 Not Found` with a `Error` representation: For some other reason.
-- PATCH on `/movies/{id}` now returns a `404 Not Found` with a `Error` representation: If the trailer URL could not be validated.
-- PATCH on `/movies/{id}` now returns a `202 Accepted` with a `Movie` representation.
-- POST on `/movies` now returns a `201 Created`.
+- `PATCH` on `/movies/{id}` now returns a `404 Not Found` with a `Error` representation: If the trailer URL could not be validated.
+- `PATCH` on `/movies/{id}` now returns a `202 Accepted` with a `Movie` representation.
+- `POST` on `/movies` now returns a `201 Created`.
 
 ### Removed
 #### Representations
@@ -20,7 +20,7 @@
 ## 1.1.2
 ### Changed
 #### Resources
-- GET on `/movie/{id}` now returns a `application/mill.example.movie` Content-Type header.
+- `GET` on `/movie/{id}` now returns a `application/mill.example.movie` Content-Type header.
 - `/movies/{id}` now returns a `application/mill.example.movie` Content-Type header on the following HTTP methods:
     - `GET`
     - `PATCH`
@@ -37,7 +37,7 @@
 ## 1.1.1
 ### Added
 #### Resources
-- A `imdb` request parameter was added to PATCH on `/movies/{id}`.
+- A `imdb` request parameter was added to `PATCH` on `/movies/{id}`.
 
 ## 1.1
 ### Added
@@ -52,8 +52,8 @@
 - `/movies/{id}` has been added with support for the following HTTP methods:
     - `PATCH`
     - `DELETE`
-- A `page` request parameter was added to GET on `/movies`.
-- The following parameters have been added to POST on `/movies`:
+- A `page` request parameter was added to `GET` on `/movies`.
+- The following parameters have been added to `POST` on `/movies`:
     - `imdb`
     - `trailer`
 
