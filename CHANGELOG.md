@@ -1,4 +1,20 @@
 # Changelog
+## [2.4.0] - 2017-06-29
+### Changed
+- JSON changelog generation content now has important pieces of information wrapped in styleable HTML elements.
+
+## [2.3.2] - 2017-06-28
+### Fixed
+- URI aliases are now filtered according to your filter settings when generating documentation.
+
+## [2.3.1] - 2017-06-27
+### Changed
+- Flipped the logic on capability-locked documentation in the generator from an empty array implying no capabilities, null representing all.
+
+## [2.3.0] - 2017-06-27
+### Added
+- Added support for generating visibility-specific changelogs. [#97](https://github.com/vimeo/mill/issues/97)
+
 ## [2.2.2] - 2017-06-15
 ### Added
 - Added resource action descriptions into generated API Blueprint files.
@@ -132,6 +148,10 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[2.4.0]: https://github.com/vimeo/mill/compare/2.3.2...2.4.0
+[2.3.2]: https://github.com/vimeo/mill/compare/2.3.1...2.3.2
+[2.3.1]: https://github.com/vimeo/mill/compare/2.3.0...2.3.1
+[2.3.0]: https://github.com/vimeo/mill/compare/2.2.2...2.3.0
 [2.2.2]: https://github.com/vimeo/mill/compare/2.2.1...2.2.2
 [2.2.1]: https://github.com/vimeo/mill/compare/2.2.0...2.2.1
 [2.2.0]: https://github.com/vimeo/mill/compare/2.1.1...2.2.0

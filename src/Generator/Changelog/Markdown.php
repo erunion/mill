@@ -84,4 +84,39 @@ class Markdown extends Json
 
         return $markdown;
     }
+
+    /**
+     * Render a changelog template with some content.
+     *
+     * @param string $template
+     * @param array $content
+     * @return string
+     */
+    public function renderText($template, array $content)
+    {
+        $searches = [];
+        $replacements = [];
+        foreach ($content as $key => $value) {
+            switch ($key) {
+                case 'content_type':
+                case 'field':
+                case 'http_code':
+                case 'method':
+                case 'parameter':
+                case 'representation':
+                case 'uri':
+                    $searches[] = '{' . $key . '}';
+                    $replacements[] = '`{' . $key . '}`';
+                    break;
+
+                case 'description':
+                default:
+                    // do nothing
+            }
+        }
+
+        $template = str_replace($searches, $replacements, $template);
+
+        return $this->template_engine->render($template, $content);
+    }
 }

@@ -63,14 +63,9 @@ class ChangelogTest extends \PHPUnit_Framework_TestCase
             $params['--capability'] = $capabilities;
         }
 
-//print_r($params);exit;
-
         $this->tester->execute($params);
 
         $blueprints_dir = __DIR__ . '/../../resources/examples/Showtimes/blueprints';
-
-//print_r(file_get_contents($blueprints_dir . '/' . $expected_file));
-
         $this->assertSame(
             file_get_contents($blueprints_dir . '/' . $expected_file),
             file_get_contents($output_dir . '/changelog.md'),
