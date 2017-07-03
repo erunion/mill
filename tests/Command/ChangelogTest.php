@@ -5,7 +5,7 @@ use Mill\Command\Changelog;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class ChangelogTest extends \PHPUnit_Framework_TestCase
+class ChangelogTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Symfony\Component\Console\Command\Command
