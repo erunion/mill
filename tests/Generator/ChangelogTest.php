@@ -311,6 +311,10 @@ class ChangelogTest extends TestCase
                 'capabilities' => null,
                 'expected' => [
                     '1.1.3' => [
+                        '_details' => [
+                            'release_date' => '2017-05-27',
+                            'description' => 'Changed up the responses for `/movie/{id}`, `/movies/{id}` and `/movies`.'
+                        ],
                         'added' => [
                             'resources' => [
                                 '/movie/{id}' => $actions['/movie/{id}']['1.1.3']['added'],
@@ -325,6 +329,9 @@ class ChangelogTest extends TestCase
                         ]
                     ],
                     '1.1.2' => [
+                        '_details' => [
+                            'release_date' => '2017-04-01'
+                        ],
                         'changed' => [
                             'resources' => [
                                 '/movie/{id}' => $actions['/movie/{id}']['1.1.2']['changed'],
@@ -336,6 +343,9 @@ class ChangelogTest extends TestCase
                         ]
                     ],
                     '1.1.1' => [
+                        '_details' => [
+                            'release_date' => '2017-03-01'
+                        ],
                         'added' => [
                             'resources' => [
                                 '/movies/{id}' => $actions['/movies/{id}']['1.1.1']['added']
@@ -343,6 +353,9 @@ class ChangelogTest extends TestCase
                         ]
                     ],
                     '1.1' => [
+                        '_details' => [
+                            'release_date' => '2017-02-01'
+                        ],
                         'added' => [
                             'representations' => [
                                 'Movie' => $representations['Movie']['1.1']['added']
@@ -380,6 +393,10 @@ class ChangelogTest extends TestCase
                 ],
                 'expected' => [
                     '1.1.3' => [
+                        '_details' => [
+                            'release_date' => '2017-05-27',
+                            'description' => 'Changed up the responses for `/movie/{id}`, `/movies/{id}` and `/movies`.'
+                        ],
                         'added' => [
                             'resources' => [
                                 '/movies/{id}' => $actions['/movies/{id}']['1.1.3']['added'],
@@ -393,6 +410,9 @@ class ChangelogTest extends TestCase
                         ]
                     ],
                     '1.1.2' => [
+                        '_details' => [
+                            'release_date' => '2017-04-01'
+                        ],
                         'changed' => [
                             'resources' => [
                                 '/movies/{id}' => $actions['/movies/{id}']['1.1.2']['changed'],
@@ -403,6 +423,9 @@ class ChangelogTest extends TestCase
                         ]
                     ],
                     '1.1.1' => [
+                        '_details' => [
+                            'release_date' => '2017-03-01'
+                        ],
                         'added' => [
                             'resources' => [
                                 '/movies/{id}' => $actions['/movies/{id}']['1.1.1']['added']
@@ -410,6 +433,9 @@ class ChangelogTest extends TestCase
                         ]
                     ],
                     '1.1' => [
+                        '_details' => [
+                            'release_date' => '2017-02-01'
+                        ],
                         'added' => [
                             'representations' => [
                                 'Movie' => $representations['Movie']['1.1']['added']
@@ -446,6 +472,10 @@ class ChangelogTest extends TestCase
                 ],
                 'expected' => [
                     '1.1.3' => [
+                        '_details' => [
+                            'release_date' => '2017-05-27',
+                            'description' => 'Changed up the responses for `/movie/{id}`, `/movies/{id}` and `/movies`.'
+                        ],
                         'added' => [
                             'resources' => [
                                 '/movies/{id}' => $actions['/movies/{id}']['1.1.3']['added'],
@@ -459,6 +489,9 @@ class ChangelogTest extends TestCase
                         ]
                     ],
                     '1.1.2' => [
+                        '_details' => [
+                            'release_date' => '2017-04-01'
+                        ],
                         'changed' => [
                             'resources' => [
                                 '/movies/{id}' => $actions['/movies/{id}']['1.1.2']['changed'],
@@ -469,6 +502,9 @@ class ChangelogTest extends TestCase
                         ]
                     ],
                     '1.1.1' => [
+                        '_details' => [
+                            'release_date' => '2017-03-01'
+                        ],
                         'added' => [
                             'resources' => [
                                 '/movies/{id}' => $actions['/movies/{id}']['1.1.1']['added']
@@ -476,6 +512,9 @@ class ChangelogTest extends TestCase
                         ]
                     ],
                     '1.1' => [
+                        '_details' => [
+                            'release_date' => '2017-02-01'
+                        ],
                         'added' => [
                             'representations' => [
                                 'Movie' => $representations['Movie']['1.1']['added']
@@ -502,6 +541,10 @@ class ChangelogTest extends TestCase
                 ],
                 'expected' => [
                     '1.1.3' => [
+                        '_details' => [
+                            'release_date' => '2017-05-27',
+                            'description' => 'Changed up the responses for `/movie/{id}`, `/movies/{id}` and `/movies`.'
+                        ],
                         'added' => [
                             'resources' => [
                                 '/movies/{id}' => $actions['/movies/{id}']['1.1.3']['added'],
@@ -515,6 +558,9 @@ class ChangelogTest extends TestCase
                         ]
                     ],
                     '1.1.2' => [
+                        '_details' => [
+                            'release_date' => '2017-04-01'
+                        ],
                         'changed' => [
                             'resources' => [
                                 '/movies/{id}' => $actions['/movies/{id}']['1.1.2']['changed'],
@@ -525,6 +571,9 @@ class ChangelogTest extends TestCase
                         ]
                     ],
                     '1.1.1' => [
+                        '_details' => [
+                            'release_date' => '2017-03-01'
+                        ],
                         'added' => [
                             'resources' => [
                                 '/movies/{id}' => $actions['/movies/{id}']['1.1.1']['added']
@@ -532,6 +581,9 @@ class ChangelogTest extends TestCase
                         ]
                     ],
                     '1.1' => [
+                        '_details' => [
+                            'release_date' => '2017-02-01'
+                        ],
                         'added' => [
                             'representations' => [
                                 'Movie' => $representations['Movie']['1.1']['added']
@@ -564,6 +616,10 @@ class ChangelogTest extends TestCase
                 'capabilities' => [],
                 'expected' => [
                     '1.1.3' => [
+                        '_details' => [
+                            'release_date' => '2017-05-27',
+                            'description' => 'Changed up the responses for `/movie/{id}`, `/movies/{id}` and `/movies`.'
+                        ],
                         'added' => [
                             'resources' => [
                                 '/movies/{id}' => $actions['/movies/{id}']['1.1.3']['added'],
@@ -577,6 +633,9 @@ class ChangelogTest extends TestCase
                         ]
                     ],
                     '1.1.2' => [
+                        '_details' => [
+                            'release_date' => '2017-04-01',
+                        ],
                         'changed' => [
                             'resources' => [
                                 '/movies/{id}' => $actions['/movies/{id}']['1.1.2']['changed'],
@@ -587,6 +646,9 @@ class ChangelogTest extends TestCase
                         ]
                     ],
                     '1.1.1' => [
+                        '_details' => [
+                            'release_date' => '2017-03-01'
+                        ],
                         'added' => [
                             'resources' => [
                                 '/movies/{id}' => $actions['/movies/{id}']['1.1.1']['added']
@@ -594,6 +656,9 @@ class ChangelogTest extends TestCase
                         ]
                     ],
                     '1.1' => [
+                        '_details' => [
+                            'release_date' => '2017-02-01',
+                        ],
                         'added' => [
                             'representations' => [
                                 'Movie' => $representations['Movie']['1.1']['added']

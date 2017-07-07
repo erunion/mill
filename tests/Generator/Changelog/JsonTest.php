@@ -23,6 +23,10 @@ class JsonTest extends TestCase
 
         // v1.1.3
         $this->assertSame([
+            '_details' => [
+                'release_date' => '2017-05-27',
+                'description' => 'Changed up the responses for `/movie/{id}`, `/movies/{id}` and `/movies`.'
+            ],
             'added' => [
                 'resources' => [
                     [
@@ -85,6 +89,9 @@ class JsonTest extends TestCase
 
         // v1.1.2
         $this->assertSame([
+            '_details' => [
+                'release_date' => '2017-04-01'
+            ],
             'changed' => [
                 'resources' => [
                     '<span class="mill-changelog_method" data-mill-method="GET">GET</span> on <span ' .
@@ -150,6 +157,9 @@ class JsonTest extends TestCase
 
         // v1.1.1
         $this->assertSame([
+            '_details' => [
+                'release_date' => '2017-03-01'
+            ],
             'added' => [
                 'resources' => [
                     'A <span class="mill-changelog_parameter" data-mill-parameter="imdb">imdb</span> request ' .
@@ -161,6 +171,9 @@ class JsonTest extends TestCase
 
         // v1.1
         $this->assertSame([
+            '_details' => [
+                'release_date' => '2017-02-01'
+            ],
             'added' => [
                 'representations' => [
                     [

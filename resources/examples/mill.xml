@@ -4,11 +4,13 @@
     bootstrap="../../vendor/autoload.php"
 >
     <versions>
-        <version name="1.0" />
-        <version name="1.1" />
-        <version name="1.1.1" />
-        <version name="1.1.2" default="true" />
-        <version name="1.1.3" />
+        <version name="1.0" releaseDate="2017-01-01" />
+        <version name="1.1" releaseDate="2017-02-01" />
+        <version name="1.1.1" releaseDate="2017-03-01" />
+        <version name="1.1.2" releaseDate="2017-04-01" default="true" />
+        <version name="1.1.3" releaseDate="2017-05-27">
+            Changed up the responses for `/movie/{id}`, `/movies/{id}` and `/movies`.
+        </version>
     </versions>
 
     <controllers>

@@ -554,7 +554,7 @@ class Documentation
 
         foreach ($this->annotations as $key => $annotations) {
             foreach ($annotations as $annotation) {
-                if (empty($data['annotations'][$key])) {
+                if (!isset($data['annotations'][$key])) {
                     $data['annotations'][$key] = [];
                 }
 

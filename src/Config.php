@@ -2,6 +2,8 @@
 namespace Mill;
 
 use Composer\Semver\Semver;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use DomainException;
 use DOMDocument;
 use InvalidArgumentException;
@@ -58,9 +60,9 @@ class Config
     /**
      * Array of API versions.
      *
-     * @var array
+     * @var ArrayCollection
      */
-    protected $api_versions = [];
+    protected $api_versions;
 
     /**
      * Allowable list of valid application capabilities.
@@ -208,7 +210,7 @@ class Config
             $config->loadGeneratorSettings($xml->generators);
         }
 
-        $config->api_versions = [];
+        $config->api_versions = new ArrayCollection;
         $config->loadVersions($xml->versions->version);
 
         $config->controllers = [];
@@ -393,8 +395,16 @@ class Config
      */
     protected function loadVersions(SimpleXMLElement $versions)
     {
+        $api_versions = [];
         foreach ($versions as $version) {
-            $this->api_versions[] = (string) $version['name'];
+            $version_number = (string) $version['name'];
+            $description = trim((string) $version);
+
+            $api_versions[$version_number] = [
+                'version' => $version_number,
+                'release_date' => (string) $version['releaseDate'],
+                'description' => (!empty($description)) ? $description : null
+            ];
 
             $is_default = (bool) $version['default'];
             if ($is_default) {
@@ -413,11 +423,13 @@ class Config
         }
 
         // Keep things tidy.
-        $this->api_versions = array_unique($this->api_versions);
-        $this->api_versions = Semver::sort($this->api_versions);
+        $sorted_numerical = Semver::sort(array_keys($api_versions));
+        foreach ($sorted_numerical as $version) {
+            $this->api_versions->add($api_versions[$version]);
+        }
 
-        $this->first_api_version = $this->api_versions[0];
-        $this->latest_api_version = Semver::rsort($this->api_versions)[0];
+        $this->first_api_version = $this->api_versions->first()['version'];
+        $this->latest_api_version = $this->api_versions->last()['version'];
     }
 
     /**
@@ -723,11 +735,24 @@ class Config
     /**
      * Get the array of configured API versions.
      *
-     * @return array
+     * @return ArrayCollection
      */
     public function getApiVersions()
     {
         return $this->api_versions;
+    }
+
+    /**
+     * Get the configured dataset (release date, description, etc) on a specific API version.
+     *
+     * @param string $version
+     * @return array
+     */
+    public function getApiVersion($version)
+    {
+        return $this->api_versions
+            ->matching(new Criteria(Criteria::expr()->eq('version', $version), null))
+            ->current();
     }
 
     /**

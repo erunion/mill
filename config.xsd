@@ -31,8 +31,13 @@
         <xs:choice>
             <xs:element name="version" minOccurs="1" maxOccurs="unbounded">
                 <xs:complexType>
-                    <xs:attribute name="name" type="xs:string" use="required" />
-                    <xs:attribute name="default" type="xs:boolean" use="optional" />
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="name" type="xs:string" use="required" />
+                            <xs:attribute name="releaseDate" type="xs:date" use="required" />
+                            <xs:attribute name="default" type="xs:boolean" use="optional" />
+                        </xs:extension>
+                    </xs:simpleContent>
                 </xs:complexType>
             </xs:element>
         </xs:choice>
