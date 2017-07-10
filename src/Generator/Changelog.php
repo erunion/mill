@@ -1,6 +1,8 @@
 <?php
 namespace Mill\Generator;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Mill\Generator;
 use Mill\Generator\Changelog\Json;
 use Mill\Generator\Changelog\Markdown;
@@ -54,6 +56,15 @@ class Changelog extends Generator
         // Keep things tidy
         krsort($this->changelog);
         foreach ($this->changelog as $version => $changes) {
+            $version_data = $this->config->getApiVersion($version);
+            $this->changelog[$version]['_details'] = [
+                'release_date' => $version_data['release_date']
+            ];
+
+            if (!empty($version_data['description'])) {
+                $this->changelog[$version]['_details']['description'] = $version_data['description'];
+            }
+
             ksort($this->changelog[$version]);
         }
 
@@ -298,15 +309,16 @@ class Changelog extends Generator
             return false;
         }
 
-        $available_in = [];
-        foreach ($this->supported_versions as $version) {
-            if ($data_version->matches($version)) {
-                $available_in[] = $version;
+        $available_in = $this->supported_versions->filter(function ($supported) use ($data_version) {
+            if ($data_version->matches($supported['version'])) {
+                return $supported['version'];
             }
-        }
+
+            return false;
+        });
 
         // What is the first version that this existed in?
-        $introduced = current($available_in);
+        $introduced = $available_in->current()['version'];
         if ($introduced === $this->config->getFirstApiVersion()) {
             return false;
         }
@@ -328,20 +340,26 @@ class Changelog extends Generator
             return false;
         }
 
-        $available_in = [];
-        foreach ($this->supported_versions as $version) {
-            if ($data_version->matches($version)) {
-                $available_in[] = $version;
+        $available_in = $this->supported_versions->filter(function ($supported) use ($data_version) {
+            if ($data_version->matches($supported['version'])) {
+                return $supported['version'];
             }
-        }
+
+            return false;
+        });
 
         // What is the most recent version that this was available in?
-        $recent_version = end($available_in);
+        $recent_version = $available_in->last()['version'];
         if ($recent_version === $this->config->getLatestApiVersion()) {
             return false;
         }
 
-        $recent_version_key = array_flip($this->supported_versions)[$recent_version];
-        return $this->supported_versions[++$recent_version_key];
+        $recent_version_key = key(
+            $this->supported_versions
+                ->matching(new Criteria(Criteria::expr()->eq('version', $recent_version), null))
+                ->toArray()
+        );
+
+        return $this->supported_versions[++$recent_version_key]['version'];
     }
 }

@@ -27,15 +27,27 @@ class Markdown extends Json
 
         $changelog = json_decode(parent::generate(), true);
         foreach ($changelog as $version => $data) {
-            $markdown .= sprintf('## %s', $version);
+            $markdown .= sprintf('## %s (%s)', $version, $data['_details']['release_date']);
             $markdown .= $this->line();
 
-            foreach ($data as $type => $changes) {
-                $markdown .= sprintf('### %s', ucwords($type));
+            if (isset($data['_details']['description'])) {
+                $markdown .= sprintf('%s', $data['_details']['description']);
+                $markdown .= $this->line(2);
+            }
+
+            $markdown .= '### Reference';
+            $markdown .= $this->line();
+
+            foreach ($data as $definition => $changes) {
+                if ($definition === '_details') {
+                    continue;
+                }
+
+                $markdown .= sprintf('#### %s', ucwords($definition));
                 $markdown .= $this->line();
 
-                foreach ($changes as $section => $changesets) {
-                    $markdown .= sprintf('#### %s', ucwords($section));
+                foreach ($changes as $type => $changesets) {
+                    $markdown .= sprintf('##### %s', ucwords($type));
                     $markdown .= $this->line();
 
                     foreach ($changesets as $changeset) {

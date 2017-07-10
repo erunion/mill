@@ -25,9 +25,9 @@ class Generator
     protected $version = null;
 
     /**
-     * @var array
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    protected $supported_versions = [];
+    protected $supported_versions;
 
     /**
      * Compiled documentation.
@@ -169,7 +169,9 @@ class Generator
                 /** @var Resource\Action\Documentation $action */
                 foreach ($resource['actions'] as $identifier => $action) {
                     // Run through every supported API version and flatten out documentation for it.
-                    foreach ($this->supported_versions as $version) {
+                    foreach ($this->supported_versions as $supported_version) {
+                        $version = $supported_version['version'];
+
                         // If we're generating documentation for a specific version range, and this doesn't fall in
                         // that, then skip it.
                         if ($this->version && !$this->version->matches($version)) {
@@ -257,7 +259,9 @@ class Generator
 
         foreach ($parsed as $identifier => $representation) {
             // Run through every supported API version and flatten out documentation for it.
-            foreach ($this->supported_versions as $version) {
+            foreach ($this->supported_versions as $supported_version) {
+                $version = $supported_version['version'];
+
                 // If we're generating documentation for a specific version range, and this doesn't fall in
                 // that, then skip it.
                 if ($this->version && !$this->version->matches($version)) {

@@ -109,13 +109,18 @@ class Json extends Generator
         $json = [];
 
         foreach ($this->changelog as $version => $version_changes) {
-            foreach ($version_changes as $change_type => $data) {
-                foreach ($data as $section => $section_changes) {
+            foreach ($version_changes as $definition => $data) {
+                if ($definition === '_details') {
+                    $json[$version][$definition] = $data;
+                    continue;
+                }
+
+                foreach ($data as $type => $section_changes) {
                     foreach ($section_changes as $header => $changes) {
                         foreach ($changes as $identifier => $changesets) {
-                            if ($change_type === 'added' || $change_type === 'removed') {
+                            if ($definition === 'added' || $definition === 'removed') {
                                 $entry = $this->getEntryForAddedOrRemovedChange(
-                                    $change_type,
+                                    $definition,
                                     $header,
                                     $identifier,
                                     $changesets
@@ -125,7 +130,7 @@ class Json extends Generator
                             }
 
                             if ($entry) {
-                                $json[$version][$change_type][$section][] = $entry;
+                                $json[$version][$definition][$type][] = $entry;
                             }
                         }
                     }
