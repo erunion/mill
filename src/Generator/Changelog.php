@@ -1,8 +1,6 @@
 <?php
 namespace Mill\Generator;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Criteria;
 use Mill\Generator;
 use Mill\Generator\Changelog\Json;
 use Mill\Generator\Changelog\Markdown;
@@ -309,7 +307,7 @@ class Changelog extends Generator
             return false;
         }
 
-        $available_in = $this->supported_versions->filter(function ($supported) use ($data_version) {
+        $available_in = array_filter($this->supported_versions, function ($supported) use ($data_version) {
             if ($data_version->matches($supported['version'])) {
                 return $supported['version'];
             }
@@ -318,7 +316,7 @@ class Changelog extends Generator
         });
 
         // What is the first version that this existed in?
-        $introduced = $available_in->current()['version'];
+        $introduced = current($available_in)['version'];
         if ($introduced === $this->config->getFirstApiVersion()) {
             return false;
         }
@@ -340,7 +338,7 @@ class Changelog extends Generator
             return false;
         }
 
-        $available_in = $this->supported_versions->filter(function ($supported) use ($data_version) {
+        $available_in = array_filter($this->supported_versions, function ($supported) use ($data_version) {
             if ($data_version->matches($supported['version'])) {
                 return $supported['version'];
             }
@@ -349,15 +347,15 @@ class Changelog extends Generator
         });
 
         // What is the most recent version that this was available in?
-        $recent_version = $available_in->last()['version'];
+        $recent_version = end($available_in)['version'];
         if ($recent_version === $this->config->getLatestApiVersion()) {
             return false;
         }
 
         $recent_version_key = key(
-            $this->supported_versions
-                ->matching(new Criteria(Criteria::expr()->eq('version', $recent_version), null))
-                ->toArray()
+            array_filter($this->supported_versions, function ($supported) use ($recent_version) {
+                return $supported['version'] == $recent_version;
+            })
         );
 
         return $this->supported_versions[++$recent_version_key]['version'];
