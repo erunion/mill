@@ -1,4 +1,8 @@
 # Changelog
+## [2.5.1] - 2017-07-11
+## Removed
+- Removed the newly added in 2.5.0 dependency, `doctrine/collections`, because it requires >=PHP 5.6, and Mill 2.x still needs to support PHP 5.4.
+
 ## [2.5.0] - 2017-07-10
 ### Added
 - Added a new `releaseDate` attribute, and description content, to `versions` configs. This data is added into generated changelogs.
@@ -152,6 +156,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[2.5.1]: https://github.com/vimeo/mill/compare/2.5.0...2.5.1
 [2.5.0]: https://github.com/vimeo/mill/compare/2.4.0...2.5.0
 [2.4.0]: https://github.com/vimeo/mill/compare/2.3.2...2.4.0
 [2.3.2]: https://github.com/vimeo/mill/compare/2.3.1...2.3.2
