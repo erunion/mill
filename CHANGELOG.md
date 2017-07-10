@@ -1,4 +1,8 @@
 # Changelog
+## [2.5.0] - 2017-07-10
+### Added
+- Added a new `releaseDate` attribute, and description content, to `versions` configs. This data is added into generated changelogs.
+
 ## [2.4.0] - 2017-06-29
 ### Changed
 - JSON changelog generation content now has important pieces of information wrapped in styleable HTML elements.
@@ -148,6 +152,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[2.5.0]: https://github.com/vimeo/mill/compare/2.4.0...2.5.0
 [2.4.0]: https://github.com/vimeo/mill/compare/2.3.2...2.4.0
 [2.3.2]: https://github.com/vimeo/mill/compare/2.3.1...2.3.2
 [2.3.1]: https://github.com/vimeo/mill/compare/2.3.0...2.3.1
