@@ -23,8 +23,7 @@
         "league/flysystem": "^1.0",
         "composer/semver": "^1.4",
         "gossi/docblock": "^1.5",
-        "nicmart/string-template": "^0.1.1",
-        "doctrine/collections": "^1.4"
+        "nicmart/string-template": "^0.1.1"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^2.7",

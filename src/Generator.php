@@ -25,9 +25,9 @@ class Generator
     protected $version = null;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var array
      */
-    protected $supported_versions;
+    protected $supported_versions = [];
 
     /**
      * Compiled documentation.

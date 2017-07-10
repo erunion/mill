@@ -15,8 +15,6 @@ class ConfigTest extends TestCase
         $this->assertSame('1.1.2', $config->getDefaultApiVersion());
         $this->assertSame('1.1.3', $config->getLatestApiVersion());
 
-        $versions = $config->getApiVersions();
-        $this->assertInstanceOf('\Doctrine\Common\Collections\ArrayCollection', $versions);
         $this->assertSame([
             [
                 'version' => '1.0',
@@ -43,7 +41,7 @@ class ConfigTest extends TestCase
                 'release_date' => '2017-05-27',
                 'description' => 'Changed up the responses for `/movie/{id}`, `/movies/{id}` and `/movies`.'
             ]
-        ], $versions->toArray());
+        ], $config->getApiVersions());
 
         $this->assertSame([
             'FakeExcludeGroup'

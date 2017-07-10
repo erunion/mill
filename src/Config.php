@@ -2,8 +2,6 @@
 namespace Mill;
 
 use Composer\Semver\Semver;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Criteria;
 use DomainException;
 use DOMDocument;
 use InvalidArgumentException;
@@ -60,9 +58,9 @@ class Config
     /**
      * Array of API versions.
      *
-     * @var ArrayCollection
+     * @var array
      */
-    protected $api_versions;
+    protected $api_versions = [];
 
     /**
      * Allowable list of valid application capabilities.
@@ -210,7 +208,7 @@ class Config
             $config->loadGeneratorSettings($xml->generators);
         }
 
-        $config->api_versions = new ArrayCollection;
+        $config->api_versions = [];
         $config->loadVersions($xml->versions->version);
 
         $config->controllers = [];
@@ -425,11 +423,11 @@ class Config
         // Keep things tidy.
         $sorted_numerical = Semver::sort(array_keys($api_versions));
         foreach ($sorted_numerical as $version) {
-            $this->api_versions->add($api_versions[$version]);
+            $this->api_versions[] = $api_versions[$version];
         }
 
-        $this->first_api_version = $this->api_versions->first()['version'];
-        $this->latest_api_version = $this->api_versions->last()['version'];
+        $this->first_api_version = current($this->api_versions)['version'];
+        $this->latest_api_version = end($this->api_versions)['version'];
     }
 
     /**
@@ -735,7 +733,7 @@ class Config
     /**
      * Get the array of configured API versions.
      *
-     * @return ArrayCollection
+     * @return array
      */
     public function getApiVersions()
     {
@@ -747,12 +745,17 @@ class Config
      *
      * @param string $version
      * @return array
+     * @throws \Exception If a supplied version was not configured.
      */
     public function getApiVersion($version)
     {
-        return $this->api_versions
-            ->matching(new Criteria(Criteria::expr()->eq('version', $version), null))
-            ->current();
+        foreach ($this->api_versions as $data) {
+            if ($data['version'] == $version) {
+                return $data;
+            }
+        }
+
+        throw new \Exception('The supplied version, `' . $version . '`` was not found to be configured.');
     }
 
     /**
