@@ -8,6 +8,11 @@ class Markdown extends Json
     use Traits\Markdown;
 
     /**
+     * @var string
+     */
+    protected $output_format = 'markdown';
+
+    /**
      * Take compiled API documentation and generate a Markdown-based changelog over the life of the API.
      *
      * @return string
@@ -101,44 +106,5 @@ class Markdown extends Json
         }
 
         return $markdown;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function renderText($template, array $content)
-    {
-        $searches = [];
-        $replacements = [];
-        foreach ($content as $key => $value) {
-            switch ($key) {
-                case 'content_type':
-                case 'field':
-                case 'http_code':
-                case 'method':
-                case 'parameter':
-                case 'representation':
-                case 'uri':
-                    $searches[] = '{' . $key . '}';
-                    if (is_array($value)) {
-                        $replacements[] = $this->joinWords(
-                            array_map(function ($val) {
-                                return sprintf('`%s`', $val);
-                            }, $value)
-                        );
-                    } else {
-                        $replacements[] = sprintf('`{%s}`', $key);
-                    }
-                    break;
-
-                case 'description':
-                default:
-                    // do nothing
-            }
-        }
-
-        $template = str_replace($searches, $replacements, $template);
-
-        return $this->compileTemplate($template, $content);
     }
 }
