@@ -1,5 +1,5 @@
 <?php
-namespace Mill\Generator\Changelog;
+namespace Mill\Generator\Changelog\Formats;
 
 use Mill\Generator\Traits;
 
@@ -66,32 +66,38 @@ class Markdown extends Json
      * Get Markdown syntax for a given changeset.
      *
      * @param array|string $changeset
+     * @param integer $tab
      * @return string
      */
-    private function getChangesetMarkdown($changeset)
+    private function getChangesetMarkdown($changeset, $tab = 0)
     {
         $markdown = '';
-
         if (!is_array($changeset)) {
+            $markdown .= $this->tab($tab);
             $markdown .= sprintf('- %s', $changeset);
             $markdown .= $this->line();
             return $markdown;
         }
 
         foreach ($changeset as $change) {
-            if (!is_array($change)) {
-                $markdown .= sprintf('- %s', $change);
-                $markdown .= $this->line();
+            if (is_array($change)) {
+                foreach ($change as $item) {
+                    if (is_array($item)) {
+                        $markdown .= $this->getChangesetMarkdown($item, $tab + 1);
+                        continue;
+                    }
+
+                    $markdown .= $this->tab($tab + 1);
+                    $markdown .= sprintf('- %s', $item);
+                    $markdown .= $this->line();
+                }
+
                 continue;
             }
 
-            $markdown .= sprintf('- %s', array_shift($change));
+            $markdown .= $this->tab($tab);
+            $markdown .= sprintf('- %s', $change);
             $markdown .= $this->line();
-            foreach (array_shift($change) as $item) {
-                $markdown .= $this->tab();
-                $markdown .= sprintf('- %s', $item);
-                $markdown .= $this->line();
-            }
         }
 
         return $markdown;
@@ -104,7 +110,7 @@ class Markdown extends Json
      * @param array $content
      * @return string
      */
-    public function renderText($template, array $content)
+    protected function renderText($template, array $content)
     {
         $searches = [];
         $replacements = [];
@@ -118,7 +124,15 @@ class Markdown extends Json
                 case 'representation':
                 case 'uri':
                     $searches[] = '{' . $key . '}';
-                    $replacements[] = '`{' . $key . '}`';
+                    if (is_array($value)) {
+                        $replacements[] = $this->joinWords(
+                            array_map(function ($val) {
+                                return sprintf('`%s`', $val);
+                            }, $value)
+                        );
+                    } else {
+                        $replacements[] = sprintf('`{%s}`', $key);
+                    }
                     break;
 
                 case 'description':
