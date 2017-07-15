@@ -3,18 +3,15 @@ namespace Mill\Generator\Changelog\Formats;
 
 use Mill\Generator;
 use Mill\Generator\Changelog;
-use StringTemplate\Engine;
+use Mill\Generator\Traits\TextRendering;
 
 class Json extends Generator
 {
-    const CSS_NAMESPACE = 'mill-changelog';
+    use TextRendering {
+        renderText as protected compileTemplate;
+    }
 
-    /**
-     * Template string engine.
-     *
-     * @var Engine
-     */
-    protected $template_engine;
+    const CSS_NAMESPACE = 'mill-changelog';
 
     /**
      * Generated changelog.
@@ -107,7 +104,6 @@ class Json extends Generator
      */
     public function generate()
     {
-        $this->template_engine = new Engine;
         $json = [];
 
         foreach ($this->changelog as $version => $version_changes) {
@@ -435,7 +431,7 @@ class Json extends Generator
     }
 
     /**
-     * Render a changelog template with some content.
+     * Render a template with some content.
      *
      * @param string $template
      * @param array $content
@@ -491,25 +487,6 @@ class Json extends Generator
 
         $content['css_namespace'] = self::CSS_NAMESPACE;
 
-        return $this->template_engine->render($template, $content);
-    }
-
-    /**
-     * Join an array of words into a structure for use in a sentence.
-     *
-     *  - [word1, word2] -> "word1 and word 2"
-     *  - [word1, word2, word3] -> "word1, word2 and word 3"
-     *
-     * @param array $words
-     * @return string
-     */
-    protected function joinWords(array $words)
-    {
-        if (count($words) <= 2) {
-            return implode(' and ', $words);
-        }
-
-        $last = array_pop($words);
-        return implode(', ', $words) . ' and ' . $last;
+        return $this->compileTemplate($template, $content);
     }
 }

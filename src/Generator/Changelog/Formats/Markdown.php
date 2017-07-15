@@ -104,11 +104,7 @@ class Markdown extends Json
     }
 
     /**
-     * Render a changelog template with some content.
-     *
-     * @param string $template
-     * @param array $content
-     * @return string
+     * @inheritdoc
      */
     protected function renderText($template, array $content)
     {
@@ -143,6 +139,6 @@ class Markdown extends Json
 
         $template = str_replace($searches, $replacements, $template);
 
-        return $this->template_engine->render($template, $content);
+        return $this->compileTemplate($template, $content);
     }
 }
