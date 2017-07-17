@@ -337,21 +337,21 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Movies' => [
                                     '/movie/{id}' => [
-                                        Changelog::CHANGE_ACTION_THROWS => [
+                                        Changelog::CHANGESET_TYPE_ACTION_THROWS => [
                                             '2e302f7f79' => $actions['1.1.3']['/movie/{id}']['throws']['2e302f7f79']
                                         ]
                                     ],
                                     '/movies/{id}' => [
-                                        Changelog::CHANGE_ACTION_THROWS => [
+                                        Changelog::CHANGESET_TYPE_ACTION_THROWS => [
                                             'e7dc298139' => $actions['1.1.3']['/movies/{id}']['throws']['e7dc298139'],
                                             '162944fa14' => $actions['1.1.3']['/movies/{id}']['throws']['162944fa14']
                                         ],
-                                        Changelog::CHANGE_ACTION_RETURN => [
+                                        Changelog::CHANGESET_TYPE_ACTION_RETURN => [
                                             '162944fa14' => $actions['1.1.3']['/movies/{id}']['return']['162944fa14']
                                         ]
                                     ],
                                     '/movies' => [
-                                        Changelog::CHANGE_ACTION_RETURN => [
+                                        Changelog::CHANGESET_TYPE_ACTION_RETURN => [
                                             '3781891d58' => $actions['1.1.3']['/movies']['return']['3781891d58']
                                         ]
                                     ]
@@ -361,7 +361,7 @@ class ChangelogTest extends TestCase
                         'removed' => [
                             'representations' => [
                                 'Movie' => [
-                                    Changelog::CHANGE_REPRESENTATION_DATA => [
+                                    Changelog::CHANGESET_TYPE_REPRESENTATION_DATA => [
                                         'ba8ac44626' => $representations['1.1.3']['Movie']['ba8ac44626']
                                     ]
                                 ]
@@ -376,13 +376,13 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Movies' => [
                                     '/movie/{id}' => [
-                                        Changelog::CHANGE_CONTENT_TYPE => [
+                                        Changelog::CHANGESET_TYPE_CONTENT_TYPE => [
                                             '979fc6e97f' =>
                                                 $actions['1.1.2']['/movie/{id}']['content_type']['979fc6e97f']
                                         ]
                                     ],
                                     '/movies/{id}' => [
-                                        Changelog::CHANGE_CONTENT_TYPE => [
+                                        Changelog::CHANGESET_TYPE_CONTENT_TYPE => [
                                             '979fc6e97f' =>
                                                 $actions['1.1.2']['/movies/{id}']['content_type']['979fc6e97f'],
                                             'f4628f751a' =>
@@ -390,7 +390,7 @@ class ChangelogTest extends TestCase
                                         ]
                                     ],
                                     '/movies' => [
-                                        Changelog::CHANGE_CONTENT_TYPE => [
+                                        Changelog::CHANGESET_TYPE_CONTENT_TYPE => [
                                             '979fc6e97f' => $actions['1.1.2']['/movies']['content_type']['979fc6e97f'],
                                             '066564ef49' => $actions['1.1.2']['/movies']['content_type']['066564ef49']
                                         ]
@@ -398,7 +398,7 @@ class ChangelogTest extends TestCase
                                 ],
                                 'Theaters' => [
                                     '/theaters/{id}' => [
-                                        Changelog::CHANGE_CONTENT_TYPE => [
+                                        Changelog::CHANGESET_TYPE_CONTENT_TYPE => [
                                             '979fc6e97f' =>
                                                 $actions['1.1.2']['/theaters/{id}']['content_type']['979fc6e97f'],
                                             'f4628f751a' =>
@@ -406,7 +406,7 @@ class ChangelogTest extends TestCase
                                         ]
                                     ],
                                     '/theaters' => [
-                                        Changelog::CHANGE_CONTENT_TYPE => [
+                                        Changelog::CHANGESET_TYPE_CONTENT_TYPE => [
                                             '979fc6e97f' =>
                                                 $actions['1.1.2']['/theaters']['content_type']['979fc6e97f'],
                                             '066564ef49' => $actions['1.1.2']['/theaters']['content_type']['066564ef49']
@@ -424,7 +424,7 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Movies' => [
                                     '/movies/{id}' => [
-                                        Changelog::CHANGE_ACTION_PARAM => [
+                                        Changelog::CHANGESET_TYPE_ACTION_PARAM => [
                                             '162944fa14' => $actions['1.1.1']['/movies/{id}']['param']['162944fa14']
                                         ]
                                     ]
@@ -439,7 +439,7 @@ class ChangelogTest extends TestCase
                         'added' => [
                             'representations' => [
                                 'Movie' => [
-                                    Changelog::CHANGE_REPRESENTATION_DATA => [
+                                    Changelog::CHANGESET_TYPE_REPRESENTATION_DATA => [
                                         'ba8ac44626' => $representations['1.1']['Movie']['ba8ac44626']
                                     ]
                                 ]
@@ -447,12 +447,12 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Movies' => [
                                     '/movies/{id}' => [
-                                        Changelog::CHANGE_ACTION => [
+                                        Changelog::CHANGESET_TYPE_ACTION => [
                                             'd81e7058dd' => $actions['1.1']['/movies/{id}']['action']['d81e7058dd']
                                         ]
                                     ],
                                     '/movies' => [
-                                        Changelog::CHANGE_ACTION_PARAM => [
+                                        Changelog::CHANGESET_TYPE_ACTION_PARAM => [
                                             '776d02bb83' => $actions['1.1']['/movies']['param']['776d02bb83'],
                                             '3781891d58' => $actions['1.1']['/movies']['param']['3781891d58']
                                         ]
@@ -463,7 +463,7 @@ class ChangelogTest extends TestCase
                         'removed' => [
                             'representations' => [
                                 'Theater' => [
-                                    Changelog::CHANGE_REPRESENTATION_DATA => [
+                                    Changelog::CHANGESET_TYPE_REPRESENTATION_DATA => [
                                         '4034255a2c' => $representations['1.1']['Theater']['4034255a2c']
                                     ]
                                 ]
@@ -492,16 +492,16 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Movies' => [
                                     '/movies/{id}' => [
-                                        Changelog::CHANGE_ACTION_THROWS => [
+                                        Changelog::CHANGESET_TYPE_ACTION_THROWS => [
                                             'e7dc298139' => $actions['1.1.3']['/movies/{id}']['throws']['e7dc298139'],
                                             '162944fa14' => $actions['1.1.3']['/movies/{id}']['throws']['162944fa14']
                                         ],
-                                        Changelog::CHANGE_ACTION_RETURN => [
+                                        Changelog::CHANGESET_TYPE_ACTION_RETURN => [
                                             '162944fa14' => $actions['1.1.3']['/movies/{id}']['return']['162944fa14']
                                         ]
                                     ],
                                     '/movies' => [
-                                        Changelog::CHANGE_ACTION_RETURN => [
+                                        Changelog::CHANGESET_TYPE_ACTION_RETURN => [
                                             '3781891d58' => $actions['1.1.3']['/movies']['return']['3781891d58']
                                         ]
                                     ]
@@ -511,7 +511,7 @@ class ChangelogTest extends TestCase
                         'removed' => [
                             'representations' => [
                                 'Movie' => [
-                                    Changelog::CHANGE_REPRESENTATION_DATA => [
+                                    Changelog::CHANGESET_TYPE_REPRESENTATION_DATA => [
                                         'ba8ac44626' => $representations['1.1.3']['Movie']['ba8ac44626']
                                     ]
                                 ]
@@ -526,7 +526,7 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Movies' => [
                                     '/movies/{id}' => [
-                                        Changelog::CHANGE_CONTENT_TYPE => [
+                                        Changelog::CHANGESET_TYPE_CONTENT_TYPE => [
                                             '979fc6e97f' =>
                                                 $actions['1.1.2']['/movies/{id}']['content_type']['979fc6e97f'],
                                             'f4628f751a' =>
@@ -534,7 +534,7 @@ class ChangelogTest extends TestCase
                                         ]
                                     ],
                                     '/movies' => [
-                                        Changelog::CHANGE_CONTENT_TYPE => [
+                                        Changelog::CHANGESET_TYPE_CONTENT_TYPE => [
                                             '979fc6e97f' => $actions['1.1.2']['/movies']['content_type']['979fc6e97f'],
                                             '066564ef49' => $actions['1.1.2']['/movies']['content_type']['066564ef49']
                                         ]
@@ -542,7 +542,7 @@ class ChangelogTest extends TestCase
                                 ],
                                 'Theaters' => [
                                     '/theaters/{id}' => [
-                                        Changelog::CHANGE_CONTENT_TYPE => [
+                                        Changelog::CHANGESET_TYPE_CONTENT_TYPE => [
                                             '979fc6e97f' =>
                                                 $actions['1.1.2']['/theaters/{id}']['content_type']['979fc6e97f'],
                                             'f4628f751a' =>
@@ -550,7 +550,7 @@ class ChangelogTest extends TestCase
                                         ]
                                     ],
                                     '/theaters' => [
-                                        Changelog::CHANGE_CONTENT_TYPE => [
+                                        Changelog::CHANGESET_TYPE_CONTENT_TYPE => [
                                             '979fc6e97f' =>
                                                 $actions['1.1.2']['/theaters']['content_type']['979fc6e97f'],
                                             '066564ef49' =>
@@ -569,7 +569,7 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Movies' => [
                                     '/movies/{id}' => [
-                                        Changelog::CHANGE_ACTION_PARAM => [
+                                        Changelog::CHANGESET_TYPE_ACTION_PARAM => [
                                             '162944fa14' => $actions['1.1.1']['/movies/{id}']['param']['162944fa14']
                                         ]
                                     ]
@@ -584,7 +584,7 @@ class ChangelogTest extends TestCase
                         'added' => [
                             'representations' => [
                                 'Movie' => [
-                                    Changelog::CHANGE_REPRESENTATION_DATA => [
+                                    Changelog::CHANGESET_TYPE_REPRESENTATION_DATA => [
                                         'ba8ac44626' => $representations['1.1']['Movie']['ba8ac44626']
                                     ]
                                 ]
@@ -592,12 +592,12 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Movies' => [
                                     '/movies/{id}' => [
-                                        Changelog::CHANGE_ACTION => [
+                                        Changelog::CHANGESET_TYPE_ACTION => [
                                             'd81e7058dd' => $actions['1.1']['/movies/{id}']['action']['d81e7058dd']
                                         ]
                                     ],
                                     '/movies' => [
-                                        Changelog::CHANGE_ACTION_PARAM => [
+                                        Changelog::CHANGESET_TYPE_ACTION_PARAM => [
                                             '776d02bb83' => $actions['1.1']['/movies']['param']['776d02bb83'],
                                             '3781891d58' => $actions['1.1']['/movies']['param']['3781891d58']
                                         ]
@@ -608,7 +608,7 @@ class ChangelogTest extends TestCase
                         'removed' => [
                             'representations' => [
                                 'Theater' => [
-                                    Changelog::CHANGE_REPRESENTATION_DATA => [
+                                    Changelog::CHANGESET_TYPE_REPRESENTATION_DATA => [
                                         '4034255a2c' => $representations['1.1']['Theater']['4034255a2c']
                                     ]
                                 ]
@@ -635,16 +635,16 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Movies' => [
                                     '/movies/{id}' => [
-                                        Changelog::CHANGE_ACTION_THROWS => [
+                                        Changelog::CHANGESET_TYPE_ACTION_THROWS => [
                                             'e7dc298139' => $actions['1.1.3']['/movies/{id}']['throws']['e7dc298139'],
                                             '162944fa14' => $actions['1.1.3']['/movies/{id}']['throws']['162944fa14']
                                         ],
-                                        Changelog::CHANGE_ACTION_RETURN => [
+                                        Changelog::CHANGESET_TYPE_ACTION_RETURN => [
                                             '162944fa14' => $actions['1.1.3']['/movies/{id}']['return']['162944fa14']
                                         ]
                                     ],
                                     '/movies' => [
-                                        Changelog::CHANGE_ACTION_RETURN => [
+                                        Changelog::CHANGESET_TYPE_ACTION_RETURN => [
                                             '3781891d58' => $actions['1.1.3']['/movies']['return']['3781891d58']
                                         ]
                                     ]
@@ -654,7 +654,7 @@ class ChangelogTest extends TestCase
                         'removed' => [
                             'representations' => [
                                 'Movie' => [
-                                    Changelog::CHANGE_REPRESENTATION_DATA => [
+                                    Changelog::CHANGESET_TYPE_REPRESENTATION_DATA => [
                                         'ba8ac44626' => $representations['1.1.3']['Movie']['ba8ac44626']
                                     ]
                                 ]
@@ -669,7 +669,7 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Movies' => [
                                     '/movies/{id}' => [
-                                        Changelog::CHANGE_CONTENT_TYPE => [
+                                        Changelog::CHANGESET_TYPE_CONTENT_TYPE => [
                                             '979fc6e97f' =>
                                                 $actions['1.1.2']['/movies/{id}']['content_type']['979fc6e97f'],
                                             'f4628f751a' =>
@@ -677,7 +677,7 @@ class ChangelogTest extends TestCase
                                         ]
                                     ],
                                     '/movies' => [
-                                        Changelog::CHANGE_CONTENT_TYPE => [
+                                        Changelog::CHANGESET_TYPE_CONTENT_TYPE => [
                                             '979fc6e97f' =>
                                                 $actions['1.1.2']['/movies']['content_type']['979fc6e97f'],
                                             '066564ef49' =>
@@ -687,7 +687,7 @@ class ChangelogTest extends TestCase
                                 ],
                                 'Theaters' => [
                                     '/theaters/{id}' => [
-                                        Changelog::CHANGE_CONTENT_TYPE => [
+                                        Changelog::CHANGESET_TYPE_CONTENT_TYPE => [
                                             '979fc6e97f' =>
                                                 $actions['1.1.2']['/theaters/{id}']['content_type']['979fc6e97f'],
                                             'f4628f751a' =>
@@ -695,7 +695,7 @@ class ChangelogTest extends TestCase
                                         ]
                                     ],
                                     '/theaters' => [
-                                        Changelog::CHANGE_CONTENT_TYPE => [
+                                        Changelog::CHANGESET_TYPE_CONTENT_TYPE => [
                                             '979fc6e97f' =>
                                                 $actions['1.1.2']['/theaters']['content_type']['979fc6e97f'],
                                             '066564ef49' =>
@@ -714,7 +714,7 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Movies' => [
                                     '/movies/{id}' => [
-                                        Changelog::CHANGE_ACTION_PARAM => [
+                                        Changelog::CHANGESET_TYPE_ACTION_PARAM => [
                                             '162944fa14' => $actions['1.1.1']['/movies/{id}']['param']['162944fa14']
                                         ]
                                     ]
@@ -729,7 +729,7 @@ class ChangelogTest extends TestCase
                         'added' => [
                             'representations' => [
                                 'Movie' => [
-                                    Changelog::CHANGE_REPRESENTATION_DATA => [
+                                    Changelog::CHANGESET_TYPE_REPRESENTATION_DATA => [
                                         'ba8ac44626' => $representations['1.1']['Movie']['ba8ac44626']
                                     ]
                                 ]
@@ -737,7 +737,7 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Movies' => [
                                     '/movies/{id}' => [
-                                        Changelog::CHANGE_ACTION => [
+                                        Changelog::CHANGESET_TYPE_ACTION => [
                                             'd81e7058dd' => call_user_func(
                                                 function () use ($actions) {
                                                     $actions = $actions['1.1']['/movies/{id}']['action']['d81e7058dd'];
@@ -751,7 +751,7 @@ class ChangelogTest extends TestCase
                                         ]
                                     ],
                                     '/movies' => [
-                                        Changelog::CHANGE_ACTION_PARAM => [
+                                        Changelog::CHANGESET_TYPE_ACTION_PARAM => [
                                             '776d02bb83' => $actions['1.1']['/movies']['param']['776d02bb83'],
                                             '3781891d58' => $actions['1.1']['/movies']['param']['3781891d58']
                                         ]
@@ -762,7 +762,7 @@ class ChangelogTest extends TestCase
                         'removed' => [
                             'representations' => [
                                 'Theater' => [
-                                    Changelog::CHANGE_REPRESENTATION_DATA => [
+                                    Changelog::CHANGESET_TYPE_REPRESENTATION_DATA => [
                                         '4034255a2c' => $representations['1.1']['Theater']['4034255a2c']
                                     ]
                                 ]
@@ -788,16 +788,16 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Movies' => [
                                     '/movies/{id}' => [
-                                        Changelog::CHANGE_ACTION_THROWS => [
+                                        Changelog::CHANGESET_TYPE_ACTION_THROWS => [
                                             'e7dc298139' => $actions['1.1.3']['/movies/{id}']['throws']['e7dc298139'],
                                             '162944fa14' => $actions['1.1.3']['/movies/{id}']['throws']['162944fa14']
                                         ],
-                                        Changelog::CHANGE_ACTION_RETURN => [
+                                        Changelog::CHANGESET_TYPE_ACTION_RETURN => [
                                             '162944fa14' => $actions['1.1.3']['/movies/{id}']['return']['162944fa14']
                                         ]
                                     ],
                                     '/movies' => [
-                                        Changelog::CHANGE_ACTION_RETURN => [
+                                        Changelog::CHANGESET_TYPE_ACTION_RETURN => [
                                             '3781891d58' => $actions['1.1.3']['/movies']['return']['3781891d58']
                                         ]
                                     ]
@@ -807,7 +807,7 @@ class ChangelogTest extends TestCase
                         'removed' => [
                             'representations' => [
                                 'Movie' => [
-                                    Changelog::CHANGE_REPRESENTATION_DATA => [
+                                    Changelog::CHANGESET_TYPE_REPRESENTATION_DATA => [
                                         'ba8ac44626' => $representations['1.1.3']['Movie']['ba8ac44626']
                                     ]
                                 ]
@@ -822,7 +822,7 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Movies' => [
                                     '/movies/{id}' => [
-                                        Changelog::CHANGE_CONTENT_TYPE => [
+                                        Changelog::CHANGESET_TYPE_CONTENT_TYPE => [
                                             '979fc6e97f' =>
                                                 $actions['1.1.2']['/movies/{id}']['content_type']['979fc6e97f'],
                                             'f4628f751a' =>
@@ -830,7 +830,7 @@ class ChangelogTest extends TestCase
                                         ]
                                     ],
                                     '/movies' => [
-                                        Changelog::CHANGE_CONTENT_TYPE => [
+                                        Changelog::CHANGESET_TYPE_CONTENT_TYPE => [
                                             '979fc6e97f' =>
                                                 $actions['1.1.2']['/movies']['content_type']['979fc6e97f'],
                                             '066564ef49' =>
@@ -840,7 +840,7 @@ class ChangelogTest extends TestCase
                                 ],
                                 'Theaters' => [
                                     '/theaters/{id}' => [
-                                        Changelog::CHANGE_CONTENT_TYPE => [
+                                        Changelog::CHANGESET_TYPE_CONTENT_TYPE => [
                                             '979fc6e97f' =>
                                                 $actions['1.1.2']['/theaters/{id}']['content_type']['979fc6e97f'],
                                             'f4628f751a' =>
@@ -848,7 +848,7 @@ class ChangelogTest extends TestCase
                                         ]
                                     ],
                                     '/theaters' => [
-                                        Changelog::CHANGE_CONTENT_TYPE => [
+                                        Changelog::CHANGESET_TYPE_CONTENT_TYPE => [
                                             '979fc6e97f' =>
                                                 $actions['1.1.2']['/theaters']['content_type']['979fc6e97f'],
                                             '066564ef49' =>
@@ -867,7 +867,7 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Movies' => [
                                     '/movies/{id}' => [
-                                        Changelog::CHANGE_ACTION_PARAM => [
+                                        Changelog::CHANGESET_TYPE_ACTION_PARAM => [
                                             '162944fa14' => $actions['1.1.1']['/movies/{id}']['param']['162944fa14']
                                         ]
                                     ]
@@ -882,7 +882,7 @@ class ChangelogTest extends TestCase
                         'added' => [
                             'representations' => [
                                 'Movie' => [
-                                    Changelog::CHANGE_REPRESENTATION_DATA => [
+                                    Changelog::CHANGESET_TYPE_REPRESENTATION_DATA => [
                                         'ba8ac44626' => $representations['1.1']['Movie']['ba8ac44626']
                                     ]
                                 ]
@@ -890,12 +890,12 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Movies' => [
                                     '/movies/{id}' => [
-                                        Changelog::CHANGE_ACTION => [
+                                        Changelog::CHANGESET_TYPE_ACTION => [
                                             'd81e7058dd' => $actions['1.1']['/movies/{id}']['action']['d81e7058dd']
                                         ]
                                     ],
                                     '/movies' => [
-                                        Changelog::CHANGE_ACTION_PARAM => [
+                                        Changelog::CHANGESET_TYPE_ACTION_PARAM => [
                                             '776d02bb83' => $actions['1.1']['/movies']['param']['776d02bb83'],
                                             '3781891d58' => $actions['1.1']['/movies']['param']['3781891d58']
                                         ]
@@ -906,7 +906,7 @@ class ChangelogTest extends TestCase
                         'removed' => [
                             'representations' => [
                                 'Theater' => [
-                                    Changelog::CHANGE_REPRESENTATION_DATA => [
+                                    Changelog::CHANGESET_TYPE_REPRESENTATION_DATA => [
                                         '4034255a2c' => $representations['1.1']['Theater']['4034255a2c']
                                     ]
                                 ]
@@ -930,16 +930,16 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Movies' => [
                                     '/movies/{id}' => [
-                                        Changelog::CHANGE_ACTION_THROWS => [
+                                        Changelog::CHANGESET_TYPE_ACTION_THROWS => [
                                             'e7dc298139' => $actions['1.1.3']['/movies/{id}']['throws']['e7dc298139'],
                                             '162944fa14' => $actions['1.1.3']['/movies/{id}']['throws']['162944fa14']
                                         ],
-                                        Changelog::CHANGE_ACTION_RETURN => [
+                                        Changelog::CHANGESET_TYPE_ACTION_RETURN => [
                                             '162944fa14' => $actions['1.1.3']['/movies/{id}']['return']['162944fa14']
                                         ]
                                     ],
                                     '/movies' => [
-                                        Changelog::CHANGE_ACTION_RETURN => [
+                                        Changelog::CHANGESET_TYPE_ACTION_RETURN => [
                                             '3781891d58' => $actions['1.1.3']['/movies']['return']['3781891d58']
                                         ]
                                     ]
@@ -949,7 +949,7 @@ class ChangelogTest extends TestCase
                         'removed' => [
                             'representations' => [
                                 'Movie' => [
-                                    Changelog::CHANGE_REPRESENTATION_DATA => [
+                                    Changelog::CHANGESET_TYPE_REPRESENTATION_DATA => [
                                         'ba8ac44626' => $representations['1.1.3']['Movie']['ba8ac44626']
                                     ]
                                 ]
@@ -964,7 +964,7 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Movies' => [
                                     '/movies/{id}' => [
-                                        Changelog::CHANGE_CONTENT_TYPE => [
+                                        Changelog::CHANGESET_TYPE_CONTENT_TYPE => [
                                             '979fc6e97f' =>
                                                 $actions['1.1.2']['/movies/{id}']['content_type']['979fc6e97f'],
                                             'f4628f751a' =>
@@ -972,7 +972,7 @@ class ChangelogTest extends TestCase
                                         ]
                                     ],
                                     '/movies' => [
-                                        Changelog::CHANGE_CONTENT_TYPE => [
+                                        Changelog::CHANGESET_TYPE_CONTENT_TYPE => [
                                             '979fc6e97f' => $actions['1.1.2']['/movies']['content_type']['979fc6e97f'],
                                             '066564ef49' => $actions['1.1.2']['/movies']['content_type']['066564ef49']
                                         ]
@@ -980,7 +980,7 @@ class ChangelogTest extends TestCase
                                 ],
                                 'Theaters' => [
                                     '/theaters/{id}' => [
-                                        Changelog::CHANGE_CONTENT_TYPE => [
+                                        Changelog::CHANGESET_TYPE_CONTENT_TYPE => [
                                             '979fc6e97f' =>
                                                 $actions['1.1.2']['/theaters/{id}']['content_type']['979fc6e97f'],
                                             'f4628f751a' =>
@@ -988,7 +988,7 @@ class ChangelogTest extends TestCase
                                         ]
                                     ],
                                     '/theaters' => [
-                                        Changelog::CHANGE_CONTENT_TYPE => [
+                                        Changelog::CHANGESET_TYPE_CONTENT_TYPE => [
                                             '979fc6e97f' =>
                                                 $actions['1.1.2']['/theaters']['content_type']['979fc6e97f'],
                                             '066564ef49' =>
@@ -1007,7 +1007,7 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Movies' => [
                                     '/movies/{id}' => [
-                                        Changelog::CHANGE_ACTION_PARAM => [
+                                        Changelog::CHANGESET_TYPE_ACTION_PARAM => [
                                             '162944fa14' => $actions['1.1.1']['/movies/{id}']['param']['162944fa14']
                                         ]
                                     ]
@@ -1022,7 +1022,7 @@ class ChangelogTest extends TestCase
                         'added' => [
                             'representations' => [
                                 'Movie' => [
-                                    Changelog::CHANGE_REPRESENTATION_DATA => [
+                                    Changelog::CHANGESET_TYPE_REPRESENTATION_DATA => [
                                         'ba8ac44626' => $representations['1.1']['Movie']['ba8ac44626']
                                     ]
                                 ]
@@ -1030,7 +1030,7 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Movies' => [
                                     '/movies/{id}' => [
-                                        Changelog::CHANGE_ACTION => [
+                                        Changelog::CHANGESET_TYPE_ACTION => [
                                             'd81e7058dd' => call_user_func(
                                                 function () use ($actions) {
                                                     $hash = 'd81e7058ddfce86beb09ddb2a2461ea16d949637';
@@ -1045,7 +1045,7 @@ class ChangelogTest extends TestCase
                                         ]
                                     ],
                                     '/movies' => [
-                                        Changelog::CHANGE_ACTION_PARAM => [
+                                        Changelog::CHANGESET_TYPE_ACTION_PARAM => [
                                             '776d02bb83' => $actions['1.1']['/movies']['param']['776d02bb83'],
                                             '3781891d58' => $actions['1.1']['/movies']['param']['3781891d58']
                                         ]
@@ -1056,7 +1056,7 @@ class ChangelogTest extends TestCase
                         'removed' => [
                             'representations' => [
                                 'Theater' => [
-                                    Changelog::CHANGE_REPRESENTATION_DATA => [
+                                    Changelog::CHANGESET_TYPE_REPRESENTATION_DATA => [
                                         '4034255a2c' => $representations['1.1']['Theater']['4034255a2c']
                                     ]
                                 ]

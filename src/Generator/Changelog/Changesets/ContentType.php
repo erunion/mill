@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Generator\Changelog\Changesets;
 
+use Mill\Generator\Changelog;
 use Mill\Generator\Changelog\Changeset;
 
 class ContentType extends Changeset
@@ -10,7 +11,8 @@ class ContentType extends Changeset
      */
     protected $templates = [
         'singular' => [
-            'changed' => 'On {uri}, {method} requests will return a {content_type} Content-Type header.'
+            Changelog::DEFINITION_CHANGED => 'On {uri}, {method} requests will return a {content_type} Content-Type ' .
+                'header.'
         ]
     ];
 

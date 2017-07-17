@@ -30,8 +30,8 @@ class JsonTest extends TestCase
             'added' => [
                 'resources' => [
                     [
-                        'The following <span class="mill-changelog_group" data-mill-group="Movies">Movies</span> ' .
-                            'resources have added:',
+                        'The following <span class="mill-changelog_resource_group" ' .
+                            'data-mill-resource-group="Movies">Movies</span> resources have added:',
                         [
                             [
                                 '<span class="mill-changelog_uri" data-mill-uri="/movie/{id}">/movie/{id}</span> ' .
@@ -99,8 +99,8 @@ class JsonTest extends TestCase
             'changed' => [
                 'resources' => [
                     [
-                        'The following <span class="mill-changelog_group" data-mill-group="Movies">Movies</span> ' .
-                            'resources have changed:',
+                        'The following <span class="mill-changelog_resource_group" ' .
+                            'data-mill-resource-group="Movies">Movies</span> resources have changed:',
                         [
                             'On <span class="mill-changelog_uri" data-mill-uri="/movie/{id}">/movie/{id}</span>, ' .
                                 '<span class="mill-changelog_method" data-mill-method="GET">GET</span> requests will ' .
@@ -130,8 +130,8 @@ class JsonTest extends TestCase
                         ]
                     ],
                     [
-                        'The following <span class="mill-changelog_group" data-mill-group="Theaters">Theaters' .
-                            '</span> resources have changed:',
+                        'The following <span class="mill-changelog_resource_group" ' .
+                            'data-mill-resource-group="Theaters">Theaters</span> resources have changed:',
                         [
                             'On <span class="mill-changelog_uri" data-mill-uri="/theaters/{id}">/theaters/{id}' .
                                 '</span>, <span class="mill-changelog_method" data-mill-method="GET">GET</span> ' .
@@ -167,8 +167,8 @@ class JsonTest extends TestCase
             'added' => [
                 'resources' => [
                     [
-                        'The following <span class="mill-changelog_group" data-mill-group="Movies">Movies</span> ' .
-                            'resources have added:',
+                        'The following <span class="mill-changelog_resource_group" ' .
+                            'data-mill-resource-group="Movies">Movies</span> resources have added:',
                         [
                             'A <span class="mill-changelog_parameter" data-mill-parameter="imdb">imdb</span> request ' .
                                 'parameter was added to <span class="mill-changelog_method" ' .
@@ -203,8 +203,8 @@ class JsonTest extends TestCase
                 ],
                 'resources' => [
                     [
-                        'The following <span class="mill-changelog_group" data-mill-group="Movies">Movies</span> ' .
-                            'resources have added:',
+                        'The following <span class="mill-changelog_resource_group" ' .
+                            'data-mill-resource-group="Movies">Movies</span> resources have added:',
                         [
                             [
                                 '<span class="mill-changelog_uri" data-mill-uri="/movies/{id}">/movies/{id}</span> ' .
@@ -271,7 +271,7 @@ class JsonTest extends TestCase
                             'resources' => [
                                 'Movies' => [
                                     '/movies' => [
-                                        Changelog::CHANGE_ACTION_RETURN => [
+                                        Changelog::CHANGESET_TYPE_ACTION_RETURN => [
                                             'hashed-set.1' => [
                                                 [
                                                     'method' => 'POST',
@@ -306,8 +306,8 @@ class JsonTest extends TestCase
                         'added' => [
                             'resources' => [
                                 [
-                                    'The following <span class="mill-changelog_group" data-mill-group="Movies">' .
-                                        'Movies</span> resources have added:',
+                                    'The following <span class="mill-changelog_resource_group" ' .
+                                        'data-mill-resource-group="Movies">Movies</span> resources have added:',
                                     [
                                         [
                                             'The <span class="mill-changelog_method" data-mill-method="POST">POST' .
@@ -343,7 +343,7 @@ class JsonTest extends TestCase
                             'resources' => [
                                 'Movies' => [
                                     '/movies' => [
-                                        Changelog::CHANGE_ACTION_RETURN => [
+                                        Changelog::CHANGESET_TYPE_ACTION_RETURN => [
                                             'hashed-set.1' => [
                                                 [
                                                     'method' => 'POST',
@@ -378,8 +378,8 @@ class JsonTest extends TestCase
                         'removed' => [
                             'resources' => [
                                 [
-                                    'The following <span class="mill-changelog_group" data-mill-group="Movies">' .
-                                        'Movies</span> resources have removed:',
+                                    'The following <span class="mill-changelog_resource_group" ' .
+                                        'data-mill-resource-group="Movies">Movies</span> resources have removed:',
                                     [
                                         [
                                             'The <span class="mill-changelog_method" data-mill-method="POST">POST' .

@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Generator\Changelog\Formats;
 
+use Mill\Generator\Changelog;
 use Mill\Generator\Traits;
 
 class Markdown extends Json
@@ -10,7 +11,7 @@ class Markdown extends Json
     /**
      * @var string
      */
-    protected $output_format = 'markdown';
+    protected $output_format = Changelog::FORMAT_MARKDOWN;
 
     /**
      * Take compiled API documentation and generate a Markdown-based changelog over the life of the API.

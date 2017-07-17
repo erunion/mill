@@ -14,16 +14,19 @@ use Mill\Parser\Resource\Action;
 
 class Changelog extends Generator
 {
-    const CHANGE_TYPE_ADDED = 'added';
-    const CHANGE_TYPE_CHANGED = 'changed';
-    const CHANGE_TYPE_REMOVED = 'removed';
+    const CHANGESET_TYPE_ACTION = 'action';
+    const CHANGESET_TYPE_ACTION_PARAM = 'action_param';
+    const CHANGESET_TYPE_ACTION_RETURN = 'action_return';
+    const CHANGESET_TYPE_ACTION_THROWS = 'action_throws';
+    const CHANGESET_TYPE_CONTENT_TYPE = 'content_type';
+    const CHANGESET_TYPE_REPRESENTATION_DATA = 'representation_data';
 
-    const CHANGE_ACTION = 'action';
-    const CHANGE_ACTION_PARAM = 'action_param';
-    const CHANGE_ACTION_RETURN = 'action_return';
-    const CHANGE_ACTION_THROWS = 'action_throws';
-    const CHANGE_CONTENT_TYPE = 'content_type';
-    const CHANGE_REPRESENTATION_DATA = 'representation_data';
+    const DEFINITION_ADDED = 'added';
+    const DEFINITION_CHANGED = 'changed';
+    const DEFINITION_REMOVED = 'removed';
+
+    const FORMAT_JSON = 'json';
+    const FORMAT_MARKDOWN = 'markdown';
 
     /**
      * Generated changelog.
@@ -115,9 +118,9 @@ class Changelog extends Generator
                 $introduced = $this->getVersionIntroduced($annotation);
                 if ($introduced) {
                     $this->record(
-                        self::CHANGE_TYPE_ADDED,
+                        self::DEFINITION_ADDED,
                         $introduced,
-                        self::CHANGE_REPRESENTATION_DATA,
+                        self::CHANGESET_TYPE_REPRESENTATION_DATA,
                         $representation_name,
                         [
                             'field' => $field,
@@ -129,9 +132,9 @@ class Changelog extends Generator
                 $removed = $this->getVersionRemoved($annotation);
                 if ($removed) {
                     $this->record(
-                        self::CHANGE_TYPE_REMOVED,
+                        self::DEFINITION_REMOVED,
                         $removed,
-                        self::CHANGE_REPRESENTATION_DATA,
+                        self::CHANGESET_TYPE_REPRESENTATION_DATA,
                         $representation_name,
                         [
                             'field' => $field,
@@ -160,9 +163,9 @@ class Changelog extends Generator
                     if ($min_version) {
                         $min_version = $min_version->getMinimumVersion();
                         $this->record(
-                            self::CHANGE_TYPE_ADDED,
+                            self::DEFINITION_ADDED,
                             $min_version,
-                            self::CHANGE_ACTION,
+                            self::CHANGESET_TYPE_ACTION,
                             $group_name,
                             [
                                 'method' => $action->getMethod(),
@@ -177,9 +180,9 @@ class Changelog extends Generator
                         $introduced = $this->getVersionIntroduced($content_type);
                         if ($introduced) {
                             $this->record(
-                                self::CHANGE_TYPE_CHANGED,
+                                self::DEFINITION_CHANGED,
                                 $introduced,
-                                self::CHANGE_CONTENT_TYPE,
+                                self::CHANGESET_TYPE_CONTENT_TYPE,
                                 $group_name,
                                 [
                                     'method' => $action->getMethod(),
@@ -210,13 +213,13 @@ class Changelog extends Generator
                             ];
 
                             if ($annotation instanceof ParamAnnotation) {
-                                $change_type = self::CHANGE_ACTION_PARAM;
+                                $change_type = self::CHANGESET_TYPE_ACTION_PARAM;
 
                                 /** @var ParamAnnotation $annotation */
                                 $data['parameter'] = $annotation->getField();
                                 $data['description'] = $annotation->getDescription();
                             } elseif ($annotation instanceof ReturnAnnotation) {
-                                $change_type = self::CHANGE_ACTION_RETURN;
+                                $change_type = self::CHANGESET_TYPE_ACTION_RETURN;
 
                                 /** @var ReturnAnnotation $annotation */
                                 $data['http_code'] = $annotation->getHttpCode();
@@ -231,7 +234,7 @@ class Changelog extends Generator
                                     $data['representation'] = false;
                                 }
                             } elseif ($annotation instanceof ThrowsAnnotation) {
-                                $change_type = self::CHANGE_ACTION_THROWS;
+                                $change_type = self::CHANGESET_TYPE_ACTION_THROWS;
 
                                 /** @var Documentation $representation */
                                 $representation = $this->parsed['representations'][$annotation->getRepresentation()];
@@ -246,11 +249,23 @@ class Changelog extends Generator
                             }
 
                             if ($introduced) {
-                                $this->record(self::CHANGE_TYPE_ADDED, $introduced, $change_type, $group_name, $data);
+                                $this->record(
+                                    self::DEFINITION_ADDED,
+                                    $introduced,
+                                    $change_type,
+                                    $group_name,
+                                    $data
+                                );
                             }
 
                             if ($removed) {
-                                $this->record(self::CHANGE_TYPE_REMOVED, $removed, $change_type, $group_name, $data);
+                                $this->record(
+                                    self::DEFINITION_REMOVED,
+                                    $removed,
+                                    $change_type,
+                                    $group_name,
+                                    $data
+                                );
                             }
                         }
                     }
@@ -279,7 +294,7 @@ class Changelog extends Generator
 
         $hash = $this->hashChangeset($change_type, $data);
 
-        if ($change_type === self::CHANGE_REPRESENTATION_DATA) {
+        if ($change_type === self::CHANGESET_TYPE_REPRESENTATION_DATA) {
             $this->changelog[$version][$definition]['representations'][$group][$change_type][$hash][] = $data;
         } else {
             $this->changelog[$version][$definition]['resources'][$group][$data['uri']][$change_type][$hash][] = $data;
@@ -371,30 +386,30 @@ class Changelog extends Generator
         // from the to-be-generated hashes so we can get like-hashes across multiple pieces of data. Without this, we
         // wouldn't be able to do proper duplicate detection.
         switch ($change_type) {
-            case self::CHANGE_ACTION:
+            case self::CHANGESET_TYPE_ACTION:
                 $hash_data['uri'] = $data['uri'];
                 break;
 
-            case self::CHANGE_ACTION_PARAM:
+            case self::CHANGESET_TYPE_ACTION_PARAM:
                 $hash_data['method'] = $data['method'];
                 $hash_data['uri'] = $data['uri'];
                 break;
 
-            case self::CHANGE_ACTION_RETURN:
+            case self::CHANGESET_TYPE_ACTION_RETURN:
                 $hash_data['method'] = $data['method'];
                 $hash_data['uri'] = $data['uri'];
                 break;
 
-            case self::CHANGE_ACTION_THROWS:
+            case self::CHANGESET_TYPE_ACTION_THROWS:
                 $hash_data['method'] = $data['method'];
                 $hash_data['uri'] = $data['uri'];
                 break;
 
-            case self::CHANGE_CONTENT_TYPE:
+            case self::CHANGESET_TYPE_CONTENT_TYPE:
                 $hash_data['method'] = $data['method'];
                 break;
 
-            case self::CHANGE_REPRESENTATION_DATA:
+            case self::CHANGESET_TYPE_REPRESENTATION_DATA:
                 $hash_data['representation'] = $data['representation'];
                 break;
 

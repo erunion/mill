@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Generator\Changelog\Changesets;
 
+use Mill\Generator\Changelog;
 use Mill\Generator\Changelog\Changeset;
 
 class Action extends Changeset
@@ -10,10 +11,10 @@ class Action extends Changeset
      */
     protected $templates = [
         'plural' => [
-            'added' => '{uri} has been added with support for the following HTTP methods:'
+            Changelog::DEFINITION_ADDED => '{uri} has been added with support for the following HTTP methods:'
         ],
         'singular' => [
-            'added' => '{method} on {uri} was added.'
+            Changelog::DEFINITION_ADDED => '{method} on {uri} was added.'
         ]
     ];
 

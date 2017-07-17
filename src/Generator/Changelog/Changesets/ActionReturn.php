@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Generator\Changelog\Changesets;
 
+use Mill\Generator\Changelog;
 use Mill\Generator\Changelog\Changeset;
 
 class ActionReturn extends Changeset
@@ -10,18 +11,20 @@ class ActionReturn extends Changeset
      */
     protected $templates = [
         'plural' => [
-            'added' => 'The {method} on {uri} will now return the following responses:',
-            'removed' => 'The {method} on {uri} no longer returns the following responses:'
+            Changelog::DEFINITION_ADDED => 'The {method} on {uri} will now return the following responses:',
+            Changelog::DEFINITION_REMOVED => 'The {method} on {uri} no longer returns the following responses:'
         ],
         'singular' => [
-            'added' => 'On {uri}, {method} requests now returns a {http_code} with a {representation} ' .
-                'representation.',
-            'removed' => 'On {uri}, {method} requests no longer returns a {http_code} with a {representation} ' .
-                'representation.',
+            Changelog::DEFINITION_ADDED => 'On {uri}, {method} requests now returns a {http_code} with a ' .
+                '{representation} representation.',
+            Changelog::DEFINITION_REMOVED => 'On {uri}, {method} requests no longer returns a {http_code} with a ' .
+                '{representation} representation.',
 
             // Representations are optional on returns, so we need special strings for those cases.
-            'added_no_representation' => '{method} on {uri} now returns a {http_code}.',
-            'removed_no_representation' => '{method} on {uri} no longer will return a {http_code}.'
+            'no_representation' => [
+                Changelog::DEFINITION_ADDED => '{method} on {uri} now returns a {http_code}.',
+                Changelog::DEFINITION_REMOVED => '{method} on {uri} no longer will return a {http_code}.'
+            ]
         ]
     ];
 
@@ -35,8 +38,7 @@ class ActionReturn extends Changeset
             if ($change['representation']) {
                 $template = $this->templates['singular'][$definition];
             } else {
-                $definition .= '_no_representation';
-                $template = $this->templates['singular'][$definition];
+                $template = $this->templates['singular']['no_representation'][$definition];
             }
 
             return $this->renderText($template, $change);

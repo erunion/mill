@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Generator\Changelog\Changesets;
 
+use Mill\Generator\Changelog;
 use Mill\Generator\Changelog\Changeset;
 
 class ActionThrows extends Changeset
@@ -10,14 +11,14 @@ class ActionThrows extends Changeset
      */
     protected $templates = [
         'plural' => [
-            'added' => '{uri} will now throw the following errors on {method} requests:',
-            'removed' => '{uri} will no longer throw the following errors on {method} requests:'
+            Changelog::DEFINITION_ADDED => '{uri} will now throw the following errors on {method} requests:',
+            Changelog::DEFINITION_REMOVED => '{uri} will no longer throw the following errors on {method} requests:'
         ],
         'singular' => [
-            'added' => 'On {method} requests to {uri}, a {http_code} with a {representation} representation ' .
-                'will now be returned: {description}',
-            'removed' => '{method} requests to {uri} longer will return a {http_code} with a {representation} ' .
-                'representation: {description}'
+            Changelog::DEFINITION_ADDED => 'On {method} requests to {uri}, a {http_code} with a {representation} ' .
+                'representation will now be returned: {description}',
+            Changelog::DEFINITION_REMOVED => '{method} requests to {uri} longer will return a {http_code} with a ' .
+                '{representation} representation: {description}'
         ]
     ];
 

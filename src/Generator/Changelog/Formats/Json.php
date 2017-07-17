@@ -72,10 +72,13 @@ class Json extends Generator
         foreach ($changesets as $representation => $change_types) {
             foreach ($change_types as $change_type => $hashes) {
                 foreach ($hashes as $hash => $changes) {
-                    if ($definition === 'added' || $definition === 'removed') {
-                        $entry = $this->getEntryForAddedOrRemovedChange($definition, $change_type, $changes);
+                    if (in_array($definition, [
+                        Changelog::DEFINITION_ADDED,
+                        Changelog::DEFINITION_REMOVED
+                    ])) {
+                        $entry = $this->getAddedOrRemovedChangesetFactory($definition, $change_type, $changes);
                     } else {
-                        $entry = $this->getEntryForChangedItem($definition, $change_type, $changes);
+                        $entry = $this->getChangedChangesetFactory($definition, $change_type, $changes);
                     }
 
                     // Reduce some unnecessary nesting of changeset strings.
@@ -103,19 +106,22 @@ class Json extends Generator
         $entries = [];
         foreach ($changesets as $group => $data) {
             $group_entry = [
-                $this->renderText('The following {group} resources have ' . $definition . ':', [
-                    'group' => $group
+                $this->renderText('The following {resource_group} resources have ' . $definition . ':', [
+                    'resource_group' => $group
                 ]),
                 [] // Group-related entries will be nested here.
             ];
 
-            foreach ($data as /*$uri => */$change_types) {
+            foreach ($data as $uri => $change_types) {
                 foreach ($change_types as $change_type => $hashes) {
-                    foreach ($hashes as /*$hash => */$changes) {
-                        if ($definition === 'added' || $definition === 'removed') {
-                            $entry = $this->getEntryForAddedOrRemovedChange($definition, $change_type, $changes);
+                    foreach ($hashes as $hash => $changes) {
+                        if (in_array($definition, [
+                            Changelog::DEFINITION_ADDED,
+                            Changelog::DEFINITION_REMOVED
+                        ])) {
+                            $entry = $this->getAddedOrRemovedChangesetFactory($definition, $change_type, $changes);
                         } else {
-                            $entry = $this->getEntryForChangedItem($definition, $change_type, $changes);
+                            $entry = $this->getChangedChangesetFactory($definition, $change_type, $changes);
                         }
 
                         // Reduce some unnecessary nesting of changeset strings.
@@ -143,26 +149,26 @@ class Json extends Generator
      * @return string|array
      * @throws \Exception If an unsupported definition + change type was supplied.
      */
-    private function getEntryForAddedOrRemovedChange($definition, $change_type, array $changes)
+    private function getAddedOrRemovedChangesetFactory($definition, $change_type, array $changes)
     {
         switch ($change_type) {
-            case Changelog::CHANGE_ACTION:
+            case Changelog::CHANGESET_TYPE_ACTION:
                 $changeset = new Changelog\Changesets\Action;
                 break;
 
-            case Changelog::CHANGE_ACTION_PARAM:
+            case Changelog::CHANGESET_TYPE_ACTION_PARAM:
                 $changeset = new Changelog\Changesets\ActionParam;
                 break;
 
-            case Changelog::CHANGE_ACTION_RETURN:
+            case Changelog::CHANGESET_TYPE_ACTION_RETURN:
                 $changeset = new Changelog\Changesets\ActionReturn;
                 break;
 
-            case Changelog::CHANGE_ACTION_THROWS:
+            case Changelog::CHANGESET_TYPE_ACTION_THROWS:
                 $changeset = new Changelog\Changesets\ActionThrows;
                 break;
 
-            case Changelog::CHANGE_REPRESENTATION_DATA:
+            case Changelog::CHANGESET_TYPE_REPRESENTATION_DATA:
                 $changeset = new Changelog\Changesets\RepresentationData;
                 break;
 
@@ -183,12 +189,12 @@ class Json extends Generator
      * @return string|array
      * @throws \Exception If an unsupported definition + change type was supplied.
      */
-    private function getEntryForChangedItem($definition, $change_type, array $changes)
+    private function getChangedChangesetFactory($definition, $change_type, array $changes)
     {
         // Due to versioning restrictions in the Mill syntax (that will be fixed), only `@api-contentType` annotations
         // will generate a "changed" entry in the changelog.
         switch ($change_type) {
-            case Changelog::CHANGE_CONTENT_TYPE:
+            case Changelog::CHANGESET_TYPE_CONTENT_TYPE:
                 $changeset = new Changelog\Changesets\ContentType;
                 break;
 

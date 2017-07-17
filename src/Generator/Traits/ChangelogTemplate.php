@@ -1,16 +1,17 @@
 <?php
 namespace Mill\Generator\Traits;
 
+use Mill\Generator\Changelog;
 use StringTemplate\Engine;
 
 trait ChangelogTemplate
 {
     /**
-     * Changelog template output format. Acceptable values: "json", "html", or "markdown"
+     * Changelog template output format.
      *
      * @var string
      */
-    protected $output_format = 'json';
+    protected $output_format = Changelog::FORMAT_JSON;
 
     /**
      * @var Engine|null
@@ -30,7 +31,7 @@ trait ChangelogTemplate
             $this->template_engine = new Engine;
         }
 
-        if (in_array($this->output_format, ['json', 'html'])) {
+        if ($this->output_format === Changelog::FORMAT_JSON) {
             list($template, $content) = $this->transformTemplateIntoHtml($template, $content);
         } else {
             list($template, $content) = $this->transformTemplateIntoMarkdown($template, $content);
@@ -61,6 +62,7 @@ trait ChangelogTemplate
                 case 'method':
                 case 'parameter':
                 case 'representation':
+                case 'resource_group':
                 case 'uri':
                     $searches[] = '{' . $key . '}';
                     if (is_array($value)) {
