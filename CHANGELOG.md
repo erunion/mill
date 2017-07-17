@@ -1,4 +1,8 @@
 # Changelog
+## [2.5.2] - 2017-07-17
+## Changed
+- Better grouping of like-resource grouped items in generated changelogs.
+
 ## [2.5.1] - 2017-07-11
 ## Removed
 - Removed the newly added in 2.5.0 dependency, `doctrine/collections`, because it requires >=PHP 5.6, and Mill 2.x still needs to support PHP 5.4.
@@ -156,6 +160,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[2.5.2]: https://github.com/vimeo/mill/compare/2.5.1...2.5.2
 [2.5.1]: https://github.com/vimeo/mill/compare/2.5.0...2.5.1
 [2.5.0]: https://github.com/vimeo/mill/compare/2.4.0...2.5.0
 [2.4.0]: https://github.com/vimeo/mill/compare/2.3.2...2.4.0
