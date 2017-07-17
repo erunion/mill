@@ -48,7 +48,7 @@ Changed up the responses for `/movie/{id}`, `/movies/{id}` and `/movies`.
 ### Reference
 #### Added
 ##### Representations
-- The `Movie` has added the following fields:
+- The `Movie` representation has added the following fields:
     - `external_urls`
     - `external_urls.imdb`
     - `external_urls.tickets`

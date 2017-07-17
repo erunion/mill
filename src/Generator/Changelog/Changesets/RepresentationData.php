@@ -10,8 +10,8 @@ class RepresentationData extends Changeset
      */
     protected $templates = [
         'plural' => [
-            'added' => 'The {representation} has added the following fields:',
-            'removed' => 'The {representation} has removed the following fields:'
+            'added' => 'The {representation} representation has added the following fields:',
+            'removed' => 'The {representation} representation has removed the following fields:'
         ],
         'singular' => [
             'added' => '{field} has been added to the {representation} representation.',

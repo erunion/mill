@@ -189,7 +189,7 @@ class JsonTest extends TestCase
                 'representations' => [
                     [
                         'The <span class="mill-changelog_representation" data-mill-representation="Movie">Movie' .
-                            '</span> has added the following fields:',
+                            '</span> representation has added the following fields:',
                         [
                             '<span class="mill-changelog_field" data-mill-field="external_urls">external_urls</span>',
                             '<span class="mill-changelog_field" data-mill-field="external_urls.imdb">' .
