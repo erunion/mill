@@ -1,11 +1,17 @@
 <?php
-namespace Mill\Generator\Changelog;
+namespace Mill\Generator\Changelog\Formats;
 
+use Mill\Generator\Changelog;
 use Mill\Generator\Traits;
 
 class Markdown extends Json
 {
     use Traits\Markdown;
+
+    /**
+     * @var string
+     */
+    protected $output_format = Changelog::FORMAT_MARKDOWN;
 
     /**
      * Take compiled API documentation and generate a Markdown-based changelog over the life of the API.
@@ -66,69 +72,40 @@ class Markdown extends Json
      * Get Markdown syntax for a given changeset.
      *
      * @param array|string $changeset
+     * @param integer $tab
      * @return string
      */
-    private function getChangesetMarkdown($changeset)
+    private function getChangesetMarkdown($changeset, $tab = 0)
     {
         $markdown = '';
-
         if (!is_array($changeset)) {
+            $markdown .= $this->tab($tab);
             $markdown .= sprintf('- %s', $changeset);
             $markdown .= $this->line();
             return $markdown;
         }
 
         foreach ($changeset as $change) {
-            if (!is_array($change)) {
-                $markdown .= sprintf('- %s', $change);
-                $markdown .= $this->line();
+            if (is_array($change)) {
+                foreach ($change as $item) {
+                    if (is_array($item)) {
+                        $markdown .= $this->getChangesetMarkdown($item, $tab + 1);
+                        continue;
+                    }
+
+                    $markdown .= $this->tab($tab + 1);
+                    $markdown .= sprintf('- %s', $item);
+                    $markdown .= $this->line();
+                }
+
                 continue;
             }
 
-            $markdown .= sprintf('- %s', array_shift($change));
+            $markdown .= $this->tab($tab);
+            $markdown .= sprintf('- %s', $change);
             $markdown .= $this->line();
-            foreach (array_shift($change) as $item) {
-                $markdown .= $this->tab();
-                $markdown .= sprintf('- %s', $item);
-                $markdown .= $this->line();
-            }
         }
 
         return $markdown;
-    }
-
-    /**
-     * Render a changelog template with some content.
-     *
-     * @param string $template
-     * @param array $content
-     * @return string
-     */
-    public function renderText($template, array $content)
-    {
-        $searches = [];
-        $replacements = [];
-        foreach ($content as $key => $value) {
-            switch ($key) {
-                case 'content_type':
-                case 'field':
-                case 'http_code':
-                case 'method':
-                case 'parameter':
-                case 'representation':
-                case 'uri':
-                    $searches[] = '{' . $key . '}';
-                    $replacements[] = '`{' . $key . '}`';
-                    break;
-
-                case 'description':
-                default:
-                    // do nothing
-            }
-        }
-
-        $template = str_replace($searches, $replacements, $template);
-
-        return $this->template_engine->render($template, $content);
     }
 }

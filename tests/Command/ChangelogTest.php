@@ -66,9 +66,9 @@ class ChangelogTest extends \PHPUnit_Framework_TestCase
         $this->tester->execute($params);
 
         $blueprints_dir = __DIR__ . '/../../resources/examples/Showtimes/blueprints';
-        $this->assertSame(
-            file_get_contents($blueprints_dir . '/' . $expected_file),
-            file_get_contents($output_dir . '/changelog.md'),
+        $this->assertFileEquals(
+            $blueprints_dir . '/' . $expected_file,
+            $output_dir . '/changelog.md',
             'Generated changelog does not match.'
         );
     }

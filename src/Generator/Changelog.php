@@ -2,8 +2,8 @@
 namespace Mill\Generator;
 
 use Mill\Generator;
-use Mill\Generator\Changelog\Json;
-use Mill\Generator\Changelog\Markdown;
+use Mill\Generator\Changelog\Formats\Json;
+use Mill\Generator\Changelog\Formats\Markdown;
 use Mill\Parser\Annotation;
 use Mill\Parser\Annotations\ContentTypeAnnotation;
 use Mill\Parser\Annotations\ParamAnnotation;
@@ -14,12 +14,19 @@ use Mill\Parser\Resource\Action;
 
 class Changelog extends Generator
 {
-    const CHANGE_ACTION = 'action';
-    const CHANGE_ACTION_PARAM = 'action_param';
-    const CHANGE_ACTION_RETURN = 'action_return';
-    const CHANGE_ACTION_THROWS = 'action_throws';
-    const CHANGE_CONTENT_TYPE = 'content_type';
-    const CHANGE_REPRESENTATION_DATA = 'representation_data';
+    const CHANGESET_TYPE_ACTION = 'action';
+    const CHANGESET_TYPE_ACTION_PARAM = 'action_param';
+    const CHANGESET_TYPE_ACTION_RETURN = 'action_return';
+    const CHANGESET_TYPE_ACTION_THROWS = 'action_throws';
+    const CHANGESET_TYPE_CONTENT_TYPE = 'content_type';
+    const CHANGESET_TYPE_REPRESENTATION_DATA = 'representation_data';
+
+    const DEFINITION_ADDED = 'added';
+    const DEFINITION_CHANGED = 'changed';
+    const DEFINITION_REMOVED = 'removed';
+
+    const FORMAT_JSON = 'json';
+    const FORMAT_MARKDOWN = 'markdown';
 
     /**
      * Generated changelog.
@@ -103,24 +110,37 @@ class Changelog extends Generator
     {
         /** @var Documentation $representation */
         foreach ($representations as $representation) {
+            $representation_name = $representation->getLabel();
             $content = $representation->getRawContent();
 
             /** @var Annotation $annotation */
-            foreach ($content as $identifier => $annotation) {
+            foreach ($content as $field => $annotation) {
                 $introduced = $this->getVersionIntroduced($annotation);
                 if ($introduced) {
-                    $this->logAdded($introduced, self::CHANGE_REPRESENTATION_DATA, [
-                        'field' => $identifier,
-                        'representation' => $representation->getLabel()
-                    ]);
+                    $this->record(
+                        self::DEFINITION_ADDED,
+                        $introduced,
+                        self::CHANGESET_TYPE_REPRESENTATION_DATA,
+                        $representation_name,
+                        [
+                            'field' => $field,
+                            'representation' => $representation_name
+                        ]
+                    );
                 }
 
                 $removed = $this->getVersionRemoved($annotation);
                 if ($removed) {
-                    $this->logRemoved($removed, self::CHANGE_REPRESENTATION_DATA, [
-                        'field' => $identifier,
-                        'representation' => $representation->getLabel()
-                    ]);
+                    $this->record(
+                        self::DEFINITION_REMOVED,
+                        $removed,
+                        self::CHANGESET_TYPE_REPRESENTATION_DATA,
+                        $representation_name,
+                        [
+                            'field' => $field,
+                            'representation' => $representation_name
+                        ]
+                    );
                 }
             }
         }
@@ -142,10 +162,16 @@ class Changelog extends Generator
                     $min_version = $action->getMinimumVersion();
                     if ($min_version) {
                         $min_version = $min_version->getMinimumVersion();
-                        $this->logAdded($min_version, self::CHANGE_ACTION, [
-                            'method' => $action->getMethod(),
-                            'uri' => $action->getUri()->getCleanPath()
-                        ]);
+                        $this->record(
+                            self::DEFINITION_ADDED,
+                            $min_version,
+                            self::CHANGESET_TYPE_ACTION,
+                            $group_name,
+                            [
+                                'method' => $action->getMethod(),
+                                'uri' => $action->getUri()->getCleanPath()
+                            ]
+                        );
                     }
 
                     // Diff action content types.
@@ -153,11 +179,17 @@ class Changelog extends Generator
                     foreach ($action->getContentTypes() as $content_type) {
                         $introduced = $this->getVersionIntroduced($content_type);
                         if ($introduced) {
-                            $this->logChanged($introduced, self::CHANGE_CONTENT_TYPE, [
-                                'method' => $action->getMethod(),
-                                'uri' => $action->getUri()->getCleanPath(),
-                                'content_type' => $content_type->getContentType()
-                            ]);
+                            $this->record(
+                                self::DEFINITION_CHANGED,
+                                $introduced,
+                                self::CHANGESET_TYPE_CONTENT_TYPE,
+                                $group_name,
+                                [
+                                    'method' => $action->getMethod(),
+                                    'uri' => $action->getUri()->getCleanPath(),
+                                    'content_type' => $content_type->getContentType()
+                                ]
+                            );
                         }
                     }
 
@@ -181,13 +213,13 @@ class Changelog extends Generator
                             ];
 
                             if ($annotation instanceof ParamAnnotation) {
-                                $change_identifier = self::CHANGE_ACTION_PARAM;
+                                $change_type = self::CHANGESET_TYPE_ACTION_PARAM;
 
                                 /** @var ParamAnnotation $annotation */
                                 $data['parameter'] = $annotation->getField();
                                 $data['description'] = $annotation->getDescription();
                             } elseif ($annotation instanceof ReturnAnnotation) {
-                                $change_identifier = self::CHANGE_ACTION_RETURN;
+                                $change_type = self::CHANGESET_TYPE_ACTION_RETURN;
 
                                 /** @var ReturnAnnotation $annotation */
                                 $data['http_code'] = $annotation->getHttpCode();
@@ -202,7 +234,7 @@ class Changelog extends Generator
                                     $data['representation'] = false;
                                 }
                             } elseif ($annotation instanceof ThrowsAnnotation) {
-                                $change_identifier = self::CHANGE_ACTION_THROWS;
+                                $change_type = self::CHANGESET_TYPE_ACTION_THROWS;
 
                                 /** @var Documentation $representation */
                                 $representation = $this->parsed['representations'][$annotation->getRepresentation()];
@@ -217,11 +249,23 @@ class Changelog extends Generator
                             }
 
                             if ($introduced) {
-                                $this->logAdded($introduced, $change_identifier, $data);
+                                $this->record(
+                                    self::DEFINITION_ADDED,
+                                    $introduced,
+                                    $change_type,
+                                    $group_name,
+                                    $data
+                                );
                             }
 
                             if ($removed) {
-                                $this->logRemoved($removed, $change_identifier, $data);
+                                $this->record(
+                                    self::DEFINITION_REMOVED,
+                                    $removed,
+                                    $change_type,
+                                    $group_name,
+                                    $data
+                                );
                             }
                         }
                     }
@@ -231,63 +275,29 @@ class Changelog extends Generator
     }
 
     /**
-     * Log an addition into the changelog.
+     * Record an entry into the changelog.
      *
+     * @param string $definition
      * @param string $version
-     * @param string $identifier
+     * @param string $change_type
+     * @param string|null $group
      * @param array $data
      * @return Changelog
      */
-    private function logAdded($version, $identifier, array $data = [])
+    private function record($definition, $version, $change_type, $group = null, array $data = [])
     {
-        if ($identifier === self::CHANGE_REPRESENTATION_DATA) {
-            $representation = $data['representation'];
-            $this->changelog[$version]['added']['representations'][$representation][$identifier][] = $data;
-        } else {
-            $uri = $data['uri'];
-            $this->changelog[$version]['added']['resources'][$uri][$identifier][] = $data;
+        // Since groups can be nested, let's throw changes under the top-level group.
+        if (!is_null($group)) {
+            $group = explode('\\', $group);
+            $group = array_shift($group);
         }
 
-        return $this;
-    }
+        $hash = $this->hashChangeset($change_type, $data);
 
-    /**
-     * Log an altered piece of data into the changelog.
-     *
-     * @param string $version
-     * @param string $identifier
-     * @param array $data
-     * @return Changelog
-     */
-    private function logChanged($version, $identifier, array $data = [])
-    {
-        if ($identifier === self::CHANGE_REPRESENTATION_DATA) {
-            $representation = $data['representation'];
-            $this->changelog[$version]['changed']['representations'][$representation][$identifier] = $data;
+        if ($change_type === self::CHANGESET_TYPE_REPRESENTATION_DATA) {
+            $this->changelog[$version][$definition]['representations'][$group][$change_type][$hash][] = $data;
         } else {
-            $uri = $data['uri'];
-            $this->changelog[$version]['changed']['resources'][$uri][$identifier][] = $data;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Log a removal into the changelog.
-     *
-     * @param string $version
-     * @param string $identifier
-     * @param array $data
-     * @return Changelog
-     */
-    private function logRemoved($version, $identifier, array $data = [])
-    {
-        if ($identifier === self::CHANGE_REPRESENTATION_DATA) {
-            $representation = $data['representation'];
-            $this->changelog[$version]['removed']['representations'][$representation][$identifier][] = $data;
-        } else {
-            $uri = $data['uri'];
-            $this->changelog[$version]['removed']['resources'][$uri][$identifier][] = $data;
+            $this->changelog[$version][$definition]['resources'][$group][$data['uri']][$change_type][$hash][] = $data;
         }
 
         return $this;
@@ -359,5 +369,55 @@ class Changelog extends Generator
         );
 
         return $this->supported_versions[++$recent_version_key]['version'];
+    }
+
+    /**
+     * Hash a given changeset for de-duping purposes.
+     *
+     * @param string $change_type
+     * @param array $data
+     * @return string
+     */
+    private function hashChangeset($change_type, array $data)
+    {
+        $hash_data = [];
+
+        // For changesets, the hash is grouped based on an indexed piece of content. Here we're excluding those indexes
+        // from the to-be-generated hashes so we can get like-hashes across multiple pieces of data. Without this, we
+        // wouldn't be able to do proper duplicate detection.
+        switch ($change_type) {
+            case self::CHANGESET_TYPE_ACTION:
+                $hash_data['uri'] = $data['uri'];
+                break;
+
+            case self::CHANGESET_TYPE_ACTION_PARAM:
+                $hash_data['method'] = $data['method'];
+                $hash_data['uri'] = $data['uri'];
+                break;
+
+            case self::CHANGESET_TYPE_ACTION_RETURN:
+                $hash_data['method'] = $data['method'];
+                $hash_data['uri'] = $data['uri'];
+                break;
+
+            case self::CHANGESET_TYPE_ACTION_THROWS:
+                $hash_data['method'] = $data['method'];
+                $hash_data['uri'] = $data['uri'];
+                break;
+
+            case self::CHANGESET_TYPE_CONTENT_TYPE:
+                $hash_data['method'] = $data['method'];
+                break;
+
+            case self::CHANGESET_TYPE_REPRESENTATION_DATA:
+                $hash_data['representation'] = $data['representation'];
+                break;
+
+            default:
+                $hash_data = $data;
+                unset($hash_data['uri']);
+        }
+
+        return substr(sha1(serialize($hash_data)), 0, 10);
     }
 }
