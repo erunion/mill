@@ -49,11 +49,14 @@ class ActionThrows extends Changeset
                     );
                 }
 
+                $change = array_shift($changes);
+
                 $template = $this->templates['plural'][$definition];
                 $entries[] = [
                     $this->renderText($template, [
+                        'resource_group' => $change['resource_group'],
                         'method' => $method,
-                        'uri' => array_shift($changes)['uri']
+                        'uri' => $change['uri']
                     ]),
                     array_unique($errors)
                 ];

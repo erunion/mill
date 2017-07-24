@@ -67,6 +67,7 @@ class ActionReturn extends Changeset
                 $template = $this->templates['plural'][$definition];
                 $entries[] = [
                     $this->renderText($template, [
+                        'resource_group' => $changes[0]['resource_group'],
                         'method' => $method,
                         'uri' => $changes[0]['uri']
                     ]),
