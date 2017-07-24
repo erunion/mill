@@ -49,11 +49,25 @@ trait ChangelogTemplate
      */
     protected function transformTemplateIntoHtml($template, array $content = [])
     {
+        $data_attributes = [];
+        foreach ($content as $key => $value) {
+            if ($key === 'description') {
+                continue;
+            }
+
+            $data_attributes[] = sprintf(
+                'data-mill-%s="%s"',
+                str_replace('_', '-', $key),
+                $value
+            );
+        }
+
+        $html = '<span class="{css_namespace}_%s" %s>%s</span>';
+        $data_attributes = implode(' ', $data_attributes);
+
         $searches = [];
         $replacements = [];
         foreach ($content as $key => $value) {
-            $data_attribute_key = str_replace('_', '-', $key);
-
             switch ($key) {
                 case 'content_type':
                 case 'field':
@@ -67,24 +81,12 @@ trait ChangelogTemplate
                     $searches[] = '{' . $key . '}';
                     if (is_array($value)) {
                         $replacements[] = $this->joinWords(
-                            array_map(function ($val) use ($data_attribute_key, $key) {
-                                return sprintf(
-                                    '<span class="{css_namespace}_%s" data-mill-%s="%s">%s</span>',
-                                    $key,
-                                    $data_attribute_key,
-                                    $val,
-                                    $val
-                                );
+                            array_map(function ($value) use ($html, $key, $data_attributes) {
+                                return sprintf($html, $key, $data_attributes, $value);
                             }, $value)
                         );
                     } else {
-                        $replacements[] = sprintf(
-                            '<span class="{css_namespace}_%s" data-mill-%s="{%s}">{%s}</span>',
-                            $key,
-                            $data_attribute_key,
-                            $key,
-                            $key
-                        );
+                        $replacements[] = sprintf($html, $key, $data_attributes, $value);
                     }
                     break;
 

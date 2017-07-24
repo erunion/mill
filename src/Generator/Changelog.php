@@ -168,6 +168,7 @@ class Changelog extends Generator
                             self::CHANGESET_TYPE_ACTION,
                             $group_name,
                             [
+                                'resource_group' => $group_name,
                                 'method' => $action->getMethod(),
                                 'uri' => $action->getUri()->getCleanPath()
                             ]
@@ -185,6 +186,7 @@ class Changelog extends Generator
                                 self::CHANGESET_TYPE_CONTENT_TYPE,
                                 $group_name,
                                 [
+                                    'resource_group' => $group_name,
                                     'method' => $action->getMethod(),
                                     'uri' => $action->getUri()->getCleanPath(),
                                     'content_type' => $content_type->getContentType()
@@ -208,6 +210,7 @@ class Changelog extends Generator
                             }
 
                             $data = [
+                                'resource_group' => $group_name,
                                 'method' => $action->getMethod(),
                                 'uri' => $action->getUri()->getCleanPath()
                             ];
