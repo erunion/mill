@@ -1,4 +1,8 @@
 # Changelog
+## [2.5.3] - 2017-07-24
+## Changed
+- JSON formatted changelogs now have more relevant data attributes in their HTML elements.
+
 ## [2.5.2] - 2017-07-17
 ## Changed
 - Better grouping of like-resource grouped items in generated changelogs.
@@ -160,6 +164,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[2.5.3]: https://github.com/vimeo/mill/compare/2.5.2...2.5.3
 [2.5.2]: https://github.com/vimeo/mill/compare/2.5.1...2.5.2
 [2.5.1]: https://github.com/vimeo/mill/compare/2.5.0...2.5.1
 [2.5.0]: https://github.com/vimeo/mill/compare/2.4.0...2.5.0
