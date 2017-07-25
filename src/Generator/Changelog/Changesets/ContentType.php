@@ -7,14 +7,17 @@ use Mill\Generator\Changelog\Changeset;
 class ContentType extends Changeset
 {
     /**
-     * @var array
+     * @inheritdoc
      */
-    protected $templates = [
-        'singular' => [
-            Changelog::DEFINITION_CHANGED => 'On {uri}, {method} requests will return a {content_type} Content-Type ' .
-                'header.'
-        ]
-    ];
+    public function getTemplates()
+    {
+        return [
+            'singular' => [
+                Changelog::DEFINITION_CHANGED => 'On {uri}, {method} requests will return a {content_type} ' .
+                    'Content-Type header.'
+            ]
+        ];
+    }
 
     /**
      * @inheritdoc
@@ -29,6 +32,8 @@ class ContentType extends Changeset
      */
     public function compileChangedChangeset($definition, array $changes = [])
     {
+        $templates = $this->getTemplates();
+
         if (count($changes) > 1) {
             $uris = array_map(function ($change) {
                 return $change['uri'];
@@ -42,7 +47,7 @@ class ContentType extends Changeset
             $change = array_shift($changes);
         }
 
-        $template = $this->templates['singular'][$definition];
+        $template = $templates['singular'][$definition];
         return $this->renderText($template, $change);
     }
 }
