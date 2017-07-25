@@ -7,27 +7,32 @@ use Mill\Generator\Changelog\Changeset;
 class RepresentationData extends Changeset
 {
     /**
-     * @var array
+     * @inheritdoc
      */
-    protected $templates = [
-        'plural' => [
-            Changelog::DEFINITION_ADDED => 'The {representation} representation has added the following fields:',
-            Changelog::DEFINITION_REMOVED => 'The {representation} representation has removed the following fields:'
-        ],
-        'singular' => [
-            Changelog::DEFINITION_ADDED => '{field} has been added to the {representation} representation.',
-            Changelog::DEFINITION_REMOVED => '{field} has been removed from the {representation} representation.'
-        ]
-    ];
+    public function getTemplates()
+    {
+        return [
+            'plural' => [
+                Changelog::DEFINITION_ADDED => 'The {representation} representation has added the following fields:',
+                Changelog::DEFINITION_REMOVED => 'The {representation} representation has removed the following fields:'
+            ],
+            'singular' => [
+                Changelog::DEFINITION_ADDED => '{field} has been added to the {representation} representation.',
+                Changelog::DEFINITION_REMOVED => '{field} has been removed from the {representation} representation.'
+            ]
+        ];
+    }
 
     /**
      * @inheritdoc
      */
     public function compileAddedOrRemovedChangeset($definition, array $changes = [])
     {
+        $templates = $this->getTemplates();
+
         if (count($changes) === 1) {
             $change = array_shift($changes);
-            $template = $this->templates['singular'][$definition];
+            $template = $templates['singular'][$definition];
             return $this->renderText($template, $change);
         }
 
@@ -36,7 +41,7 @@ class RepresentationData extends Changeset
             $fields[] = $this->renderText('{field}', $change);
         }
 
-        $template = $this->templates['plural'][$definition];
+        $template = $templates['plural'][$definition];
         return [
             $this->renderText($template, array_shift($changes)),
             $fields

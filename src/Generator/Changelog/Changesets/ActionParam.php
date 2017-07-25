@@ -7,28 +7,33 @@ use Mill\Generator\Changelog\Changeset;
 class ActionParam extends Changeset
 {
     /**
-     * @var array
+     * @inheritdoc
      */
-    protected $templates = [
-        'plural' => [
-            Changelog::DEFINITION_ADDED => 'The following parameters have been added to {method} on {uri}:',
-            Changelog::DEFINITION_REMOVED => 'The following parameters have been removed to {method} on {uri}:'
-        ],
-        'singular' => [
-            Changelog::DEFINITION_ADDED => 'A {parameter} request parameter was added to {method} on {uri}.',
-            Changelog::DEFINITION_REMOVED => 'The {parameter} request parameter has been removed from {method} ' .
-                'requests on {uri}.'
-        ]
-    ];
+    public function getTemplates()
+    {
+        return [
+            'plural' => [
+                Changelog::DEFINITION_ADDED => 'The following parameters have been added to {method} on {uri}:',
+                Changelog::DEFINITION_REMOVED => 'The following parameters have been removed to {method} on {uri}:'
+            ],
+            'singular' => [
+                Changelog::DEFINITION_ADDED => 'A {parameter} request parameter was added to {method} on {uri}.',
+                Changelog::DEFINITION_REMOVED => 'The {parameter} request parameter has been removed from {method} ' .
+                    'requests on {uri}.'
+            ]
+        ];
+    }
 
     /**
      * @inheritdoc
      */
     public function compileAddedOrRemovedChangeset($definition, array $changes = [])
     {
+        $templates = $this->getTemplates();
+
         if (count($changes) === 1) {
             $change = array_shift($changes);
-            $template = $this->templates['singular'][$definition];
+            $template = $templates['singular'][$definition];
             return $this->renderText($template, $change);
         }
 
@@ -48,7 +53,7 @@ class ActionParam extends Changeset
                     ]);
                 }
 
-                $template = $this->templates['plural'][$definition];
+                $template = $templates['plural'][$definition];
                 $entry[] = [
                     $this->renderText($template, [
                         'resource_group' => $changes[0]['resource_group'],
@@ -61,7 +66,7 @@ class ActionParam extends Changeset
                 continue;
             }
 
-            $template = $this->templates['singular'][$definition];
+            $template = $templates['singular'][$definition];
             $entry[] = $this->renderText($template, [
                 'resource_group' => $changes[0]['resource_group'],
                 'parameter' => array_shift($params),

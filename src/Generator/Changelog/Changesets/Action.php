@@ -7,25 +7,30 @@ use Mill\Generator\Changelog\Changeset;
 class Action extends Changeset
 {
     /**
-     * @var array
+     * @inheritdoc
      */
-    protected $templates = [
-        'plural' => [
-            Changelog::DEFINITION_ADDED => '{uri} has been added with support for the following HTTP methods:'
-        ],
-        'singular' => [
-            Changelog::DEFINITION_ADDED => '{method} on {uri} was added.'
-        ]
-    ];
+    public function getTemplates()
+    {
+        return [
+            'plural' => [
+                Changelog::DEFINITION_ADDED => '{uri} has been added with support for the following HTTP methods:'
+            ],
+            'singular' => [
+                Changelog::DEFINITION_ADDED => '{method} on {uri} was added.'
+            ]
+        ];
+    }
 
     /**
      * @inheritdoc
      */
     public function compileAddedOrRemovedChangeset($definition, array $changes = [])
     {
+        $templates = $this->getTemplates();
+
         if (count($changes) === 1) {
             $change = array_shift($changes);
-            $template = $this->templates['singular'][$definition];
+            $template = $templates['singular'][$definition];
             return $this->renderText($template, $change);
         }
 
@@ -34,7 +39,7 @@ class Action extends Changeset
             $methods[] = $this->renderText('{method}', $change);
         }
 
-        $template = $this->templates['plural'][$definition];
+        $template = $templates['plural'][$definition];
         return [
             [
                 // Changes are grouped by URIs so it's safe to just pull the first URI here.
