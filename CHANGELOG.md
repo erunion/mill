@@ -1,4 +1,8 @@
 # Changelog
+## [2.5.4] - 2017-07-25
+## Fixed
+- Fixed some PHP 5.4 compatibility issues with the new changelog work.
+
 ## [2.5.3] - 2017-07-24
 ## Changed
 - JSON formatted changelogs now have more relevant data attributes in their HTML elements.
@@ -164,6 +168,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[2.5.4]: https://github.com/vimeo/mill/compare/2.5.3...2.5.4
 [2.5.3]: https://github.com/vimeo/mill/compare/2.5.2...2.5.3
 [2.5.2]: https://github.com/vimeo/mill/compare/2.5.1...2.5.2
 [2.5.1]: https://github.com/vimeo/mill/compare/2.5.0...2.5.1
