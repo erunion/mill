@@ -1,4 +1,4 @@
-Mill
+&#9780; Mill
 ===
 
 [![Packagist](https://img.shields.io/packagist/v/vimeo/mill.svg)](https://packagist.org/packages/vimeo/mill)
