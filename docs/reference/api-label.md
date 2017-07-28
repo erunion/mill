@@ -8,7 +8,7 @@ permalink: /reference/api-label
 A short description of what the resource, or resource action handles.
 
 ## Syntax
-```
+```php
 @api-label description
 ```
 

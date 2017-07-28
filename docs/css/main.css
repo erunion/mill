@@ -21,16 +21,6 @@ a:hover {
     text-decoration: none;
 }
 
-media (max-width: 390px) {
-    body:after {
-        content: "<";
-        position: fixed;
-        z-index: 100;
-        top: 20px;
-        left: 20px;
-    }
-}
-
 a code {
     color: #16c2ff;
     text-decoration: none;
@@ -56,19 +46,19 @@ a:hover code {
 code.language-bash,
 code.language-xml,
 code.language-php {
-    font-size:smaller;
+    font-size: smaller;
 }
 
 code {
     font-size: 1.2em;
     line-height: 1em;
-    background:white;
+    background: white;
     opacity: .7;
     padding-top: 2px;
     padding-bottom: 2px;
     padding-left: 4px;
     padding-right: 4px;
-    color: #545d67; /* 00c26e */
+    color: #545d67;
     border-radius: 5px;
 }
 
@@ -125,15 +115,15 @@ ul li {
 
 .nav ul {
     margin: 10px 10px;
-    padding:0;
+    padding: 0;
 }
 
 .nav ul ul {
-    margin:0px;
+    margin: 0px;
 }
 
 .nav ul li {
-    list-style:none;
+    list-style: none;
     padding-left: 10px;
     padding-bottom: 5px;
     line-height: 1.5em;
@@ -178,7 +168,7 @@ section>section h1 {
 }
 
 .github-corner {
-    fill:#151513;
+    fill: #151513;
     color: #ffffff;
     position: fixed;
     top: 0;
@@ -201,10 +191,9 @@ a.github-corner:hover {
 }
 
 table th,
-table td{
+table td {
     padding: .3em;
 }
-
 
 /* http://prismjs.com/download.html?themes=prism&languages=markup+css+clike+javascript */
 /**
