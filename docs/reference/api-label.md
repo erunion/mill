@@ -5,6 +5,8 @@ permalink: /reference/api-label
 ---
 
 # @api-label
+---
+
 A short description of what the resource, or resource action handles.
 
 ## Syntax

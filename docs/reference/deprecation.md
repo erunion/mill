@@ -5,6 +5,8 @@ permalink: /reference/deprecation
 ---
 
 # Deprecation
+---
+
 > **Note:** Deprecated status is not currently being used when generating documentation, however, there are plans to
 > hook it up to the internal generator system to make it available in your compiled API Blueprints and manual Mill API
 > usages.

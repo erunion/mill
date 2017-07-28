@@ -2,7 +2,8 @@
 layout: default
 ---
 
-# &#9780; Mill
+# ☴ Mill
+---
 
 Mill is a PHP library for documenting a REST API with a small annotation DSL.
 

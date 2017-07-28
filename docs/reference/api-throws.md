@@ -5,6 +5,8 @@ permalink: /reference/api-throws
 ---
 
 # @api-throws
+---
+
 This represents an exception that may be thrown inside of a resource action.
 
 ## Syntax

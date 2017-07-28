@@ -5,6 +5,7 @@ permalink: /reference/resource-actions
 ---
 
 # Resource Actions
+---
 
 | @annotation | Description |
 | :--- | :--- |

@@ -5,6 +5,8 @@ permalink: /reference/api-urisegment
 ---
 
 # @api-urisegment
+---
+
 This allows you to describe the segments, or parameters, of a particular resource action URI.
 
 ## Syntax

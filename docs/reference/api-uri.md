@@ -5,6 +5,8 @@ permalink: /reference/api-uri
 ---
 
 # @api-uri
+---
+
 This allows you to describe the URI(s) that a resource action services.
 
 ## Syntax

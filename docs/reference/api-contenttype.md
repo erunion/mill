@@ -5,6 +5,8 @@ permalink: /reference/api-contenttype
 ---
 
 # @api-contenttype
+---
+
 This designates the HTTP Content-Type that a resource action returns.
 
 ## Syntax

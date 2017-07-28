@@ -5,6 +5,8 @@ permalink: /generate/documentation
 ---
 
 # Generate documentation
+---
+
 Mill includes a `mill` command line application for doing various tasks on your API, including compiling it down into
 versioned [API Blueprint](https://apiblueprint.org/) files.
 

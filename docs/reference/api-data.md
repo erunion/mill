@@ -5,6 +5,8 @@ permalink: /reference/api-data
 ---
 
 # @api-data
+---
+
 This describes a piece of data within a representation that a resource action can return.
 
 ## Syntax

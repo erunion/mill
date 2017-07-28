@@ -5,6 +5,8 @@ permalink: /reference/versioning
 ---
 
 # API Versioning
+---
+
 As is the case with all API endpoints, there comes a time where you need to version specific endpoints, parameters,
 responses, exceptions, or representations. You can handle these types of changes in Mill by using the
 [`@api-version`](/reference/api-version) annotation on resource actions or representations.

@@ -5,6 +5,8 @@ permalink: /reference/api-return
 ---
 
 # @api-return
+---
+
 Like a standard [PHPDoc](https://phpdoc.org/)
 [`@return`](https://phpdoc.org/docs/latest/references/phpdoc/tags/return.html) annotation, this defines the response,
 and representation that a resource action returns. The difference here, however, is that this is made up of two parts:

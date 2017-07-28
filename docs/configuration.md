@@ -5,6 +5,8 @@ permalink: /configuration
 ---
 
 # Configuration
+---
+
 In order to instruct Mill on where to look for documentation, and any constraints you may have, Mill requires the use
 of an XML configuration file (`mill.xml`).
 

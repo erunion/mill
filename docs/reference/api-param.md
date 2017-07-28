@@ -5,6 +5,8 @@ permalink: /reference/api-param
 ---
 
 # @api-param
+---
+
 A request parameter that can be supplied to a resource action.
 
 ## Syntax

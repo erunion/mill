@@ -5,6 +5,8 @@ permalink: /reference/visibility
 ---
 
 # Visibility
+---
+
 > **Note:** Visibility status is not currently being used when generating API Blueprint files, however there are
 > future plans to hook it up to that generator.
 

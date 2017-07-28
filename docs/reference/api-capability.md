@@ -5,6 +5,8 @@ permalink: /reference/api-capability
 ---
 
 # @api-capability
+---
+
 This defines a required capability in your API that the developer's application needs to possess in order to execute
 the resource action, or get the representation field in the endpoint response.
 

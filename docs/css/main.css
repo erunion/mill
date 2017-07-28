@@ -1,7 +1,7 @@
 body {
     margin: 0;
     font-family: sans-serif;
-    background: #eaeaea;
+    background: #ffffff;
     color: #555559;
     line-height: 1.5em;
     font-size: 1em;
@@ -9,10 +9,18 @@ body {
 
 #logo {
     font-size: 2em;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+#nyc {
+    font-size: .75em;
+    color: #ffffff;
+    text-align: center;
 }
 
 a {
-    color: #16c2ff;
+    color: #1ab7ea;
     text-decoration: none;
 }
 
@@ -22,7 +30,7 @@ a:hover {
 }
 
 a code {
-    color: #16c2ff;
+    color: #1ab7ea;
     text-decoration: none;
 }
 
@@ -62,10 +70,6 @@ code {
     border-radius: 5px;
 }
 
-.cloud {
-    font-size: 2.4em;
-}
-
 blockquote {
     padding: 0 1em;
     color: #6a737d;
@@ -84,7 +88,7 @@ hr {
 .nav {
     width: 200px;
     min-width: 170px;
-    background: #333333;
+    background: #162221;
     position: fixed;
     overflow: auto;
     height: 100%;
@@ -114,7 +118,7 @@ ul li {
 }
 
 .nav ul {
-    margin: 10px 10px;
+    margin: 10px 10px -10px;
     padding: 0;
 }
 

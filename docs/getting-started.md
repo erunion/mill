@@ -5,6 +5,7 @@ permalink: /getting-started
 ---
 
 # Getting Started
+---
 
 * [Configuration](/configuration)
 * [Documenting your API](#documenting-your-api)
