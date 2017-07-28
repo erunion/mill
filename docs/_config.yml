@@ -1,0 +1,7 @@
+# site settings
+title: "☴ Mill"
+description: "Mill is a PHP library for documenting a REST API with a small annotation DSL."
+
+# build settings
+port: 4000
+permalink: pretty
