@@ -32,7 +32,7 @@ class UsersController extends \MyApplication\Controller
 
 ```
 
-Here, you can see that we're using the [`@api‐label`](/reference/api-label) annotation to denote that this controller
+Here, you can see that we're using the [`@api-label`](/reference/api-label) annotation to denote that this controller
 primarily handles "Search" actions.
 
 If you'd also like to include a full Markdown representation (or anything else, really) description along with this

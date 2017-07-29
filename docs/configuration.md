@@ -118,8 +118,8 @@ specific users, you should use this to document that.
 </capabilities>
 ```
 
-You can find usage details for capabilities in the [`@api-capability`](/reference/api‐capability),
-[`@api-param`](/reference/api‐param), [`@api-return`](/reference/api‐return), and [`@api-throws`](/reference/api‐throws)
+You can find usage details for capabilities in the [`@api-capability`](/reference/api-capability),
+[`@api-param`](/reference/api-param), [`@api-return`](/reference/api-return), and [`@api-throws`](/reference/api-throws)
 documentation.
 
 ### Scopes
@@ -137,10 +137,10 @@ Example:
 </scopes>
 ```
 
-You can find usage details for scopes in the [`@api-scope`](/reference/api‐scope) documentation.
+You can find usage details for scopes in the [`@api-scope`](/reference/api-scope) documentation.
 
 ### Parameter Tokens
-Parameter tokens allow you to create a [`@api-param`](/reference/api‐param) shortcode to save time for common elements
+Parameter tokens allow you to create a [`@api-param`](/reference/api-param) shortcode to save time for common elements
 in your API (like paging or sorting).
 
 Example:
@@ -153,12 +153,12 @@ Example:
 </parameterTokens>
 ```
 
-You can find usage details for parameter tokens in the [`@api-param`](/reference/api‐param#tokens) documentation.
+You can find usage details for parameter tokens in the [`@api-param`](/reference/api-param#tokens) documentation.
 
 ### `<uriSegments>`
 #### `<translations>`
 The URI segment translations section allows you to set up translation elements for
-[`@api-uriSegment`](/reference/api‐urisegment) annotations. Say, in your code, the route for a video is at
+[`@api-uriSegment`](/reference/api-urisegment) annotations. Say, in your code, the route for a video is at
 `/videos/+video_id`, but in your documentation, you want it to just say `/videos/+id`, this is the place to do that.
 
 Example:
