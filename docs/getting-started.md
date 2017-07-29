@@ -7,9 +7,9 @@ permalink: /getting-started
 # Getting Started
 ---
 
-* [Configuration](/configuration)
+* [Configuration]({{ site.github.url }}/configuration)
 * [Documenting your API](#documenting-your-api)
-* [Generating Documentation](/generate/documentation)
+* [Generating Documentation]({{ site.github.url }}/generate/documentation)
 
 ## Documenting your API
 ### Resources
@@ -32,8 +32,8 @@ class UsersController extends \MyApplication\Controller
 
 ```
 
-Here, you can see that we're using the [`@api-label`](/reference/api-label) annotation to denote that this controller
-primarily handles "Search" actions.
+Here, you can see that we're using the [`@api-label`]({{ site.github.url }}/reference/api-label) annotation to denote
+that this controller primarily handles "Search" actions.
 
 If you'd also like to include a full Markdown representation (or anything else, really) description along with this
 resource for your compiled documentation, you can do so by adding that content into the docblock:
@@ -180,5 +180,5 @@ Here you can see that a User representation can contain:
 * `name`
 * `metadata[connections][albums]`
 
-There are all sorts of different ways to document your representations, so see the [reference](/reference) page for
-more examples.
+There are all sorts of different ways to document your representations, so see the
+[reference]({{ site.github.url }}/reference) page for more examples.

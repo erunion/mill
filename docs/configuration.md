@@ -81,8 +81,8 @@ controllers return), live.
 
 #### Errors
 The representation `<errors>` setting lets you tell Mill where your error representations are (the content that is
-returned from [`@api-throws`](/reference/api-throws) annotations. Here you can specify a `<class>` with a
-fully-qualified class name.
+returned from [`@api-throws`]({{ site.github.url }}/reference/api-throws) annotations. Here you can specify a `<class>`
+with a fully-qualified class name.
 
 Required attributes for the `<class>` element are:
 
@@ -118,9 +118,9 @@ specific users, you should use this to document that.
 </capabilities>
 ```
 
-You can find usage details for capabilities in the [`@api-capability`](/reference/api-capability),
-[`@api-param`](/reference/api-param), [`@api-return`](/reference/api-return), and [`@api-throws`](/reference/api-throws)
-documentation.
+You can find usage details for capabilities in the [`@api-capability`]({{ site.github.url }}/reference/api-capability),
+[`@api-param`]({{ site.github.url }}/reference/api-param), [`@api-return`]({{ site.github.url }}/reference/api-return),
+and [`@api-throws`]({{ site.github.url }}/reference/api-throws) documentation.
 
 ### Scopes
 If your API has an authentication system that requires a specific scope(s) for using an API endpoint, use this to
@@ -137,11 +137,11 @@ Example:
 </scopes>
 ```
 
-You can find usage details for scopes in the [`@api-scope`](/reference/api-scope) documentation.
+You can find usage details for scopes in the [`@api-scope`]({{ site.github.url }}/reference/api-scope) documentation.
 
 ### Parameter Tokens
-Parameter tokens allow you to create a [`@api-param`](/reference/api-param) shortcode to save time for common elements
-in your API (like paging or sorting).
+Parameter tokens allow you to create a [`@api-param`]({{ site.github.url }}/reference/api-param) shortcode to save time
+for common elements in your API (like paging or sorting).
 
 Example:
 
@@ -153,13 +153,15 @@ Example:
 </parameterTokens>
 ```
 
-You can find usage details for parameter tokens in the [`@api-param`](/reference/api-param#tokens) documentation.
+You can find usage details for parameter tokens in the [`@api-param`]({{ site.github.url }}/reference/api-param#tokens)
+documentation.
 
 ### `<uriSegments>`
 #### `<translations>`
 The URI segment translations section allows you to set up translation elements for
-[`@api-uriSegment`](/reference/api-urisegment) annotations. Say, in your code, the route for a video is at
-`/videos/+video_id`, but in your documentation, you want it to just say `/videos/+id`, this is the place to do that.
+[`@api-uriSegment`]({{ site.github.url }}/reference/api-urisegment) annotations. Say, in your code, the route for a
+video is at `/videos/+video_id`, but in your documentation, you want it to just say `/videos/+id`, this is the place to
+do that.
 
 Example:
 

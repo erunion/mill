@@ -9,4 +9,4 @@ permalink: /reference/resources
 
 | @annotation | Description |
 | :--- | :--- |
-| [`@api-label`](/reference/api-label) | Short description of what the resource handles. |
+| [`@api-label`]({{ site.github.url }}/reference/api-label) | Short description of what the resource handles. |

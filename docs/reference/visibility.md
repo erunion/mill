@@ -33,5 +33,6 @@ public function PATCH()
 }
 ```
 
-Visibility decorators are required on [`@api-param`](/reference/api-param), [`@api-return`](/reference/api-return),
-[`@api-throws`](/reference/api-throws), and [`@api-uri`](/reference/api-uri).
+Visibility decorators are required on [`@api-param`]({{ site.github.url }}/reference/api-param),
+[`@api-return`]({{ site.github.url }}/reference/api-return),
+[`@api-throws`]({{ site.github.url }}/reference/api-throws), and [`@api-uri`]({{ site.github.url }}/reference/api-uri).

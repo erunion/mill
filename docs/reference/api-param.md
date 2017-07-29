@@ -26,7 +26,7 @@ A request parameter that can be supplied to a resource action.
 
 | Tag | Optional | Description |
 | :--- | :--- | :--- |
-| `:visibility` | ✓ | [Visibility decorator](/reference/visibility) |
+| `:visibility` | ✓ | [Visibility decorator]({{ site.github.url }}/reference/visibility) |
 | `fieldName` | × | This is the name of the variable that the developer should pass in the request. |
 | `sampleData` | ✓ | This is a sample of what the contents of the parameter should be. For example, if you're passing in a number, this can be "50". |
 | `type` | × | This can be a reference to the type of variable that is being passed in (string, boolean, array, etc.), or can be one of the [tokens](#tokens) that are configured for your API. |
@@ -56,7 +56,7 @@ A request parameter that can be supplied to a resource action.
 Because writing out the same parameter for a large number of endpoints can get tiring, we have a system in place that
 allows you to configure tokens, which act as kind of a short-code for a parameter:
 
-In your [`mill.xml`](/configuration) file:
+In your [`mill.xml`]({{ site.github.url }}/configuration) file:
 
 ```xml
 <parameterTokens>
@@ -66,7 +66,7 @@ In your [`mill.xml`](/configuration) file:
 </parameterTokens>
 ```
 
-And then you can just reference the token as part of [`@api-param`](/reference/api-param):
+And then you can just reference the token as part of [`@api-param`]({{ site.github.url }}/reference/api-param):
 
 ```php
 @api-param:public {page}
