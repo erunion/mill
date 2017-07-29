@@ -40,4 +40,5 @@ public function GET()
 }
 ```
 
-Deprecated decorators are only available on [`@api-param`](/reference/api-param) and [`@api-uri`](/reference/api-uri).
+Deprecated decorators are only available on [`@api-param`]({{ site.github.url }}/reference/api-param) and
+[`@api-uri`]({{ site.github.url }}/reference/api-uri).

@@ -24,14 +24,14 @@ This represents an exception that may be thrown inside of a resource action.
 
 | Tag | Optional | Description |
 | :--- | :--- | :--- |
-| `:visibility` | ✓ | [Visibility decorator](/reference/visibility) |
+| `:visibility` | ✓ | [Visibility decorator]({{ site.github.url }}/reference/visibility) |
 | `{http code}` | × | The HTTP code that will be returned. Example: `{404}`, `{403}`, etc. |
 | `\Representation` | × | The fully qualified class name for a representation that will be returned. |
 | `(error code)` | ✓ | An optional error code, if your application supports unique error codes, that this error returns. This can either be a numerical code (ex. `(1234)`), or a fully qualified static accessor (ex. (`\Some\Exception::NOT_ALLOWED`). |
 | `description` | ✓ | A short description describing why, or what, this error is. |
 
 ## Types and subtypes
-In addition to supporting straight descriptions, the [`@api-throws`](/reference/api-throws) annotation also supports
+In addition to supporting straight descriptions, the [`@api-throws`]({{ site.github.url }}/reference/api-throws) annotation also supports
 the concept of "types" and "subtypes". For example:
 
 ```php

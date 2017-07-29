@@ -6,5 +6,5 @@ title: "Generate"
 # Generate
 ---
 
-* [Documentation](/generate/documentation)
-* [Changelogs](/generate/changelogs)
+* [Documentation]({{ site.github.url }}/generate/documentation)
+* [Changelogs]({{ site.github.url }}/generate/changelogs)

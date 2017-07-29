@@ -26,7 +26,7 @@ This allows you to describe the segments, or parameters, of a particular resourc
 
 | Tag | Optional | Description |
 | :--- | :--- | :--- |
-| `uri` | × | This is the corresponding [`@api-uri`](/reference/api-uri) URI that this segment/parameter exists on. |
+| `uri` | × | This is the corresponding [`@api-uri`]({{ site.github.url }}/reference/api-uri) URI that this segment/parameter exists on. |
 | `segmentName` | × | This is the name of the parameter that is used within the URI. |
 | `type` | × | This can be a reference to the type of variable that is being passed in (string, boolean, array, etc.), into the accompanying URI. |
 | `description` | × | Description of what the parameter is for. |

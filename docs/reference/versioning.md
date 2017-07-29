@@ -9,12 +9,13 @@ permalink: /reference/versioning
 
 As is the case with all API endpoints, there comes a time where you need to version specific endpoints, parameters,
 responses, exceptions, or representations. You can handle these types of changes in Mill by using the
-[`@api-version`](/reference/api-version) annotation on resource actions or representations.
+[`@api-version`]({{ site.github.url }}/reference/api-version) annotation on resource actions or representations.
 
 ## Usage
 ### Actions
-On resource actions, [`@api-version`](/reference/api/version) is a block-level annotation. This means that it allows
-you to classify any parameter following it as belonging to that defined version constraint. For example:
+On resource actions, [`@api-version`]({{ site.github.url }}/reference/api/version) is a block-level annotation. This
+means that it allows you to classify any parameter following it as belonging to that defined version constraint. For
+example:
 
 ```php
 @api-param:public {on_all_version requests}
@@ -30,14 +31,14 @@ you to classify any parameter following it as belonging to that defined version 
 
 * Anything below `@api-version >3.2` will be parsed with `version = >3.2` on it.
 * Anything below `@api-version >=3.4` will have `version = >=3.4`.
-* And anything that doesn't follow a [`@api-version`](/reference/api-version) annotation will be treated as being
-available across all versions.
+* And anything that doesn't follow a [`@api-version`]({{ site.github.url }}/reference/api-version) annotation will be
+treated as being available across all versions.
 
-Versioning is currently only supported on [`@api-param`](/reference/api-param), [`@api-return`](/referenceapi-return),
-and [`@api-throws`](/reference/api-throws).
+Versioning is currently only supported on [`@api-param`]({{ site.github.url }}/reference/api-param),
+[`@api-return`]({{ site.github.url }}/reference/api-return), and [`@api-throws`]({{ site.github.url }}/reference/api-throws).
 
 ### Representations
-In representations, the [`@api-version`](/reference/api-version) annotation works as any other annotation.
+In representations, the [`@api-version`]({{ site.github.url }}/reference/api-version) annotation works as any other annotation.
 
 ```php
 /**

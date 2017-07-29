@@ -34,7 +34,7 @@ application.
 
 | Tag | Optional | Description |
 | :--- | :--- | :--- |
-| `:visibility` | ✓ | [Visibility decorator](/reference/visibility) |
+| `:visibility` | ✓ | [Visibility decorator]({{ site.github.url }}/reference/visibility) |
 | `{return type}` | × | The type of response that will be returned. Example: `{ok}`, `{accepted}`, `{notmodified}`, etc. |
 | `\Representation` | ✓ | The fully qualified class name for a representation that will be returned. If your action is handling things like a `{delete}` or `{notmodified}` call, that normally don't return any data, you can exclude this. |
 | `description` | * | A short description describing why, or what, this response is. A description is only required when the returning HTTP code for this return is non-200. |
@@ -55,8 +55,8 @@ application.
 | | updated |
 | 304 Not Modified | notmodified |
 
-> **Note:** `@api-return` does not support returning 400 or 500 error codes. If you need those,
-use [`@api-throws`](/reference/api-throws) instead.
+> **Note:** `@api-return` does not support returning 400 or 500 error codes. If you need those, use
+> [`@api-throws`]({{ site.github.url }}/reference/api-throws) instead.
 
 ## Examples
 ```php
