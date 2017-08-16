@@ -1,4 +1,8 @@
 # Changelog
+## [2.5.5] - 2017-08-16
+## Changed
+- No longer watermarking compiled API Blueprint `api.apib` files with a link to Mill and the time of generation.
+
 ## [2.5.4] - 2017-07-25
 ## Fixed
 - Fixed some PHP 5.4 compatibility issues with the new changelog work.
