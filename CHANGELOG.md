@@ -1,4 +1,8 @@
 # Changelog
+## [2.5.6] - 2017-08-18
+## Changed
+- Changelog versions are now sorted with SemVer rules.
+
 ## [2.5.5] - 2017-08-16
 ## Changed
 - No longer watermarking compiled API Blueprint `api.apib` files with a link to Mill and the time of generation.
