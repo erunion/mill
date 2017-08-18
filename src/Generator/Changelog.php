@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Generator;
 
+use Composer\Semver\Semver;
 use Mill\Generator;
 use Mill\Generator\Changelog\Formats\Json;
 use Mill\Generator\Changelog\Formats\Markdown;
@@ -59,7 +60,6 @@ class Changelog extends Generator
         $this->buildResourceChangelog($this->parsed['resources']);
 
         // Keep things tidy
-        krsort($this->changelog);
         foreach ($this->changelog as $version => $changes) {
             $version_data = $this->config->getApiVersion($version);
             $this->changelog[$version]['_details'] = [
@@ -73,7 +73,15 @@ class Changelog extends Generator
             ksort($this->changelog[$version]);
         }
 
-        return $this->changelog;
+        // Sort the changelog according to Semver rules. This fixes issues where if we'd just do a `ksort()`, `*.1` and
+        // `*.10` would show up in succession.
+        $changelog = [];
+        $semver_sort = Semver::rsort(array_keys($this->changelog));
+        foreach ($semver_sort as $version) {
+            $changelog[$version] = $this->changelog[$version];
+        }
+
+        return $changelog;
     }
 
     /**
