@@ -50,6 +50,7 @@ class DataAnnotationTest extends AnnotationTest
                     'capability' => false,
                     'description' => 'MPAA rating',
                     'identifier' => 'content_rating',
+                    'nullable' => false,
                     'sample_data' => false,
                     'scopes' => [],
                     'subtype' => false,
@@ -67,12 +68,30 @@ class DataAnnotationTest extends AnnotationTest
                     'capability' => false,
                     'description' => 'MPAA rating',
                     'identifier' => 'content_rating',
+                    'nullable' => false,
                     'sample_data' => false,
                     'scopes' => [],
                     'subtype' => false,
                     'type' => 'string',
                     'values' => false,
                     'version' => '1.0'
+                ]
+            ],
+            'nullable' => [
+                'content' => '/**
+                  * @api-data tickets.url (string, nullable) - URL to purchase tickets
+                  */',
+                'expected' => [
+                    'capability' => false,
+                    'description' => 'URL to purchase tickets',
+                    'identifier' => 'tickets.url',
+                    'nullable' => true,
+                    'sample_data' => false,
+                    'scopes' => [],
+                    'subtype' => false,
+                    'type' => 'string',
+                    'values' => false,
+                    'version' => false
                 ]
             ],
             'capability' => [
@@ -83,6 +102,7 @@ class DataAnnotationTest extends AnnotationTest
                     'capability' => 'BUY_TICKETS',
                     'description' => 'URL to purchase tickets',
                     'identifier' => 'tickets.url',
+                    'nullable' => false,
                     'sample_data' => false,
                     'scopes' => [],
                     'subtype' => false,
@@ -108,6 +128,7 @@ class DataAnnotationTest extends AnnotationTest
                     'capability' => false,
                     'description' => 'MPAA rating',
                     'identifier' => 'content_rating',
+                    'nullable' => false,
                     'sample_data' => 'G',
                     'scopes' => [],
                     'subtype' => false,
@@ -134,6 +155,7 @@ class DataAnnotationTest extends AnnotationTest
                     'capability' => false,
                     'description' => 'URL to purchase tickets',
                     'identifier' => 'tickets.url',
+                    'nullable' => false,
                     'sample_data' => false,
                     'scopes' => [
                         [
@@ -149,7 +171,7 @@ class DataAnnotationTest extends AnnotationTest
             ],
             '_complete' => [
                 'content' => '/**
-                  * @api-data content_rating (enum, MOVIE_RATINGS) - MPAA rating
+                  * @api-data content_rating (enum, nullable, MOVIE_RATINGS) - MPAA rating
                   *  + Members
                   *    - `G`
                   *    - `PG`
@@ -166,6 +188,7 @@ class DataAnnotationTest extends AnnotationTest
                     'capability' => 'MOVIE_RATINGS',
                     'description' => 'MPAA rating',
                     'identifier' => 'content_rating',
+                    'nullable' => true,
                     'sample_data' => 'G',
                     'scopes' => [
                         [
