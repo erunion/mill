@@ -176,6 +176,8 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[2.5.6]: https://github.com/vimeo/mill/compare/2.5.5...2.5.6
+[2.5.5]: https://github.com/vimeo/mill/compare/2.5.4...2.5.5
 [2.5.4]: https://github.com/vimeo/mill/compare/2.5.3...2.5.4
 [2.5.3]: https://github.com/vimeo/mill/compare/2.5.2...2.5.3
 [2.5.2]: https://github.com/vimeo/mill/compare/2.5.1...2.5.2
