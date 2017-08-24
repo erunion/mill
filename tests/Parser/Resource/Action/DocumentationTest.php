@@ -344,7 +344,7 @@ DESCRIPTION;
                                 'field' => 'content_rating',
                                 'required' => false,
                                 'sample_data' => false,
-                                'type' => 'string',
+                                'type' => 'enum',
                                 'values' => [
                                     'G' => '',
                                     'NC-17' => '',
