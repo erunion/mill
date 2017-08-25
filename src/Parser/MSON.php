@@ -93,6 +93,13 @@ class MSON
     protected $is_required = false;
 
     /**
+     * Is this MSON content designated as nullable?
+     *
+     * @var bool
+     */
+    protected $is_nullable = false;
+
+    /**
      * Application-specific capability that was parsed out of the MSON content.
      *
      * @var string|false
@@ -160,7 +167,9 @@ class MSON
          *
          *  - content_rating (string) - MPAA rating
          *  - content_rating `G` (string, required) - MPAA rating
+         *  - content_rating `G` (string, required, nullable) - MPAA rating
          *  - content_rating `G` (string, optional, MOVIE_RATINGS) - MPAA rating
+         *  - content_rating `G` (string, optional, nullable, MOVIE_RATINGS) - MPAA rating
          *  - content_rating `G` (string, MOVIE_RATINGS) - MPAA rating
          *  - websites.description (string) - The websites' description
          *  - websites (array<object>) - The users' list of websites.
@@ -171,7 +180,7 @@ class MSON
          */
         $regex_mson = '/((?P<field>[\w.\*]+) (`(?P<sample_data>.+)` )?' .
             '\((?P<type>[\w\\\]+)(<(?P<subtype>[\w\\\]+)>)?(, (?P<required>required|optional))?(, ' .
-            '(?P<capability>\w+))?\)(\n|\s)+-(\n|\s)+(?P<description>.+))/uis';
+            '(?P<nullable>nullable))?(, (?P<capability>\w+))?\)(\n|\s)+-(\n|\s)+(?P<description>.+))/uis';
 
         preg_match($regex_mson, $content, $matches);
 
@@ -184,6 +193,12 @@ class MSON
         if (isset($matches['required'])) {
             if (!empty($matches['required']) && strtolower($matches['required']) == 'required') {
                 $this->is_required = true;
+            }
+        }
+
+        if (isset($matches['nullable'])) {
+            if (!empty($matches['nullable']) && strtolower($matches['nullable']) == 'nullable') {
+                $this->is_nullable = true;
             }
         }
 
@@ -316,6 +331,16 @@ class MSON
     }
 
     /**
+     * Is this MSON content designated as nullable?
+     *
+     * @return bool
+     */
+    public function isNullable()
+    {
+        return $this->is_nullable;
+    }
+
+    /**
      * Application-specific capability that was parsed out of the MSON content.
      *
      * @return string|false
@@ -356,6 +381,7 @@ class MSON
             'capability' => $this->getCapability(),
             'description' => $this->getDescription(),
             'field' => $this->getField(),
+            'nullable' => $this->isNullable(),
             'required' => $this->isRequired(),
             'sample_data' => $this->getSampleData(),
             'subtype' => $this->getSubtype(),

@@ -280,11 +280,12 @@ class Blueprint extends Generator
 
             $blueprint .= $this->tab(2);
             $blueprint .= sprintf(
-                '- `%s`%s (%s%s) - %s',
+                '- `%s`%s (%s%s%s) - %s',
                 $param->getField(),
                 (!empty($sample_data)) ? sprintf(': `%s`', $sample_data) : '',
                 (!empty($values) && $param->getType() !== 'enum') ? 'enum[' . $type . ']' : $type,
                 ($param->isRequired()) ? ', required' : null,
+                ($param->isNullable()) ? ', nullable' : null,
                 $param->getDescription()
             );
 
@@ -428,10 +429,11 @@ class Blueprint extends Generator
                 }
 
                 $blueprint .= sprintf(
-                    '- `%s`%s (%s) - %s',
+                    '- `%s`%s (%s%s) - %s',
                     $field_name,
                     (!empty($data['sample_data'])) ? sprintf(': `%s`', $data['sample_data']) : '',
                     $type,
+                    ($data['nullable']) ? ', nullable' : null,
                     $description
                 );
 

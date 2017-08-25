@@ -46,6 +46,13 @@ class ParamAnnotation extends Annotation
     protected $required = false;
 
     /**
+     * Flag designating if this parameter is nullable.
+     *
+     * @var bool
+     */
+    protected $nullable = false;
+
+    /**
      * Description of what this parameter does.
      *
      * @var string
@@ -68,6 +75,7 @@ class ParamAnnotation extends Annotation
         'capability',
         'description',
         'field',
+        'nullable',
         'required',
         'sample_data',
         'type',
@@ -98,6 +106,7 @@ class ParamAnnotation extends Annotation
             'sample_data' => $mson->getSampleData(),
             'type' => $mson->getType(),
             'required' => $mson->isRequired(),
+            'nullable' => $mson->isNullable(),
             'capability' => $mson->getCapability(),
             'description' => $mson->getDescription(),
             'values' => $mson->getValues()
@@ -133,6 +142,7 @@ class ParamAnnotation extends Annotation
 
         $this->values = $this->optional('values');
         $this->capability = $this->optional('capability');
+        $this->nullable = $this->optional('nullable');
     }
 
     /**
@@ -183,6 +193,16 @@ class ParamAnnotation extends Annotation
     public function isRequired()
     {
         return $this->required;
+    }
+
+    /**
+     * Is this parameter nullable?
+     *
+     * @return bool
+     */
+    public function isNullable()
+    {
+        return $this->nullable;
     }
 
     /**
