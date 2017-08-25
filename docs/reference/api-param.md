@@ -11,7 +11,7 @@ A request parameter that can be supplied to a resource action.
 
 ## Syntax
 ```php
-@api-param:visibility fieldName `sampleData` (type, required|optional, capabilityName) - Description
+@api-param:visibility fieldName `sampleData` (type, required|optional, nullable, capabilityName) - Description
     + Members
         - `option` - Option description
 ```
@@ -31,6 +31,7 @@ A request parameter that can be supplied to a resource action.
 | `sampleData` | ✓ | This is a sample of what the contents of the parameter should be. For example, if you're passing in a number, this can be "50". |
 | `type` | × | This can be a reference to the type of variable that is being passed in (string, boolean, array, etc.), or can be one of the [tokens](#tokens) that are configured for your API. |
 | `required|optional` | ✓ | A flag that indicates that the parameter is, well, optional. If nothing is supplied, it defaults to being `optional`. |
+| `nullable` | ✓ | A flag that indicates that the parameter is nullable. If nothing is supplied, it defaults to being non-nullable. |
 | `capabilityName` | ✓ | Defined capability that the developers application should possess. |
 | `Description` | × | Description for what the parameter is for. |
 | Members | ✓ | If this parameter has acceptable values (like in the case of an `enum` type), you can document those values here along with a description for what the value is, or means. |

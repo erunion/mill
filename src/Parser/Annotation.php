@@ -1,10 +1,8 @@
 <?php
 namespace Mill\Parser;
 
-use Mill\Exceptions\Annotations\BadOptionsListException;
 use Mill\Exceptions\Annotations\InvalidMSONSyntaxException;
 use Mill\Exceptions\Annotations\MissingRequiredFieldException;
-use Mill\Parser\Annotations\ScopeAnnotation;
 
 /**
  * Base class for supported annotations.
