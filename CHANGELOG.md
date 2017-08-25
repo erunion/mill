@@ -1,4 +1,12 @@
 # Changelog
+## [2.6.0] - 2017-08-25
+## Added
+- A new `errors` command for generating Markdown representation of all documented API errors.
+- Support for `nullable` flags in MSON-supported annotations. [#104](https://github.com/vimeo/mill/issues/104)
+
+## Fixed
+- Compatibility issues with `enum` parameter types in compiled API Blueprint files. [#113](https://github.com/vimeo/mill/issues/113)
+
 ## [2.5.6] - 2017-08-18
 ## Changed
 - Changelog versions are now sorted with SemVer rules.
@@ -176,6 +184,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[2.6.0]: https://github.com/vimeo/mill/compare/2.5.6...2.6.0
 [2.5.6]: https://github.com/vimeo/mill/compare/2.5.5...2.5.6
 [2.5.5]: https://github.com/vimeo/mill/compare/2.5.4...2.5.5
 [2.5.4]: https://github.com/vimeo/mill/compare/2.5.3...2.5.4
