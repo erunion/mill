@@ -118,7 +118,7 @@ class ChangelogTest extends TestCase
                                 'method' => 'GET',
                                 'uri' => '/movies/{id}',
                                 'http_code' => '404 Not Found',
-                                    'representation' => 'Error',
+                                'representation' => 'Error',
                                 'description' => 'For no reason.'
                             ],
                             [
@@ -138,6 +138,22 @@ class ChangelogTest extends TestCase
                                 'http_code' => '404 Not Found',
                                 'representation' => 'Error',
                                 'description' => 'If the trailer URL could not be validated.'
+                            ],
+                            [
+                                'resource_group' => 'Movies',
+                                'method' => 'PATCH',
+                                'uri' => '/movies/{id}',
+                                'http_code' => '403 Forbidden',
+                                'representation' => 'Coded error',
+                                'description' => 'If something cool happened.'
+                            ],
+                            [
+                                'resource_group' => 'Movies',
+                                'method' => 'PATCH',
+                                'uri' => '/movies/{id}',
+                                'http_code' => '403 Forbidden',
+                                'representation' => 'Coded error',
+                                'description' => 'If the user is not allowed to edit that movie.'
                             ]
                         ]
                     ]
@@ -217,6 +233,18 @@ class ChangelogTest extends TestCase
                     ]
                 ],
                 '/theaters/{id}' => [
+                    'action_throws' => [
+                        'b3a16c4d74' => [
+                            [
+                                'resource_group' => 'Theaters',
+                                'method' => 'PATCH',
+                                'uri' => '/theaters/{id}',
+                                'http_code' => '403 Forbidden',
+                                'representation' => 'Coded error',
+                                'description' => 'If something cool happened.'
+                            ]
+                        ]
+                    ],
                     'content_type' => [
                         '979fc6e97f' => [
                             [
@@ -436,6 +464,18 @@ class ChangelogTest extends TestCase
                                     ]
                                 ]
                             ]
+                        ],
+                        'removed' => [
+                            'resources' => [
+                                'Theaters' => [
+                                    '/theaters/{id}' => [
+                                        Changelog::CHANGESET_TYPE_ACTION_THROWS => [
+                                            'b3a16c4d74' =>
+                                                $actions['1.1.2']['/theaters/{id}']['action_throws']['b3a16c4d74']
+                                        ]
+                                    ]
+                                ]
+                            ]
                         ]
                     ],
                     '1.1.1' => [
@@ -581,6 +621,18 @@ class ChangelogTest extends TestCase
                                     ]
                                 ]
                             ]
+                        ],
+                        'removed' => [
+                            'resources' => [
+                                'Theaters' => [
+                                    '/theaters/{id}' => [
+                                        Changelog::CHANGESET_TYPE_ACTION_THROWS => [
+                                            'b3a16c4d74' =>
+                                                $actions['1.1.2']['/theaters/{id}']['action_throws']['b3a16c4d74']
+                                        ]
+                                    ]
+                                ]
+                            ]
                         ]
                     ],
                     '1.1.1' => [
@@ -722,6 +774,18 @@ class ChangelogTest extends TestCase
                                                 $actions['1.1.2']['/theaters']['content_type']['979fc6e97f'],
                                             '066564ef49' =>
                                                 $actions['1.1.2']['/theaters']['content_type']['066564ef49']
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'removed' => [
+                            'resources' => [
+                                'Theaters' => [
+                                    '/theaters/{id}' => [
+                                        Changelog::CHANGESET_TYPE_ACTION_THROWS => [
+                                            'b3a16c4d74' =>
+                                                $actions['1.1.2']['/theaters/{id}']['action_throws']['b3a16c4d74']
                                         ]
                                     ]
                                 ]
@@ -879,6 +943,18 @@ class ChangelogTest extends TestCase
                                     ]
                                 ]
                             ]
+                        ],
+                        'removed' => [
+                            'resources' => [
+                                'Theaters' => [
+                                    '/theaters/{id}' => [
+                                        Changelog::CHANGESET_TYPE_ACTION_THROWS => [
+                                            'b3a16c4d74' =>
+                                                $actions['1.1.2']['/theaters/{id}']['action_throws']['b3a16c4d74']
+                                        ]
+                                    ]
+                                ]
+                            ]
                         ]
                     ],
                     '1.1.1' => [
@@ -939,7 +1015,7 @@ class ChangelogTest extends TestCase
             ],
 
             // Changelog with public-only parsed docs
-            'changelog-public-docs-with-unmatched-capabilities' => [
+            'changelog-public-docs' => [
                 'private_objects' => false,
                 'capabilities' => [],
                 'expected' => [
@@ -1015,6 +1091,18 @@ class ChangelogTest extends TestCase
                                                 $actions['1.1.2']['/theaters']['content_type']['979fc6e97f'],
                                             '066564ef49' =>
                                                 $actions['1.1.2']['/theaters']['content_type']['066564ef49']
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'removed' => [
+                            'resources' => [
+                                'Theaters' => [
+                                    '/theaters/{id}' => [
+                                        Changelog::CHANGESET_TYPE_ACTION_THROWS => [
+                                            'b3a16c4d74' =>
+                                                $actions['1.1.2']['/theaters/{id}']['action_throws']['b3a16c4d74']
                                         ]
                                     ]
                                 ]

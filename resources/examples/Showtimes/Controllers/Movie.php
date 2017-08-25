@@ -103,6 +103,10 @@ class Movie
      * @api-return:public {accepted} \Mill\Examples\Showtimes\Representations\Movie
      * @api-throws:public {404} \Mill\Examples\Showtimes\Representations\Error If the trailer URL could not be
      *      validated.
+     * @api-throws:private {403} \Mill\Examples\Showtimes\Representations\CodedError (1337) If something cool happened.
+     * @api-throws:public {403} \Mill\Examples\Showtimes\Representations\CodedError
+     *      (Mill\Examples\Showtimes\Representations\CodedError::DISALLOWED) If the user is not allowed to edit that
+     *      movie.
      */
     public function PATCH()
     {

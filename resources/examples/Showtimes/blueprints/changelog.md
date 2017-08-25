@@ -13,7 +13,10 @@ Changed up the responses for `/movie/{id}`, `/movies/{id}` and `/movies`.
     - `/movies/{id}` will now throw the following errors on `GET` requests:
         - `404 Not Found` with a `Error` representation: For no reason.
         - `404 Not Found` with a `Error` representation: For some other reason.
-    - On `PATCH` requests to `/movies/{id}`, a `404 Not Found` with a `Error` representation will now be returned: If the trailer URL could not be validated.
+    - `/movies/{id}` will now throw the following errors on `PATCH` requests:
+        - `404 Not Found` with a `Error` representation: If the trailer URL could not be validated.
+        - `403 Forbidden` with a `Coded error` representation: If something cool happened.
+        - `403 Forbidden` with a `Coded error` representation: If the user is not allowed to edit that movie.
     - On `/movies/{id}`, `PATCH` requests now returns a `202 Accepted` with a `Movie` representation.
     - `POST` on `/movies` now returns a `201 Created`.
 
@@ -36,6 +39,11 @@ Changed up the responses for `/movie/{id}`, `/movies/{id}` and `/movies`.
     - On `/theaters/{id}`, `PATCH` requests will return a `application/mill.example.theater` Content-Type header.
     - On `/theaters`, `GET` requests will return a `application/mill.example.theater` Content-Type header.
     - On `/theaters`, `POST` requests will return a `application/mill.example.theater` Content-Type header.
+
+#### Removed
+##### Resources
+- The following Theaters resources have removed:
+    - `PATCH` requests to `/theaters/{id}` longer will return a `403 Forbidden` with a `Coded error` representation: If something cool happened.
 
 ## 1.1.1 (2017-03-01)
 ### Reference

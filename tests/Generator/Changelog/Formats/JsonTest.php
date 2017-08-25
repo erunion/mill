@@ -81,20 +81,39 @@ class JsonTest extends TestCase
                                         'other reason.'
                                 ]
                             ],
-                            'On <span class="mill-changelog_method" data-mill-resource-group="Movies" ' .
-                                'data-mill-method="PATCH" data-mill-uri="/movies/{id}" ' .
-                                'data-mill-http-code="404 Not Found" data-mill-representation="Error">PATCH</span> ' .
-                                'requests to <span class="mill-changelog_uri" data-mill-resource-group="Movies" ' .
-                                'data-mill-method="PATCH" data-mill-uri="/movies/{id}" ' .
-                                'data-mill-http-code="404 Not Found" data-mill-representation="Error">/movies/{id}' .
-                                '</span>, a <span class="mill-changelog_http_code" ' .
-                                'data-mill-resource-group="Movies" data-mill-method="PATCH" ' .
-                                'data-mill-uri="/movies/{id}" data-mill-http-code="404 Not Found" ' .
-                                'data-mill-representation="Error">404 Not Found</span> with a <span ' .
-                                'class="mill-changelog_representation" data-mill-resource-group="Movies" ' .
-                                'data-mill-method="PATCH" data-mill-uri="/movies/{id}" ' .
-                                'data-mill-http-code="404 Not Found" data-mill-representation="Error">Error</span> ' .
-                                'representation will now be returned: If the trailer URL could not be validated.',
+                            [
+                                '<span class="mill-changelog_uri" data-mill-resource-group="Movies" ' .
+                                    'data-mill-method="PATCH" data-mill-uri="/movies/{id}">/movies/{id}</span> will ' .
+                                    'now throw the following errors on <span class="mill-changelog_method" ' .
+                                    'data-mill-resource-group="Movies" data-mill-method="PATCH" ' .
+                                    'data-mill-uri="/movies/{id}">PATCH</span> requests:',
+                                [
+                                    '<span class="mill-changelog_http_code" data-mill-resource-group="Movies" ' .
+                                        'data-mill-method="PATCH" data-mill-uri="/movies/{id}" ' .
+                                        'data-mill-http-code="404 Not Found" data-mill-representation="Error">404 ' .
+                                        'Not Found</span> with a <span class="mill-changelog_representation" ' .
+                                        'data-mill-resource-group="Movies" data-mill-method="PATCH" ' .
+                                        'data-mill-uri="/movies/{id}" data-mill-http-code="404 Not Found" ' .
+                                        'data-mill-representation="Error">Error</span> representation: If the ' .
+                                        'trailer URL could not be validated.',
+                                    '<span class="mill-changelog_http_code" data-mill-resource-group="Movies" ' .
+                                        'data-mill-method="PATCH" data-mill-uri="/movies/{id}" ' .
+                                        'data-mill-http-code="403 Forbidden" data-mill-representation="Coded error">' .
+                                        '403 Forbidden</span> with a <span class="mill-changelog_representation" ' .
+                                        'data-mill-resource-group="Movies" data-mill-method="PATCH" ' .
+                                        'data-mill-uri="/movies/{id}" data-mill-http-code="403 Forbidden" ' .
+                                        'data-mill-representation="Coded error">Coded error</span> representation: ' .
+                                        'If something cool happened.',
+                                    '<span class="mill-changelog_http_code" data-mill-resource-group="Movies" ' .
+                                        'data-mill-method="PATCH" data-mill-uri="/movies/{id}" ' .
+                                        'data-mill-http-code="403 Forbidden" data-mill-representation="Coded error">' .
+                                        '403 Forbidden</span> with a <span class="mill-changelog_representation" ' .
+                                        'data-mill-resource-group="Movies" data-mill-method="PATCH" ' .
+                                        'data-mill-uri="/movies/{id}" data-mill-http-code="403 Forbidden" ' .
+                                        'data-mill-representation="Coded error">Coded error</span> representation: ' .
+                                        'If the user is not allowed to edit that movie.'
+                                ]
+                            ],
                             'On <span class="mill-changelog_uri" data-mill-resource-group="Movies" ' .
                                 'data-mill-method="PATCH" data-mill-uri="/movies/{id}" ' .
                                 'data-mill-http-code="202 Accepted" data-mill-representation="Movie">/movies/{id}' .
@@ -244,6 +263,31 @@ class JsonTest extends TestCase
                                 'data-mill-uri="/theaters" ' .
                                 'data-mill-content-type="application/mill.example.theater">' .
                                 'application/mill.example.theater</span> Content-Type header.'
+                        ]
+                    ]
+                ]
+            ],
+            'removed' => [
+                'resources' => [
+                    [
+                        'The following <span class="mill-changelog_resource_group" ' .
+                            'data-mill-resource-group="Theaters">Theaters</span> resources have removed:',
+                        [
+                            '<span class="mill-changelog_method" data-mill-resource-group="Theaters" ' .
+                                'data-mill-method="PATCH" data-mill-uri="/theaters/{id}" ' .
+                                'data-mill-http-code="403 Forbidden" data-mill-representation="Coded error">PATCH' .
+                                '</span> requests to <span class="mill-changelog_uri" ' .
+                                'data-mill-resource-group="Theaters" data-mill-method="PATCH" ' .
+                                'data-mill-uri="/theaters/{id}" data-mill-http-code="403 Forbidden" ' .
+                                'data-mill-representation="Coded error">/theaters/{id}</span> longer will return a ' .
+                                '<span class="mill-changelog_http_code" data-mill-resource-group="Theaters" ' .
+                                'data-mill-method="PATCH" data-mill-uri="/theaters/{id}" ' .
+                                'data-mill-http-code="403 Forbidden" data-mill-representation="Coded error">403 ' .
+                                'Forbidden</span> with a <span class="mill-changelog_representation" ' .
+                                'data-mill-resource-group="Theaters" data-mill-method="PATCH" ' .
+                                'data-mill-uri="/theaters/{id}" data-mill-http-code="403 Forbidden" ' .
+                                'data-mill-representation="Coded error">Coded error</span> representation: If ' .
+                                'something cool happened.'
                         ]
                     ]
                 ]

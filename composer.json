@@ -56,15 +56,40 @@
         "build-changelogs": [
             "./bin/mill changelog --config=resources/examples/mill.xml --private=false resources/examples/Showtimes/blueprints/",
             "mv resources/examples/Showtimes/blueprints/changelog.md resources/examples/Showtimes/blueprints/changelog-public-only-all-capabilities.md",
+
             "./bin/mill changelog --config=resources/examples/mill.xml --private=false --capability=BUY_TICKETS --capability=FEATURE_FLAG resources/examples/Showtimes/blueprints/",
             "mv resources/examples/Showtimes/blueprints/changelog.md resources/examples/Showtimes/blueprints/changelog-public-only-unmatched-capabilities.md",
+
             "./bin/mill changelog --config=resources/examples/mill.xml --private=false --capability=DELETE_CONTENT resources/examples/Showtimes/blueprints/",
             "mv resources/examples/Showtimes/blueprints/changelog.md resources/examples/Showtimes/blueprints/changelog-public-only-matched-capabilities.md",
+
             "./bin/mill changelog --config=resources/examples/mill.xml resources/examples/Showtimes/blueprints/"
+        ],
+        "build-errors": [
+            "./bin/mill errors --config=resources/examples/mill.xml --private=false resources/examples/Showtimes/blueprints/",
+            "mv resources/examples/Showtimes/blueprints/1.0/errors.md resources/examples/Showtimes/blueprints/1.0/errors-public-only-all-capabilities.md",
+            "mv resources/examples/Showtimes/blueprints/1.1/errors.md resources/examples/Showtimes/blueprints/1.1/errors-public-only-all-capabilities.md",
+            "mv resources/examples/Showtimes/blueprints/1.1.1/errors.md resources/examples/Showtimes/blueprints/1.1.1/errors-public-only-all-capabilities.md",
+            "mv resources/examples/Showtimes/blueprints/1.1.3/errors.md resources/examples/Showtimes/blueprints/1.1.3/errors-public-only-all-capabilities.md",
+
+            "./bin/mill errors --config=resources/examples/mill.xml --private=false --capability=BUY_TICKETS --capability=FEATURE_FLAG resources/examples/Showtimes/blueprints/",
+            "mv resources/examples/Showtimes/blueprints/1.0/errors.md resources/examples/Showtimes/blueprints/1.0/errors-public-only-unmatched-capabilities.md",
+            "mv resources/examples/Showtimes/blueprints/1.1/errors.md resources/examples/Showtimes/blueprints/1.1/errors-public-only-unmatched-capabilities.md",
+            "mv resources/examples/Showtimes/blueprints/1.1.1/errors.md resources/examples/Showtimes/blueprints/1.1.1/errors-public-only-unmatched-capabilities.md",
+            "mv resources/examples/Showtimes/blueprints/1.1.3/errors.md resources/examples/Showtimes/blueprints/1.1.3/errors-public-only-unmatched-capabilities.md",
+
+            "./bin/mill errors --config=resources/examples/mill.xml --private=false --capability=DELETE_CONTENT resources/examples/Showtimes/blueprints/",
+            "mv resources/examples/Showtimes/blueprints/1.0/errors.md resources/examples/Showtimes/blueprints/1.0/errors-public-only-matched-capabilities.md",
+            "mv resources/examples/Showtimes/blueprints/1.1/errors.md resources/examples/Showtimes/blueprints/1.1/errors-public-only-matched-capabilities.md",
+            "mv resources/examples/Showtimes/blueprints/1.1.1/errors.md resources/examples/Showtimes/blueprints/1.1.1/errors-public-only-matched-capabilities.md",
+            "mv resources/examples/Showtimes/blueprints/1.1.3/errors.md resources/examples/Showtimes/blueprints/1.1.3/errors-public-only-matched-capabilities.md",
+
+            "./bin/mill errors --config=resources/examples/mill.xml resources/examples/Showtimes/blueprints/"
         ],
         "build-resources": [
             "composer build-blueprints",
-            "composer build-changelogs"
+            "composer build-changelogs",
+            "composer build-errors"
         ],
         "check-style": "phpcs --standard=PSR2 bin/ src/ tests/",
         "coverage": "phpunit --coverage-html reports/",
