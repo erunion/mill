@@ -51,7 +51,7 @@ class ErrorMap extends Generator
                             }
 
                             $uri = $action->getUri();
-                            $this->error_map[$version][$group_name][$identifier][] = [
+                            $this->error_map[$version][$group_name][$error_code][] = [
                                 'uri' => $uri->getCleanPath(),
                                 'method' => $action->getMethod(),
                                 'http_code' => $response->getHttpCode(),
@@ -69,8 +69,14 @@ class ErrorMap extends Generator
             foreach ($groups as $group => $resources) {
                 foreach ($resources as $identifier => $errors) {
                     usort($this->error_map[$version][$group][$identifier], function ($a, $b) {
+                        // If the error codes match, then fallback to sorting by the URI.
                         if ($a['error_code'] == $b['error_code']) {
-                            return 0;
+                            // If the URIs match, then fallback to sorting by their methods.
+                            if ($a['uri'] == $b['uri']) {
+                                return ($a['method'] < $b['method']) ? -1 : 1;
+                            }
+
+                            return ($a['uri'] < $b['uri']) ? -1 : 1;
                         }
 
                         return ($a['error_code'] < $b['error_code']) ? -1 : 1;

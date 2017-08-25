@@ -58,7 +58,7 @@ class Markdown extends Generator
                 $content .= sprintf('## %s', $group);
                 $content .= $this->line(1);
 
-                $content .= '| URI | Method | HTTP Code | Error Code | Description |';
+                $content .= '| Error Code | URI | Method | HTTP Code | Description |';
                 $content .= $this->line(1);
                 $content .= '| :--- | :--- | :--- | :--- | :--- |';
                 $content .= $this->line(1);
@@ -66,11 +66,11 @@ class Markdown extends Generator
                 foreach ($actions as $errors) {
                     foreach ($errors as $error) {
                         $content .= sprintf(
-                            '| `%s` | %s | %s | %s | %s |',
+                            '| %s | %s | %s | %s | %s |',
+                            $error['error_code'],
                             $error['uri'],
                             $error['method'],
                             $error['http_code'],
-                            $error['error_code'],
                             $error['description']
                         );
 
@@ -78,7 +78,7 @@ class Markdown extends Generator
                     }
                 }
 
-                $content .= $this->line(2);
+                $content .= $this->line(1);
             }
 
             $content = trim($content);

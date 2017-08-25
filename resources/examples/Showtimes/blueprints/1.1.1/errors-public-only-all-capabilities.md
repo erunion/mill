@@ -1,6 +1,6 @@
 # Errors: Mill unit test API, Showtimes
 
 ## Theaters
-| URI | Method | HTTP Code | Error Code | Description |
+| Error Code | URI | Method | HTTP Code | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| `/theaters/{id}` | PATCH | 403 Forbidden | 1337 | If something cool happened. |
+| 1337 | /theaters/{id} | PATCH | 403 Forbidden | If something cool happened. |

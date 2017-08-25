@@ -77,29 +77,31 @@ class ErrorMapTestTest extends TestCase
                 'expected' => [
                     '1.0' => [
                         'Theaters' => [
-                            '/theaters/+id::PATCH' => [
+                            '1337' => [
                                 $errors['/theaters/+id::PATCH::1337']
                             ]
                         ]
                     ],
                     '1.1' => [
                         'Theaters' => [
-                            '/theaters/+id::PATCH' => [
+                            '1337' => [
                                 $errors['/theaters/+id::PATCH::1337']
                             ]
                         ]
                     ],
                     '1.1.1' => [
                         'Theaters' => [
-                            '/theaters/+id::PATCH' => [
+                            '1337' => [
                                 $errors['/theaters/+id::PATCH::1337']
                             ]
                         ]
                     ],
                     '1.1.3' => [
                         'Movies' => [
-                            '/movies/+id::PATCH' => [
+                            '666' => [
                                 $errors['/movies/+id::PATCH:666'],
+                            ],
+                            '1337' => [
                                 $errors['/movies/+id::PATCH:1337']
                             ]
                         ]
@@ -119,28 +121,28 @@ class ErrorMapTestTest extends TestCase
                 'expected' => [
                     '1.0' => [
                         'Theaters' => [
-                            '/theaters/+id::PATCH' => [
+                            '1337' => [
                                 $errors['/theaters/+id::PATCH::1337']
                             ]
                         ]
                     ],
                     '1.1' => [
                         'Theaters' => [
-                            '/theaters/+id::PATCH' => [
+                            '1337' => [
                                 $errors['/theaters/+id::PATCH::1337']
                             ]
                         ]
                     ],
                     '1.1.1' => [
                         'Theaters' => [
-                            '/theaters/+id::PATCH' => [
+                            '1337' => [
                                 $errors['/theaters/+id::PATCH::1337']
                             ]
                         ]
                     ],
                     '1.1.3' => [
                         'Movies' => [
-                            '/movies/+id::PATCH' => [
+                            '666' => [
                                 $errors['/movies/+id::PATCH:666']
                             ]
                         ]
@@ -158,28 +160,28 @@ class ErrorMapTestTest extends TestCase
                 'expected' => [
                     '1.0' => [
                         'Theaters' => [
-                            '/theaters/+id::PATCH' => [
+                            '1337' => [
                                 $errors['/theaters/+id::PATCH::1337']
                             ]
                         ]
                     ],
                     '1.1' => [
                         'Theaters' => [
-                            '/theaters/+id::PATCH' => [
+                            '1337' => [
                                 $errors['/theaters/+id::PATCH::1337']
                             ]
                         ]
                     ],
                     '1.1.1' => [
                         'Theaters' => [
-                            '/theaters/+id::PATCH' => [
+                            '1337' => [
                                 $errors['/theaters/+id::PATCH::1337']
                             ]
                         ]
                     ],
                     '1.1.3' => [
                         'Movies' => [
-                            '/movies/+id::PATCH' => [
+                            '666' => [
                                 $errors['/movies/+id::PATCH:666']
                             ]
                         ]
@@ -196,28 +198,28 @@ class ErrorMapTestTest extends TestCase
                 'expected' => [
                     '1.0' => [
                         'Theaters' => [
-                            '/theaters/+id::PATCH' => [
+                            '1337' => [
                                 $errors['/theaters/+id::PATCH::1337']
                             ]
                         ]
                     ],
                     '1.1' => [
                         'Theaters' => [
-                            '/theaters/+id::PATCH' => [
+                            '1337' => [
                                 $errors['/theaters/+id::PATCH::1337']
                             ]
                         ]
                     ],
                     '1.1.1' => [
                         'Theaters' => [
-                            '/theaters/+id::PATCH' => [
+                            '1337' => [
                                 $errors['/theaters/+id::PATCH::1337']
                             ]
                         ]
                     ],
                     '1.1.3' => [
                         'Movies' => [
-                            '/movies/+id::PATCH' => [
+                            '666' => [
                                 $errors['/movies/+id::PATCH:666']
                             ]
                         ]
@@ -232,28 +234,28 @@ class ErrorMapTestTest extends TestCase
                 'expected' => [
                     '1.0' => [
                         'Theaters' => [
-                            '/theaters/+id::PATCH' => [
+                            '1337' => [
                                 $errors['/theaters/+id::PATCH::1337']
                             ]
                         ]
                     ],
                     '1.1' => [
                         'Theaters' => [
-                            '/theaters/+id::PATCH' => [
+                            '1337' => [
                                 $errors['/theaters/+id::PATCH::1337']
                             ]
                         ]
                     ],
                     '1.1.1' => [
                         'Theaters' => [
-                            '/theaters/+id::PATCH' => [
+                            '1337' => [
                                 $errors['/theaters/+id::PATCH::1337']
                             ]
                         ]
                     ],
                     '1.1.3' => [
                         'Movies' => [
-                            '/movies/+id::PATCH' => [
+                            '666' => [
                                 $errors['/movies/+id::PATCH:666']
                             ]
                         ]
