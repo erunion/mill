@@ -297,7 +297,7 @@ DESCRIPTION;
                         ]
                     ],
                     'minimum_version' => '1.1',
-                    'responses.length' => 6,
+                    'responses.length' => 8,
                     'uri.aliases' => [],
                     'annotations' => [
                         'uri' => [
@@ -523,6 +523,24 @@ DESCRIPTION;
                                 'error_code' => false,
                                 'http_code' => '404 Not Found',
                                 'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                                'version' => '>=1.1.3',
+                                'visible' => true
+                            ],
+                            [
+                                'capability' => false,
+                                'description' => 'If something cool happened.',
+                                'error_code' => '1337',
+                                'http_code' => '403 Forbidden',
+                                'representation' => '\Mill\Examples\Showtimes\Representations\CodedError',
+                                'version' => '>=1.1.3',
+                                'visible' => false
+                            ],
+                            [
+                                'capability' => false,
+                                'description' => 'If the user is not allowed to edit that movie.',
+                                'error_code' => '666',
+                                'http_code' => '403 Forbidden',
+                                'representation' => '\Mill\Examples\Showtimes\Representations\CodedError',
                                 'version' => '>=1.1.3',
                                 'visible' => true
                             ]

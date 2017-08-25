@@ -2,6 +2,7 @@
 namespace Mill\Command;
 
 use Mill\Application;
+use Mill\Config;
 use Mill\Exceptions\Version\UnrecognizedSchemaException;
 use Mill\Generator\Blueprint;
 use Mill\Parser\Version;
@@ -85,11 +86,14 @@ class Generate extends Application
             }
         }
 
+        /** @var Config $config */
+        $config = $this->container['config'];
+
         /** @var \League\Flysystem\Filesystem $filesystem */
         $filesystem = $this->container['filesystem'];
 
         $output->writeln('<comment>Compiling controllers and representations…</comment>');
-        $generator = new Blueprint($this->container['config'], $version);
+        $generator = new Blueprint($config, $version);
 
         $output->writeln('<comment>Generating API Blueprint files…</comment>');
         $blueprints = $generator->generate();

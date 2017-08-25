@@ -99,6 +99,11 @@ This action requires a bearer token with `edit` scope.
          * If there is a problem with the request.
          * If the IMDB URL could not be validated.
     + Attributes (Error)
++ Response 403 (application/mill.example.movie)
+    There are 2 ways that this status code can be encountered.
+         * If something cool happened. Unique error code: 1337
+         * If the user is not allowed to edit that movie. Unique error code: 666
+    + Attributes (Coded error)
 + Response 404 (application/mill.example.movie)
     There are 2 ways that this status code can be encountered.
          * If the movie could not be found.

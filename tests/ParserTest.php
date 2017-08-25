@@ -164,7 +164,7 @@ These actions will allow you to pull information on a specific movie.', $annotat
                     ],
                     'throws' => [
                         'class' => '\Mill\Parser\Annotations\ThrowsAnnotation',
-                        'count' => 4
+                        'count' => 6
                     ],
                     'uri' => [
                         'class' => '\Mill\Parser\Annotations\UriAnnotation',
