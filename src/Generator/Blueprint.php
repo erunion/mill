@@ -283,7 +283,7 @@ class Blueprint extends Generator
                 '- `%s`%s (%s%s%s) - %s',
                 $param->getField(),
                 (!empty($sample_data)) ? sprintf(': `%s`', $sample_data) : '',
-                (!empty($values)) ? 'enum[' . $type . ']' : $type,
+                (!empty($values) && $param->getType() !== 'enum') ? 'enum[' . $type . ']' : $type,
                 ($param->isRequired()) ? ', required' : null,
                 ($param->isNullable()) ? ', nullable' : null,
                 $param->getDescription()
