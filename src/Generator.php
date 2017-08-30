@@ -329,6 +329,9 @@ class Generator
     /**
      * Set an array of capabilities that we'll be generating documentation against.
      *
+     * If you want all documentation, even that that is behind a capability, supply `null`. If you want documentation
+     * that either has no capability, or specific ones, supply an array with those capability names.
+     *
      * @param array|null $capabilities
      * @return $this
      */
