@@ -1,4 +1,8 @@
 # Changelog
+## [2.6.1] - 2017-09-02
+## Fixed
+- Fixed a bug where annotations that were documented as being public, but behind a capability were being exposed under some circumstances.
+
 ## [2.6.0] - 2017-08-25
 ## Added
 - A new `errors` command for generating Markdown representation of all documented API errors.
