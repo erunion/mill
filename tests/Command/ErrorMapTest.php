@@ -5,7 +5,7 @@ use Mill\Command\ErrorMap;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class ErrorMapTest extends \PHPUnit_Framework_TestCase
+class ErrorMapTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Symfony\Component\Console\Command\Command
