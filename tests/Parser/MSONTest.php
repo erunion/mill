@@ -53,6 +53,7 @@ class MSONTest extends TestCase
                     'capability' => 'MOVIE_RATINGS',
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
+                    'nullable' => false,
                     'required' => false,
                     'sample_data' => 'G',
                     'subtype' => false,
@@ -70,6 +71,7 @@ class MSONTest extends TestCase
                     'capability' => 'MOVIE_RATINGS',
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
+                    'nullable' => false,
                     'required' => true,
                     'sample_data' => 'G',
                     'subtype' => false,
@@ -87,6 +89,7 @@ class MSONTest extends TestCase
                         'laboris, enim jowl culpa meatloaf dolore mollit anim. Bacon shankle eiusmod hamburger enim. ' .
                         'Laboris lorem pastrami t-bone tempor ullamco swine commodo tri-tip in sirloin.',
                     'field' => 'content_rating',
+                    'nullable' => false,
                     'required' => true,
                     'sample_data' => 'G',
                     'subtype' => false,
@@ -95,7 +98,7 @@ class MSONTest extends TestCase
                 ]
             ],
             'description-markdown' => [
-                'content' => 'content_rating `G` (string, optional, MOVIE_RATINGS) - This denotes the
+                'content' => 'content_rating `G` (string, optional, nullable, MOVIE_RATINGS) - This denotes the
                     [MPAA rating](http://www.mpaa.org/film-ratings/) for the movie.
                     + Members
                         - `G` - G rated
@@ -105,6 +108,7 @@ class MSONTest extends TestCase
                     'capability' => 'MOVIE_RATINGS',
                     'description' => 'This denotes the [MPAA rating](http://www.mpaa.org/film-ratings/) for the movie.',
                     'field' => 'content_rating',
+                    'nullable' => true,
                     'required' => false,
                     'sample_data' => 'G',
                     'subtype' => false,
@@ -127,6 +131,7 @@ class MSONTest extends TestCase
                     'capability' => false,
                     'description' => 'MPAA Rating',
                     'field' => 'content_rating',
+                    'nullable' => false,
                     'required' => false,
                     'sample_data' => 'G',
                     'subtype' => false,
@@ -147,6 +152,7 @@ class MSONTest extends TestCase
                     'capability' => false,
                     'description' => 'Is this movie kid friendly?',
                     'field' => 'is_kid_friendly',
+                    'nullable' => false,
                     'required' => false,
                     'sample_data' => 'yes',
                     'subtype' => false,
@@ -172,6 +178,7 @@ class MSONTest extends TestCase
                     'capability' => false,
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
+                    'nullable' => false,
                     'required' => false,
                     'sample_data' => 'G',
                     'subtype' => false,
@@ -194,6 +201,7 @@ class MSONTest extends TestCase
                     'capability' => false,
                     'description' => 'MPAA rating',
                     'field' => 'content.rating',
+                    'nullable' => false,
                     'required' => false,
                     'sample_data' => 'G',
                     'subtype' => false,
@@ -207,6 +215,7 @@ class MSONTest extends TestCase
                     'capability' => false,
                     'description' => 'The users\' list of websites.',
                     'field' => 'websites',
+                    'nullable' => false,
                     'required' => false,
                     'sample_data' => false,
                     'subtype' => 'object',
@@ -220,6 +229,7 @@ class MSONTest extends TestCase
                     'capability' => false,
                     'description' => 'Cast members',
                     'field' => 'cast',
+                    'nullable' => false,
                     'required' => false,
                     'sample_data' => false,
                     'subtype' => '\Mill\Examples\Showtimes\Representations\Person',
@@ -233,6 +243,7 @@ class MSONTest extends TestCase
                     'capability' => false,
                     'description' => 'Director',
                     'field' => 'director',
+                    'nullable' => false,
                     'required' => false,
                     'sample_data' => false,
                     'subtype' => false,
@@ -246,6 +257,7 @@ class MSONTest extends TestCase
                     'capability' => 'MOVIE_RATINGS',
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
+                    'nullable' => false,
                     'required' => false,
                     'sample_data' => 'G',
                     'subtype' => false,
@@ -259,6 +271,7 @@ class MSONTest extends TestCase
                     'capability' => false,
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
+                    'nullable' => false,
                     'required' => false,
                     'sample_data' => false,
                     'subtype' => false,

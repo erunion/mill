@@ -66,7 +66,7 @@ class Movie
      * @api-param:public name (string, required) - Name of the movie.
      * @api-param:public description (string, required) - Description, or tagline, for the movie.
      * @api-param:public runtime (string, optional) - Movie runtime, in `HHhr MMmin` format.
-     * @api-param:public content_rating (string, optional) - MPAA rating
+     * @api-param:public content_rating (enum, optional) - MPAA rating
      *  + Members
      *      - `G`
      *      - `PG`
@@ -77,7 +77,7 @@ class Movie
      *      - `NR`
      *      - `UR`
      * @api-param:public genres (array, optional) - Array of movie genres.
-     * @api-param:public trailer (string, optional) - Trailer URL
+     * @api-param:public trailer (string, optional, nullable) - Trailer URL
      * @api-param:public director (string, optional) - Name of the director.
      * @api-param:public cast (array, optional) - Array of names of the cast.
      * @api-param:public is_kid_friendly (boolean, optional) - Is this movie kid friendly?
@@ -103,6 +103,10 @@ class Movie
      * @api-return:public {accepted} \Mill\Examples\Showtimes\Representations\Movie
      * @api-throws:public {404} \Mill\Examples\Showtimes\Representations\Error If the trailer URL could not be
      *      validated.
+     * @api-throws:private {403} \Mill\Examples\Showtimes\Representations\CodedError (1337) If something cool happened.
+     * @api-throws:public {403} \Mill\Examples\Showtimes\Representations\CodedError
+     *      (Mill\Examples\Showtimes\Representations\CodedError::DISALLOWED) If the user is not allowed to edit that
+     *      movie.
      */
     public function PATCH()
     {

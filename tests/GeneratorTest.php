@@ -401,7 +401,7 @@ class GeneratorTest extends TestCase
                     'param' => 3,
                     'return' => 1,
                     'scope' => 1,
-                    'throws' => 2,
+                    'throws' => 3,
                     'uri' => 1,
                     'uriSegment' => 1
                 ]

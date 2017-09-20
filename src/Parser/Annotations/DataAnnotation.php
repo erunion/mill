@@ -47,6 +47,13 @@ class DataAnnotation extends Annotation
     protected $subtype = false;
 
     /**
+     * Flag designating if this data is nullable.
+     *
+     * @var bool
+     */
+    protected $nullable = false;
+
+    /**
      * Array of acceptable values for this data.
      *
      * @var array|null
@@ -69,6 +76,7 @@ class DataAnnotation extends Annotation
         'capability',
         'description',
         'identifier',
+        'nullable',
         'sample_data',
         'subtype',
         'type',
@@ -92,6 +100,7 @@ class DataAnnotation extends Annotation
             'sample_data' => $mson->getSampleData(),
             'type' => $mson->getType(),
             'subtype' => $mson->getSubtype(),
+            'nullable' => $mson->isNullable(),
             'capability' => $mson->getCapability(),
             'description' => $mson->getDescription(),
             'values' => $mson->getValues()
@@ -138,6 +147,7 @@ class DataAnnotation extends Annotation
 
         $this->values = $this->optional('values');
         $this->capability = $this->optional('capability');
+        $this->nullable = $this->optional('nullable');
     }
 
     /**

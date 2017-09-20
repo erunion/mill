@@ -61,6 +61,7 @@ class Theater
      *
      * @api-version <1.1.2
      * @api-contentType application/json
+     * @api-throws:public {403} \Mill\Examples\Showtimes\Representations\CodedError (1337) If something cool happened.
      */
     public function PATCH()
     {

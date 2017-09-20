@@ -15,6 +15,7 @@ use Symfony\Component\Console\Application;
 
 $application = new Application('Mill', Mill\Application::VERSION);
 $application->add(new Mill\Command\Changelog);
+$application->add(new Mill\Command\ErrorMap);
 $application->add(new Mill\Command\Generate);
 
 $application->run();

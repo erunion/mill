@@ -1,4 +1,44 @@
 # Changelog
+## [2.6.1] - 2017-09-02
+## Fixed
+- Fixed a bug where annotations that were documented as being public, but behind a capability were being exposed under some circumstances.
+
+## [2.6.0] - 2017-08-25
+## Added
+- A new `errors` command for generating Markdown representation of all documented API errors.
+- Support for `nullable` flags in MSON-supported annotations. [#104](https://github.com/vimeo/mill/issues/104)
+
+## Fixed
+- Compatibility issues with `enum` parameter types in compiled API Blueprint files. [#113](https://github.com/vimeo/mill/issues/113)
+
+## [2.5.6] - 2017-08-18
+## Changed
+- Changelog versions are now sorted with SemVer rules.
+
+## [2.5.5] - 2017-08-16
+## Changed
+- No longer watermarking compiled API Blueprint `api.apib` files with a link to Mill and the time of generation.
+
+## [2.5.4] - 2017-07-25
+## Fixed
+- Fixed some PHP 5.4 compatibility issues with the new changelog work.
+
+## [2.5.3] - 2017-07-24
+## Changed
+- JSON formatted changelogs now have more relevant data attributes in their HTML elements.
+
+## [2.5.2] - 2017-07-17
+## Changed
+- Better grouping of like-resource grouped items in generated changelogs.
+
+## [2.5.1] - 2017-07-11
+## Removed
+- Removed the newly added in 2.5.0 dependency, `doctrine/collections`, because it requires >=PHP 5.6, and Mill 2.x still needs to support PHP 5.4.
+
+## [2.5.0] - 2017-07-10
+### Added
+- Added a new `releaseDate` attribute, and description content, to `versions` configs. This data is added into generated changelogs.
+
 ## [2.4.0] - 2017-06-29
 ### Changed
 - JSON changelog generation content now has important pieces of information wrapped in styleable HTML elements.
@@ -148,6 +188,14 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[2.6.0]: https://github.com/vimeo/mill/compare/2.5.6...2.6.0
+[2.5.6]: https://github.com/vimeo/mill/compare/2.5.5...2.5.6
+[2.5.5]: https://github.com/vimeo/mill/compare/2.5.4...2.5.5
+[2.5.4]: https://github.com/vimeo/mill/compare/2.5.3...2.5.4
+[2.5.3]: https://github.com/vimeo/mill/compare/2.5.2...2.5.3
+[2.5.2]: https://github.com/vimeo/mill/compare/2.5.1...2.5.2
+[2.5.1]: https://github.com/vimeo/mill/compare/2.5.0...2.5.1
+[2.5.0]: https://github.com/vimeo/mill/compare/2.4.0...2.5.0
 [2.4.0]: https://github.com/vimeo/mill/compare/2.3.2...2.4.0
 [2.3.2]: https://github.com/vimeo/mill/compare/2.3.1...2.3.2
 [2.3.1]: https://github.com/vimeo/mill/compare/2.3.0...2.3.1

@@ -42,5 +42,8 @@
                 <directory name="tests/" />
             </errorLevel>
         </PossiblyInvalidArgument>
+
+        <!-- This hides a number of errors that we don't really care about. -->
+        <PropertyNotSetInConstructor errorLevel="suppress" />
     </issueHandlers>
 </psalm>

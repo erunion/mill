@@ -58,7 +58,7 @@ class ParamAnnotationTest extends AnnotationTest
     {
         return [
             '_complete' => [
-                'content' => 'content_rating `G` (string, optional, MOVIE_RATINGS) - MPAA rating
+                'content' => 'content_rating `G` (string, optional, nullable, MOVIE_RATINGS) - MPAA rating
                     + Members
                         - `G` - G rated
                         - `PG` - PG rated
@@ -71,6 +71,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'deprecated' => false,
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
+                    'nullable' => true,
                     'required' => false,
                     'sample_data' => 'G',
                     'type' => 'string',
@@ -84,7 +85,7 @@ class ParamAnnotationTest extends AnnotationTest
                 ]
             ],
             '_complete-with-markdown-description' => [
-                'content' => 'content_rating `G` (string, optional, MOVIE_RATINGS) - This denotes the 
+                'content' => 'content_rating `G` (string, optional, nullable, MOVIE_RATINGS) - This denotes the 
                     [MPAA rating](http://www.mpaa.org/film-ratings/) for the movie.
                     + Members
                         - `G` - G rated
@@ -98,6 +99,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'deprecated' => false,
                     'description' => 'This denotes the [MPAA rating](http://www.mpaa.org/film-ratings/) for the movie.',
                     'field' => 'content_rating',
+                    'nullable' => true,
                     'required' => false,
                     'sample_data' => 'G',
                     'type' => 'string',
@@ -120,6 +122,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'deprecated' => false,
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
+                    'nullable' => false,
                     'required' => true,
                     'sample_data' => 'G',
                     'type' => 'string',
@@ -138,6 +141,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'deprecated' => true,
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
+                    'nullable' => false,
                     'required' => true,
                     'sample_data' => 'G',
                     'type' => 'string',
@@ -159,6 +163,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'deprecated' => false,
                     'description' => 'Is this movie kid friendly?',
                     'field' => 'is_kid_friendly',
+                    'nullable' => false,
                     'required' => false,
                     'sample_data' => 'yes',
                     'type' => 'string',
@@ -189,6 +194,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'deprecated' => false,
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
+                    'nullable' => false,
                     'required' => false,
                     'sample_data' => 'G',
                     'type' => 'string',
@@ -206,6 +212,25 @@ class ParamAnnotationTest extends AnnotationTest
                     'visible' => true
                 ]
             ],
+            'nullable' => [
+                'content' => 'content_rating `G` (string, required, nullable) - MPAA rating',
+                'version' => null,
+                'visible' => true,
+                'deprecated' => false,
+                'expected' => [
+                    'capability' => false,
+                    'deprecated' => false,
+                    'description' => 'MPAA rating',
+                    'field' => 'content_rating',
+                    'nullable' => true,
+                    'required' => true,
+                    'sample_data' => 'G',
+                    'type' => 'string',
+                    'values' => false,
+                    'version' => false,
+                    'visible' => true
+                ]
+            ],
             'private' => [
                 'content' => 'content_rating `G` (string, required) - MPAA rating',
                 'version' => null,
@@ -216,6 +241,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'deprecated' => false,
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
+                    'nullable' => false,
                     'required' => true,
                     'sample_data' => 'G',
                     'type' => 'string',
@@ -234,6 +260,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'deprecated' => false,
                     'description' => 'The page number to show.',
                     'field' => 'page',
+                    'nullable' => false,
                     'required' => false,
                     'sample_data' => false,
                     'type' => 'integer',
@@ -255,6 +282,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'deprecated' => false,
                     'description' => 'Filter to apply to the results.',
                     'field' => 'filter',
+                    'nullable' => false,
                     'required' => false,
                     'sample_data' => false,
                     'type' => 'string',
@@ -276,6 +304,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'deprecated' => false,
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
+                    'nullable' => false,
                     'required' => false,
                     'sample_data' => 'G',
                     'type' => 'string',
@@ -298,6 +327,7 @@ class ParamAnnotationTest extends AnnotationTest
                         'laboris, enim jowl culpa meatloaf dolore mollit anim. Bacon shankle eiusmod hamburger enim. ' .
                         'Laboris lorem pastrami t-bone tempor ullamco swine commodo tri-tip in sirloin.',
                     'field' => 'content_rating',
+                    'nullable' => false,
                     'required' => true,
                     'sample_data' => 'G',
                     'type' => 'string',
@@ -316,6 +346,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'deprecated' => false,
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
+                    'nullable' => false,
                     'required' => false,
                     'sample_data' => 'G',
                     'type' => 'string',
@@ -334,6 +365,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'deprecated' => false,
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
+                    'nullable' => false,
                     'required' => false,
                     'sample_data' => 'G',
                     'type' => 'string',
@@ -352,6 +384,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'deprecated' => false,
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
+                    'nullable' => false,
                     'required' => false,
                     'sample_data' => false,
                     'type' => 'string',

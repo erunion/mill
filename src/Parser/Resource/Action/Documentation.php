@@ -501,19 +501,29 @@ class Documentation
                 // If this annotation has a capability, but that capability isn't in the set of capabilities we're
                 // generating documentation for, filter it out.
                 $capability = $annotation->getCapability();
-                if ((!empty($capability) || !empty($method_capabilities)) && !empty($only_capabilities)) {
+                if (!empty($capability) || !empty($method_capabilities)) {
+                    // If we don't even have capabilities to look for, then filter this annotation out completely.
+                    if (!is_null($only_capabilities) && empty($only_capabilities)) {
+                        unset($this->annotations[$name][$k]);
+                    }
+
                     $all_found = true;
 
                     /** @var Parser\Annotations\CapabilityAnnotation $method_capability */
                     foreach ($method_capabilities as $method_capability) {
                         /** @var string $capability */
                         $capability = $method_capability->getCapability();
-                        if (!in_array($capability, $only_capabilities)) {
+                        if (!is_null($only_capabilities) && !in_array($capability, $only_capabilities)) {
                             $all_found = false;
                         }
                     }
 
-                    if (!$all_found || (!empty($capability) && !in_array($capability, $only_capabilities))) {
+                    if (!$all_found ||
+                        (
+                            !empty($capability) &&
+                            (!is_null($only_capabilities) && !in_array($capability, $only_capabilities))
+                        )
+                    ) {
                         unset($this->annotations[$name][$k]);
                         continue;
                     }
@@ -554,7 +564,7 @@ class Documentation
 
         foreach ($this->annotations as $key => $annotations) {
             foreach ($annotations as $annotation) {
-                if (empty($data['annotations'][$key])) {
+                if (!isset($data['annotations'][$key])) {
                     $data['annotations'][$key] = [];
                 }
 

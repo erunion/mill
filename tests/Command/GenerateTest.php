@@ -81,17 +81,17 @@ class GenerateTest extends \PHPUnit\Framework\TestCase
 
         foreach ($versions as $version) {
             foreach ($representations as $name) {
-                $this->assertSame(
-                    file_get_contents($blueprints_dir . '/' . $version . '/representations/' . $name . '.apib'),
-                    file_get_contents($output_dir . '/' . $version . '/representations/' . $name . '.apib'),
+                $this->assertFileEquals(
+                    $blueprints_dir . '/' . $version . '/representations/' . $name . '.apib',
+                    $output_dir . '/' . $version . '/representations/' . $name . '.apib',
                     'Generated representation `' . $name . '.apib` for version `' . $version . '`` does not match.'
                 );
             }
 
             foreach ($resources as $name) {
-                $this->assertSame(
-                    file_get_contents($blueprints_dir . '/' . $version . '/resources/' . $name . '.apib'),
-                    file_get_contents($output_dir . '/' . $version . '/resources/' . $name . '.apib'),
+                $this->assertFileEquals(
+                    $blueprints_dir . '/' . $version . '/resources/' . $name . '.apib',
+                    $output_dir . '/' . $version . '/resources/' . $name . '.apib',
                     'Generated resource `' . $name . '.apib` for version `' . $version . '`` does not match.'
                 );
             }

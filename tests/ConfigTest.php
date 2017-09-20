@@ -16,11 +16,31 @@ class ConfigTest extends TestCase
         $this->assertSame('1.1.3', $config->getLatestApiVersion());
 
         $this->assertSame([
-            '1.0',
-            '1.1',
-            '1.1.1',
-            '1.1.2',
-            '1.1.3'
+            [
+                'version' => '1.0',
+                'release_date' => '2017-01-01',
+                'description' => null
+            ],
+            [
+                'version' => '1.1',
+                'release_date' => '2017-02-01',
+                'description' => null
+            ],
+            [
+                'version' => '1.1.1',
+                'release_date' => '2017-03-01',
+                'description' => null
+            ],
+            [
+                'version' => '1.1.2',
+                'release_date' => '2017-04-01',
+                'description' => null
+            ],
+            [
+                'version' => '1.1.3',
+                'release_date' => '2017-05-27',
+                'description' => 'Changed up the responses for `/movie/{id}`, `/movies/{id}` and `/movies`.'
+            ]
         ], $config->getApiVersions());
 
         $this->assertSame([
@@ -162,8 +182,8 @@ XML;
         if (in_array('versions', $includes)) {
             $versions = <<<XML
 <versions>
-    <version name="1.0" />
-    <version name="1.1" default="true" />
+    <version name="1.0" releaseDate="2017-01-01" />
+    <version name="1.1" releaseDate="2017-02-01" default="true" />
 </versions>
 XML;
         }
@@ -234,7 +254,7 @@ XML;
                 ],
                 'xml' => <<<XML
 <versions>
-    <version name="1.0" />
+    <version name="1.0" releaseDate="2017-01-01" />
 </versions>
 XML
             ],
@@ -247,8 +267,8 @@ XML
                 ],
                 'xml' => <<<XML
 <versions>
-    <version name="1.0" default="true" />
-    <version name="1.1" default="true" />
+    <version name="1.0" releaseDate="2017-01-01" default="true" />
+    <version name="1.1" releaseDate="2017-02-01" default="true" />
 </versions>
 XML
             ],

@@ -393,8 +393,16 @@ class Config
      */
     protected function loadVersions(SimpleXMLElement $versions)
     {
+        $api_versions = [];
         foreach ($versions as $version) {
-            $this->api_versions[] = (string) $version['name'];
+            $version_number = (string) $version['name'];
+            $description = trim((string) $version);
+
+            $api_versions[$version_number] = [
+                'version' => $version_number,
+                'release_date' => (string) $version['releaseDate'],
+                'description' => (!empty($description)) ? $description : null
+            ];
 
             $is_default = (bool) $version['default'];
             if ($is_default) {
@@ -413,11 +421,13 @@ class Config
         }
 
         // Keep things tidy.
-        $this->api_versions = array_unique($this->api_versions);
-        $this->api_versions = Semver::sort($this->api_versions);
+        $sorted_numerical = Semver::sort(array_keys($api_versions));
+        foreach ($sorted_numerical as $version) {
+            $this->api_versions[] = $api_versions[$version];
+        }
 
-        $this->first_api_version = $this->api_versions[0];
-        $this->latest_api_version = Semver::rsort($this->api_versions)[0];
+        $this->first_api_version = current($this->api_versions)['version'];
+        $this->latest_api_version = end($this->api_versions)['version'];
     }
 
     /**
@@ -728,6 +738,24 @@ class Config
     public function getApiVersions()
     {
         return $this->api_versions;
+    }
+
+    /**
+     * Get the configured dataset (release date, description, etc) on a specific API version.
+     *
+     * @param string $version
+     * @return array
+     * @throws \Exception If a supplied version was not configured.
+     */
+    public function getApiVersion($version)
+    {
+        foreach ($this->api_versions as $data) {
+            if ($data['version'] == $version) {
+                return $data;
+            }
+        }
+
+        throw new \Exception('The supplied version, `' . $version . '`` was not found to be configured.');
     }
 
     /**
