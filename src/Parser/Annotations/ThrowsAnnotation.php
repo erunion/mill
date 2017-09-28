@@ -9,6 +9,7 @@ use Mill\Exceptions\Annotations\UnknownReturnCodeException;
 use Mill\Exceptions\Config\UnconfiguredErrorRepresentationException;
 use Mill\Parser\Annotation;
 use Mill\Parser\Annotations\Traits\HasHttpCodeResponseTrait;
+use Mill\Parser\Version;
 
 /**
  * Handler for the `@api-throws` annotation.
@@ -30,16 +31,16 @@ class ThrowsAnnotation extends Annotation
     /**
      * Optional unique error code for the error that this exception handles.
      *
-     * @var string|null
+     * @var string|null|false
      */
     protected $error_code = null;
 
     /**
      * Description for why this exception can be thrown.
      *
-     * @var string|null
+     * @var string
      */
-    protected $description = null;
+    protected $description;
 
     /**
      * Return an array of items that should be included in an array representation of this annotation.
@@ -51,8 +52,7 @@ class ThrowsAnnotation extends Annotation
         'description',
         'error_code',
         'http_code',
-        'representation',
-        'visible'
+        'representation'
     ];
 
     /**
@@ -74,7 +74,7 @@ class ThrowsAnnotation extends Annotation
         $parsed = [];
         $content = trim($this->docblock);
 
-        // Capability is surrounded by +plusses+.
+        // HTTP code is surrounded by +plusses+.
         if (preg_match(self::REGEX_THROW_HTTP_CODE, $content, $matches)) {
             $parsed['http_code'] = $matches[1];
 
@@ -126,7 +126,7 @@ class ThrowsAnnotation extends Annotation
         // Capability is surrounded by +plusses+.
         if (preg_match(self::REGEX_CAPABILITY, $content, $matches)) {
             $capability = substr($matches[1], 1, -1);
-            $parsed['capability'] = new CapabilityAnnotation($capability, $this->class, $this->method);
+            $parsed['capability'] = (new CapabilityAnnotation($capability, $this->class, $this->method))->process();
 
             $content = trim(preg_replace(self::REGEX_CAPABILITY, '', $content));
         }
@@ -184,9 +184,28 @@ class ThrowsAnnotation extends Annotation
     }
 
     /**
+     * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
+     *
+     * @param array $data
+     * @param Version|null $version
+     * @return self
+     */
+    public static function hydrate(array $data = [], Version $version = null): self
+    {
+        /** @var ThrowsAnnotation $annotation */
+        $annotation = parent::hydrate($data, $version);
+        $annotation->setDescription($data['description']);
+        $annotation->setErrorCode($data['error_code']);
+        $annotation->setHttpCode($data['http_code']);
+        $annotation->setRepresentation($data['representation']);
+
+        return $annotation;
+    }
+
+    /**
      * Get the description for this exception.
      *
-     * @return null|string
+     * @return string
      */
     public function getDescription()
     {
@@ -194,12 +213,36 @@ class ThrowsAnnotation extends Annotation
     }
 
     /**
+     * Set the description for this exception.
+     *
+     * @param string $description
+     * @return self
+     */
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    /**
      * Return the unique error code for the error that this exception handles.
      *
-     * @return null|string
+     * @return string|null|false
      */
     public function getErrorCode()
     {
         return $this->error_code;
+    }
+
+    /**
+     * Set the unique error code for the error that this exception handles.
+     *
+     * @param string|null|false $error_code
+     * @return self
+     */
+    public function setErrorCode($error_code): self
+    {
+        $this->error_code = $error_code;
+        return $this;
     }
 }

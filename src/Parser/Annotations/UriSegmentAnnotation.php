@@ -3,6 +3,7 @@ namespace Mill\Parser\Annotations;
 
 use Mill\Parser\Annotation;
 use Mill\Parser\MSON;
+use Mill\Parser\Version;
 
 /**
  * Handler for the `@api-uriSegment` annotation.
@@ -48,7 +49,7 @@ class UriSegmentAnnotation extends Annotation
     /**
      * Array of acceptable values for this parameter.
      *
-     * @var array|null
+     * @var array|null|false
      */
     protected $values = [];
 
@@ -113,6 +114,26 @@ class UriSegmentAnnotation extends Annotation
     }
 
     /**
+     * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
+     *
+     * @param array $data
+     * @param Version|null $version
+     * @return self
+     */
+    public static function hydrate(array $data = [], Version $version = null): self
+    {
+        /** @var UriSegmentAnnotation $annotation */
+        $annotation = parent::hydrate($data, $version);
+        $annotation->setDescription($data['description']);
+        $annotation->setField($data['field']);
+        $annotation->setType($data['type']);
+        $annotation->setUri($data['uri']);
+        $annotation->setValues($data['values']);
+
+        return $annotation;
+    }
+
+    /**
      * Get the URI that this annotation is on.
      *
      * @return string
@@ -120,6 +141,18 @@ class UriSegmentAnnotation extends Annotation
     public function getUri()
     {
         return $this->uri;
+    }
+
+    /**
+     * Set the URI that this annotation is on.
+     *
+     * @param string $uri
+     * @return self
+     */
+    public function setUri(string $uri): self
+    {
+        $this->uri = $uri;
+        return $this;
     }
 
     /**
@@ -133,6 +166,18 @@ class UriSegmentAnnotation extends Annotation
     }
 
     /**
+     * Set the field that this URI segment represents.
+     *
+     * @param string $field
+     * @return self
+     */
+    public function setField(string $field): self
+    {
+        $this->field = $field;
+        return $this;
+    }
+
+    /**
      * Get the type of field that this URI segment represents.
      *
      * @return string
@@ -140,6 +185,18 @@ class UriSegmentAnnotation extends Annotation
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * Set the type of field that this URI segment represents.
+     *
+     * @param string $type
+     * @return self
+     */
+    public function setType(string $type): self
+    {
+        $this->type = $type;
+        return $this;
     }
 
     /**
@@ -153,12 +210,36 @@ class UriSegmentAnnotation extends Annotation
     }
 
     /**
+     * Set the description for this URI segment.
+     *
+     * @param string $description
+     * @return self
+     */
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    /**
      * Get the enumerated values that are allowed on this URI segment.
      *
-     * @return array|null
+     * @return array|null|false
      */
     public function getValues()
     {
         return $this->values;
+    }
+
+    /**
+     * Set the enumerated values that are allowed on this URI segment.
+     *
+     * @param array|null|false $values
+     * @return self
+     */
+    public function setValues($values): self
+    {
+        $this->values = $values;
+        return $this;
     }
 }

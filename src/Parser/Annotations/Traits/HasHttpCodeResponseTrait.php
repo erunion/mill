@@ -18,7 +18,7 @@ trait HasHttpCodeResponseTrait
      * Name of the representation that this annotation responds with. Can be either a fully qualified class name, or
      * `string`.
      *
-     * @var string
+     * @var string|false
      */
     protected $representation;
 
@@ -106,6 +106,18 @@ trait HasHttpCodeResponseTrait
     }
 
     /**
+     * Set the HTTP code that this response throws.
+     *
+     * @param string $http_code
+     * @return self
+     */
+    public function setHttpCode(string $http_code): self
+    {
+        $this->http_code = $http_code;
+        return $this;
+    }
+
+    /**
      * Get the HTTP message for a specific HTTP code.
      *
      * @param string|integer $http_code
@@ -143,10 +155,22 @@ trait HasHttpCodeResponseTrait
     /**
      * Get the representation that this response returns data in.
      *
-     * @return string
+     * @return string|false
      */
     public function getRepresentation()
     {
         return $this->representation;
+    }
+
+    /**
+     * Set the representation that this response returns data in.
+     *
+     * @param string|false $representation
+     * @return self
+     */
+    public function setRepresentation($representation): self
+    {
+        $this->representation = $representation;
+        return $this;
     }
 }

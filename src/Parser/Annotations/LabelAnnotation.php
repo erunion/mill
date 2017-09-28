@@ -2,6 +2,7 @@
 namespace Mill\Parser\Annotations;
 
 use Mill\Parser\Annotation;
+use Mill\Parser\Version;
 
 /**
  * Handler for the `@api-label` annotation.
@@ -56,6 +57,22 @@ class LabelAnnotation extends Annotation
     }
 
     /**
+     * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
+     *
+     * @param array $data
+     * @param Version|null $version
+     * @return self
+     */
+    public static function hydrate(array $data = [], Version $version = null): self
+    {
+        /** @var LabelAnnotation $annotation */
+        $annotation = parent::hydrate($data, $version);
+        $annotation->setLabel($data['label']);
+
+        return $annotation;
+    }
+
+    /**
      * Get the label.
      *
      * @return string
@@ -63,5 +80,15 @@ class LabelAnnotation extends Annotation
     public function getLabel()
     {
         return $this->label;
+    }
+
+    /**
+     * @param $label
+     * @return self
+     */
+    public function setLabel(string $label): self
+    {
+        $this->label = $label;
+        return $this;
     }
 }

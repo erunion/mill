@@ -4,6 +4,7 @@ namespace Mill\Parser\Annotations;
 use Mill\Container;
 use Mill\Exceptions\Annotations\InvalidScopeSuppliedException;
 use Mill\Parser\Annotation;
+use Mill\Parser\Version;
 
 /**
  * Handler for the `@api-scope` annotation.
@@ -25,7 +26,7 @@ class ScopeAnnotation extends Annotation
     /**
      * Description for why this scope is required.
      *
-     * @var string|null
+     * @var string|null|false
      */
     protected $description = null;
 
@@ -82,6 +83,23 @@ class ScopeAnnotation extends Annotation
     }
 
     /**
+     * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
+     *
+     * @param array $data
+     * @param Version|null $version
+     * @return self
+     */
+    public static function hydrate(array $data = [], Version $version = null): self
+    {
+        /** @var ScopeAnnotation $annotation */
+        $annotation = parent::hydrate($data, $version);
+        $annotation->setScope($data['scope']);
+        $annotation->setDescription($data['description']);
+
+        return $annotation;
+    }
+
+    /**
      * Get the name of the scope that this represents.
      *
      * @return string
@@ -92,12 +110,36 @@ class ScopeAnnotation extends Annotation
     }
 
     /**
+     * Set the name of the scope that this represents.
+     *
+     * @param string $scope
+     * @return self
+     */
+    public function setScope(string $scope): self
+    {
+        $this->scope = $scope;
+        return $this;
+    }
+
+    /**
      * Get the description for this scope.
      *
-     * @return null|string
+     * @return string|null|false
      */
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * Set the description for this scope.
+     *
+     * @param string|null|false $description
+     * @return self
+     */
+    public function setDescription($description): self
+    {
+        $this->description = $description;
+        return $this;
     }
 }

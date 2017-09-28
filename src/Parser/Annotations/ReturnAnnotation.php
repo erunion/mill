@@ -7,6 +7,7 @@ use Mill\Exceptions\Annotations\UnknownReturnCodeException;
 use Mill\Exceptions\Config\UnconfiguredRepresentationException;
 use Mill\Parser\Annotation;
 use Mill\Parser\Annotations\Traits\HasHttpCodeResponseTrait;
+use Mill\Parser\Version;
 
 /**
  * Handler for the `@api-return` annotation.
@@ -25,7 +26,7 @@ class ReturnAnnotation extends Annotation
     /**
      * Description for what this annotations' action return is.
      *
-     * @var string|null
+     * @var string|null|false
      */
     protected $description = null;
 
@@ -123,6 +124,25 @@ class ReturnAnnotation extends Annotation
     }
 
     /**
+     * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
+     *
+     * @param array $data
+     * @param Version|null $version
+     * @return self
+     */
+    public static function hydrate(array $data = [], Version $version = null): self
+    {
+        /** @var ReturnAnnotation $annotation */
+        $annotation = parent::hydrate($data, $version);
+        $annotation->setDescription($data['description']);
+        $annotation->setHttpCode($data['http_code']);
+        $annotation->setRepresentation($data['representation']);
+        $annotation->setType($data['type']);
+
+        return $annotation;
+    }
+
+    /**
      * Grab the HTTP code for a given response type.
      *
      * @param string $type
@@ -161,11 +181,23 @@ class ReturnAnnotation extends Annotation
     /**
      * Get the description for this response.
      *
-     * @return null|string
+     * @return string|null|false
      */
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * Set the description for this response.
+     *
+     * @param string|null|false $description
+     * @return self
+     */
+    public function setDescription($description): self
+    {
+        $this->description = $description;
+        return $this;
     }
 
     /**
@@ -176,5 +208,17 @@ class ReturnAnnotation extends Annotation
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * Set the type of object that is being returned for this response.
+     *
+     * @param string $type
+     * @return self
+     */
+    public function setType(string $type): self
+    {
+        $this->type = $type;
+        return $this;
     }
 }

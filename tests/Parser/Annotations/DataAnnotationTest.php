@@ -1,18 +1,54 @@
 <?php
 namespace Mill\Tests\Parser\Annotations;
 
+use Mill\Exceptions\Annotations\UnsupportedTypeException;
+use Mill\Exceptions\Representation\RestrictedFieldNameException;
+use Mill\Parser\Annotations\CapabilityAnnotation;
+use Mill\Parser\Annotations\DataAnnotation;
+use Mill\Parser\Version;
+
 class DataAnnotationTest extends AnnotationTest
 {
     /**
      * @dataProvider providerAnnotation
      * @param string $content
+     * @param Version|null $version
      * @param array $expected
      * @return void
      */
-    public function testAnnotation($content, array $expected)
+    public function testAnnotation(string $content, $version, array $expected): void
     {
         $annotation = $this->getDataAnnotationFromDocblock($content, __CLASS__);
+        $this->assertAnnotation($annotation, $expected);
+    }
 
+    /**
+     * @dataProvider providerAnnotation
+     * @param string $content
+     * @param Version|null $version
+     * @param array $expected
+     * @return void
+     */
+    public function testHydrate(string $content, $version, array $expected): void
+    {
+        $annotation = DataAnnotation::hydrate(array_merge(
+            $expected,
+            [
+                'class' => __CLASS__,
+                'method' => __METHOD__
+            ]
+        ), $version);
+
+        $this->assertAnnotation($annotation, $expected);
+    }
+
+    /**
+     * @param DataAnnotation $annotation
+     * @param array $expected
+     * @return void
+     */
+    private function assertAnnotation(DataAnnotation $annotation, array $expected): void
+    {
         $this->assertFalse($annotation->requiresVisibilityDecorator());
         $this->assertTrue($annotation->supportsVersioning());
         $this->assertFalse($annotation->supportsDeprecation());
@@ -21,16 +57,13 @@ class DataAnnotationTest extends AnnotationTest
         $this->assertSame($expected, $annotation->toArray());
 
         if (is_string($expected['capability'])) {
-            $this->assertInstanceOf(
-                '\Mill\Parser\Annotations\CapabilityAnnotation',
-                $annotation->getCapability()
-            );
+            $this->assertInstanceOf(CapabilityAnnotation::class, $annotation->getCapability());
         } else {
             $this->assertFalse($annotation->getCapability());
         }
 
         if ($expected['version']) {
-            $this->assertInstanceOf('\Mill\Parser\Version', $annotation->getVersion());
+            $this->assertInstanceOf(Version::class, $annotation->getVersion());
         } else {
             $this->assertFalse($annotation->getVersion());
         }
@@ -39,13 +72,14 @@ class DataAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function providerAnnotation()
+    public function providerAnnotation(): array
     {
         return [
             'bare' => [
                 'content' => '/**
                   * @api-data content_rating (string) - MPAA rating
                   */',
+                'version' => null,
                 'expected' => [
                     'capability' => false,
                     'description' => 'MPAA rating',
@@ -64,6 +98,7 @@ class DataAnnotationTest extends AnnotationTest
                   * @api-data content_rating (string) - MPAA rating
                   * @api-version 1.0
                   */',
+                'version' => new Version('1.0', __CLASS__, __METHOD__),
                 'expected' => [
                     'capability' => false,
                     'description' => 'MPAA rating',
@@ -81,6 +116,7 @@ class DataAnnotationTest extends AnnotationTest
                 'content' => '/**
                   * @api-data tickets.url (string, nullable) - URL to purchase tickets
                   */',
+                'version' => null,
                 'expected' => [
                     'capability' => false,
                     'description' => 'URL to purchase tickets',
@@ -98,6 +134,7 @@ class DataAnnotationTest extends AnnotationTest
                 'content' => '/**
                   * @api-data tickets.url (string, BUY_TICKETS) - URL to purchase tickets
                   */',
+                'version' => null,
                 'expected' => [
                     'capability' => 'BUY_TICKETS',
                     'description' => 'URL to purchase tickets',
@@ -124,6 +161,7 @@ class DataAnnotationTest extends AnnotationTest
                   *    - `NR`
                   *    - `UR`
                   */',
+                'version' => null,
                 'expected' => [
                     'capability' => false,
                     'description' => 'MPAA rating',
@@ -151,6 +189,7 @@ class DataAnnotationTest extends AnnotationTest
                   * @api-data tickets.url (string) - URL to purchase tickets
                   * @api-scope public
                   */',
+                'version' => null,
                 'expected' => [
                     'capability' => false,
                     'description' => 'URL to purchase tickets',
@@ -184,6 +223,7 @@ class DataAnnotationTest extends AnnotationTest
                   * @api-version 1.0
                   * @api-scope public
                   *',
+                'version' => new Version('1.0', __CLASS__, __METHOD__),
                 'expected' => [
                     'capability' => 'MOVIE_RATINGS',
                     'description' => 'MPAA rating',
@@ -217,25 +257,25 @@ class DataAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function providerAnnotationFailsOnInvalidContent()
+    public function providerAnnotationFailsOnInvalidContent(): array
     {
         return [
             'invalid-type-is-detected' => [
-                'annotation' => '\Mill\Parser\Annotations\DataAnnotation',
+                'annotation' => DataAnnotation::class,
                 'content' => '/**
                     * @api-data content_rating (zuul) - MPAA rating
                     */',
-                'expected.exception' => '\Mill\Exceptions\Annotations\UnsupportedTypeException',
+                'expected.exception' => UnsupportedTypeException::class,
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'content_rating (zuul) - MPAA rating'
                 ]
             ],
             'restricted-field-name-is-detected' => [
-                'annotation' => '\Mill\Parser\Annotations\DataAnnotation',
+                'annotation' => DataAnnotation::class,
                 'content' => '/**
                     * @api-data __FIELD_DATA__ (string) - This is an restricted field name
                     */',
-                'expected.exception' => '\Mill\Exceptions\Representation\RestrictedFieldNameException',
+                'expected.exception' => RestrictedFieldNameException::class,
                 'expected.exception.asserts' => []
             ]
         ];
