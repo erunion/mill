@@ -1,6 +1,9 @@
 <?php
 namespace Mill\Tests\Parser\Annotations;
 
+use Mill\Exceptions\Annotations\MissingRequiredFieldException;
+use Mill\Exceptions\Annotations\UnknownRepresentationException;
+use Mill\Exceptions\Annotations\UnknownReturnCodeException;
 use Mill\Parser\Annotations\ReturnAnnotation;
 use Mill\Parser\Version;
 
@@ -9,14 +12,47 @@ class ReturnAnnotationTest extends AnnotationTest
     /**
      * @dataProvider providerAnnotation
      * @param string $content
-     * @param string $version
+     * @param bool $visible
+     * @param Version|null $version
      * @param array $expected
      * @return void
      */
-    public function testAnnotation($content, $version, array $expected)
+    public function testAnnotation(string $content, bool $visible, $version, array $expected): void
     {
-        $annotation = new ReturnAnnotation($content, __CLASS__, __METHOD__, $version);
+        $annotation = (new ReturnAnnotation($content, __CLASS__, __METHOD__, $version))->process();
+        $annotation->setVisibility($visible);
 
+        $this->assertAnnotation($annotation, $expected);
+    }
+
+    /**
+     * @dataProvider providerAnnotation
+     * @param string $content
+     * @param bool $visible
+     * @param Version|null $version
+     * @param array $expected
+     * @return void
+     */
+    public function testHydrate(string $content, bool $visible, $version, array $expected): void
+    {
+        $annotation = ReturnAnnotation::hydrate(array_merge(
+            $expected,
+            [
+                'class' => __CLASS__,
+                'method' => __METHOD__
+            ]
+        ), $version);
+
+        $this->assertAnnotation($annotation, $expected);
+    }
+
+    /**
+     * @param ReturnAnnotation $annotation
+     * @param array $expected
+     * @return void
+     */
+    private function assertAnnotation(ReturnAnnotation $annotation, array $expected): void
+    {
         $this->assertTrue($annotation->requiresVisibilityDecorator());
         $this->assertTrue($annotation->supportsVersioning());
         $this->assertFalse($annotation->supportsDeprecation());
@@ -30,7 +66,7 @@ class ReturnAnnotationTest extends AnnotationTest
         $this->assertFalse($annotation->getCapability());
 
         if ($expected['version']) {
-            $this->assertInstanceOf('\Mill\Parser\Version', $annotation->getVersion());
+            $this->assertInstanceOf(Version::class, $annotation->getVersion());
         } else {
             $this->assertFalse($annotation->getVersion());
         }
@@ -41,182 +77,213 @@ class ReturnAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function providerAnnotation()
+    public function providerAnnotation(): array
     {
         return [
             'with-no-representation' => [
                 'content' => '{deleted}',
+                'visible' => true,
                 'version' => null,
                 'expected' => [
                     'description' => false,
                     'http_code' => '204 No Content',
                     'representation' => false,
                     'type' => 'deleted',
-                    'version' => false
+                    'version' => false,
+                    'visible' => true
                 ]
             ],
             'with-no-representation-and-a-description' => [
                 'content' => '{notmodified} If no data has been changed.',
+                'visible' => true,
                 'version' => null,
                 'expected' => [
                     'description' => 'If no data has been changed.',
                     'http_code' => '304 Not Modified',
                     'representation' => false,
                     'type' => 'notmodified',
-                    'version' => false
+                    'version' => false,
+                    'visible' => true
                 ]
             ],
             'versioned' => [
                 'content' => '{collection} \Mill\Examples\Showtimes\Representations\Movie',
+                'visible' => true,
                 'version' => new Version('3.2', __CLASS__, __METHOD__),
                 'expected' => [
                     'description' => false,
                     'http_code' => '200 OK',
                     'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
                     'type' => 'collection',
-                    'version' => '3.2'
+                    'version' => '3.2',
+                    'visible' => true
                 ]
             ],
             '_complete' => [
                 'content' => '{collection} \Mill\Examples\Showtimes\Representations\Movie A collection of movies.',
+                'visible' => true,
                 'version' => new Version('3.2', __CLASS__, __METHOD__),
                 'expected' => [
                     'description' => 'A collection of movies.',
                     'http_code' => '200 OK',
                     'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
                     'type' => 'collection',
-                    'version' => '3.2'
+                    'version' => '3.2',
+                    'visible' => true
                 ]
             ],
 
             // 200's
             'collection' => [
                 'content' => '{collection} \Mill\Examples\Showtimes\Representations\Movie',
+                'visible' => true,
                 'version' => null,
                 'expected' => [
                     'description' => false,
                     'http_code' => '200 OK',
                     'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
                     'type' => 'collection',
-                    'version' => false
+                    'version' => false,
+                    'visible' => true
                 ]
             ],
             'directory' => [
                 'content' => '{directory} \Mill\Examples\Showtimes\Representations\Movie',
+                'visible' => true,
+                'visible' => true,
                 'version' => null,
                 'expected' => [
                     'description' => false,
                     'http_code' => '200 OK',
                     'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
                     'type' => 'directory',
-                    'version' => false
+                    'version' => false,
+                    'visible' => true
                 ]
             ],
             'object' => [
                 'content' => '{object} \Mill\Examples\Showtimes\Representations\Movie',
+                'visible' => true,
                 'version' => null,
                 'expected' => [
                     'description' => false,
                     'http_code' => '200 OK',
                     'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
                     'type' => 'object',
-                    'version' => false
+                    'version' => false,
+                    'visible' => true
                 ]
             ],
             'ok' => [
                 'content' => '{ok} \Mill\Examples\Showtimes\Representations\Movie',
+                'visible' => true,
                 'version' => null,
                 'expected' => [
                     'description' => false,
                     'http_code' => '200 OK',
                     'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
                     'type' => 'ok',
-                    'version' => false
+                    'version' => false,
+                    'visible' => true
                 ]
             ],
 
             // 201's
             'created' => [
                 'content' => '{created} \Mill\Examples\Showtimes\Representations\Movie',
+                'visible' => true,
                 'version' => null,
                 'expected' => [
                     'description' => false,
                     'http_code' => '201 Created',
                     'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
                     'type' => 'created',
-                    'version' => false
+                    'version' => false,
+                    'visible' => true
                 ]
             ],
 
             // 202's
             'accepted' => [
                 'content' => '{accepted} \Mill\Examples\Showtimes\Representations\Movie',
+                'visible' => true,
                 'version' => null,
                 'expected' => [
                     'description' => false,
                     'http_code' => '202 Accepted',
                     'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
                     'type' => 'accepted',
-                    'version' => false
+                    'version' => false,
+                    'visible' => true
                 ]
             ],
 
             // 204's
             'added' => [
                 'content' => '{added} \Mill\Examples\Showtimes\Representations\Movie',
+                'visible' => true,
                 'version' => null,
                 'expected' => [
                     'description' => false,
                     'http_code' => '204 No Content',
                     'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
                     'type' => 'added',
-                    'version' => false
+                    'version' => false,
+                    'visible' => true
                 ]
             ],
             'deleted' => [
                 'content' => '{deleted} \Mill\Examples\Showtimes\Representations\Representation',
+                'visible' => true,
                 'version' => null,
                 'expected' => [
                     'description' => false,
                     'http_code' => '204 No Content',
                     'representation' => '\Mill\Examples\Showtimes\Representations\Representation',
                     'type' => 'deleted',
-                    'version' => false
+                    'version' => false,
+                    'visible' => true
                 ]
             ],
             'exists' => [
                 'content' => '{exists} \Mill\Examples\Showtimes\Representations\Movie',
+                'visible' => true,
                 'version' => null,
                 'expected' => [
                     'description' => false,
                     'http_code' => '204 No Content',
                     'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
                     'type' => 'exists',
-                    'version' => false
+                    'version' => false,
+                    'visible' => true
                 ]
             ],
             'updated' => [
                 'content' => '{updated} \Mill\Examples\Showtimes\Representations\Movie',
+                'visible' => true,
                 'version' => null,
                 'expected' => [
                     'description' => false,
                     'http_code' => '204 No Content',
                     'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
                     'type' => 'updated',
-                    'version' => false
+                    'version' => false,
+                    'visible' => true
                 ]
             ],
 
             // 304's
             'notModified' => [
                 'content' => '{notmodified} \Mill\Examples\Showtimes\Representations\Movie If no data has changed.',
+                'visible' => true,
                 'version' => null,
                 'expected' => [
                     'description' => 'If no data has changed.',
                     'http_code' => '304 Not Modified',
                     'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
                     'type' => 'notmodified',
-                    'version' => false
+                    'version' => false,
+                    'visible' => true
                 ]
             ]
         ];
@@ -225,13 +292,13 @@ class ReturnAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function providerAnnotationFailsOnInvalidContent()
+    public function providerAnnotationFailsOnInvalidContent(): array
     {
         return [
             'code-could-not-be-found' => [
-                'annotation' => '\Mill\Parser\Annotations\ReturnAnnotation',
+                'annotation' => ReturnAnnotation::class,
                 'content' => '\Mill\Examples\Showtimes\Representations\Movie',
-                'expected.exception' => '\Mill\Exceptions\Annotations\MissingRequiredFieldException',
+                'expected.exception' => MissingRequiredFieldException::class,
                 'expected.exception.asserts' => [
                     'getRequiredField' => 'http_code',
                     'getAnnotation' => 'return',
@@ -240,9 +307,9 @@ class ReturnAnnotationTest extends AnnotationTest
                 ]
             ],
             'code-is-invalid' => [
-                'annotation' => '\Mill\Parser\Annotations\ReturnAnnotation',
+                'annotation' => ReturnAnnotation::class,
                 'content' => '{200 OK} \Mill\Examples\Showtimes\Representations\Movie',
-                'expected.exception' => '\Mill\Exceptions\Annotations\UnknownReturnCodeException',
+                'expected.exception' => UnknownReturnCodeException::class,
                 'expected.exception.asserts' => [
                     'getRequiredField' => null,
                     'getAnnotation' => null,
@@ -251,9 +318,9 @@ class ReturnAnnotationTest extends AnnotationTest
                 ]
             ],
             'representation-is-unknown' => [
-                'annotation' => '\Mill\Parser\Annotations\ReturnAnnotation',
+                'annotation' => ReturnAnnotation::class,
                 'content' => '{object} \UnknownRepresentation',
-                'expected.exception' => '\Mill\Exceptions\Annotations\UnknownRepresentationException',
+                'expected.exception' => UnknownRepresentationException::class,
                 'expected.exception.asserts' => [
                     'getRequiredField' => null,
                     'getAnnotation' => null,

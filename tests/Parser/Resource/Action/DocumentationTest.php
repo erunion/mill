@@ -21,7 +21,39 @@ class DocumentationTest extends TestCase
         $class_stub = '\Mill\Examples\Showtimes\Controllers\Movie';
         $parser = (new Documentation($class_stub, $method))->parse();
 
-        $this->assertSame($class_stub, $parser->getClass());
+        $this->assertMethodDocumentation($parser, $class_stub, $method, $expected);
+    }
+
+    /**
+     * @dataProvider providerParseMethodDocumentation
+     * @param string $method
+     * @param array $expected
+     * @return void
+     */
+    public function testHydrate(string $method, array $expected): void
+    {
+        $class_stub = '\Mill\Examples\Showtimes\Controllers\Movie';
+        $parser = (new Documentation($class_stub, $method))->parse();
+        $docs = $parser->toArray();
+
+        $hydrate = Documentation::hydrate($docs);
+
+        $this->assertMethodDocumentation($hydrate, $class_stub, $method, $expected);
+    }
+
+    /**
+     * @param Documentation $parser
+     * @param string $class
+     * @param string $method
+     * @param array $expected
+     */
+    private function assertMethodDocumentation(
+        Documentation $parser,
+        string $class,
+        string $method,
+        array $expected
+    ): void {
+        $this->assertSame($class, $parser->getClass());
         $this->assertSame($method, $parser->getMethod());
 
         $this->assertSame($expected['label'], $parser->getLabel());
@@ -66,6 +98,7 @@ class DocumentationTest extends TestCase
         $this->assertSame($expected['responses.length'], count($parser->getResponses()));
 
         $docs = $parser->toArray();
+        $this->assertSame($class, $docs['class']);
         $this->assertSame($expected['label'], $docs['label']);
         $this->assertSame($docs['description'], $parser->getDescription());
         $this->assertSame($expected['description'], $docs['description']);
@@ -73,7 +106,7 @@ class DocumentationTest extends TestCase
         $this->assertSame($expected['content_types'], $docs['content_types']);
 
         if (empty($docs['annotations'])) {
-            $this->fail('No parsed annotations for ' . $class_stub);
+            $this->fail('No parsed annotations for ' . $class);
         }
 
         foreach ($docs['annotations'] as $name => $data) {
@@ -236,7 +269,8 @@ DESCRIPTION;
                                 'http_code' => '200 OK',
                                 'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
                                 'type' => 'object',
-                                'version' => false
+                                'version' => false,
+                                'visible' => true
                             ],
                             [
                                 'description' => 'If no content has been modified since the supplied Last-Modified ' .
@@ -244,7 +278,8 @@ DESCRIPTION;
                                 'http_code' => '304 Not Modified',
                                 'representation' => false,
                                 'type' => 'notmodified',
-                                'version' => false
+                                'version' => false,
+                                'visible' => true
                             ]
                         ],
                         'throws' => [
@@ -484,14 +519,16 @@ DESCRIPTION;
                                 'http_code' => '200 OK',
                                 'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
                                 'type' => 'object',
-                                'version' => false
+                                'version' => false,
+                                'visible' => true
                             ],
                             [
                                 'description' => false,
                                 'http_code' => '202 Accepted',
                                 'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
                                 'type' => 'accepted',
-                                'version' => '>=1.1.3'
+                                'version' => '>=1.1.3',
+                                'visible' => true
                             ]
                         ],
                         'scope' => [
@@ -611,7 +648,8 @@ DESCRIPTION;
                                 'http_code' => '204 No Content',
                                 'representation' => false,
                                 'type' => 'deleted',
-                                'version' => false
+                                'version' => false,
+                                'visible' => false
                             ]
                         ],
                         'scope' => [

@@ -3,6 +3,7 @@ namespace Mill\Parser\Annotations;
 
 use Mill\Container;
 use Mill\Parser\Annotation;
+use Mill\Parser\Version;
 
 /**
  * Handler for the `@api-uri` annotation.
@@ -18,7 +19,7 @@ class UriAnnotation extends Annotation
     const GROUP_REGEX = '/{([\w\/\\\ ]+)}/';
 
     /**
-     * Group that this URI belongs to. Optional.
+     * Group that this URI belongs to.
      *
      * @var string
      */
@@ -38,8 +39,7 @@ class UriAnnotation extends Annotation
      */
     protected $arrayable = [
         'group',
-        'path',
-        'visible'
+        'path'
     ];
 
     /**
@@ -79,6 +79,45 @@ class UriAnnotation extends Annotation
     }
 
     /**
+     * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
+     *
+     * @param array $data
+     * @param Version|null $version
+     * @return self
+     */
+    public static function hydrate(array $data = [], Version $version = null): self
+    {
+        /** @var UriAnnotation $annotation */
+        $annotation = parent::hydrate($data, $version);
+        $annotation->setGroup($data['group']);
+        $annotation->setPath($data['path']);
+
+        return $annotation;
+    }
+
+    /**
+     * Get the group that this URI belongs to.
+     *
+     * @return string
+     */
+    public function getGroup(): string
+    {
+        return $this->group;
+    }
+
+    /**
+     * Set the group that this URI belongs to.
+     *
+     * @param string $group
+     * @return self
+     */
+    public function setGroup(string $group): self
+    {
+        $this->group = $group;
+        return $this;
+    }
+
+    /**
      * Get the URI path.
      *
      * @return string
@@ -86,6 +125,18 @@ class UriAnnotation extends Annotation
     public function getPath()
     {
         return $this->path;
+    }
+
+    /**
+     * Set the URI path.
+     *
+     * @param string $path
+     * @return self
+     */
+    public function setPath(string $path): self
+    {
+        $this->path = $path;
+        return $this;
     }
 
     /**

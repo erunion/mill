@@ -5,6 +5,7 @@ use Mill\Container;
 use Mill\Exceptions\Annotations\UnsupportedTypeException;
 use Mill\Parser\Annotation;
 use Mill\Parser\MSON;
+use Mill\Parser\Version;
 
 /**
  * Handler for the `@api-param` annotation.
@@ -27,7 +28,7 @@ class ParamAnnotation extends Annotation
     /**
      * Sample data that this parameter might accept.
      *
-     * @var string
+     * @var string|false
      */
     protected $sample_data;
 
@@ -114,11 +115,11 @@ class ParamAnnotation extends Annotation
 
         // Create a capability annotation if one was supplied.
         if (!empty($parsed['capability'])) {
-            $parsed['capability'] = new CapabilityAnnotation(
+            $parsed['capability'] = (new CapabilityAnnotation(
                 $parsed['capability'],
                 $this->class,
                 $this->method
-            );
+            ))->process();
         }
 
         return $parsed;
@@ -146,6 +147,28 @@ class ParamAnnotation extends Annotation
     }
 
     /**
+     * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
+     *
+     * @param array $data
+     * @param Version|null $version
+     * @return self
+     */
+    public static function hydrate(array $data = [], Version $version = null): self
+    {
+        /** @var ParamAnnotation $annotation */
+        $annotation = parent::hydrate($data, $version);
+        $annotation->setDescription($data['description']);
+        $annotation->setField($data['field']);
+        $annotation->setNullable($data['nullable']);
+        $annotation->setRequired($data['required']);
+        $annotation->setSampleData($data['sample_data']);
+        $annotation->setType($data['type']);
+        $annotation->setValues($data['values']);
+
+        return $annotation;
+    }
+
+    /**
      * Get the field that this parameter represents.
      *
      * @return string
@@ -156,13 +179,33 @@ class ParamAnnotation extends Annotation
     }
 
     /**
+     * @param string $field
+     * @return self
+     */
+    public function setField(string $field): self
+    {
+        $this->field = $field;
+        return $this;
+    }
+
+    /**
      * Get the sample data that this parameter might accept.
      *
-     * @return string
+     * @return string|false
      */
     public function getSampleData()
     {
         return $this->sample_data;
+    }
+
+    /**
+     * @param string|false $sample_data
+     * @return self
+     */
+    public function setSampleData($sample_data): self
+    {
+        $this->sample_data = $sample_data;
+        return $this;
     }
 
     /**
@@ -176,6 +219,16 @@ class ParamAnnotation extends Annotation
     }
 
     /**
+     * @param string $type
+     * @return self
+     */
+    public function setType(string $type): self
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    /**
      * Get the description for this parameter.
      *
      * @return string
@@ -183,6 +236,16 @@ class ParamAnnotation extends Annotation
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * @param string $description
+     * @return self
+     */
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
+        return $this;
     }
 
     /**
@@ -196,6 +259,16 @@ class ParamAnnotation extends Annotation
     }
 
     /**
+     * @param bool $required
+     * @return self
+     */
+    public function setRequired(bool $required): self
+    {
+        $this->required = $required;
+        return $this;
+    }
+
+    /**
      * Is this parameter nullable?
      *
      * @return bool
@@ -206,6 +279,16 @@ class ParamAnnotation extends Annotation
     }
 
     /**
+     * @param bool $nullable
+     * @return self
+     */
+    public function setNullable(bool $nullable): self
+    {
+        $this->nullable = $nullable;
+        return $this;
+    }
+
+    /**
      * Get the enumerated values that are allowed on this parameter.
      *
      * @return array|null
@@ -213,5 +296,15 @@ class ParamAnnotation extends Annotation
     public function getValues()
     {
         return $this->values;
+    }
+
+    /**
+     * @param array|null $values
+     * @return self
+     */
+    public function setValues($values): self
+    {
+        $this->values = $values;
+        return $this;
     }
 }

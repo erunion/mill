@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Tests\Parser\Annotations;
 
+use Mill\Exceptions\Annotations\MissingRequiredFieldException;
 use Mill\Parser\Annotations\UriAnnotation;
 
 class UriAnnotationTest extends AnnotationTest
@@ -8,17 +9,48 @@ class UriAnnotationTest extends AnnotationTest
     /**
      * @dataProvider providerAnnotation
      * @param string $content
-     * @param boolean $visible
-     * @param boolean $deprecated
+     * @param bool $visible
+     * @param bool $deprecated
      * @param array $expected
      * @return void
      */
-    public function testAnnotation($content, $visible, $deprecated, array $expected)
+    public function testAnnotation(string $content, bool $visible, bool $deprecated, array $expected): void
     {
-        $annotation = new UriAnnotation($content, __CLASS__, __METHOD__);
+        $annotation = (new UriAnnotation($content, __CLASS__, __METHOD__))->process();
         $annotation->setVisibility($visible);
         $annotation->setDeprecated($deprecated);
 
+        $this->assertAnnotation($annotation, $expected);
+    }
+
+    /**
+     * @dataProvider providerAnnotation
+     * @param string $content
+     * @param bool $visible
+     * @param bool $deprecated
+     * @param array $expected
+     * @return void
+     */
+    public function testHydrate(string $content, bool $visible, bool $deprecated, array $expected): void
+    {
+        $annotation = UriAnnotation::hydrate(array_merge(
+            $expected['array'],
+            [
+                'class' => __CLASS__,
+                'method' => __METHOD__
+            ]
+        ));
+
+        $this->assertAnnotation($annotation, $expected);
+    }
+
+    /**
+     * @param UriAnnotation $annotation
+     * @param array $expected
+     * @return void
+     */
+    private function assertAnnotation(UriAnnotation $annotation, array $expected): void
+    {
         $this->assertTrue($annotation->requiresVisibilityDecorator());
         $this->assertFalse($annotation->supportsVersioning());
         $this->assertTrue($annotation->supportsDeprecation());
@@ -31,11 +63,18 @@ class UriAnnotationTest extends AnnotationTest
         $this->assertEmpty($annotation->getAliases());
     }
 
-    public function testConfiguredUriSegmentTranslations()
+    /**
+     * @return void
+     */
+    public function testConfiguredUriSegmentTranslations(): void
     {
         $this->getConfig()->addUriSegmentTranslation('movie_id', 'id');
 
-        $annotation = new UriAnnotation('{Movies\Showtimes} /movies/+movie_id/showtimes', __CLASS__, __METHOD__);
+        $annotation = (new UriAnnotation(
+            '{Movies\Showtimes} /movies/+movie_id/showtimes',
+            __CLASS__,
+            __METHOD__
+        ))->process();
 
         $this->assertSame('/movies/{id}/showtimes', $annotation->getCleanPath());
         $this->assertSame('/movies/+movie_id/showtimes', $annotation->toArray()['path']);
@@ -44,7 +83,7 @@ class UriAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function providerAnnotation()
+    public function providerAnnotation(): array
     {
         return [
             'private' => [
@@ -133,13 +172,13 @@ class UriAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function providerAnnotationFailsOnInvalidContent()
+    public function providerAnnotationFailsOnInvalidContent(): array
     {
         return [
             'missing-group' => [
-                'annotation' => '\Mill\Parser\Annotations\UriAnnotation',
+                'annotation' => UriAnnotation::class,
                 'content' => '',
-                'expected.exception' => '\Mill\Exceptions\Annotations\MissingRequiredFieldException',
+                'expected.exception' => MissingRequiredFieldException::class,
                 'expected.exception.asserts' => [
                     'getRequiredField' => 'group',
                     'getAnnotation' => 'uri',
@@ -148,9 +187,9 @@ class UriAnnotationTest extends AnnotationTest
                 ]
             ],
             'missing-path' => [
-                'annotation' => '\Mill\Parser\Annotations\UriAnnotation',
+                'annotation' => UriAnnotation::class,
                 'content' => '{Movies}',
-                'expected.exception' => '\Mill\Exceptions\Annotations\MissingRequiredFieldException',
+                'expected.exception' => MissingRequiredFieldException::class,
                 'expected.exception.asserts' => [
                     'getRequiredField' => 'path',
                     'getAnnotation' => 'uri',

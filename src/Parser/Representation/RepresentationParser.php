@@ -109,7 +109,7 @@ class RepresentationParser extends Parser
                     break;
 
                 case 'scope':
-                    $scopes[] = new ScopeAnnotation($content, $this->class, $this->method);
+                    $scopes[] = (new ScopeAnnotation($content, $this->class, $this->method))->process();
                     break;
 
                 case 'see':
@@ -123,7 +123,7 @@ class RepresentationParser extends Parser
         }
 
         foreach ($data as $content) {
-            $annotation = new DataAnnotation($content, $this->class, $this->method, $version);
+            $annotation = (new DataAnnotation($content, $this->class, $this->method, $version))->process();
             if (!empty($scopes)) {
                 $annotation->setScopes($scopes);
             }

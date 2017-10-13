@@ -5,7 +5,6 @@ use gossi\docblock\Docblock;
 use gossi\docblock\tags\UnknownTag;
 use Mill\Exceptions\Resource\UnsupportedDecoratorException;
 use Mill\Parser\Annotation;
-use Mill\Parser\Annotations\DescriptionAnnotation;
 use Mill\Parser\MSON;
 use Mill\Parser\Version;
 use ReflectionClass;
@@ -181,6 +180,34 @@ class Parser
     }
 
     /**
+     * @param $name
+     * @param $class
+     * @param $method
+     * @param array $data
+     * @return mixed
+     */
+    public function hydrateAnnotation($name, $class, $method, array $data = [])
+    {
+        $annotation_class = $this->getAnnotationClass(str_replace('_', '', $name));
+
+        $version = null;
+        if (!empty($data['version'])) {
+            $version = new Version($data['version'], $class, $method);
+        }
+
+        return $annotation_class::hydrate(
+            array_merge(
+                $data,
+                [
+                    'class' => $class,
+                    'method' => $method
+                ]
+            ),
+            $version
+        );
+    }
+
+    /**
      * Build up an array of annotation data.
      *
      * @param string $name
@@ -203,7 +230,7 @@ class Parser
         }
 
         /** @var Annotation $annotation */
-        $annotation = new $class($content, $this->class, $this->method, $version);
+        $annotation = (new $class($content, $this->class, $this->method, $version))->process();
 
         if (!empty($decorators)) {
             $decorators = explode(':', ltrim($decorators, ':'));

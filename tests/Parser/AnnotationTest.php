@@ -11,7 +11,8 @@ class AnnotationTest extends \PHPUnit\Framework\TestCase
         $docblock = 'This is a test';
 
         try {
-            new AnnotationStub($docblock, __CLASS__, __METHOD__);
+            (new AnnotationStub($docblock, __CLASS__, __METHOD__))->process();
+            $this->fail('MissingRequiredFieldException not thrown.');
         } catch (MissingRequiredFieldException $e) {
             $this->assertSame('test', $e->getRequiredField());
             $this->assertSame('stub', $e->getAnnotation());

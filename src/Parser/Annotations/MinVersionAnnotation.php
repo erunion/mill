@@ -72,6 +72,22 @@ class MinVersionAnnotation extends Annotation
     }
 
     /**
+     * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
+     *
+     * @param array $data
+     * @param Version|null $version
+     * @return self
+     */
+    public static function hydrate(array $data = [], Version $version = null): self
+    {
+        /** @var MinVersionAnnotation $annotation */
+        $annotation = parent::hydrate($data, $version);
+        $annotation->setMinimumVersion($data['minimum_version']);
+
+        return $annotation;
+    }
+
+    /**
      * Get the (absolute) minimum version that this annotation represents.
      *
      * @return string
@@ -79,5 +95,17 @@ class MinVersionAnnotation extends Annotation
     public function getMinimumVersion()
     {
         return $this->minimum_version;
+    }
+
+    /**
+     * Set the (absolute) minimum version that this annotation represents.
+     *
+     * @param string $minimum_version
+     * @return self
+     */
+    public function setMinimumVersion(string $minimum_version): self
+    {
+        $this->minimum_version = $minimum_version;
+        return $this;
     }
 }

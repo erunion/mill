@@ -1,6 +1,8 @@
 <?php
 namespace Mill\Tests\Parser\Annotations;
 
+use Mill\Exceptions\Annotations\AbsoluteMinimumVersionException;
+use Mill\Exceptions\Version\UnrecognizedSchemaException;
 use Mill\Parser\Annotations\MinVersionAnnotation;
 
 class MinVersionAnnotationTest extends AnnotationTest
@@ -11,10 +13,38 @@ class MinVersionAnnotationTest extends AnnotationTest
      * @param array $expected
      * @return void
      */
-    public function testAnnotation($content, array $expected)
+    public function testAnnotation(string $content, array $expected): void
     {
-        $annotation = new MinVersionAnnotation($content, __CLASS__, __METHOD__);
+        $annotation = (new MinVersionAnnotation($content, __CLASS__, __METHOD__))->process();
+        $this->assertAnnotation($annotation, $expected);
+    }
 
+    /**
+     * @dataProvider providerAnnotation
+     * @param string $content
+     * @param array $expected
+     * @return void
+     */
+    public function testHydrate(string $content, array $expected): void
+    {
+        $annotation = MinVersionAnnotation::hydrate(array_merge(
+            $expected,
+            [
+                'class' => __CLASS__,
+                'method' => __METHOD__
+            ]
+        ));
+
+        $this->assertAnnotation($annotation, $expected);
+    }
+
+    /**
+     * @param MinVersionAnnotation $annotation
+     * @param array $expected
+     * @return void
+     */
+    private function assertAnnotation(MinVersionAnnotation $annotation, array $expected): void
+    {
         $this->assertFalse($annotation->requiresVisibilityDecorator());
         $this->assertFalse($annotation->supportsVersioning());
         $this->assertFalse($annotation->supportsDeprecation());
@@ -29,7 +59,7 @@ class MinVersionAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function providerAnnotation()
+    public function providerAnnotation(): array
     {
         return [
             '_complete' => [
@@ -44,13 +74,13 @@ class MinVersionAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function providerAnnotationFailsOnInvalidContent()
+    public function providerAnnotationFailsOnInvalidContent(): array
     {
         return [
             'does-not-have-an-absolute-version' => [
-                'annotation' => '\Mill\Parser\Annotations\MinVersionAnnotation',
+                'annotation' => MinVersionAnnotation::class,
                 'content' => '~1.2',
-                'expected.exception' => '\Mill\Exceptions\Annotations\AbsoluteMinimumVersionException',
+                'expected.exception' => AbsoluteMinimumVersionException::class,
                 'expected.exception.asserts' => [
                     'getRequiredField' => null,
                     'getAnnotation' => '~1.2',
@@ -59,9 +89,9 @@ class MinVersionAnnotationTest extends AnnotationTest
                 ]
             ],
             'missing-minimum-version' => [
-                'annotation' => '\Mill\Parser\Annotations\MinVersionAnnotation',
+                'annotation' => MinVersionAnnotation::class,
                 'content' => '',
-                'expected.exception' => '\Mill\Exceptions\Version\UnrecognizedSchemaException',
+                'expected.exception' => UnrecognizedSchemaException::class,
                 'expected.exception.asserts' => [
                     'getVersion' => '',
                     'getValidationMessage' => 'The supplied version, ``, has an unrecognized schema. Please consult ' .

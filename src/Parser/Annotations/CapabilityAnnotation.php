@@ -4,6 +4,7 @@ namespace Mill\Parser\Annotations;
 use Mill\Container;
 use Mill\Exceptions\Annotations\InvalidCapabilitySuppliedException;
 use Mill\Parser\Annotation;
+use Mill\Parser\Version;
 
 /**
  * Handler for the `@api-capability` annotation.
@@ -59,5 +60,17 @@ class CapabilityAnnotation extends Annotation
     protected function interpreter()
     {
         $this->capability = $this->required('capability');
+    }
+
+    /**
+     * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
+     *
+     * @param array $data
+     * @param Version|null $version
+     * @return self
+     */
+    public static function hydrate(array $data = [], Version $version = null): self
+    {
+        return parent::hydrate($data, $version);
     }
 }

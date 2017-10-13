@@ -97,17 +97,10 @@ class Documentation
     /**
      * Parse the instance class and method into actionable annotations and documentation.
      *
-     * @return Documentation
+     * @return self
      * @throws NoAnnotationsException If no annotations were found.
-     * @throws RequiredAnnotationException If a required `@api-label` annotation is missing.
-     * @throws MultipleAnnotationsException If multiple `@api-label` annotations were found.
-     * @throws RequiredAnnotationException If a required `@api-contentType` annotation is missing.
-     * @throws MissingVisibilityDecoratorException If an annotation is missing a visibility decorator.
-     * @throws RequiredAnnotationException If a required annotation is missing.
-     * @throws TooManyAliasedUrisException If there are too many URI aliases set.
-     * @throws PublicDecoratorOnPrivateActionException If a `:public` decorator is found on a `:private` action.
      */
-    public function parse()
+    public function parse(): self
     {
         $parser = new Parser($this->class);
         $annotations = $parser->getAnnotations($this->method);
@@ -116,6 +109,22 @@ class Documentation
             throw NoAnnotationsException::create($this->class, $this->method);
         }
 
+        return $this->parseAnnotations($annotations);
+    }
+
+    /**
+     * Parse an array of annotation objects and set them to the instance resource action documentation.
+     *
+     * @param array $annotations
+     * @return self
+     * @throws MissingVisibilityDecoratorException
+     * @throws MultipleAnnotationsException
+     * @throws PublicDecoratorOnPrivateActionException
+     * @throws RequiredAnnotationException
+     * @throws TooManyAliasedUrisException
+     */
+    public function parseAnnotations(array $annotations = []): self
+    {
         // Parse out the `@api-label` annotation.
         if (!isset($annotations['label'])) {
             throw RequiredAnnotationException::create('label', $this->class, $this->method);
@@ -280,6 +289,16 @@ class Documentation
     public function getContentTypes()
     {
         return $this->content_types;
+    }
+
+    /**
+     * @param array $content_types
+     * @return self
+     */
+    public function setContentTypes(array $content_types): self
+    {
+        $this->content_types = $content_types;
+        return $this;
     }
 
     /**
@@ -543,6 +562,49 @@ class Documentation
     }
 
     /**
+     * Hydrate a new resource action documentation object with an array of data generated from `toArray`.
+     *
+     * @param array $data
+     * @return self
+     */
+    public static function hydrate(array $data): self
+    {
+        $annotations = [];
+        $parser = new Parser($data['class']);
+        $action = new self($data['class'], $data['method']);
+
+        $annotations['label'][] = $parser->hydrateAnnotation('label', $data['class'], $data['method'], $data);
+        $annotations['description'][] = $parser->hydrateAnnotation(
+            'description',
+            $data['class'],
+            $data['method'],
+            $data
+        );
+
+        foreach ($data['content_types'] as $content_type) {
+            $annotations['contentType'][] = $parser->hydrateAnnotation(
+                'content_type',
+                $data['class'],
+                $data['method'],
+                $content_type
+            );
+        }
+
+        foreach ($data['annotations'] as $name => $datas) {
+            foreach ($datas as $annotation_data) {
+                $annotations[$name][] = $parser->hydrateAnnotation(
+                    $name,
+                    $data['class'],
+                    $data['method'],
+                    $annotation_data
+                );
+            }
+        }
+
+        return $action->parseAnnotations($annotations);
+    }
+
+    /**
      * Convert the parsed resource action documentation into an array.
      *
      * @return array
@@ -550,6 +612,7 @@ class Documentation
     public function toArray()
     {
         $data = [
+            'class' => $this->class,
             'label' => $this->label,
             'description' => $this->description,
             'content_types' => [],

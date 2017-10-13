@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Tests\Parser\Annotations;
 
+use Mill\Exceptions\Annotations\MissingRequiredFieldException;
 use Mill\Parser\Annotations\ContentTypeAnnotation;
 use Mill\Parser\Version;
 
@@ -13,21 +14,50 @@ class ContentTypeAnnotationTest extends AnnotationTest
      * @param array $expected
      * @return void
      */
-    public function testAnnotation($content, $version, array $expected)
+    public function testAnnotation(string $content, $version, array $expected): void
     {
-        $annotation = new ContentTypeAnnotation($content, __CLASS__, __METHOD__, $version);
+        $annotation = (new ContentTypeAnnotation($content, __CLASS__, __METHOD__, $version))->process();
+        $this->assertAnnotation($annotation, $expected);
+    }
 
+    /**
+     * @dataProvider providerAnnotation
+     * @param string $content
+     * @param Version|null $version
+     * @param array $expected
+     * @return void
+     */
+    public function testHydrate(string $content, $version, array $expected): void
+    {
+        $annotation = ContentTypeAnnotation::hydrate(array_merge(
+            $expected,
+            [
+                'class' => __CLASS__,
+                'method' => __METHOD__
+            ]
+        ), $version);
+
+        $this->assertAnnotation($annotation, $expected);
+    }
+
+    /**
+     * @param ContentTypeAnnotation $annotation
+     * @param array $expected
+     * @return void
+     */
+    private function assertAnnotation(ContentTypeAnnotation $annotation, array $expected): void
+    {
         $this->assertFalse($annotation->requiresVisibilityDecorator());
         $this->assertTrue($annotation->supportsVersioning());
         $this->assertFalse($annotation->supportsDeprecation());
         $this->assertFalse($annotation->supportsAliasing());
 
         $this->assertSame($expected, $annotation->toArray());
-        $this->assertSame($content, $annotation->getContentType());
+        $this->assertSame($expected['content_type'], $annotation->getContentType());
         $this->assertFalse($annotation->getCapability());
 
         if ($expected['version']) {
-            $this->assertInstanceOf('Mill\Parser\Version', $annotation->getVersion());
+            $this->assertInstanceOf(Version::class, $annotation->getVersion());
         } else {
             $this->assertFalse($annotation->getVersion());
         }
@@ -38,7 +68,7 @@ class ContentTypeAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function providerAnnotation()
+    public function providerAnnotation(): array
     {
         return [
             'versioned' => [
@@ -63,13 +93,13 @@ class ContentTypeAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function providerAnnotationFailsOnInvalidContent()
+    public function providerAnnotationFailsOnInvalidContent(): array
     {
         return [
             'missing-content-type' => [
-                'annotation' => '\Mill\Parser\Annotations\ContentTypeAnnotation',
+                'annotation' => ContentTypeAnnotation::class,
                 'content' => '',
-                'expected.exception' => '\Mill\Exceptions\Annotations\MissingRequiredFieldException',
+                'expected.exception' => MissingRequiredFieldException::class,
                 'expected.exception.asserts' => [
                     'getRequiredField' => 'content_type',
                     'getAnnotation' => 'contenttype',

@@ -1,6 +1,8 @@
 <?php
 namespace Mill\Tests\Parser\Annotations;
 
+use Mill\Exceptions\Annotations\InvalidCapabilitySuppliedException;
+use Mill\Exceptions\Annotations\MissingRequiredFieldException;
 use Mill\Parser\Annotations\CapabilityAnnotation;
 
 class CapabilityAnnotationTest extends AnnotationTest
@@ -11,10 +13,38 @@ class CapabilityAnnotationTest extends AnnotationTest
      * @param array $expected
      * @return void
      */
-    public function testAnnotation($content, array $expected)
+    public function testAnnotation(string $content, array $expected): void
     {
-        $annotation = new CapabilityAnnotation($content, __CLASS__, __METHOD__);
+        $annotation = (new CapabilityAnnotation($content, __CLASS__, __METHOD__))->process();
+        $this->assertAnnotation($annotation, $expected);
+    }
 
+    /**
+     * @dataProvider providerAnnotation
+     * @param string $content
+     * @param array $expected
+     * @return void
+     */
+    public function testHydrate(string $content, array $expected): void
+    {
+        $annotation = CapabilityAnnotation::hydrate(array_merge(
+            $expected,
+            [
+                'class' => __CLASS__,
+                'method' => __METHOD__
+            ]
+        ));
+
+        $this->assertAnnotation($annotation, $expected);
+    }
+
+    /**
+     * @param CapabilityAnnotation $annotation
+     * @param array $expected
+     * @return void
+     */
+    private function assertAnnotation(CapabilityAnnotation $annotation, array $expected): void
+    {
         $this->assertFalse($annotation->requiresVisibilityDecorator());
         $this->assertFalse($annotation->supportsVersioning());
         $this->assertFalse($annotation->supportsDeprecation());
@@ -29,7 +59,7 @@ class CapabilityAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function providerAnnotation()
+    public function providerAnnotation(): array
     {
         return [
             '_complete' => [
@@ -44,13 +74,13 @@ class CapabilityAnnotationTest extends AnnotationTest
     /**
      * @return array
      */
-    public function providerAnnotationFailsOnInvalidContent()
+    public function providerAnnotationFailsOnInvalidContent(): array
     {
         return [
             'missing-capability' => [
-                'annotation' => '\Mill\Parser\Annotations\CapabilityAnnotation',
+                'annotation' => CapabilityAnnotation::class,
                 'content' => '',
-                'expected.exception' => '\Mill\Exceptions\Annotations\MissingRequiredFieldException',
+                'expected.exception' => MissingRequiredFieldException::class,
                 'expected.exception.asserts' => [
                     'getRequiredField' => 'capability',
                     'getAnnotation' => 'capability',
@@ -59,9 +89,9 @@ class CapabilityAnnotationTest extends AnnotationTest
                 ]
             ],
             'capability-was-not-configured' => [
-                'annotation' => '\Mill\Parser\Annotations\CapabilityAnnotation',
+                'annotation' => CapabilityAnnotation::class,
                 'content' => 'UnconfiguredCapability',
-                'expected.exception' => '\Mill\Exceptions\Annotations\InvalidCapabilitySuppliedException',
+                'expected.exception' => InvalidCapabilitySuppliedException::class,
                 'expected.exception.asserts' => [
                     'getCapability' => 'UnconfiguredCapability'
                 ]
