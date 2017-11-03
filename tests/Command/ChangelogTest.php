@@ -42,6 +42,7 @@ class ChangelogTest extends \PHPUnit_Framework_TestCase
      */
     public function testChangelog($private_objects, $capabilities, $expected_file)
     {
+        /** @var string $output_dir */
         $output_dir = tempnam(sys_get_temp_dir(), 'mill-generate-test-');
         if (file_exists($output_dir)) {
             unlink($output_dir);

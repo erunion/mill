@@ -15,7 +15,7 @@ install:
   - npm install
 
 script:
+  - vendor/bin/phpcs --standard=PSR2 src/ tests/
+  - vendor/bin/psalm
   - vendor/bin/phpunit
   - npm test
-  - vendor/bin/psalm
-  - vendor/bin/phpcs --standard=PSR2 src/ tests/
