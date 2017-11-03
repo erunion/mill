@@ -24,7 +24,7 @@ sem malesuada magna mollis euismod.
     + Attributes (Movie)
 + Response 304 (application/mill.example.movie)
 + Response 404 (application/mill.example.movie)
-    There are 3 ways that this status code can be encountered.
+    There are three ways that this status code can be encountered:
          * If the movie could not be found.
          * For no reason.
          * For some other reason.
@@ -55,7 +55,7 @@ sem malesuada magna mollis euismod.
     + Attributes (Movie)
 + Response 304 (application/mill.example.movie)
 + Response 404 (application/mill.example.movie)
-    There are 3 ways that this status code can be encountered.
+    There are three ways that this status code can be encountered:
          * If the movie could not be found.
          * For no reason.
          * For some other reason.
@@ -64,7 +64,7 @@ sem malesuada magna mollis euismod.
 ### Update a movie. [PATCH]
 Update a movies data.
 
-This action requires a bearer token with `edit` scope.
+This action requires a bearer token with the `edit` scope.
 
 + Parameters
     - `id` (number, required) - Movie ID
@@ -95,17 +95,17 @@ This action requires a bearer token with `edit` scope.
 + Response 202 (application/mill.example.movie)
     + Attributes (Movie)
 + Response 400 (application/mill.example.movie)
-    There are 2 ways that this status code can be encountered.
+    There are two ways that this status code can be encountered:
          * If there is a problem with the request.
          * If the IMDB URL could not be validated.
     + Attributes (Error)
 + Response 403 (application/mill.example.movie)
-    There are 2 ways that this status code can be encountered.
+    There are two ways that this status code can be encountered:
          * If something cool happened. Unique error code: 1337
          * If the user is not allowed to edit that movie. Unique error code: 666
     + Attributes (Coded error)
 + Response 404 (application/mill.example.movie)
-    There are 2 ways that this status code can be encountered.
+    There are two ways that this status code can be encountered:
          * If the movie could not be found.
          * If the trailer URL could not be validated.
     + Attributes (Error)
@@ -113,7 +113,7 @@ This action requires a bearer token with `edit` scope.
 ### Delete a movie. [DELETE]
 Delete a movie.
 
-This action requires a bearer token with `delete` scope.
+This action requires a bearer token with the `delete` scope.
 
 + Parameters
     - `id` (number, required) - Movie ID
@@ -141,7 +141,7 @@ Returns all movies for a specific location.
 ### Create a movie. [POST]
 Create a new movie.
 
-This action requires a bearer token with `create` scope.
+This action requires a bearer token with the `create` scope.
 
 + Request
     + Attributes
@@ -169,7 +169,7 @@ This action requires a bearer token with `create` scope.
     + Attributes (Movie)
 + Response 201 (application/mill.example.movie)
 + Response 400 (application/mill.example.movie)
-    There are 2 ways that this status code can be encountered.
+    There are two ways that this status code can be encountered:
          * If there is a problem with the request.
          * If the IMDB URL could not be validated.
     + Attributes (Error)

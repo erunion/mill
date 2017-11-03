@@ -20,6 +20,14 @@
             </errorLevel>
         </InvalidArgument>
 
+        <InvalidReturnType>
+            <errorLevel type="suppress">
+                <!-- Our usage of json_encode() in the Json changelog format is always going to return a string. Not
+                    string|false. -->
+                <file name="src/Generator/Changelog/Formats/Json.php" />
+            </errorLevel>
+        </InvalidReturnType>
+
         <InvalidScalarArgument>
             <errorLevel type="suppress">
                 <!-- Masking errors where we're passing methods that return string|bool into test assertions. -->
@@ -45,5 +53,8 @@
 
         <!-- This hides a number of errors that we don't really care about. -->
         <PropertyNotSetInConstructor errorLevel="suppress" />
+
+        <!-- Masking PHP 7 errors and warnings for now. Mill will support only PHP 7.1+ in v3. -->
+        <UntypedParam errorLevel="suppress" />
     </issueHandlers>
 </psalm>

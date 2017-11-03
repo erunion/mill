@@ -77,7 +77,7 @@ Returns all movies for a specific location.
 ### Create a movie. [POST]
 Create a new movie.
 
-This action requires a bearer token with `create` scope.
+This action requires a bearer token with the `create` scope.
 
 + Request
     + Attributes
@@ -102,7 +102,7 @@ This action requires a bearer token with `create` scope.
 + Response 200 (application/json)
     + Attributes (Movie)
 + Response 400 (application/json)
-    There are 2 ways that this status code can be encountered.
+    There are two ways that this status code can be encountered:
          * If there is a problem with the request.
          * If the IMDB URL could not be validated.
     + Attributes (Error)
@@ -127,7 +127,7 @@ Return information on a specific movie theater.
 ### Update a movie theater. [PATCH]
 Update a movie theaters' data.
 
-This action requires a bearer token with `create` scope.
+This action requires a bearer token with the `create` scope.
 
 + Parameters
     - `id` (number, required) - Theater ID
@@ -148,7 +148,7 @@ This action requires a bearer token with `create` scope.
 ### Delete a movie theater. [DELETE]
 Delete a movie theater.
 
-This action requires a bearer token with `delete` scope.
+This action requires a bearer token with the `delete` scope.
 
 + Parameters
     - `id` (number, required) - Theater ID
@@ -175,7 +175,7 @@ Returns all movie theatres for a specific location.
 ### Create a movie theater. [POST]
 Create a new movie theater.
 
-This action requires a bearer token with `create` scope.
+This action requires a bearer token with the `create` scope.
 
 + Request
     + Attributes

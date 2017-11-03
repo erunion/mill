@@ -72,7 +72,7 @@ Returns all movies for a specific location.
 ### Create a movie. [POST]
 Create a new movie.
 
-This action requires a bearer token with `create` scope.
+This action requires a bearer token with the `create` scope.
 
 + Request
     + Attributes
@@ -97,7 +97,7 @@ This action requires a bearer token with `create` scope.
 + Response 200 (application/json)
     + Attributes (Movie)
 + Response 400 (application/json)
-    There are 2 ways that this status code can be encountered.
+    There are two ways that this status code can be encountered:
          * If there is a problem with the request.
          * If the IMDB URL could not be validated.
     + Attributes (Error)

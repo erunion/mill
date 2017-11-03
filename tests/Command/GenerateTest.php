@@ -35,6 +35,7 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
 
     public function testGenerate()
     {
+        /** @var string $output_dir */
         $output_dir = tempnam(sys_get_temp_dir(), 'mill-generate-test-');
         if (file_exists($output_dir)) {
             unlink($output_dir);
