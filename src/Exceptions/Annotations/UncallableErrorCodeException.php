@@ -1,17 +1,13 @@
 <?php
 namespace Mill\Exceptions\Annotations;
 
-class UncallableErrorCodeException extends \Exception
+use Mill\Exceptions\BaseException;
+
+class UncallableErrorCodeException extends BaseException
 {
     use AnnotationExceptionTrait;
 
-    /**
-     * @param string $docblock
-     * @param string $class
-     * @param string $method
-     * @return UncallableErrorCodeException
-     */
-    public static function create($docblock, $class, $method)
+    public static function create(string $docblock, string $class, string $method): UncallableErrorCodeException
     {
         $message = sprintf(
             'The `@api-throws %s` in %s::%s has an uncallable error code.',

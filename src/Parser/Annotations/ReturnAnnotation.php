@@ -18,7 +18,6 @@ class ReturnAnnotation extends Annotation
     use HasHttpCodeResponseTrait;
 
     const REQUIRES_VISIBILITY_DECORATOR = true;
-    const SUPPORTS_DEPRECATION = false;
     const SUPPORTS_VERSIONING = true;
 
     const REGEX_TYPE = '/^({[^}]*})/';
@@ -26,7 +25,7 @@ class ReturnAnnotation extends Annotation
     /**
      * Description for what this annotations' action return is.
      *
-     * @var string|null|false
+     * @var false|null|string
      */
     protected $description = null;
 
@@ -56,7 +55,7 @@ class ReturnAnnotation extends Annotation
      * @return array
      * @throws UnknownRepresentationException If a supplied representation has not been configured.
      */
-    protected function parser()
+    protected function parser(): array
     {
         $parsed = [];
         $content = trim($this->docblock);
@@ -87,7 +86,9 @@ class ReturnAnnotation extends Annotation
                 try {
                     Container::getConfig()->doesRepresentationExist($representation);
                 } catch (UnconfiguredRepresentationException $e) {
-                    throw UnknownRepresentationException::create($representation, $this->class, $this->method);
+                    /** @var string $method */
+                    $method = $this->method;
+                    throw UnknownRepresentationException::create($representation, $this->class, $method);
                 }
             } else {
                 $description = trim($representation . ' ' . $description);
@@ -109,7 +110,7 @@ class ReturnAnnotation extends Annotation
      *
      * @return void
      */
-    protected function interpreter()
+    protected function interpreter(): void
     {
         $this->http_code = $this->required('http_code');
         $this->representation = $this->optional('representation');
@@ -127,7 +128,7 @@ class ReturnAnnotation extends Annotation
      * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
      *
      * @param array $data
-     * @param Version|null $version
+     * @param null|Version $version
      * @return self
      */
     public static function hydrate(array $data = [], Version $version = null): self
@@ -146,10 +147,10 @@ class ReturnAnnotation extends Annotation
      * Grab the HTTP code for a given response type.
      *
      * @param string $type
-     * @return integer
+     * @return int
      * @throws UnknownReturnCodeException If an unrecognized return code is found.
      */
-    private function findReturnCodeForType($type)
+    private function findReturnCodeForType(string $type): int
     {
         switch ($type) {
             case 'collection':
@@ -174,14 +175,16 @@ class ReturnAnnotation extends Annotation
                 return 304;
 
             default:
-                throw UnknownReturnCodeException::create('return', $this->docblock, $this->class, $this->method);
+                /** @var string $method */
+                $method = $this->method;
+                throw UnknownReturnCodeException::create('return', $this->docblock, $this->class, $method);
         }
     }
 
     /**
      * Get the description for this response.
      *
-     * @return string|null|false
+     * @return false|null|string
      */
     public function getDescription()
     {
@@ -191,7 +194,7 @@ class ReturnAnnotation extends Annotation
     /**
      * Set the description for this response.
      *
-     * @param string|null|false $description
+     * @param false|null|string $description
      * @return self
      */
     public function setDescription($description): self
@@ -205,7 +208,7 @@ class ReturnAnnotation extends Annotation
      *
      * @return string
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }

@@ -10,8 +10,6 @@ use Mill\Parser\Version;
  */
 class ContentTypeAnnotation extends Annotation
 {
-    const REQUIRES_VISIBILITY_DECORATOR = false;
-    const SUPPORTS_DEPRECATION = false;
     const SUPPORTS_VERSIONING = true;
 
     /**
@@ -36,7 +34,7 @@ class ContentTypeAnnotation extends Annotation
      *
      * @return array
      */
-    protected function parser()
+    protected function parser(): array
     {
         return [
             'content_type' => $this->docblock
@@ -51,7 +49,7 @@ class ContentTypeAnnotation extends Annotation
      *
      * @return void
      */
-    protected function interpreter()
+    protected function interpreter(): void
     {
         $this->content_type = $this->required('content_type');
     }
@@ -60,7 +58,7 @@ class ContentTypeAnnotation extends Annotation
      * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
      *
      * @param array $data
-     * @param Version|null $version
+     * @param null|Version $version
      * @return self
      */
     public static function hydrate(array $data = [], Version $version = null): self
@@ -77,7 +75,7 @@ class ContentTypeAnnotation extends Annotation
      *
      * @return string
      */
-    public function getContentType()
+    public function getContentType(): string
     {
         return $this->content_type;
     }

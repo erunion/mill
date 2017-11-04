@@ -53,35 +53,35 @@ class MSON
     /**
      * Controller method that MSON is being parsed from.
      *
-     * @var mixed
+     * @var string
      */
     protected $method;
 
     /**
      * Name of the field that was parsed out of the MSON content.
      *
-     * @var string
+     * @var null|string
      */
-    protected $field;
+    protected $field = null;
 
     /**
      * Sample data that was parsed out of the MSON content.
      *
-     * @var string|false
+     * @var false|string
      */
     protected $sample_data = false;
 
     /**
      * Type of field that this MSON content represents.
      *
-     * @var string
+     * @var null|string
      */
-    protected $type;
+    protected $type = null;
 
     /**
      * Subtype of the type of field that this MSON content represents.
      *
-     * @var string|false
+     * @var false|string
      */
     protected $subtype = false;
 
@@ -102,16 +102,16 @@ class MSON
     /**
      * Application-specific capability that was parsed out of the MSON content.
      *
-     * @var string|false
+     * @var false|string
      */
     protected $capability = false;
 
     /**
      * Parsed description from the MSON content.
      *
-     * @var string
+     * @var null|string
      */
-    protected $description;
+    protected $description = null;
 
     /**
      * Array of enumerated values from the MSON content.
@@ -144,7 +144,7 @@ class MSON
      * @param string $class
      * @param string $method
      */
-    public function __construct($class, $method)
+    public function __construct(string $class, string $method)
     {
         $this->class = $class;
         $this->method = $method;
@@ -154,11 +154,11 @@ class MSON
      * Given a piece of Mill-flavored MSON content, parse it out.
      *
      * @param string $content
-     * @return MSON
+     * @return self
      * @throws UnsupportedTypeException If an unsupported MSON field type has been supplied.
      * @throws MissingOptionsException If a supplied MSON type of `enum` missing corresponding acceptable values.
      */
-    public function parse($content)
+    public function parse(string $content): self
     {
         /**
          * This is the regex to match a Mill-flavored MSON string.
@@ -264,7 +264,7 @@ class MSON
      * @param array $descriptions
      * @return array<string, string>
      */
-    protected function parseValues($values, $descriptions)
+    protected function parseValues(array $values, array $descriptions): array
     {
         $enum = [];
         foreach ($values as $k => $value) {
@@ -283,9 +283,9 @@ class MSON
     /**
      * Name of the field that was parsed out of the MSON content.
      *
-     * @return false|string
+     * @return null|string
      */
-    public function getField()
+    public function getField(): ?string
     {
         return $this->field;
     }
@@ -303,9 +303,9 @@ class MSON
     /**
      * Type of field that this MSON content represents.
      *
-     * @return string
+     * @return null|string
      */
-    public function getType()
+    public function getType(): ?string
     {
         return $this->type;
     }
@@ -325,7 +325,7 @@ class MSON
      *
      * @return bool
      */
-    public function isRequired()
+    public function isRequired(): bool
     {
         return $this->is_required;
     }
@@ -335,7 +335,7 @@ class MSON
      *
      * @return bool
      */
-    public function isNullable()
+    public function isNullable(): bool
     {
         return $this->is_nullable;
     }
@@ -343,7 +343,7 @@ class MSON
     /**
      * Application-specific capability that was parsed out of the MSON content.
      *
-     * @return string|false
+     * @return false|string
      */
     public function getCapability()
     {
@@ -353,9 +353,9 @@ class MSON
     /**
      * Parsed description from the MSON content.
      *
-     * @return false|string
+     * @return null|string
      */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -365,7 +365,7 @@ class MSON
      *
      * @return array<string, string>
      */
-    public function getValues()
+    public function getValues(): array
     {
         return $this->values;
     }
@@ -375,7 +375,7 @@ class MSON
      *
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'capability' => $this->getCapability(),

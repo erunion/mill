@@ -1,23 +1,17 @@
 <?php
 namespace Mill\Exceptions\Representation;
 
-use Mill\Exceptions\ExceptionTrait;
-
 trait RepresentationExceptionTrait
 {
-    use ExceptionTrait;
-
-    /**
-     * @var string|null
-     */
+    /** @var null|string */
     public $field = null;
 
     /**
      * Get the field that this response exception was triggered for.
      *
-     * @return string|null
+     * @return null|string
      */
-    public function getField()
+    public function getField(): ?string
     {
         return $this->field;
     }

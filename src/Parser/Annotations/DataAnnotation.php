@@ -13,8 +13,6 @@ use Mill\Parser\Version;
  */
 class DataAnnotation extends Annotation
 {
-    const REQUIRES_VISIBILITY_DECORATOR = false;
-    const SUPPORTS_DEPRECATION = false;
     const SUPPORTS_MSON = true;
     const SUPPORTS_SCOPES = true;
     const SUPPORTS_VERSIONING = true;
@@ -29,9 +27,9 @@ class DataAnnotation extends Annotation
     /**
      * Sample data that this might represent.
      *
-     * @var string|false
+     * @var false|string
      */
-    protected $sample_data;
+    protected $sample_data = false;
 
     /**
      * Type of data that this represents.
@@ -43,7 +41,7 @@ class DataAnnotation extends Annotation
     /**
      * Subtype of the type of data that this represents.
      *
-     * @var string|false
+     * @var false|string
      */
     protected $subtype = false;
 
@@ -57,7 +55,7 @@ class DataAnnotation extends Annotation
     /**
      * Array of acceptable values for this data.
      *
-     * @var array|null|false
+     * @var array|false|null
      */
     protected $values = [];
 
@@ -91,11 +89,14 @@ class DataAnnotation extends Annotation
      * @return array
      * @throws RestrictedFieldNameException If a restricted `@api-field` name is detected.
      */
-    protected function parser()
+    protected function parser(): array
     {
         $content = trim($this->docblock);
 
-        $mson = (new MSON($this->class, $this->method))->parse($content);
+        /** @var string $method */
+        $method = $this->method;
+
+        $mson = (new MSON($this->class, $method))->parse($content);
         $parsed = [
             'identifier' => $mson->getField(),
             'sample_data' => $mson->getSampleData(),
@@ -138,7 +139,7 @@ class DataAnnotation extends Annotation
      *
      * @return void
      */
-    protected function interpreter()
+    protected function interpreter(): void
     {
         $this->identifier = $this->required('identifier');
         $this->sample_data = $this->optional('sample_data');
@@ -155,7 +156,7 @@ class DataAnnotation extends Annotation
      * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
      *
      * @param array $data
-     * @param Version|null $version
+     * @param null|Version $version
      * @return self
      */
     public static function hydrate(array $data = [], Version $version = null): self
@@ -215,7 +216,7 @@ class DataAnnotation extends Annotation
      * @param string $prefix
      * @return self
      */
-    public function setIdentifierPrefix($prefix)
+    public function setIdentifierPrefix($prefix): self
     {
         $this->identifier = $prefix . '.' . $this->identifier;
         return $this;

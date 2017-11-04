@@ -27,14 +27,14 @@ class Parser
     /**
      * The current class method that we're parsing. Used to give better error messaging.
      *
-     * @var string
+     * @var null|string
      */
     protected $method;
 
     /**
      * @param string $class
      */
-    public function __construct($class)
+    public function __construct(string $class)
     {
         $this->class = $class;
     }
@@ -63,10 +63,10 @@ class Parser
     /**
      * Locate, and parse, the annotations for a class or method.
      *
-     * @param string|null $method_name
+     * @param null|string $method_name
      * @return array An array containing all the found annotations.
      */
-    public function getAnnotations($method_name = null)
+    public function getAnnotations(string $method_name = null): array
     {
         if (!empty($method_name)) {
             $this->method = $method_name;
@@ -90,7 +90,7 @@ class Parser
      * @param boolean $parse_description If we want to parse out an unstructured `description` annotation.
      * @return array Array of parsed annotations.
      */
-    protected function parseDocblock($docblock, $parse_description = true)
+    protected function parseDocblock(string $docblock, bool $parse_description = true): array
     {
         $original_docblock = $docblock;
         $annotations = [];
@@ -141,7 +141,7 @@ class Parser
      * @param string $original_content
      * @return array
      */
-    protected function parseAnnotations(array $tags, $original_content)
+    protected function parseAnnotations(array $tags, string $original_content): array
     {
         $annotations = [];
         $version = null;
@@ -162,7 +162,9 @@ class Parser
             switch ($annotation) {
                 // Handle the `@api-version` annotation block.
                 case 'version':
-                    $version = new Version($content, $this->class, $this->method);
+                    /** @var string $method */
+                    $method = $this->method;
+                    $version = new Version($content, $this->class, $method);
                     break;
 
                 // Parse all other annotations.
@@ -180,13 +182,15 @@ class Parser
     }
 
     /**
-     * @param $name
-     * @param $class
-     * @param $method
+     * Hydrate an annotation with some data.
+     *
+     * @param string $name
+     * @param string $class
+     * @param string $method
      * @param array $data
-     * @return mixed
+     * @return Annotation
      */
-    public function hydrateAnnotation($name, $class, $method, array $data = [])
+    public function hydrateAnnotation(string $name, string $class, string $method, array $data = []): Annotation
     {
         $annotation_class = $this->getAnnotationClass(str_replace('_', '', $name));
 
@@ -211,14 +215,18 @@ class Parser
      * Build up an array of annotation data.
      *
      * @param string $name
-     * @param string|null $decorators
+     * @param null|string $decorators
      * @param string $content
-     * @param Version|null $version
+     * @param null|Version $version
      * @return Annotation
      * @throws UnsupportedDecoratorException If an unsupported decorator is found on an annotation.
      */
-    private function buildAnnotation($name, $decorators, $content, Version $version = null)
-    {
+    private function buildAnnotation(
+        string $name,
+        ?string $decorators,
+        string $content,
+        Version $version = null
+    ): Annotation {
         $class = $this->getAnnotationClass($name);
 
         // If this annotation class does not support MSON, then let's clean up any multi-line content within its data.
@@ -251,11 +259,13 @@ class Parser
                         break;
 
                     default:
+                        /** @var string $method */
+                        $method = $this->method;
                         throw UnsupportedDecoratorException::create(
                             $decorator,
                             $name,
                             $this->class,
-                            $this->method
+                            $method
                         );
                 }
             }
@@ -270,7 +280,7 @@ class Parser
      * @param string $annotation
      * @return string
      */
-    private function getAnnotationClass($annotation)
+    private function getAnnotationClass(string $annotation): string
     {
         // Not all filesystems support case-insensitive file loading, so we need to map multi-word annotations to the
         // properly capitalized class name.
@@ -301,9 +311,19 @@ class Parser
      * @param string $docblock
      * @return Docblock
      */
-    public static function getAnnotationsFromDocblock($docblock)
+    public static function getAnnotationsFromDocblock(string $docblock): Docblock
     {
         return new Docblock($docblock);
+    }
+
+    /**
+     * @param null|string $method
+     * @return self
+     */
+    public function setMethod(string $method = null): self
+    {
+        $this->method = $method;
+        return $this;
     }
 
     /**
@@ -312,7 +332,7 @@ class Parser
      * @param UnknownTag $tag
      * @return string
      */
-    protected function getAnnotationNameFromTag(UnknownTag $tag)
+    protected function getAnnotationNameFromTag(UnknownTag $tag): string
     {
         $annotation = $tag->getTagName();
         return substr($annotation, 4);

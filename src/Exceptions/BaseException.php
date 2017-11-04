@@ -1,21 +1,15 @@
 <?php
 namespace Mill\Exceptions;
 
-trait ExceptionTrait
+class BaseException extends \Exception
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     public $class;
 
-    /**
-     * @var string|null
-     */
+    /** @var null|string */
     public $method = null;
 
-    /**
-     * @var string|null
-     */
+    /** @var null|string */
     public $annotation = null;
 
     /**
@@ -23,7 +17,7 @@ trait ExceptionTrait
      *
      * @return string
      */
-    public function getClass()
+    public function getClass(): string
     {
         return $this->class;
     }
@@ -31,9 +25,9 @@ trait ExceptionTrait
     /**
      * Get the class method that this exception occurred in.
      *
-     * @return string|null
+     * @return null|string
      */
-    public function getMethod()
+    public function getMethod(): ?string
     {
         return $this->method;
     }
@@ -41,9 +35,9 @@ trait ExceptionTrait
     /**
      * Get the name of the annotation that this exception is for.
      *
-     * @return string|null
+     * @return null|string
      */
-    public function getAnnotation()
+    public function getAnnotation(): ?string
     {
         return $this->annotation;
     }

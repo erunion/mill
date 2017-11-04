@@ -54,15 +54,5 @@
 
         <!-- This hides a number of errors that we don't really care about. -->
         <PropertyNotSetInConstructor errorLevel="suppress" />
-
-        <UntypedParam>
-            <errorLevel type="suppress">
-                <!-- The generator and provider classes use service providers and closures, but we don't really care
-                    that much about documenting the parameters on those closures, so ignore these errors. -->
-                <directory name="src/Generator" />
-                <directory name="src/Provider" />
-                <directory name="tests/" />
-            </errorLevel>
-        </UntypedParam>
     </issueHandlers>
 </psalm>

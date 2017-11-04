@@ -17,10 +17,6 @@ use Mill\Parser\Version;
  */
 class MinVersionAnnotation extends Annotation
 {
-    const REQUIRES_VISIBILITY_DECORATOR = false;
-    const SUPPORTS_DEPRECATION = false;
-    const SUPPORTS_VERSIONING = false;
-
     /**
      * Minimum version.
      *
@@ -44,11 +40,14 @@ class MinVersionAnnotation extends Annotation
      * @return array
      * @throws AbsoluteMinimumVersionException If an `@api-minVersion` annotation version is not absolute.
      */
-    protected function parser()
+    protected function parser(): array
     {
-        $parsed = new Version($this->docblock, $this->class, $this->method);
+        /** @var string $method */
+        $method = $this->method;
+
+        $parsed = new Version($this->docblock, $this->class, $method);
         if ($parsed->isRange()) {
-            throw AbsoluteMinimumVersionException::create($this->docblock, $this->class, $this->method);
+            throw AbsoluteMinimumVersionException::create($this->docblock, $this->class, $method);
         }
 
         return [
@@ -64,7 +63,7 @@ class MinVersionAnnotation extends Annotation
      *
      * @return void
      */
-    protected function interpreter()
+    protected function interpreter(): void
     {
         // The Version class already does all of our validation, so if we're at this point, we have a good version and
         // don't need to run it through `$this->required()` again.
@@ -75,7 +74,7 @@ class MinVersionAnnotation extends Annotation
      * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
      *
      * @param array $data
-     * @param Version|null $version
+     * @param null|Version $version
      * @return self
      */
     public static function hydrate(array $data = [], Version $version = null): self
@@ -92,7 +91,7 @@ class MinVersionAnnotation extends Annotation
      *
      * @return string
      */
-    public function getMinimumVersion()
+    public function getMinimumVersion(): string
     {
         return $this->minimum_version;
     }

@@ -11,10 +11,7 @@ use Mill\Parser\Version;
  */
 class UriSegmentAnnotation extends Annotation
 {
-    const REQUIRES_VISIBILITY_DECORATOR = false;
-    const SUPPORTS_DEPRECATION = false;
     const SUPPORTS_MSON = true;
-    const SUPPORTS_VERSIONING = false;
 
     const REGEX_URI = '/^({[^}]*})/';
 
@@ -49,7 +46,7 @@ class UriSegmentAnnotation extends Annotation
     /**
      * Array of acceptable values for this parameter.
      *
-     * @var array|null|false
+     * @var array|false|null
      */
     protected $values = [];
 
@@ -72,7 +69,7 @@ class UriSegmentAnnotation extends Annotation
      *
      * @return array
      */
-    protected function parser()
+    protected function parser(): array
     {
         $parsed = [];
         $content = trim($this->docblock);
@@ -83,7 +80,9 @@ class UriSegmentAnnotation extends Annotation
             $content = trim(preg_replace(self::REGEX_URI, '', $content));
         }
 
-        $mson = (new MSON($this->class, $this->method))->parse($content);
+        /** @var string $method */
+        $method = $this->method;
+        $mson = (new MSON($this->class, $method))->parse($content);
         $parsed = array_merge($parsed, [
             'field' => $mson->getField(),
             'type' => $mson->getType(),
@@ -102,7 +101,7 @@ class UriSegmentAnnotation extends Annotation
      *
      * @return void
      */
-    protected function interpreter()
+    protected function interpreter(): void
     {
         $this->uri = $this->required('uri', false);
 
@@ -117,10 +116,10 @@ class UriSegmentAnnotation extends Annotation
      * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
      *
      * @param array $data
-     * @param Version|null $version
-     * @return self
+     * @param null|Version $version
+     * @return UriSegmentAnnotation
      */
-    public static function hydrate(array $data = [], Version $version = null): self
+    public static function hydrate(array $data = [], Version $version = null)
     {
         /** @var UriSegmentAnnotation $annotation */
         $annotation = parent::hydrate($data, $version);
@@ -138,7 +137,7 @@ class UriSegmentAnnotation extends Annotation
      *
      * @return string
      */
-    public function getUri()
+    public function getUri(): string
     {
         return $this->uri;
     }
@@ -160,7 +159,7 @@ class UriSegmentAnnotation extends Annotation
      *
      * @return string
      */
-    public function getField()
+    public function getField(): string
     {
         return $this->field;
     }
@@ -182,7 +181,7 @@ class UriSegmentAnnotation extends Annotation
      *
      * @return string
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
@@ -204,7 +203,7 @@ class UriSegmentAnnotation extends Annotation
      *
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -224,7 +223,7 @@ class UriSegmentAnnotation extends Annotation
     /**
      * Get the enumerated values that are allowed on this URI segment.
      *
-     * @return array|null|false
+     * @return array|false|null
      */
     public function getValues()
     {
@@ -234,7 +233,7 @@ class UriSegmentAnnotation extends Annotation
     /**
      * Set the enumerated values that are allowed on this URI segment.
      *
-     * @param array|null|false $values
+     * @param array|false|null $values
      * @return self
      */
     public function setValues($values): self

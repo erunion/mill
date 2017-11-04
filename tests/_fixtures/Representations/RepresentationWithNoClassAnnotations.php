@@ -6,7 +6,7 @@ namespace Mill\Tests\Fixtures\Representations;
  */
 class RepresentationWithNoClassAnnotations
 {
-    public function create()
+    public function create(): void
     {
         //
     }

@@ -11,11 +11,12 @@ class ScopeAnnotationTest extends AnnotationTest
      * @dataProvider providerAnnotation
      * @param string $content
      * @param array $expected
-     * @return void
      */
     public function testAnnotation(string $content, array $expected): void
     {
-        $annotation = (new ScopeAnnotation($content, __CLASS__, __METHOD__))->process();
+        $annotation = new ScopeAnnotation($content, __CLASS__, __METHOD__);
+        $annotation->process();
+
         $this->assertAnnotation($annotation, $expected);
     }
 
@@ -23,7 +24,6 @@ class ScopeAnnotationTest extends AnnotationTest
      * @dataProvider providerAnnotation
      * @param string $content
      * @param array $expected
-     * @return void
      */
     public function testHydrate(string $content, array $expected): void
     {
@@ -38,11 +38,6 @@ class ScopeAnnotationTest extends AnnotationTest
         $this->assertAnnotation($annotation, $expected);
     }
 
-    /**
-     * @param ScopeAnnotation $annotation
-     * @param array $expected
-     * @return void
-     */
     private function assertAnnotation(ScopeAnnotation $annotation, array $expected): void
     {
         $this->assertFalse($annotation->requiresVisibilityDecorator());
@@ -58,9 +53,6 @@ class ScopeAnnotationTest extends AnnotationTest
         $this->assertEmpty($annotation->getAliases());
     }
 
-    /**
-     * @return array
-     */
     public function providerAnnotation(): array
     {
         return [
@@ -81,9 +73,6 @@ class ScopeAnnotationTest extends AnnotationTest
         ];
     }
 
-    /**
-     * @return array
-     */
     public function providerAnnotationFailsOnInvalidContent(): array
     {
         return [

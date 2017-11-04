@@ -7,9 +7,9 @@ use Mill\Generator\Changelog\Changeset;
 class RepresentationData extends Changeset
 {
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
-    public function getTemplates()
+    public function getTemplates(): array
     {
         return [
             'plural' => [
@@ -24,9 +24,9 @@ class RepresentationData extends Changeset
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
-    public function compileAddedOrRemovedChangeset($definition, array $changes = [])
+    public function compileAddedOrRemovedChangeset(string $definition, array $changes = [])
     {
         $templates = $this->getTemplates();
 
@@ -49,9 +49,9 @@ class RepresentationData extends Changeset
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
-    public function compileChangedChangeset($definition, array $changes = [])
+    public function compileChangedChangeset(string $definition, array $changes = [])
     {
         throw new \Exception($definition . ' representation data changes are not yet supported.');
     }

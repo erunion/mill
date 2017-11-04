@@ -14,11 +14,11 @@ class Reader
      * Load, and pull, the annotations for a class or class method.
      *
      * @param string $class
-     * @param string|null $method
-     * @return string|false The found annotation docblock.
+     * @param null|string $method
+     * @return false|string
      * @throws MethodNotImplementedException If the supplied method does not exist on the supplied class.
      */
-    public function getAnnotations($class, $method = null)
+    public function getAnnotations(string $class, string $method = null)
     {
         $reflection = new ReflectionClass($class);
 
@@ -45,7 +45,7 @@ class Reader
      * @return string
      * @throws MethodNotImplementedException If the supplied method does not exist on the supplied class.
      */
-    public function getRepresentationAnnotations($class, $method)
+    public function getRepresentationAnnotations(string $class, string $method): string
     {
         $reflection = new ReflectionClass($class);
         if (!$reflection->hasMethod($method)) {

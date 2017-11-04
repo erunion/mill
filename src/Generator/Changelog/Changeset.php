@@ -12,7 +12,7 @@ abstract class Changeset
      *
      * @return array
      */
-    abstract public function getTemplates();
+    abstract public function getTemplates(): array;
 
     /**
      * Get a changelog entry for a changeset that was added into, or removed from, the API.
@@ -20,10 +20,10 @@ abstract class Changeset
      * @param string $definition This is the definition of the changeset, whether it's an "added", "removed", or
      *  "changed" set.
      * @param array $changes
-     * @return string|array
+     * @return array|string
      * @throws \Exception If an unsupported definition + change type was supplied.
      */
-    abstract public function compileAddedOrRemovedChangeset($definition, array $changes = []);
+    abstract public function compileAddedOrRemovedChangeset(string $definition, array $changes = []);
 
     /**
      * Get a changelog entry for a changeset that was changed within the API.
@@ -31,8 +31,8 @@ abstract class Changeset
      * @param string $definition This is the definition of the changeset, whether it's an "added", "removed", or
      *  "changed" set.
      * @param array $changes
-     * @return string|array
+     * @return array|string
      * @throws \Exception If an unsupported definition + change type was supplied.
      */
-    abstract public function compileChangedChangeset($definition, array $changes = []);
+    abstract public function compileChangedChangeset(string $definition, array $changes = []);
 }

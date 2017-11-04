@@ -7,22 +7,16 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class ChangelogTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \Symfony\Component\Console\Command\Command
-     */
+    /** @var \Symfony\Component\Console\Command\Command */
     protected $command;
 
-    /**
-     * @var CommandTester
-     */
+    /** @var CommandTester */
     protected $tester;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $config_file;
 
-    public function setUp()
+    public function setUp(): void
     {
         $application = new Application();
         $application->add(new Changelog);
@@ -35,12 +29,11 @@ class ChangelogTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider providerTestChangelog
-     * @param boolean $private_objects
+     * @param bool $private_objects
      * @param array $capabilities
      * @param string $expected_file
-     * @return void
      */
-    public function testChangelog($private_objects, $capabilities, $expected_file)
+    public function testChangelog(bool $private_objects, array $capabilities, string $expected_file): void
     {
         /** @var string $output_dir */
         $output_dir = tempnam(sys_get_temp_dir(), 'mill-generate-test-');
@@ -78,7 +71,7 @@ class ChangelogTest extends \PHPUnit\Framework\TestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage The supplied Mill configuration file does not exist.
      */
-    public function testGenerateFailsOnInvalidConfigFile()
+    public function testGenerateFailsOnInvalidConfigFile(): void
     {
         $this->tester->execute([
             'command' => $this->command->getName(),
@@ -86,10 +79,7 @@ class ChangelogTest extends \PHPUnit\Framework\TestCase
         ]);
     }
 
-    /**
-     * @return array
-     */
-    public function providerTestChangelog()
+    public function providerTestChangelog(): array
     {
         return [
             // Complete changelog. All documentation parsed.

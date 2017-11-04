@@ -1,18 +1,14 @@
 <?php
 namespace Mill\Exceptions\Representation;
 
+use Mill\Exceptions\BaseException;
 use Mill\Parser\Representation\Documentation;
 
-class RestrictedFieldNameException extends \Exception
+class RestrictedFieldNameException extends BaseException
 {
     use RepresentationExceptionTrait;
 
-    /**
-     * @param string $class
-     * @param string $method
-     * @return RestrictedFieldNameException
-     */
-    public static function create($class, $method)
+    public static function create(string $class, ?string $method): RestrictedFieldNameException
     {
         $message = sprintf(
             '`%s` is a reserved `@api-field` name, and cannot be used in %s::%s.',

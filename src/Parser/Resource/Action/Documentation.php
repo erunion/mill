@@ -41,7 +41,7 @@ class Documentation
     /**
      * Fuller description of the action. This should normally consist of Markdown.
      *
-     * @var string|null
+     * @var null|string
      */
     protected $description = null;
 
@@ -88,7 +88,7 @@ class Documentation
      * @param string $class
      * @param string $method
      */
-    public function __construct($class, $method)
+    public function __construct(string $class, string $method)
     {
         $this->class = $class;
         $this->method = $method;
@@ -246,7 +246,7 @@ class Documentation
      *
      * @return string
      */
-    public function getClass()
+    public function getClass(): string
     {
         return $this->class;
     }
@@ -256,7 +256,7 @@ class Documentation
      *
      * @return string
      */
-    public function getLabel()
+    public function getLabel(): string
     {
         return $this->label;
     }
@@ -266,7 +266,7 @@ class Documentation
      *
      * @return string
      */
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->method;
     }
@@ -276,7 +276,7 @@ class Documentation
      *
      * @return array
      */
-    public function getAnnotations()
+    public function getAnnotations(): array
     {
         return $this->annotations;
     }
@@ -286,7 +286,7 @@ class Documentation
      *
      * @return array
      */
-    public function getContentTypes()
+    public function getContentTypes(): array
     {
         return $this->content_types;
     }
@@ -304,10 +304,10 @@ class Documentation
     /**
      * Get the HTTP Content-Type that this action returns content in.
      *
-     * @param Version|string|null $version
+     * @param null|string|Version $version
      * @return string
      */
-    public function getContentType($version = null)
+    public function getContentType($version = null): string
     {
         if ($version instanceof Version) {
             $version = $version->getConstraint();
@@ -344,7 +344,7 @@ class Documentation
      *
      * @return array
      */
-    public function getUris()
+    public function getUris(): array
     {
         return $this->annotations['uri'];
     }
@@ -354,7 +354,7 @@ class Documentation
      *
      * @return UriAnnotation
      */
-    public function getUri()
+    public function getUri(): UriAnnotation
     {
         $uris = $this->getUris();
         return array_shift($uris);
@@ -367,10 +367,9 @@ class Documentation
      * and `Users\Videos` groups, we don't want the action in the `Me\Videos` group to have actions with
      * `Users\Videos` URIs.
      *
-     * @param \Mill\Parser\Annotations\UriAnnotation $uri
-     * @return void
+     * @param UriAnnotation $uri
      */
-    public function setUri(UriAnnotation $uri)
+    public function setUri(UriAnnotation $uri): void
     {
         $this->annotations['uri'] = [$uri];
     }
@@ -380,7 +379,7 @@ class Documentation
      *
      * @return array
      */
-    public function getUriSegments()
+    public function getUriSegments(): array
     {
         return (isset($this->annotations['uriSegment'])) ? $this->annotations['uriSegment'] : [];
     }
@@ -393,9 +392,8 @@ class Documentation
      * compiled `/me/videos` action.
      *
      * @param array $segments
-     * @return void
      */
-    public function setUriSegments(array $segments = [])
+    public function setUriSegments(array $segments = []): void
     {
         $this->annotations['uriSegment'] = $segments;
     }
@@ -405,7 +403,7 @@ class Documentation
      *
      * @return array
      */
-    public function getCapabilities()
+    public function getCapabilities(): array
     {
         return (isset($this->annotations['capability'])) ? $this->annotations['capability'] : [];
     }
@@ -415,7 +413,7 @@ class Documentation
      *
      * @return array
      */
-    public function getScopes()
+    public function getScopes(): array
     {
         return (isset($this->annotations['scope'])) ? $this->annotations['scope'] : [];
     }
@@ -425,7 +423,7 @@ class Documentation
      *
      * @return array
      */
-    public function getParameters()
+    public function getParameters(): array
     {
         return (isset($this->annotations['param'])) ? $this->annotations['param'] : [];
     }
@@ -436,7 +434,7 @@ class Documentation
      *
      * @return array
      */
-    public function getResponses()
+    public function getResponses(): array
     {
         $return = (isset($this->annotations['return'])) ? $this->annotations['return'] : [];
         $throws = (isset($this->annotations['throws'])) ? $this->annotations['throws'] : [];
@@ -447,9 +445,10 @@ class Documentation
     /**
      * Get the (absolute) minimum version that this action is supported on.
      *
-     * @return Parser\Annotations\MinVersionAnnotation|null
+    /**
+     * @return null|Parser\Annotations\MinVersionAnnotation
      */
-    public function getMinimumVersion()
+    public function getMinimumVersion(): ?Parser\Annotations\MinVersionAnnotation
     {
         return (isset($this->annotations['minVersion'])) ? $this->annotations['minVersion'][0] : null;
     }
@@ -460,7 +459,7 @@ class Documentation
      * @param string $version
      * @return array
      */
-    public function filterAnnotationsForVersion($version)
+    public function filterAnnotationsForVersion(string $version): array
     {
         foreach ($this->annotations as $name => $data) {
             /** @var Parser\Annotation $annotation */
@@ -483,11 +482,11 @@ class Documentation
      * Filter down, and return, all annotations on this action that match a specific visibility. This can either be
      * public, public+private, or capability-locked.
      *
-     * @param boolean $allow_private
-     * @param null|array $only_capabilities
+     * @param bool $allow_private
+     * @param array|null $only_capabilities
      * @return array
      */
-    public function filterAnnotationsForVisibility($allow_private, $only_capabilities)
+    public function filterAnnotationsForVisibility(bool $allow_private, ?array $only_capabilities): array
     {
         if ($allow_private && empty($only_capabilities)) {
             return $this->annotations;
@@ -609,7 +608,7 @@ class Documentation
      *
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         $data = [
             'class' => $this->class,

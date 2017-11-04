@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Tests\Parser\Resource;
 
+use Mill\Exceptions\BaseException;
 use Mill\Exceptions\MethodNotImplementedException;
 use Mill\Parser\Resource\Documentation;
 use Mill\Tests\ReaderTestingTrait;
@@ -14,9 +15,8 @@ class DocumentationTest extends TestCase
      * @dataProvider providerDocumentation
      * @param string $class
      * @param array $expected
-     * @return void
      */
-    public function testDocumentation($class, array $expected)
+    public function testDocumentation(string $class, array $expected): void
     {
         $docs = (new Documentation($class))->parse();
 
@@ -56,17 +56,16 @@ class DocumentationTest extends TestCase
      * @param string $docblock
      * @param string $exception
      * @param array $asserts
-     * @throws \Exception
-     * @return void
+     * @throws BaseException
      */
-    public function testDocumentationFailsOnBadClasses($docblock, $exception, array $asserts)
+    public function testDocumentationFailsOnBadClasses(string $docblock, string $exception, array $asserts): void
     {
         $this->expectException($exception);
         $this->overrideReadersWithFakeDocblockReturn($docblock);
 
         try {
             (new Documentation(__CLASS__))->parse();
-        } catch (\Exception $e) {
+        } catch (BaseException $e) {
             if ('\\' . get_class($e) !== $exception) {
                 $this->fail('Unrecognized exception (' . get_class($e) . ') thrown.');
             }
@@ -81,7 +80,7 @@ class DocumentationTest extends TestCase
      * pulled off the current class.
      *
      */
-    public function testDocumentationAndGetSpecificMethod()
+    public function testDocumentationAndGetSpecificMethod(): void
     {
         $class = '\Mill\Examples\Showtimes\Controllers\Movie';
         $docs = (new Documentation($class))->parse();
@@ -90,10 +89,7 @@ class DocumentationTest extends TestCase
         $this->assertInstanceOf('\Mill\Parser\Resource\Action\Documentation', $docs->getMethod('GET'));
     }
 
-    /**
-     * @return array
-     */
-    public function providerDocumentation()
+    public function providerDocumentation(): array
     {
         return [
             'Movie' => [
@@ -115,10 +111,7 @@ These actions will allow you to pull information on a specific movie.',
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function providerDocumentationFailsOnBadClasses()
+    public function providerDocumentationFailsOnBadClasses(): array
     {
         return [
             'missing-required-label-annotation' => [

@@ -1,24 +1,16 @@
 <?php
 namespace Mill\Exceptions\Version;
 
-use Mill\Exceptions\ExceptionTrait;
+use Mill\Exceptions\BaseException;
 
-class UnrecognizedSchemaException extends \Exception
+class UnrecognizedSchemaException extends BaseException
 {
-    use ExceptionTrait;
-
     /**
-     * @var string|null
+     * @var string
      */
     public $version = null;
 
-    /**
-     * @param string $version
-     * @param string $class
-     * @param string $method
-     * @return UnrecognizedSchemaException
-     */
-    public static function create($version, $class, $method)
+    public static function create(string $version, string $class, string $method): UnrecognizedSchemaException
     {
         $message = sprintf(
             'A `@api-version` annotation in %s::%s was found with an unrecognized schema of `%s`.',
@@ -40,7 +32,7 @@ class UnrecognizedSchemaException extends \Exception
      *
      * @return string
      */
-    public function getValidationMessage()
+    public function getValidationMessage(): string
     {
         return sprintf(
             'The supplied version, `%s`, has an unrecognized schema. Please consult the versioning documentation.',
@@ -51,9 +43,9 @@ class UnrecognizedSchemaException extends \Exception
     /**
      * Get the version that an annotation exception was triggered for.
      *
-     * @return string|null
+     * @return string
      */
-    public function getVersion()
+    public function getVersion(): string
     {
         return $this->version;
     }

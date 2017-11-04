@@ -13,7 +13,7 @@ class Config implements \Pimple\ServiceProviderInterface
      */
     public function register(Container $container)
     {
-        $container['config'] = function (Container $c) {
+        $container['config'] = function (Container $c): \Mill\Config {
             return \Mill\Config::loadFromXML(
                 $c['filesystem'],
                 $c['config.path'],

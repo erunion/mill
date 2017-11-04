@@ -6,7 +6,6 @@ use Mill\Exceptions\Annotations\UnsupportedTypeException;
 use Mill\Parser\Annotations\CapabilityAnnotation;
 use Mill\Parser\Annotations\ParamAnnotation;
 use Mill\Parser\Version;
-use PhpParser\Node\Param;
 
 class ParamAnnotationTest extends AnnotationTest
 {
@@ -17,16 +16,16 @@ class ParamAnnotationTest extends AnnotationTest
      * @param bool $visible
      * @param bool $deprecated
      * @param array $expected
-     * @return void
      */
     public function testAnnotation(
         string $content,
-        $version,
+        ?Version $version,
         bool $visible,
         bool $deprecated,
         array $expected
     ): void {
-        $annotation = (new ParamAnnotation($content, __CLASS__, __METHOD__, $version))->process();
+        $annotation = new ParamAnnotation($content, __CLASS__, __METHOD__, $version);
+        $annotation->process();
         $annotation->setVisibility($visible);
         $annotation->setDeprecated($deprecated);
 
@@ -40,11 +39,10 @@ class ParamAnnotationTest extends AnnotationTest
      * @param bool $visible
      * @param bool $deprecated
      * @param array $expected
-     * @return void
      */
     public function testHydrate(
         string $content,
-        $version,
+        ?Version $version,
         bool $visible,
         bool $deprecated,
         array $expected
@@ -60,11 +58,6 @@ class ParamAnnotationTest extends AnnotationTest
         $this->assertAnnotation($annotation, $expected);
     }
 
-    /**
-     * @param ParamAnnotation $annotation
-     * @param array $expected
-     * @return void
-     */
     private function assertAnnotation(ParamAnnotation $annotation, array $expected): void
     {
         $this->assertTrue($annotation->requiresVisibilityDecorator());
@@ -94,9 +87,6 @@ class ParamAnnotationTest extends AnnotationTest
         $this->assertEmpty($annotation->getAliases());
     }
 
-    /**
-     * @return array
-     */
     public function providerAnnotation(): array
     {
         return [
@@ -439,9 +429,6 @@ class ParamAnnotationTest extends AnnotationTest
         ];
     }
 
-    /**
-     * @return array
-     */
     public function providerAnnotationFailsOnInvalidContent(): array
     {
         return [

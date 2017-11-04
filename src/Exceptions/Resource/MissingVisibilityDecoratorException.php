@@ -1,18 +1,17 @@
 <?php
 namespace Mill\Exceptions\Resource;
 
-class MissingVisibilityDecoratorException extends \Exception
+use Mill\Exceptions\BaseException;
+
+class MissingVisibilityDecoratorException extends BaseException
 {
     use ResourceExceptionTrait;
 
-    /**
-     * @param string $annotation
-     * @param string $class
-     * @param string $method
-     * @return MissingVisibilityDecoratorException
-     */
-    public static function create($annotation, $class, $method)
-    {
+    public static function create(
+        string $annotation,
+        string $class,
+        string $method
+    ): MissingVisibilityDecoratorException {
         $message = sprintf(
             'An `@api-%s` annotation in %s::%s, is missing a visibility decorator.',
             $annotation,

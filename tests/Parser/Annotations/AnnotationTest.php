@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Tests\Parser\Annotations;
 
+use Mill\Exceptions\BaseException;
 use Mill\Parser\Annotations\DataAnnotation;
 use Mill\Tests\TestCase;
 
@@ -12,13 +13,12 @@ abstract class AnnotationTest extends TestCase
      * @param string $content
      * @param string $exception
      * @param array $asserts
-     * @throws \Exception
-     * @return void
+     * @throws BaseException
      */
     public function testAnnotationFailsOnInvalidContent(
         string $annotation,
         string $content,
-        $exception,
+        string $exception,
         array $asserts
     ): void {
         $this->expectException($exception);
@@ -29,7 +29,7 @@ abstract class AnnotationTest extends TestCase
             } else {
                 (new $annotation($content, __CLASS__, __METHOD__))->process();
             }
-        } catch (\Exception $e) {
+        } catch (BaseException $e) {
             if (get_class($e) !== $exception) {
                 $this->fail('Unrecognized exception (' . get_class($e) . ') thrown.');
             }
@@ -39,13 +39,7 @@ abstract class AnnotationTest extends TestCase
         }
     }
 
-    /**
-     * @return array
-     */
     abstract public function providerAnnotation(): array;
 
-    /**
-     * @return array
-     */
     abstract public function providerAnnotationFailsOnInvalidContent(): array;
 }

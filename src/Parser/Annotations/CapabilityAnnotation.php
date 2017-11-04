@@ -12,10 +12,6 @@ use Mill\Parser\Version;
  */
 class CapabilityAnnotation extends Annotation
 {
-    const REQUIRES_VISIBILITY_DECORATOR = false;
-    const SUPPORTS_DEPRECATION = false;
-    const SUPPORTS_VERSIONING = false;
-
     /**
      * Return an array of items that should be included in an array representation of this annotation.
      *
@@ -32,7 +28,7 @@ class CapabilityAnnotation extends Annotation
      * @return array
      * @throws InvalidCapabilitySuppliedException If a found capability is not present in your config file.
      */
-    protected function parser()
+    protected function parser(): array
     {
         $capability = $this->docblock;
 
@@ -40,7 +36,9 @@ class CapabilityAnnotation extends Annotation
             // Validate the supplied capability with what has been configured as allowable.
             $capabilities = Container::getConfig()->getCapabilities();
             if (!in_array($capability, $capabilities)) {
-                throw InvalidCapabilitySuppliedException::create($capability, $this->class, $this->method);
+                /** @var string $method */
+                $method = $this->method;
+                throw InvalidCapabilitySuppliedException::create($capability, $this->class, $method);
             }
         }
 
@@ -57,7 +55,7 @@ class CapabilityAnnotation extends Annotation
      *
      * @return void
      */
-    protected function interpreter()
+    protected function interpreter(): void
     {
         $this->capability = $this->required('capability');
     }
@@ -66,7 +64,7 @@ class CapabilityAnnotation extends Annotation
      * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
      *
      * @param array $data
-     * @param Version|null $version
+     * @param null|Version $version
      * @return self
      */
     public static function hydrate(array $data = [], Version $version = null): self

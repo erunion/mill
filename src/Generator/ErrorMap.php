@@ -23,7 +23,7 @@ class ErrorMap extends Generator
      *
      * @return array
      */
-    public function generate()
+    public function generate(): array
     {
         parent::generate();
 
@@ -68,7 +68,7 @@ class ErrorMap extends Generator
         foreach ($this->error_map as $version => $groups) {
             foreach ($groups as $group => $resources) {
                 foreach ($resources as $identifier => $errors) {
-                    usort($this->error_map[$version][$group][$identifier], function ($a, $b) {
+                    usort($this->error_map[$version][$group][$identifier], function (array $a, array $b): int {
                         // If the error codes match, then fallback to sorting by the URI.
                         if ($a['error_code'] == $b['error_code']) {
                             // If the URIs match, then fallback to sorting by their methods.
@@ -95,7 +95,7 @@ class ErrorMap extends Generator
      *
      * @return array
      */
-    public function generateMarkdown()
+    public function generateMarkdown(): array
     {
         $markdown = new Markdown($this->config);
         $markdown->setErrorMap($this->generate());
