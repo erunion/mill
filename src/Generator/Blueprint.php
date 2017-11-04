@@ -182,7 +182,7 @@ class Blueprint extends Generator
         }
 
         $blueprint = sprintf(
-            'This action requires a bearer token with %s scope%s.',
+            'This action requires a bearer token with the %s scope%s.',
             '`' . implode(', ', $strings) . '`',
             (count($strings) > 1) ? 's' : null
         );
@@ -336,8 +336,10 @@ class Blueprint extends Generator
         if ($multiple_responses) {
             // @todo Blueprint validation doesn't seem to like 200 responses with descriptions. Just skip for now.
             if (!in_array($http_code, [201, 204])) {
+                $response_count = (new \NumberFormatter('en', \NumberFormatter::SPELLOUT))->format(count($responses));
+
                 $blueprint .= $this->tab();
-                $blueprint .= sprintf('There are %d ways that this status code can be encountered.', count($responses));
+                $blueprint .= sprintf('There are %s ways that this status code can be encountered:', $response_count);
                 $blueprint .= $this->line();
 
                 /** @var ReturnAnnotation|ThrowsAnnotation $response */

@@ -42,6 +42,7 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
      */
     public function testErrorMap($private_objects, $capabilities, $expected_file)
     {
+        /** @var string $output_dir */
         $output_dir = tempnam(sys_get_temp_dir(), 'mill-generate-test-');
         if (file_exists($output_dir)) {
             unlink($output_dir);
