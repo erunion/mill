@@ -9,7 +9,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Application extends Command
 {
-    const VERSION = '3.0.0';
     const DS = DIRECTORY_SEPARATOR;
 
     /**
