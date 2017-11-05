@@ -214,7 +214,7 @@ DESCRIPTION;
                                 'aliased' => true,
                                 'aliases' => [],
                                 'deprecated' => false,
-                                'group' => 'Movies',
+                                'namespace' => 'Movies',
                                 'path' => '/movie/+id',
                                 'visible' => false
                             ],
@@ -225,13 +225,13 @@ DESCRIPTION;
                                         'aliased' => true,
                                         'aliases' => [],
                                         'deprecated' => false,
-                                        'group' => 'Movies',
+                                        'namespace' => 'Movies',
                                         'path' => '/movie/+id',
                                         'visible' => false
                                     ]
                                 ],
                                 'deprecated' => false,
-                                'group' => 'Movies',
+                                'namespace' => 'Movies',
                                 'path' => '/movies/+id',
                                 'visible' => true
                             ]
@@ -329,7 +329,7 @@ DESCRIPTION;
                                 'aliased' => false,
                                 'aliases' => [],
                                 'deprecated' => false,
-                                'group' => 'Movies',
+                                'namespace' => 'Movies',
                                 'path' => '/movies/+id',
                                 'visible' => true
                             ]
@@ -612,7 +612,7 @@ DESCRIPTION;
                                 'aliased' => false,
                                 'aliases' => [],
                                 'deprecated' => false,
-                                'group' => 'Movies',
+                                'namespace' => 'Movies',
                                 'path' => '/movies/+id',
                                 'visible' => false
                             ]
@@ -691,13 +691,13 @@ DESCRIPTION;
                                         'aliased' => true,
                                         'aliases' => [],
                                         'deprecated' => false,
-                                        'group' => 'Foo\Bar',
+                                        'namespace' => 'Foo\Bar',
                                         'path' => '/bar',
                                         'visible' => false
                                     ]
                                 ],
                                 'deprecated' => false,
-                                'group' => 'Foo\Bar',
+                                'namespace' => 'Foo\Bar',
                                 'path' => '/foo',
                                 'visible' => true
                             ],
@@ -705,7 +705,7 @@ DESCRIPTION;
                                 'aliased' => true,
                                 'aliases' => [],
                                 'deprecated' => false,
-                                'group' => 'Foo\Bar',
+                                'namespace' => 'Foo\Bar',
                                 'path' => '/bar',
                                 'visible' => false
                             ]
@@ -734,7 +734,7 @@ DESCRIPTION;
                                 'aliased' => false,
                                 'aliases' => [],
                                 'deprecated' => false,
-                                'group' => 'Foo\Bar',
+                                'namespace' => 'Foo\Bar',
                                 'path' => '/foo',
                                 'visible' => true
                             ],
@@ -742,7 +742,7 @@ DESCRIPTION;
                                 'aliased' => false,
                                 'aliases' => [],
                                 'deprecated' => false,
-                                'group' => 'Foo\Bar',
+                                'namespace' => 'Foo\Bar',
                                 'path' => '/bar',
                                 'visible' => false
                             ]

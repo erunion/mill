@@ -44,7 +44,7 @@ class Action extends Changeset
             [
                 // Changes are grouped by URIs so it's safe to just pull the first URI here.
                 $this->renderText($template, [
-                    'resource_group' => $changes[0]['resource_group'],
+                    'resource_namespace' => $changes[0]['resource_namespace'],
                     'uri' => $changes[0]['uri']
                 ]),
                 $methods

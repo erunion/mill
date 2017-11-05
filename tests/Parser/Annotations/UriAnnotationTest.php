@@ -81,13 +81,13 @@ class UriAnnotationTest extends AnnotationTest
                         'aliased' => false,
                         'aliases' => [],
                         'deprecated' => false,
-                        'group' => 'Movies\Showtimes',
+                        'namespace' => 'Movies\Showtimes',
                         'path' => '/movies/+id/showtimes',
                         'visible' => false
                     ]
                 ]
             ],
-            'private.group_with_no_depth' => [
+            'private.namespace_with_no_depth' => [
                 'content' => '{Movies} /movies',
                 'visible' => false,
                 'deprecated' => false,
@@ -97,7 +97,7 @@ class UriAnnotationTest extends AnnotationTest
                         'aliased' => false,
                         'aliases' => [],
                         'deprecated' => false,
-                        'group' => 'Movies',
+                        'namespace' => 'Movies',
                         'path' => '/movies',
                         'visible' => false
                     ]
@@ -113,7 +113,7 @@ class UriAnnotationTest extends AnnotationTest
                         'aliased' => false,
                         'aliases' => [],
                         'deprecated' => false,
-                        'group' => 'Movies\Showtimes',
+                        'namespace' => 'Movies\Showtimes',
                         'path' => '/movies/+id/showtimes',
                         'visible' => true
                     ]
@@ -129,13 +129,13 @@ class UriAnnotationTest extends AnnotationTest
                         'aliased' => false,
                         'aliases' => [],
                         'deprecated' => true,
-                        'group' => 'Movies\Showtimes',
+                        'namespace' => 'Movies\Showtimes',
                         'path' => '/movies/+id/showtimes',
                         'visible' => true
                     ]
                 ]
             ],
-            'public.non-alphanumeric_group' => [
+            'public.non-alphanumeric_namespace' => [
                 'content' => '{/} /',
                 'visible' => true,
                 'deprecated' => false,
@@ -145,7 +145,7 @@ class UriAnnotationTest extends AnnotationTest
                         'aliased' => false,
                         'aliases' => [],
                         'deprecated' => false,
-                        'group' => '/',
+                        'namespace' => '/',
                         'path' => '/',
                         'visible' => true
                     ]
@@ -157,12 +157,12 @@ class UriAnnotationTest extends AnnotationTest
     public function providerAnnotationFailsOnInvalidContent(): array
     {
         return [
-            'missing-group' => [
+            'missing-namespace' => [
                 'annotation' => UriAnnotation::class,
                 'content' => '',
                 'expected.exception' => MissingRequiredFieldException::class,
                 'expected.exception.asserts' => [
-                    'getRequiredField' => 'group',
+                    'getRequiredField' => 'namespace',
                     'getAnnotation' => 'uri',
                     'getDocblock' => '',
                     'getValues' => []

@@ -56,7 +56,7 @@ class ActionParam extends Changeset
                 $template = $templates['plural'][$definition];
                 $entry[] = [
                     $this->renderText($template, [
-                        'resource_group' => $changes[0]['resource_group'],
+                        'resource_namespace' => $changes[0]['resource_namespace'],
                         'method' => $method,
                         'uri' => $changes[0]['uri']
                     ]),
@@ -68,7 +68,7 @@ class ActionParam extends Changeset
 
             $template = $templates['singular'][$definition];
             $entry[] = $this->renderText($template, [
-                'resource_group' => $changes[0]['resource_group'],
+                'resource_namespace' => $changes[0]['resource_namespace'],
                 'parameter' => array_shift($params),
                 'method' => $method,
                 'uri' => $changes[0]['uri']

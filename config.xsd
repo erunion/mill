@@ -53,7 +53,7 @@
                                 <xs:sequence>
                                     <xs:element name="exclude" minOccurs="1" maxOccurs="unbounded">
                                         <xs:complexType>
-                                            <xs:attribute name="group" type="xs:string" use="required" />
+                                            <xs:attribute name="namespace" type="xs:string" use="required" />
                                         </xs:complexType>
                                     </xs:element>
                                 </xs:sequence>
