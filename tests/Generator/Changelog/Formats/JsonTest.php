@@ -7,11 +7,12 @@ use Mill\Tests\TestCase;
 
 class JsonTest extends TestCase
 {
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $generator = new Json($this->getConfig());
         $generator->setChangelog((new Changelog($this->getConfig()))->generate());
         $generated = $generator->generate();
+        $generated = array_shift($generated);
         $generated = json_decode($generated, true);
 
         $this->assertSame([
@@ -396,22 +397,19 @@ class JsonTest extends TestCase
      * @dataProvider providerTestGenerateCases
      * @param array $changelog
      * @param array $expected
-     * @return void
      */
-    public function testGenerateCases(array $changelog, array $expected)
+    public function testGenerateCases(array $changelog, array $expected): void
     {
         $generator = new Json($this->getConfig());
         $generator->setChangelog($changelog);
         $generated = $generator->generate();
+        $generated = array_shift($generated);
         $generated = json_decode($generated, true);
 
         $this->assertSame($expected, $generated);
     }
 
-    /**
-     * @return array
-     */
-    public function providerTestGenerateCases()
+    public function providerTestGenerateCases(): array
     {
         return [
             'added-multiple-action-returns' => [

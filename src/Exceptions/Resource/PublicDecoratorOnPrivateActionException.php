@@ -1,18 +1,17 @@
 <?php
 namespace Mill\Exceptions\Resource;
 
-class PublicDecoratorOnPrivateActionException extends \Exception
+use Mill\Exceptions\BaseException;
+
+class PublicDecoratorOnPrivateActionException extends BaseException
 {
     use ResourceExceptionTrait;
 
-    /**
-     * @param string $annotation
-     * @param string $class
-     * @param string $method
-     * @return PublicDecoratorOnPrivateActionException
-     */
-    public static function create($annotation, $class, $method)
-    {
+    public static function create(
+        string $annotation,
+        string $class,
+        string $method
+    ): PublicDecoratorOnPrivateActionException {
         $message = sprintf(
             'An `@api-%s` annotation in %s::%s has a `:public` decorator, but is on a private endpoint.',
             $annotation,

@@ -1,15 +1,9 @@
 <?php
 namespace Mill\Exceptions;
 
-class MethodNotSuppliedException extends \Exception
+class MethodNotSuppliedException extends BaseException
 {
-    use ExceptionTrait;
-
-    /**
-     * @param string $class
-     * @return MethodNotSuppliedException
-     */
-    public static function create($class)
+    public static function create(string $class): MethodNotSuppliedException
     {
         $message = sprintf(
             'No method was supplied on %s.',

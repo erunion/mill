@@ -5,7 +5,7 @@ use Mill\Config;
 
 class ConfigTest extends TestCase
 {
-    public function testLoadFromXML()
+    public function testLoadFromXML(): void
     {
         $config = $this->getConfig();
 
@@ -120,7 +120,7 @@ class ConfigTest extends TestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessageRegExp /does not exist/
      */
-    public function testLoadFromXMLFailsIfConfigFileDoesNotExist()
+    public function testLoadFromXMLFailsIfConfigFileDoesNotExist(): void
     {
         $filesystem = $this->getContainer()->getFilesystem();
         Config::loadFromXML($filesystem, 'non-existent.xml');
@@ -130,7 +130,7 @@ class ConfigTest extends TestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessageRegExp /is invalid/
      */
-    public function testLoadFromXMLFailsIfConfigFileIsInvalid()
+    public function testLoadFromXMLFailsIfConfigFileIsInvalid(): void
     {
         $filesystem = $this->getContainer()->getFilesystem();
         $filesystem->write('empty.xml', '');
@@ -141,7 +141,7 @@ class ConfigTest extends TestCase
     /**
      * @expectedException \Mill\Exceptions\Config\ValidationException
      */
-    public function testXSDValidation()
+    public function testXSDValidation(): void
     {
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
@@ -166,10 +166,12 @@ XML;
      * @param array $exception_details
      * @param string $xml
      * @throws \Exception
-     * @return void
      */
-    public function testLoadFromXMLFailuresOnVariousBadXMLFiles(array $includes, array $exception_details, $xml)
-    {
+    public function testLoadFromXMLFailuresOnVariousBadXMLFiles(
+        array $includes,
+        array $exception_details,
+        string $xml
+    ): void {
         if (isset($exception_details['exception'])) {
             $this->expectException($exception_details['exception']);
         } else {
@@ -219,7 +221,7 @@ XML;
 XML;
 
         $filesystem = $this->getContainer()->getFilesystem();
-        $filesystem->write('mill.bad.xml', $xml);
+        $filesystem->put('mill.bad.xml', $xml);
 
         try {
             Config::loadFromXML($filesystem, 'mill.bad.xml');
@@ -232,7 +234,7 @@ XML;
     /**
      * @expectedException \Mill\Exceptions\Config\UnconfiguredRepresentationException
      */
-    public function testDoesRepresentationExistFailsIfRepresentationIsNotConfigured()
+    public function testDoesRepresentationExistFailsIfRepresentationIsNotConfigured(): void
     {
         $this->getConfig()->doesRepresentationExist('UnconfiguredClass');
     }
@@ -240,7 +242,7 @@ XML;
     /**
      * @return array
      */
-    public function providerLoadFromXMLFailuresOnVariousBadXMLFiles()
+    public function providerLoadFromXMLFailuresOnVariousBadXMLFiles(): array
     {
         return [
             /**

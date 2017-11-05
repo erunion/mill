@@ -1,19 +1,18 @@
 <?php
 namespace Mill\Exceptions\Resource;
 
-class UnsupportedDecoratorException extends \Exception
+use Mill\Exceptions\BaseException;
+
+class UnsupportedDecoratorException extends BaseException
 {
     use ResourceExceptionTrait;
 
-    /**
-     * @param string $decorator
-     * @param string $annotation
-     * @param string $class
-     * @param string $method
-     * @return UnsupportedDecoratorException
-     */
-    public static function create($decorator, $annotation, $class, $method)
-    {
+    public static function create(
+        string $decorator,
+        string $annotation,
+        string $class,
+        string $method
+    ): UnsupportedDecoratorException {
         $message = sprintf(
             'An unsupported decorator, `%s`, was found on `@api-%s` in %s::%s.',
             $decorator,

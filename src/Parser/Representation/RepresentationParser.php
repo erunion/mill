@@ -24,36 +24,20 @@ class RepresentationParser extends Parser
     const DOC_BODY_MATCH = '~\s*\*\s+(.*)~';
 
     /**
-     * Representation class that we want to parse.
-     *
-     * @var string
-     */
-    protected $class;
-
-    /**
-     * @param string $class
-     */
-    public function __construct($class)
-    {
-        $this->class = $class;
-
-        parent::__construct($class);
-    }
-
-    /**
      * Locate, and parse, the annotations for a representation method.
      *
-     * @param string|null $method_name
+     * @param null|string $method_name
      * @return array An array containing all the found annotations.
      * @throws MethodNotSuppliedException If a method is not supplied to parse.
      * @throws MethodNotImplementedException If the supplied method does not exist on the supplied controller.
      */
-    public function getAnnotations($method_name = null)
+    public function getAnnotations(string $method_name = null): array
     {
         if (empty($method_name)) {
             throw MethodNotSuppliedException::create($this->class);
         }
 
+        /** @var string method */
         $this->method = $method_name;
 
         $reader = Container::getRepresentationAnnotationReader();
@@ -86,7 +70,7 @@ class RepresentationParser extends Parser
      * @param string $original_content
      * @return array
      */
-    public function parseAnnotations(array $tags, $original_content)
+    public function parseAnnotations(array $tags, string $original_content): array
     {
         $scopes = [];
         $see_pointers = [];
@@ -95,6 +79,9 @@ class RepresentationParser extends Parser
 
         /** @var Version|null $version */
         $version = null;
+
+        /** @var string $method */
+        $method = $this->method;
 
         // Does this have any `@api-see` pointers or a `@api-version` declaration?
         /** @var UnknownTag $tag */
@@ -109,7 +96,7 @@ class RepresentationParser extends Parser
                     break;
 
                 case 'scope':
-                    $scopes[] = (new ScopeAnnotation($content, $this->class, $this->method))->process();
+                    $scopes[] = (new ScopeAnnotation($content, $this->class, $method))->process();
                     break;
 
                 case 'see':
@@ -117,13 +104,14 @@ class RepresentationParser extends Parser
                     break;
 
                 case 'version':
-                    $version = new Version($content, $this->class, $this->method);
+                    $version = new Version($content, $this->class, $method);
                     break;
             }
         }
 
         foreach ($data as $content) {
-            $annotation = (new DataAnnotation($content, $this->class, $this->method, $version))->process();
+            $annotation = new DataAnnotation($content, $this->class, $method, $version);
+            $annotation->process();
             if (!empty($scopes)) {
                 $annotation->setScopes($scopes);
             }
@@ -164,7 +152,7 @@ class RepresentationParser extends Parser
                             $annotation_version->getConstraint()
                         ]);
 
-                        $updated_version = new Version($new_constraint, $this->class, $this->method);
+                        $updated_version = new Version($new_constraint, $this->class, $method);
                         $annotation->setVersion($updated_version);
                     } else {
                         $annotation->setVersion($version);
@@ -191,7 +179,7 @@ class RepresentationParser extends Parser
      * @return array
      * @throws DuplicateFieldException If a found field exists more than once.
      */
-    public function parse($code)
+    public function parse(string $code): array
     {
         $representation = [];
 
@@ -204,7 +192,9 @@ class RepresentationParser extends Parser
 
                 foreach ($annotations as $field_name => $annotation) {
                     if (isset($representation[$field_name])) {
-                        throw DuplicateFieldException::create($field_name, $this->class, $this->method);
+                        /** @var string $method */
+                        $method = $this->method;
+                        throw DuplicateFieldException::create($field_name, $this->class, $method);
                     }
 
                     $representation[$field_name] = $annotations[$field_name];
@@ -221,9 +211,8 @@ class RepresentationParser extends Parser
      *
      * @param DataAnnotation $parent
      * @param array $annotations
-     * @return void
      */
-    private function carryAnnotationSettingsToChildren(DataAnnotation $parent, array &$annotations = [])
+    private function carryAnnotationSettingsToChildren(DataAnnotation $parent, array &$annotations = []): void
     {
         $parent_identifier = $parent->getIdentifier();
         $parent_version = $parent->getVersion();

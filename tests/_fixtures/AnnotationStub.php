@@ -9,24 +9,22 @@ class AnnotationStub extends Annotation
     const SUPPORTS_VERSIONING = false;
     const SUPPORTS_DEPRECATION = false;
 
-    /**
-     * @var null
-     */
+    /** @var null|string */
     protected $test = null;
 
-    protected function parser()
+    protected function parser(): array
     {
         return [
             'foo' => $this->docblock
         ];
     }
 
-    protected function interpreter()
+    protected function interpreter(): void
     {
         $this->test = $this->required('test');
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'test' => $this->test

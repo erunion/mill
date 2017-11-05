@@ -15,14 +15,14 @@ class ThrowsAnnotationTest extends AnnotationTest
     /**
      * @dataProvider providerAnnotation
      * @param string $content
-     * @param Version|null $version
-     * @param boolean $visible
+     * @param $version
+     * @param bool $visible
      * @param array $expected
-     * @return void
      */
     public function testAnnotation(string $content, $version, bool $visible, array $expected): void
     {
-        $annotation = (new ThrowsAnnotation($content, __CLASS__, __METHOD__, $version))->process();
+        $annotation = new ThrowsAnnotation($content, __CLASS__, __METHOD__, $version);
+        $annotation->process();
         $annotation->setVisibility($visible);
 
         $this->assertAnnotation($annotation, $expected);
@@ -31,10 +31,9 @@ class ThrowsAnnotationTest extends AnnotationTest
     /**
      * @dataProvider providerAnnotation
      * @param string $content
-     * @param Version|null $version
-     * @param boolean $visible
+     * @param $version
+     * @param bool $visible
      * @param array $expected
-     * @return void
      */
     public function testHydrate(string $content, $version, bool $visible, array $expected): void
     {
@@ -49,11 +48,6 @@ class ThrowsAnnotationTest extends AnnotationTest
         $this->assertAnnotation($annotation, $expected);
     }
 
-    /**
-     * @param ThrowsAnnotation $annotation
-     * @param array $expected
-     * @return void
-     */
     private function assertAnnotation(ThrowsAnnotation $annotation, array $expected): void
     {
         $this->assertTrue($annotation->requiresVisibilityDecorator());
@@ -82,9 +76,6 @@ class ThrowsAnnotationTest extends AnnotationTest
         $this->assertEmpty($annotation->getAliases());
     }
 
-    /**
-     * @return array
-     */
     public function providerAnnotation(): array
     {
         return [
@@ -282,9 +273,6 @@ class ThrowsAnnotationTest extends AnnotationTest
         ];
     }
 
-    /**
-     * @return array
-     */
     public function providerAnnotationFailsOnInvalidContent(): array
     {
         return [

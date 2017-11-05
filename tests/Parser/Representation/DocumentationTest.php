@@ -11,9 +11,8 @@ class DocumentationTest extends TestCase
      * @param string $class
      * @param string $method
      * @param array $expected
-     * @return void
      */
-    public function testParseDocumentationReturnsRepresentation($class, $method, array $expected)
+    public function testParseDocumentationReturnsRepresentation(string $class, string $method, array $expected): void
     {
         $parsed = (new Documentation($class, $method))->parse();
         $representation = $parsed->toArray();
@@ -46,19 +45,18 @@ class DocumentationTest extends TestCase
      * @param string $class
      * @param string $method
      * @param string $exception
-     * @return void
      */
-    public function testParseDocumentationFailsOnBadRepresentations($class, $method, $exception)
-    {
+    public function testParseDocumentationFailsOnBadRepresentations(
+        string $class,
+        string $method,
+        string $exception
+    ): void {
         $this->expectException($exception);
 
         (new Documentation($class, $method))->parse();
     }
 
-    /**
-     * @return array
-     */
-    public function providerParseDocumentationReturnsRepresentation()
+    public function providerParseDocumentationReturnsRepresentation(): array
     {
         return [
             'Movie' => [
@@ -584,10 +582,7 @@ class DocumentationTest extends TestCase
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function providerParseDocumentationFailsOnBadRepresentations()
+    public function providerParseDocumentationFailsOnBadRepresentations(): array
     {
         return [
             'no-annotations' => [

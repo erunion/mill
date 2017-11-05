@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Tests\Parser\Resource\Action;
 
+use Mill\Exceptions\BaseException;
 use Mill\Parser\Resource\Action\Documentation;
 use Mill\Parser\Version;
 use Mill\Tests\ReaderTestingTrait;
@@ -14,9 +15,8 @@ class DocumentationTest extends TestCase
      * @dataProvider providerParseMethodDocumentation
      * @param string $method
      * @param array $expected
-     * @return void
      */
-    public function testParseMethodDocumentation($method, array $expected)
+    public function testParseMethodDocumentation(string $method, array $expected): void
     {
         $class_stub = '\Mill\Examples\Showtimes\Controllers\Movie';
         $parser = (new Documentation($class_stub, $method))->parse();
@@ -28,7 +28,6 @@ class DocumentationTest extends TestCase
      * @dataProvider providerParseMethodDocumentation
      * @param string $method
      * @param array $expected
-     * @return void
      */
     public function testHydrate(string $method, array $expected): void
     {
@@ -41,12 +40,6 @@ class DocumentationTest extends TestCase
         $this->assertMethodDocumentation($hydrate, $class_stub, $method, $expected);
     }
 
-    /**
-     * @param Documentation $parser
-     * @param string $class
-     * @param string $method
-     * @param array $expected
-     */
     private function assertMethodDocumentation(
         Documentation $parser,
         string $class,
@@ -138,9 +131,8 @@ class DocumentationTest extends TestCase
      * @dataProvider providerParsingOfSpecificUseCases
      * @param string $docblock
      * @param array $asserts
-     * @return void
      */
-    public function testParsingOfSpecificUseCases($docblock, array $asserts)
+    public function testParsingOfSpecificUseCases(string $docblock, array $asserts): void
     {
         $this->overrideReadersWithFakeDocblockReturn($docblock);
 
@@ -160,16 +152,16 @@ class DocumentationTest extends TestCase
      * @param string $docblock
      * @param string $exception
      * @param array $asserts
-     * @throws \Exception
+     * @throws BaseException
      */
-    public function testMethodsThatWillFailParsing($docblock, $exception, array $asserts)
+    public function testMethodsThatWillFailParsing(string $docblock, string $exception, array $asserts): void
     {
         $this->expectException($exception);
         $this->overrideReadersWithFakeDocblockReturn($docblock);
 
         try {
             (new Documentation(__CLASS__, __METHOD__))->parse()->toArray();
-        } catch (\Exception $e) {
+        } catch (BaseException $e) {
             if ('\\' . get_class($e) !== $exception) {
                 $this->fail('Unrecognized exception (' . get_class($e) . ') thrown.');
             }
@@ -179,10 +171,7 @@ class DocumentationTest extends TestCase
         }
     }
 
-    /**
-     * @return array
-     */
-    public function providerParseMethodDocumentation()
+    public function providerParseMethodDocumentation(): array
     {
         $get_description = <<<DESCRIPTION
 Return information on a specific movie.
@@ -675,10 +664,7 @@ DESCRIPTION;
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function providerParsingOfSpecificUseCases()
+    public function providerParsingOfSpecificUseCases(): array
     {
         return [
             'with-aliased-uris' => [
@@ -791,10 +777,7 @@ DESCRIPTION;
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function providerMethodsThatWillFailParsing()
+    public function providerMethodsThatWillFailParsing(): array
     {
         return [
             'no-parsed-annotations' => [

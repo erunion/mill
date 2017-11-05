@@ -1,17 +1,13 @@
 <?php
 namespace Mill\Exceptions\Annotations;
 
-class UnsupportedTypeException extends \Exception
+use Mill\Exceptions\BaseException;
+
+class UnsupportedTypeException extends BaseException
 {
     use AnnotationExceptionTrait;
 
-    /**
-     * @param string $annotation
-     * @param string $class
-     * @param string $method
-     * @return UnsupportedTypeException
-     */
-    public static function create($annotation, $class, $method)
+    public static function create(string $annotation, string $class, ?string $method): UnsupportedTypeException
     {
         $message = sprintf(
             'The type on `%s` in %s::%s is unsupported. Please check the documentation for supported types.',

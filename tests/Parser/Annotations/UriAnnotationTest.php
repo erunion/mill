@@ -12,11 +12,11 @@ class UriAnnotationTest extends AnnotationTest
      * @param bool $visible
      * @param bool $deprecated
      * @param array $expected
-     * @return void
      */
     public function testAnnotation(string $content, bool $visible, bool $deprecated, array $expected): void
     {
-        $annotation = (new UriAnnotation($content, __CLASS__, __METHOD__))->process();
+        $annotation = new UriAnnotation($content, __CLASS__, __METHOD__);
+        $annotation->process();
         $annotation->setVisibility($visible);
         $annotation->setDeprecated($deprecated);
 
@@ -29,7 +29,6 @@ class UriAnnotationTest extends AnnotationTest
      * @param bool $visible
      * @param bool $deprecated
      * @param array $expected
-     * @return void
      */
     public function testHydrate(string $content, bool $visible, bool $deprecated, array $expected): void
     {
@@ -44,11 +43,6 @@ class UriAnnotationTest extends AnnotationTest
         $this->assertAnnotation($annotation, $expected);
     }
 
-    /**
-     * @param UriAnnotation $annotation
-     * @param array $expected
-     * @return void
-     */
     private function assertAnnotation(UriAnnotation $annotation, array $expected): void
     {
         $this->assertTrue($annotation->requiresVisibilityDecorator());
@@ -63,26 +57,17 @@ class UriAnnotationTest extends AnnotationTest
         $this->assertEmpty($annotation->getAliases());
     }
 
-    /**
-     * @return void
-     */
     public function testConfiguredUriSegmentTranslations(): void
     {
         $this->getConfig()->addUriSegmentTranslation('movie_id', 'id');
 
-        $annotation = (new UriAnnotation(
-            '{Movies\Showtimes} /movies/+movie_id/showtimes',
-            __CLASS__,
-            __METHOD__
-        ))->process();
+        $annotation = new UriAnnotation('{Movies\Showtimes} /movies/+movie_id/showtimes', __CLASS__, __METHOD__);
+        $annotation->process();
 
         $this->assertSame('/movies/{id}/showtimes', $annotation->getCleanPath());
         $this->assertSame('/movies/+movie_id/showtimes', $annotation->toArray()['path']);
     }
 
-    /**
-     * @return array
-     */
     public function providerAnnotation(): array
     {
         return [
@@ -169,9 +154,6 @@ class UriAnnotationTest extends AnnotationTest
         ];
     }
 
-    /**
-     * @return array
-     */
     public function providerAnnotationFailsOnInvalidContent(): array
     {
         return [

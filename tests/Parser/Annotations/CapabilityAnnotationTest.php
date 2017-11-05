@@ -11,11 +11,12 @@ class CapabilityAnnotationTest extends AnnotationTest
      * @dataProvider providerAnnotation
      * @param string $content
      * @param array $expected
-     * @return void
      */
     public function testAnnotation(string $content, array $expected): void
     {
-        $annotation = (new CapabilityAnnotation($content, __CLASS__, __METHOD__))->process();
+        $annotation = new CapabilityAnnotation($content, __CLASS__, __METHOD__);
+        $annotation->process();
+
         $this->assertAnnotation($annotation, $expected);
     }
 
@@ -23,7 +24,6 @@ class CapabilityAnnotationTest extends AnnotationTest
      * @dataProvider providerAnnotation
      * @param string $content
      * @param array $expected
-     * @return void
      */
     public function testHydrate(string $content, array $expected): void
     {
@@ -38,11 +38,6 @@ class CapabilityAnnotationTest extends AnnotationTest
         $this->assertAnnotation($annotation, $expected);
     }
 
-    /**
-     * @param CapabilityAnnotation $annotation
-     * @param array $expected
-     * @return void
-     */
     private function assertAnnotation(CapabilityAnnotation $annotation, array $expected): void
     {
         $this->assertFalse($annotation->requiresVisibilityDecorator());
@@ -56,9 +51,6 @@ class CapabilityAnnotationTest extends AnnotationTest
         $this->assertEmpty($annotation->getAliases());
     }
 
-    /**
-     * @return array
-     */
     public function providerAnnotation(): array
     {
         return [
@@ -71,9 +63,6 @@ class CapabilityAnnotationTest extends AnnotationTest
         ];
     }
 
-    /**
-     * @return array
-     */
     public function providerAnnotationFailsOnInvalidContent(): array
     {
         return [

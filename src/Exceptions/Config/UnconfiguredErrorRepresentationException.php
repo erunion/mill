@@ -1,18 +1,14 @@
 <?php
 namespace Mill\Exceptions\Config;
 
-class UnconfiguredErrorRepresentationException extends \Exception
+use Mill\Exceptions\BaseException;
+
+class UnconfiguredErrorRepresentationException extends BaseException
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     public $representation;
 
-    /**
-     * @param string $representation
-     * @return UnconfiguredErrorRepresentationException
-     */
-    public static function create($representation)
+    public static function create(string $representation): UnconfiguredErrorRepresentationException
     {
         $message = sprintf(
             'The `%s` error representation is being used, but has not been configured for use.',

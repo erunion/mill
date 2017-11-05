@@ -8,7 +8,7 @@ use Mill\Examples\Showtimes\Representations\Movie;
  */
 class RepresentationWithOnlyApiSee
 {
-    public function create()
+    public function create(): Movie
     {
         /**
          * @api-see \Mill\Examples\Showtimes\Representations\Movie::create

@@ -8,12 +8,11 @@ class ChangelogTest extends TestCase
 {
     /**
      * @dataProvider providerTestGeneration
-     * @param boolean $private_objects
-     * @param array $capabilities
+     * @param bool $private_objects
+     * @param array|null $capabilities
      * @param array $expected
-     * @return void
      */
-    public function testGeneration($private_objects, $capabilities, $expected)
+    public function testGeneration(bool $private_objects, ?array $capabilities, array $expected): void
     {
         $generator = new Changelog($this->getConfig());
         $generator->setLoadPrivateDocs($private_objects);
@@ -39,7 +38,7 @@ class ChangelogTest extends TestCase
         }
     }
 
-    public function testJsonGeneration()
+    public function testJsonGeneration(): void
     {
         $generator = new Changelog($this->getConfig());
         $changelog = $generator->generateJson();
@@ -56,10 +55,7 @@ class ChangelogTest extends TestCase
         ], array_keys($changelog));
     }
 
-    /**
-     * @return array
-     */
-    public function providerTestGeneration()
+    public function providerTestGeneration(): array
     {
         // Save us the effort of copy and pasting the same base actions over and over.
         $actions = [
@@ -825,7 +821,7 @@ class ChangelogTest extends TestCase
                                     '/movies/{id}' => [
                                         Changelog::CHANGESET_TYPE_ACTION => [
                                             'd81e7058dd' => call_user_func(
-                                                function () use ($actions) {
+                                                function () use ($actions): array {
                                                     $actions = $actions['1.1']['/movies/{id}']['action']['d81e7058dd'];
 
                                                     // Remove the `DELETE` method from `/movies/{id}`, since that
@@ -1142,7 +1138,7 @@ class ChangelogTest extends TestCase
                                     '/movies/{id}' => [
                                         Changelog::CHANGESET_TYPE_ACTION => [
                                             'd81e7058dd' => call_user_func(
-                                                function () use ($actions) {
+                                                function () use ($actions): array {
                                                     $hash = 'd81e7058ddfce86beb09ddb2a2461ea16d949637';
                                                     $actions = $actions['1.1']['/movies/{id}']['action']['d81e7058dd'];
 

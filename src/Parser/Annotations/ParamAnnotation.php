@@ -28,9 +28,9 @@ class ParamAnnotation extends Annotation
     /**
      * Sample data that this parameter might accept.
      *
-     * @var string|false
+     * @var false|string
      */
-    protected $sample_data;
+    protected $sample_data = false;
 
     /**
      * Type of data that this parameter supports.
@@ -68,7 +68,7 @@ class ParamAnnotation extends Annotation
     protected $values = [];
 
     /**
-     * Array of items that should be included in an array representation of this annotation.
+     * Return an array of items that should be included in an array representation of this annotation.
      *
      * @var array
      */
@@ -91,7 +91,7 @@ class ParamAnnotation extends Annotation
      * @return array
      * @throws UnsupportedTypeException If an unsupported parameter type has been supplied.
      */
-    protected function parser()
+    protected function parser(): array
     {
         $content = trim($this->docblock);
 
@@ -101,7 +101,9 @@ class ParamAnnotation extends Annotation
             $content = str_replace(array_keys($tokens), array_values($tokens), $content);
         }
 
-        $mson = (new MSON($this->class, $this->method))->parse($content);
+        /** @var string $method */
+        $method = $this->method;
+        $mson = (new MSON($this->class, $method))->parse($content);
         $parsed = [
             'field' => $mson->getField(),
             'sample_data' => $mson->getSampleData(),
@@ -133,7 +135,7 @@ class ParamAnnotation extends Annotation
      *
      * @return void
      */
-    protected function interpreter()
+    protected function interpreter(): void
     {
         $this->field = $this->required('field');
         $this->sample_data = $this->optional('sample_data');
@@ -150,7 +152,7 @@ class ParamAnnotation extends Annotation
      * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
      *
      * @param array $data
-     * @param Version|null $version
+     * @param null|Version $version
      * @return self
      */
     public static function hydrate(array $data = [], Version $version = null): self
@@ -173,7 +175,7 @@ class ParamAnnotation extends Annotation
      *
      * @return string
      */
-    public function getField()
+    public function getField(): string
     {
         return $this->field;
     }
@@ -191,7 +193,7 @@ class ParamAnnotation extends Annotation
     /**
      * Get the sample data that this parameter might accept.
      *
-     * @return string|false
+     * @return false|string
      */
     public function getSampleData()
     {
@@ -199,7 +201,7 @@ class ParamAnnotation extends Annotation
     }
 
     /**
-     * @param string|false $sample_data
+     * @param false|string $sample_data
      * @return self
      */
     public function setSampleData($sample_data): self
@@ -213,7 +215,7 @@ class ParamAnnotation extends Annotation
      *
      * @return string
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
@@ -233,7 +235,7 @@ class ParamAnnotation extends Annotation
      *
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -253,7 +255,7 @@ class ParamAnnotation extends Annotation
      *
      * @return bool
      */
-    public function isRequired()
+    public function isRequired(): bool
     {
         return $this->required;
     }
@@ -273,7 +275,7 @@ class ParamAnnotation extends Annotation
      *
      * @return bool
      */
-    public function isNullable()
+    public function isNullable(): bool
     {
         return $this->nullable;
     }

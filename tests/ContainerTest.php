@@ -5,7 +5,7 @@ use Mill\Container;
 
 class ContainerTest extends TestCase
 {
-    public function testContainer()
+    public function testContainer(): void
     {
         $container = $this->getContainer();
 
@@ -19,7 +19,7 @@ class ContainerTest extends TestCase
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testContainerFailsIfNoConfigPathWasSupplied()
+    public function testContainerFailsIfNoConfigPathWasSupplied(): void
     {
         new Container;
     }

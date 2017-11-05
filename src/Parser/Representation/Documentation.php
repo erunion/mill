@@ -16,6 +16,8 @@ class Documentation
     /**
      * When building out dot-notation annotation keys for generating API Blueprint files (or any other generator),
      * we use this key to designate the content of an annotations' data.
+     *
+     * @var string
      */
     const DOT_NOTATION_ANNOTATION_DATA_KEY = '__FIELD_DATA__';
 
@@ -43,7 +45,7 @@ class Documentation
     /**
      * Fuller description of what this representation handles. This should normally consist of Markdown.
      *
-     * @var string|null
+     * @var null|string
      */
     protected $description = null;
 
@@ -58,7 +60,7 @@ class Documentation
      * @param string $class
      * @param string $method
      */
-    public function __construct($class, $method)
+    public function __construct(string $class, string $method)
     {
         $this->class = $class;
         $this->method = $method;
@@ -67,15 +69,15 @@ class Documentation
     /**
      * Parse the instance controller and method into actionable annotations and documentation.
      *
-     * @return Documentation
+     * @return self
      * @throws NoAnnotationsException If no annotations were found on the class.
      * @throws NoAnnotationsException If no annotations were found on the method.
      * @throws RequiredAnnotationException If a required `@api-label` annotation is missing.
      * @throws MultipleAnnotationsException If multiple `@api-label` annotations were found.
      */
-    public function parse()
+    public function parse(): self
     {
-        $annotations = (new Parser($this->class))->getAnnotations();
+        $annotations = (new Parser($this->class))->setMethod($this->method)->getAnnotations();
 
         $this->representation = (new RepresentationParser($this->class))->getAnnotations($this->method);
 
@@ -112,7 +114,7 @@ class Documentation
      * @param string $version
      * @return array
      */
-    public function filterRepresentationForVersion($version)
+    public function filterRepresentationForVersion(string $version): array
     {
         /** @var Parser\Annotation $annotation */
         foreach ($this->representation as $name => $annotation) {
@@ -134,7 +136,7 @@ class Documentation
      *
      * @return string
      */
-    public function getClass()
+    public function getClass(): string
     {
         return $this->class;
     }
@@ -144,7 +146,7 @@ class Documentation
      *
      * @return string
      */
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->method;
     }
@@ -154,7 +156,7 @@ class Documentation
      *
      * @return string
      */
-    public function getLabel()
+    public function getLabel(): string
     {
         return $this->label;
     }
@@ -164,7 +166,7 @@ class Documentation
      *
      * @return array
      */
-    public function getRawContent()
+    public function getRawContent(): array
     {
         return $this->representation;
     }
@@ -174,7 +176,7 @@ class Documentation
      *
      * @return array
      */
-    public function getContent()
+    public function getContent(): array
     {
         return $this->toArray()['content'];
     }
@@ -184,7 +186,7 @@ class Documentation
      *
      * @return array
      */
-    public function getExplodedContentDotNotation()
+    public function getExplodedContentDotNotation(): array
     {
         $content = new Data;
 
@@ -203,7 +205,7 @@ class Documentation
      *
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         $data = [
             'label' => $this->label,

@@ -20,9 +20,9 @@ class Json extends Generator
      * Set the current changelog we're going to build a representation for.
      *
      * @param array $changelog
-     * @return Json
+     * @return self
      */
-    public function setChangelog(array $changelog = [])
+    public function setChangelog(array $changelog = []): self
     {
         $this->changelog = $changelog;
         return $this;
@@ -31,9 +31,9 @@ class Json extends Generator
     /**
      * Take compiled API documentation and generate a JSON-encoded changelog over the life of the API.
      *
-     * @return string
+     * @return array
      */
-    public function generate()
+    public function generate(): array
     {
         $json = [];
 
@@ -56,7 +56,9 @@ class Json extends Generator
             }
         }
 
-        return json_encode($json);
+        return [
+            json_encode($json)
+        ];
     }
 
     /**
@@ -66,7 +68,7 @@ class Json extends Generator
      * @param array $changesets
      * @return array
      */
-    private function parseRepresentationChangesets($definition, array $changesets = [])
+    private function parseRepresentationChangesets(string $definition, array $changesets = []): array
     {
         $entries = [];
         foreach ($changesets as $representation => $change_types) {
@@ -101,7 +103,7 @@ class Json extends Generator
      * @param array $changesets
      * @return array
      */
-    private function parseResourceChangesets($definition, array $changesets = [])
+    private function parseResourceChangesets(string $definition, array $changesets = []): array
     {
         $entries = [];
         foreach ($changesets as $group => $data) {
@@ -149,7 +151,7 @@ class Json extends Generator
      * @return string|array
      * @throws \Exception If an unsupported definition + change type was supplied.
      */
-    private function getAddedOrRemovedChangesetFactory($definition, $change_type, array $changes)
+    private function getAddedOrRemovedChangesetFactory(string $definition, string $change_type, array $changes)
     {
         switch ($change_type) {
             case Changelog::CHANGESET_TYPE_ACTION:
@@ -189,7 +191,7 @@ class Json extends Generator
      * @return string|array
      * @throws \Exception If an unsupported definition + change type was supplied.
      */
-    private function getChangedChangesetFactory($definition, $change_type, array $changes)
+    private function getChangedChangesetFactory(string $definition, string $change_type, array $changes)
     {
         // Due to versioning restrictions in the Mill syntax (that will be fixed), only `@api-contentType` annotations
         // will generate a "changed" entry in the changelog.

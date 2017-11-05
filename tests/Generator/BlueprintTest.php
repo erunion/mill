@@ -8,7 +8,7 @@ class BlueprintTest extends TestCase
 {
     const DS = DIRECTORY_SEPARATOR;
 
-    public function testGeneration()
+    public function testGeneration(): void
     {
         $dir = static::$resourcesDir . 'examples/Showtimes/blueprints/';
 
@@ -48,7 +48,7 @@ class BlueprintTest extends TestCase
         }
     }
 
-    public function testGenerationWithAnExcludedGroup()
+    public function testGenerationWithAnExcludedGroup(): void
     {
         $this->getConfig()->addBlueprintGroupExclude('Movies');
 

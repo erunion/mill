@@ -1,20 +1,19 @@
 <?php
 namespace Mill\Exceptions\Annotations;
 
-class MissingRequiredFieldException extends \Exception
+use Mill\Exceptions\BaseException;
+
+class MissingRequiredFieldException extends BaseException
 {
     use AnnotationExceptionTrait;
 
-    /**
-     * @param string $required_field
-     * @param string $annotation
-     * @param string $docblock
-     * @param string $class
-     * @param string $method
-     * @return MissingRequiredFieldException
-     */
-    public static function create($required_field, $annotation, $docblock, $class, $method)
-    {
+    public static function create(
+        string $required_field,
+        string $annotation,
+        string $docblock,
+        string $class,
+        string $method
+    ): MissingRequiredFieldException {
         $message = sprintf(
             'You must add a `%s` to `@api-%s %s` in %s::%s.',
             $required_field,

@@ -10,13 +10,7 @@ use Mill\Parser\Version;
  */
 class LabelAnnotation extends Annotation
 {
-    const REQUIRES_VISIBILITY_DECORATOR = false;
-    const SUPPORTS_DEPRECATION = false;
-    const SUPPORTS_VERSIONING = false;
-
     /**
-     * Label
-     *
      * @var string
      */
     protected $label;
@@ -36,7 +30,7 @@ class LabelAnnotation extends Annotation
      *
      * @return array
      */
-    protected function parser()
+    protected function parser(): array
     {
         return [
             'label' => $this->docblock
@@ -51,7 +45,7 @@ class LabelAnnotation extends Annotation
      *
      * @return void
      */
-    protected function interpreter()
+    protected function interpreter(): void
     {
         $this->label = $this->required('label');
     }
@@ -60,7 +54,7 @@ class LabelAnnotation extends Annotation
      * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
      *
      * @param array $data
-     * @param Version|null $version
+     * @param null|Version $version
      * @return self
      */
     public static function hydrate(array $data = [], Version $version = null): self
@@ -77,13 +71,13 @@ class LabelAnnotation extends Annotation
      *
      * @return string
      */
-    public function getLabel()
+    public function getLabel(): string
     {
         return $this->label;
     }
 
     /**
-     * @param $label
+     * @param string $label
      * @return self
      */
     public function setLabel(string $label): self

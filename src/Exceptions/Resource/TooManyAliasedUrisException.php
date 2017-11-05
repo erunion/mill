@@ -1,16 +1,13 @@
 <?php
 namespace Mill\Exceptions\Resource;
 
-class TooManyAliasedUrisException extends \Exception
+use Mill\Exceptions\BaseException;
+
+class TooManyAliasedUrisException extends BaseException
 {
     use ResourceExceptionTrait;
 
-    /**
-     * @param string $class
-     * @param string|null $method
-     * @return TooManyAliasedUrisException
-     */
-    public static function create($class, $method)
+    public static function create(string $class, ?string $method): TooManyAliasedUrisException
     {
         $message = sprintf(
             'In %s::%s, you have too many URI aliases set. If you have an alias present, there must be exactly one ' .

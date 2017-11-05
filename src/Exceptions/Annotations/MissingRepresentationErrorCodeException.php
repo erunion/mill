@@ -1,18 +1,17 @@
 <?php
 namespace Mill\Exceptions\Annotations;
 
-class MissingRepresentationErrorCodeException extends \Exception
+use Mill\Exceptions\BaseException;
+
+class MissingRepresentationErrorCodeException extends BaseException
 {
     use AnnotationExceptionTrait;
 
-    /**
-     * @param string $representation
-     * @param string $class
-     * @param string $method
-     * @return MissingRepresentationErrorCodeException
-     */
-    public static function create($representation, $class, $method)
-    {
+    public static function create(
+        string $representation,
+        string $class,
+        string $method
+    ): MissingRepresentationErrorCodeException {
         $message = sprintf(
             'The `%s` error representation on `@api-throws %s` in %s::%s is missing an error code, but is required ' .
                 'to have one in your config file.',

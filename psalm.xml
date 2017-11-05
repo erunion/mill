@@ -13,56 +13,21 @@
     </fileExtensions>
 
     <issueHandlers>
-        <InvalidArgument>
-            <errorLevel type="suppress">
-                <!-- Masking errors where we're passing methods that return mixed data into test assertions. -->
-                <directory name="tests/" />
-            </errorLevel>
-        </InvalidArgument>
-
-        <InvalidReturnType>
-            <errorLevel type="suppress">
-                <!-- Mill\Generator\Changelog\Formats\Json::generate() returns a JSON-encoded array. Psalm thinks that
-                    the method actually returns `string|false` because that's what `json_encode` can return. Not really
-                    true in this case, so ignore it. -->
-                <file name="src/Generator/Changelog/Formats/Json.php" />
-            </errorLevel>
-        </InvalidReturnType>
-
         <InvalidScalarArgument>
             <errorLevel type="suppress">
-                <!-- Masking errors where we're passing methods that return string|bool into test assertions. -->
+                <!-- Masking errors where we're passing methods that return `bool|string` into test assertions. -->
                 <directory name="tests/" />
             </errorLevel>
         </InvalidScalarArgument>
 
-        <MissingClosureReturnType errorLevel="suppress" />
-        <MissingConstructor errorLevel="suppress" />
-
-        <MissingReturnType>
-            <errorLevel type="suppress">
-                <directory name="tests/" />
-            </errorLevel>
-        </MissingReturnType>
-
         <PossiblyInvalidArgument>
             <errorLevel type="suppress">
-                <!-- Masking errors where we're passing methods that return object|bool into test assertions. -->
+                <!-- Masking errors where we're passing methods that return `bool|object` into test assertions. -->
                 <directory name="tests/" />
             </errorLevel>
         </PossiblyInvalidArgument>
 
         <!-- This hides a number of errors that we don't really care about. -->
         <PropertyNotSetInConstructor errorLevel="suppress" />
-
-        <UntypedParam>
-            <errorLevel type="suppress">
-                <!-- The generator and provider classes use service providers and closures, but we don't really care
-                    that much about documenting the parameters on those closures, so ignore these errors. -->
-                <directory name="src/Generator" />
-                <directory name="src/Provider" />
-                <directory name="tests/" />
-            </errorLevel>
-        </UntypedParam>
     </issueHandlers>
 </psalm>

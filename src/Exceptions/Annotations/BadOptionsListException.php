@@ -1,20 +1,19 @@
 <?php
 namespace Mill\Exceptions\Annotations;
 
-class BadOptionsListException extends \Exception
+use Mill\Exceptions\BaseException;
+
+class BadOptionsListException extends BaseException
 {
     use AnnotationExceptionTrait;
 
-    /**
-     * @param string $annotation
-     * @param string $docblock
-     * @param array $values
-     * @param string $class
-     * @param string $method
-     * @return BadOptionsListException
-     */
-    public static function create($annotation, $docblock, array $values, $class, $method)
-    {
+    public static function create(
+        string $annotation,
+        string $docblock,
+        array $values,
+        string $class,
+        string $method
+    ): BadOptionsListException {
         $message = sprintf(
             'The options list on `@api-%s %s`in %s::%s should written as `[%s]`, not `[%s]`.',
             $annotation,
