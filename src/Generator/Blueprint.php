@@ -31,24 +31,24 @@ class Blueprint extends Generator
     {
         parent::generate();
 
-        $group_excludes = $this->config->getBlueprintGroupExcludes();
+        $namespace_excludes = $this->config->getBlueprintNamespaceExcludes();
         $resources = $this->getResources();
 
         $blueprints = [];
 
         /** @var array $data */
-        foreach ($resources as $version => $groups) {
+        foreach ($resources as $version => $namespaces) {
             $this->version = $version;
             $this->representations = $this->getRepresentations($this->version);
 
             // Process resource groups.
-            foreach ($groups as $group_name => $data) {
-                // If this group has been designated in the config file to be excluded, then exclude it.
-                if (in_array($group_name, $group_excludes)) {
+            foreach ($namespaces as $namespace => $data) {
+                // If this namespace has been designated in the config file to be excluded, then exclude it.
+                if (in_array($namespace, $namespace_excludes)) {
                     continue;
                 }
 
-                $contents = sprintf('# Group %s', $group_name);
+                $contents = sprintf('# Group %s', $namespace);
                 $contents .= $this->line();
 
                 // Sort the resources so they're alphabetical.
@@ -124,7 +124,7 @@ class Blueprint extends Generator
                 }
 
                 $contents = trim($contents);
-                $blueprints[$this->version]['groups'][$group_name] = $contents;
+                $blueprints[$this->version]['groups'][$namespace] = $contents;
             }
 
             // Process representation data structures.

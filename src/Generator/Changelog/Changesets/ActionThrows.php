@@ -59,7 +59,7 @@ class ActionThrows extends Changeset
                 $template = $templates['plural'][$definition];
                 $entries[] = [
                     $this->renderText($template, [
-                        'resource_group' => $change['resource_group'],
+                        'resource_namespace' => $change['resource_namespace'],
                         'method' => $method,
                         'uri' => $change['uri']
                     ]),

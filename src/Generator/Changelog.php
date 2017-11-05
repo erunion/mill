@@ -162,7 +162,7 @@ class Changelog extends Generator
      */
     private function buildResourceChangelog(array $resources = []): void
     {
-        foreach ($resources as $group_name => $data) {
+        foreach ($resources as $namespace => $data) {
             foreach ($data['resources'] as $resource_name => $resource) {
                 /** @var Action\Documentation $action */
                 foreach ($resource['actions'] as $identifier => $action) {
@@ -174,9 +174,9 @@ class Changelog extends Generator
                             self::DEFINITION_ADDED,
                             $min_version,
                             self::CHANGESET_TYPE_ACTION,
-                            $group_name,
+                            $namespace,
                             [
-                                'resource_group' => $group_name,
+                                'resource_namespace' => $namespace,
                                 'method' => $action->getMethod(),
                                 'uri' => $action->getUri()->getCleanPath()
                             ]
@@ -192,9 +192,9 @@ class Changelog extends Generator
                                 self::DEFINITION_CHANGED,
                                 $introduced,
                                 self::CHANGESET_TYPE_CONTENT_TYPE,
-                                $group_name,
+                                $namespace,
                                 [
-                                    'resource_group' => $group_name,
+                                    'resource_namespace' => $namespace,
                                     'method' => $action->getMethod(),
                                     'uri' => $action->getUri()->getCleanPath(),
                                     'content_type' => $content_type->getContentType()
@@ -218,7 +218,7 @@ class Changelog extends Generator
                             }
 
                             $data = [
-                                'resource_group' => $group_name,
+                                'resource_namespace' => $namespace,
                                 'method' => $action->getMethod(),
                                 'uri' => $action->getUri()->getCleanPath()
                             ];
@@ -264,7 +264,7 @@ class Changelog extends Generator
                                     self::DEFINITION_ADDED,
                                     $introduced,
                                     $change_type,
-                                    $group_name,
+                                    $namespace,
                                     $data
                                 );
                             }
@@ -274,7 +274,7 @@ class Changelog extends Generator
                                     self::DEFINITION_REMOVED,
                                     $removed,
                                     $change_type,
-                                    $group_name,
+                                    $namespace,
                                     $data
                                 );
                             }
@@ -291,7 +291,7 @@ class Changelog extends Generator
      * @param string $definition
      * @param false|string $version
      * @param string $change_type
-     * @param null|string $group
+     * @param null|string $namespace
      * @param array $data
      * @return self
      */
@@ -299,21 +299,22 @@ class Changelog extends Generator
         string $definition,
         $version,
         string $change_type,
-        string $group = null,
+        string $namespace = null,
         array $data = []
     ): self {
-        // Since groups can be nested, let's throw changes under the top-level group.
-        if (!is_null($group)) {
-            $group = explode('\\', $group);
-            $group = array_shift($group);
+        // Since namespaces can be nested, let's throw changes under the top-level namespace.
+        if (!is_null($namespace)) {
+            $namespace = explode('\\', $namespace);
+            $namespace = array_shift($namespace);
         }
 
         $hash = $this->hashChangeset($change_type, $data);
 
         if ($change_type === self::CHANGESET_TYPE_REPRESENTATION_DATA) {
-            $this->changelog[$version][$definition]['representations'][$group][$change_type][$hash][] = $data;
+            $this->changelog[$version][$definition]['representations'][$namespace][$change_type][$hash][] = $data;
         } else {
-            $this->changelog[$version][$definition]['resources'][$group][$data['uri']][$change_type][$hash][] = $data;
+            $this->changelog[$version][$definition]['resources'][$namespace][$data['uri']][$change_type][$hash][] =
+                $data;
         }
 
         return $this;

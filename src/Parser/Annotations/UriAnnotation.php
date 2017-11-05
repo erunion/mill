@@ -15,14 +15,14 @@ class UriAnnotation extends Annotation
     const SUPPORTS_ALIASING = true;
     const SUPPORTS_DEPRECATION = true;
 
-    const GROUP_REGEX = '/{([\w\/\\\ ]+)}/';
+    const NAMESPACE_REGEX = '/{([\w\/\\\ ]+)}/';
 
     /**
-     * Group that this URI belongs to.
+     * Namespace that this URI belongs to.
      *
      * @var string
      */
-    protected $group;
+    protected $namespace;
 
     /**
      * URI path that this annotation represents.
@@ -37,7 +37,7 @@ class UriAnnotation extends Annotation
      * @var array
      */
     protected $arrayable = [
-        'group',
+        'namespace',
         'path'
     ];
 
@@ -52,10 +52,10 @@ class UriAnnotation extends Annotation
         $parsed = [];
         $content = $this->docblock;
 
-        // Group is surrounded by `{curly braces}`.
-        if (preg_match(self::GROUP_REGEX, $content, $matches)) {
-            $parsed['group'] = $matches[1];
-            $content = trim(preg_replace(self::GROUP_REGEX, '', $content));
+        // Namespace is surrounded by `{curly braces}`.
+        if (preg_match(self::NAMESPACE_REGEX, $content, $matches)) {
+            $parsed['namespace'] = $matches[1];
+            $content = trim(preg_replace(self::NAMESPACE_REGEX, '', $content));
         }
 
         $parsed['path'] = trim($content);
@@ -73,7 +73,7 @@ class UriAnnotation extends Annotation
      */
     protected function interpreter(): void
     {
-        $this->group = $this->required('group');
+        $this->namespace = $this->required('namespace');
         $this->path = $this->required('path');
     }
 
@@ -88,31 +88,31 @@ class UriAnnotation extends Annotation
     {
         /** @var UriAnnotation $annotation */
         $annotation = parent::hydrate($data, $version);
-        $annotation->setGroup($data['group']);
+        $annotation->setNamespace($data['namespace']);
         $annotation->setPath($data['path']);
 
         return $annotation;
     }
 
     /**
-     * Get the group that this URI belongs to.
+     * Get the namespace that this URI belongs to.
      *
      * @return string
      */
-    public function getGroup(): string
+    public function getNamespace(): string
     {
-        return $this->group;
+        return $this->namespace;
     }
 
     /**
-     * Set the group that this URI belongs to.
+     * Set the namespace that this URI belongs to.
      *
-     * @param string $group
+     * @param string $namespace
      * @return self
      */
-    public function setGroup(string $group): self
+    public function setNamespace(string $namespace): self
     {
-        $this->group = $group;
+        $this->namespace = $namespace;
         return $this;
     }
 

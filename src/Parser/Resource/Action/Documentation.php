@@ -361,10 +361,10 @@ class Documentation
     }
 
     /**
-     * Set the lone URI that this action runs under for a specific group.
+     * Set the lone URI that this action runs under for a specific namespace.
      *
-     * This is used in the Compiler system when grouping actions under groups. If an action runs on the `Me\Videos`
-     * and `Users\Videos` groups, we don't want the action in the `Me\Videos` group to have actions with
+     * This is used in the Compiler system when grouping actions under namespaces. If an action runs on the `Me\Videos`
+     * and `Users\Videos` namespaces, we don't want the action in the `Me\Videos` namespace to have actions with
      * `Users\Videos` URIs.
      *
      * @param UriAnnotation $uri
@@ -387,7 +387,7 @@ class Documentation
     /**
      * Set the URI segments that this action has.
      *
-     * This is used in the Compiler system when grouping actions under groups. If an action broadcasts on
+     * This is used in the Compiler system when grouping actions under namespaces. If an action broadcasts on
      * `/me/videos` and `/users/:id/videos`, we don't want the URI segments for `/users/:id/videos` to be a part of the
      * compiled `/me/videos` action.
      *

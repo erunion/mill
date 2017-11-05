@@ -71,12 +71,11 @@ trait ChangelogTemplate
             switch ($key) {
                 case 'content_type':
                 case 'field':
-                case 'group':
                 case 'http_code':
                 case 'method':
                 case 'parameter':
                 case 'representation':
-                case 'resource_group':
+                case 'resource_namespace':
                 case 'uri':
                     $searches[] = '{' . $key . '}';
                     if (is_array($value)) {
