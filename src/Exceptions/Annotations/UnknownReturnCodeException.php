@@ -1,19 +1,18 @@
 <?php
 namespace Mill\Exceptions\Annotations;
 
-class UnknownReturnCodeException extends \Exception
+use Mill\Exceptions\BaseException;
+
+class UnknownReturnCodeException extends BaseException
 {
     use AnnotationExceptionTrait;
 
-    /**
-     * @param string $annotation
-     * @param string $docblock
-     * @param string $class
-     * @param string $method
-     * @return UnknownReturnCodeException
-     */
-    public static function create($annotation, $docblock, $class, $method)
-    {
+    public static function create(
+        string $annotation,
+        string $docblock,
+        string $class,
+        string $method
+    ): UnknownReturnCodeException {
         $message = sprintf(
             'Could not find a code for `@api-%s %s` in %s::%s.',
             $annotation,

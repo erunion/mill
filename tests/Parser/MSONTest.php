@@ -10,15 +10,14 @@ class MSONTest extends TestCase
      * @dataProvider providerTestParse
      * @param string $content
      * @param array $expected
-     * @return void
      */
-    public function testParse($content, array $expected)
+    public function testParse(string $content, array $expected): void
     {
         $mson = (new MSON(__CLASS__, __METHOD__))->parse($content);
         $this->assertSame($expected, $mson->toArray());
     }
 
-    public function testEnumFailsWithoutValues()
+    public function testEnumFailsWithoutValues(): void
     {
         $this->expectException('Mill\Exceptions\MSON\MissingOptionsException');
 
@@ -29,18 +28,14 @@ class MSONTest extends TestCase
     /**
      * @dataProvider providerTestParseFailsOnInvalidTypes
      * @param string $content
-     * @return void
      */
-    public function testParseFailsOnInvalidTypes($content)
+    public function testParseFailsOnInvalidTypes(string $content): void
     {
         $this->expectException('Mill\Exceptions\Annotations\UnsupportedTypeException');
         (new MSON(__CLASS__, __METHOD__))->parse($content);
     }
 
-    /**
-     * @return array
-     */
-    public function providerTestParse()
+    public function providerTestParse(): array
     {
         return [
             '_complete' => [
@@ -282,10 +277,7 @@ class MSONTest extends TestCase
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function providerTestParseFailsOnInvalidTypes()
+    public function providerTestParseFailsOnInvalidTypes(): array
     {
         return [
             'type-unknown-representation' => [

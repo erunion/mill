@@ -12,10 +12,6 @@ use Mill\Parser\Version;
  */
 class ScopeAnnotation extends Annotation
 {
-    const REQUIRES_VISIBILITY_DECORATOR = false;
-    const SUPPORTS_DEPRECATION = false;
-    const SUPPORTS_VERSIONING = false;
-
     /**
      * Name of the scope type that is required for this annotations' method.
      *
@@ -26,7 +22,7 @@ class ScopeAnnotation extends Annotation
     /**
      * Description for why this scope is required.
      *
-     * @var string|null|false
+     * @var false|null|string
      */
     protected $description = null;
 
@@ -47,7 +43,7 @@ class ScopeAnnotation extends Annotation
      * @return array
      * @throws InvalidScopeSuppliedException If a supplied scope isn't present in the config file.
      */
-    protected function parser()
+    protected function parser(): array
     {
         $parts = explode(' ', $this->docblock);
 
@@ -58,7 +54,9 @@ class ScopeAnnotation extends Annotation
             // Validate the supplied scope with what has been configured as allowable.
             $scopes = Container::getConfig()->getScopes();
             if (!in_array($scope, $scopes)) {
-                throw InvalidScopeSuppliedException::create($scope, $this->class, $this->method);
+                /** @var string $method */
+                $method = $this->method;
+                throw InvalidScopeSuppliedException::create($scope, $this->class, $method);
             }
         }
 
@@ -76,7 +74,7 @@ class ScopeAnnotation extends Annotation
      *
      * @return void
      */
-    protected function interpreter()
+    protected function interpreter(): void
     {
         $this->scope = $this->required('scope');
         $this->description = $this->optional('description');
@@ -86,7 +84,7 @@ class ScopeAnnotation extends Annotation
      * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
      *
      * @param array $data
-     * @param Version|null $version
+     * @param null|Version  $version
      * @return self
      */
     public static function hydrate(array $data = [], Version $version = null): self
@@ -104,7 +102,7 @@ class ScopeAnnotation extends Annotation
      *
      * @return string
      */
-    public function getScope()
+    public function getScope(): string
     {
         return $this->scope;
     }
@@ -124,7 +122,7 @@ class ScopeAnnotation extends Annotation
     /**
      * Get the description for this scope.
      *
-     * @return string|null|false
+     * @return false|null|string
      */
     public function getDescription()
     {
@@ -134,7 +132,7 @@ class ScopeAnnotation extends Annotation
     /**
      * Set the description for this scope.
      *
-     * @param string|null|false $description
+     * @param false|null|string $description
      * @return self
      */
     public function setDescription($description): self

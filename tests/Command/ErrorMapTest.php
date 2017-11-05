@@ -7,22 +7,16 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class ErrorMapTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \Symfony\Component\Console\Command\Command
-     */
+    /** @var \Symfony\Component\Console\Command\Command */
     protected $command;
 
-    /**
-     * @var CommandTester
-     */
+    /** @var CommandTester */
     protected $tester;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $config_file;
 
-    public function setUp()
+    public function setUp(): void
     {
         $application = new Application();
         $application->add(new ErrorMap);
@@ -35,12 +29,11 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider providerTestErrorMap
-     * @param boolean $private_objects
+     * @param bool $private_objects
      * @param array $capabilities
      * @param string $expected_file
-     * @return void
      */
-    public function testErrorMap($private_objects, $capabilities, $expected_file)
+    public function testErrorMap(bool $private_objects, array $capabilities, string $expected_file): void
     {
         /** @var string $output_dir */
         $output_dir = tempnam(sys_get_temp_dir(), 'mill-generate-test-');
@@ -89,7 +82,7 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function testGenerateWithDryRun()
+    public function testGenerateWithDryRun(): void
     {
         $this->tester->execute([
             'command' => $this->command->getName(),
@@ -105,7 +98,7 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
         $this->assertNotContains('API version: 1.1.2', $output);
     }
 
-    public function testGenerateWithDefaultVersion()
+    public function testGenerateWithDefaultVersion(): void
     {
         $this->tester->execute([
             'command' => $this->command->getName(),
@@ -123,7 +116,7 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
         $this->assertNotContains('API version', $output);
     }
 
-    public function testGenerateWithSpecificConstraint()
+    public function testGenerateWithSpecificConstraint(): void
     {
         $this->tester->execute([
             'command' => $this->command->getName(),
@@ -143,7 +136,7 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage The supplied Mill configuration file does not exist.
      */
-    public function testGenerateFailsOnInvalidConfigFile()
+    public function testGenerateFailsOnInvalidConfigFile(): void
     {
         $this->tester->execute([
             'command' => $this->command->getName(),
@@ -151,7 +144,7 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
         ]);
     }
 
-    public function testGenerateFailsOnInvalidVersionConstraint()
+    public function testGenerateFailsOnInvalidVersionConstraint(): void
     {
         $this->tester->execute([
             'command' => $this->command->getName(),
@@ -166,10 +159,7 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
         $this->assertContains('unrecognized schema', $output);
     }
 
-    /**
-     * @return array
-     */
-    public function providerTestErrorMap()
+    public function providerTestErrorMap(): array
     {
         return [
             // Complete error map. All documentation parsed.

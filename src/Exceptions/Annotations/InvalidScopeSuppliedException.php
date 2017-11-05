@@ -1,7 +1,9 @@
 <?php
 namespace Mill\Exceptions\Annotations;
 
-class InvalidScopeSuppliedException extends \Exception
+use Mill\Exceptions\BaseException;
+
+class InvalidScopeSuppliedException extends BaseException
 {
     use AnnotationExceptionTrait;
 
@@ -10,13 +12,7 @@ class InvalidScopeSuppliedException extends \Exception
      */
     public $scope;
 
-    /**
-     * @param string $scope
-     * @param string $class
-     * @param string $method
-     * @return InvalidScopeSuppliedException
-     */
-    public static function create($scope, $class, $method)
+    public static function create(string $scope, string $class, string $method): InvalidScopeSuppliedException
     {
         $message = sprintf(
             'The scope on `@api-scope %s` in %s::%s is not present in your config.',
@@ -38,7 +34,7 @@ class InvalidScopeSuppliedException extends \Exception
      *
      * @return string
      */
-    public function getScope()
+    public function getScope(): string
     {
         return $this->scope;
     }

@@ -12,11 +12,12 @@ class ContentTypeAnnotationTest extends AnnotationTest
      * @param string $content
      * @param Version|null $version
      * @param array $expected
-     * @return void
      */
-    public function testAnnotation(string $content, $version, array $expected): void
+    public function testAnnotation(string $content, ?Version $version, array $expected): void
     {
-        $annotation = (new ContentTypeAnnotation($content, __CLASS__, __METHOD__, $version))->process();
+        $annotation = new ContentTypeAnnotation($content, __CLASS__, __METHOD__, $version);
+        $annotation->process();
+
         $this->assertAnnotation($annotation, $expected);
     }
 
@@ -25,9 +26,8 @@ class ContentTypeAnnotationTest extends AnnotationTest
      * @param string $content
      * @param Version|null $version
      * @param array $expected
-     * @return void
      */
-    public function testHydrate(string $content, $version, array $expected): void
+    public function testHydrate(string $content, ?Version $version, array $expected): void
     {
         $annotation = ContentTypeAnnotation::hydrate(array_merge(
             $expected,
@@ -40,11 +40,6 @@ class ContentTypeAnnotationTest extends AnnotationTest
         $this->assertAnnotation($annotation, $expected);
     }
 
-    /**
-     * @param ContentTypeAnnotation $annotation
-     * @param array $expected
-     * @return void
-     */
     private function assertAnnotation(ContentTypeAnnotation $annotation, array $expected): void
     {
         $this->assertFalse($annotation->requiresVisibilityDecorator());
@@ -65,9 +60,6 @@ class ContentTypeAnnotationTest extends AnnotationTest
         $this->assertEmpty($annotation->getAliases());
     }
 
-    /**
-     * @return array
-     */
     public function providerAnnotation(): array
     {
         return [
@@ -90,9 +82,6 @@ class ContentTypeAnnotationTest extends AnnotationTest
         ];
     }
 
-    /**
-     * @return array
-     */
     public function providerAnnotationFailsOnInvalidContent(): array
     {
         return [

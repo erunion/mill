@@ -14,7 +14,6 @@ class UriAnnotation extends Annotation
     const REQUIRES_VISIBILITY_DECORATOR = true;
     const SUPPORTS_ALIASING = true;
     const SUPPORTS_DEPRECATION = true;
-    const SUPPORTS_VERSIONING = false;
 
     const GROUP_REGEX = '/{([\w\/\\\ ]+)}/';
 
@@ -48,7 +47,7 @@ class UriAnnotation extends Annotation
      *
      * @return array
      */
-    protected function parser()
+    protected function parser(): array
     {
         $parsed = [];
         $content = $this->docblock;
@@ -72,7 +71,7 @@ class UriAnnotation extends Annotation
      *
      * @return void
      */
-    protected function interpreter()
+    protected function interpreter(): void
     {
         $this->group = $this->required('group');
         $this->path = $this->required('path');
@@ -82,10 +81,10 @@ class UriAnnotation extends Annotation
      * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
      *
      * @param array $data
-     * @param Version|null $version
+     * @param null|Version $version
      * @return self
      */
-    public static function hydrate(array $data = [], Version $version = null): self
+    public static function hydrate(array $data = [], Version $version = null)
     {
         /** @var UriAnnotation $annotation */
         $annotation = parent::hydrate($data, $version);
@@ -122,7 +121,7 @@ class UriAnnotation extends Annotation
      *
      * @return string
      */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->path;
     }
@@ -144,7 +143,7 @@ class UriAnnotation extends Annotation
      *
      * @return string
      */
-    public function getCleanPath()
+    public function getCleanPath(): string
     {
         $path = preg_replace('/[@#+*!~]((\w|_)+)(\/|$)/', '{$1}$3', $this->getPath());
 

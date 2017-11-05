@@ -1,18 +1,17 @@
 <?php
 namespace Mill\Exceptions\Annotations;
 
-class MultipleAnnotationsException extends \Exception
+use Mill\Exceptions\BaseException;
+
+class MultipleAnnotationsException extends BaseException
 {
     use AnnotationExceptionTrait;
 
-    /**
-     * @param string $annotation
-     * @param string $class
-     * @param string|null $method
-     * @return MultipleAnnotationsException
-     */
-    public static function create($annotation, $class, $method = null)
-    {
+    public static function create(
+        string $annotation,
+        string $class,
+        string $method = null
+    ): MultipleAnnotationsException {
         $message = sprintf(
             'Multiple `@api-%s` annotations were found on %s%s. Only one is permissible.',
             $annotation,

@@ -8,12 +8,11 @@ class ErrorMapTestTest extends TestCase
 {
     /**
      * @dataProvider providerTestGeneration
-     * @param boolean $private_objects
-     * @param array $capabilities
+     * @param bool $private_objects
+     * @param array|null $capabilities
      * @param array $expected
-     * @return void
      */
-    public function testGeneration($private_objects, $capabilities, $expected)
+    public function testGeneration(bool $private_objects, ?array $capabilities, array $expected): void
     {
         $generator = new ErrorMap($this->getConfig());
         $generator->setLoadPrivateDocs($private_objects);
@@ -39,10 +38,7 @@ class ErrorMapTestTest extends TestCase
         }
     }
 
-    /**
-     * @return array
-     */
-    public function providerTestGeneration()
+    public function providerTestGeneration(): array
     {
         // Save us the effort of copy and pasting the same action data over and over.
         $errors = [

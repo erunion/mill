@@ -7,9 +7,9 @@ use Mill\Generator\Changelog\Changeset;
 class ContentType extends Changeset
 {
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
-    public function getTemplates()
+    public function getTemplates(): array
     {
         return [
             'singular' => [
@@ -20,22 +20,22 @@ class ContentType extends Changeset
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
-    public function compileAddedOrRemovedChangeset($definition, array $changes = [])
+    public function compileAddedOrRemovedChangeset(string $definition, array $changes = [])
     {
         throw new \Exception($definition . ' content type changes are not yet supported.');
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
-    public function compileChangedChangeset($definition, array $changes = [])
+    public function compileChangedChangeset(string $definition, array $changes = [])
     {
         $templates = $this->getTemplates();
 
         if (count($changes) > 1) {
-            $uris = array_map(function ($change) {
+            $uris = array_map(function (array $change): string {
                 return $change['uri'];
             }, $changes);
 

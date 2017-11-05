@@ -13,11 +13,12 @@ class UriSegmentAnnotationTest extends AnnotationTest
      * @param string $uri
      * @param string $segment
      * @param array $expected
-     * @return void
      */
     public function testAnnotation(string $uri, string $segment, array $expected): void
     {
-        $annotation = (new UriSegmentAnnotation($segment, __CLASS__, __METHOD__, null))->process();
+        $annotation = new UriSegmentAnnotation($segment, __CLASS__, __METHOD__, null);
+        $annotation->process();
+
         $this->assertAnnotation($annotation, $expected);
     }
 
@@ -26,7 +27,6 @@ class UriSegmentAnnotationTest extends AnnotationTest
      * @param string $uri
      * @param string $segment
      * @param array $expected
-     * @return void
      */
     public function testHydrate(string $uri, string $segment, array $expected): void
     {
@@ -41,11 +41,6 @@ class UriSegmentAnnotationTest extends AnnotationTest
         $this->assertAnnotation($annotation, $expected);
     }
 
-    /**
-     * @param UriSegmentAnnotation $annotation
-     * @param array $expected
-     * @return void
-     */
     private function assertAnnotation(UriSegmentAnnotation $annotation, array $expected): void
     {
         $this->assertFalse($annotation->requiresVisibilityDecorator());
@@ -63,9 +58,6 @@ class UriSegmentAnnotationTest extends AnnotationTest
         $this->assertEmpty($annotation->getAliases());
     }
 
-    /**
-     * @return array
-     */
     public function providerAnnotation(): array
     {
         return [
@@ -100,9 +92,6 @@ class UriSegmentAnnotationTest extends AnnotationTest
         ];
     }
 
-    /**
-     * @return array
-     */
     public function providerAnnotationFailsOnInvalidContent(): array
     {
         return [

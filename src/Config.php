@@ -21,7 +21,7 @@ use SimpleXMLElement;
 class Config
 {
     /**
-     * The base directory for this configuration file.e
+     * The base directory for this configuration file.
      *
      * @var string
      */
@@ -30,7 +30,7 @@ class Config
     /**
      * The name of your API.
      *
-     * @var string|null
+     * @var null|string
      */
     protected $name = null;
 
@@ -130,15 +130,16 @@ class Config
     /**
      * Create a new configuration object from a given config file.
      *
+     * @psalm-suppress UnresolvableInclude Config includes are dynamic and can't be resolved.
      * @param Filesystem $filesystem
      * @param string $config_file
      * @param bool $load_bootstrap
-     * @return Config
+     * @return self
      * @throws InvalidArgumentException If the config file can't be read.
      * @throws InvalidArgumentException If the config file does not exist.
      * @throws ValidationException If there are errors validating the schema of your config file.
      */
-    public static function loadFromXML(Filesystem $filesystem, $config_file, $load_bootstrap = true)
+    public static function loadFromXML(Filesystem $filesystem, string $config_file, bool $load_bootstrap = true): self
     {
         $config = new self();
         $config->base_dir = dirname($config_file) . '/';
@@ -226,11 +227,11 @@ class Config
     /**
      * Load an array of application capabilities into the configuration system.
      *
-     * @param array $capabilities
-     * @return void
+     * @param SimpleXMLElement $capabilities
      */
-    protected function loadCapabilities($capabilities = [])
+    protected function loadCapabilities(SimpleXMLElement $capabilities): void
     {
+        /** @var SimpleXMLElement $capability */
         foreach ($capabilities as $capability) {
             $this->capabilities[] = (string) $capability['name'];
         }
@@ -242,11 +243,11 @@ class Config
     /**
      * Load an array of authentication scopes into the configuration system.
      *
-     * @param array $scopes
-     * @return void
+     * @param SimpleXMLElement $scopes
      */
-    protected function loadScopes($scopes = [])
+    protected function loadScopes(SimpleXMLElement $scopes): void
     {
+        /** @var SimpleXMLElement $scope */
         foreach ($scopes as $scope) {
             $this->scopes[] = (string) $scope['name'];
         }
@@ -258,10 +259,9 @@ class Config
     /**
      * Load an array of URI segment translations into the configuration system.
      *
-     * @param array $translations
-     * @return void
+     * @param SimpleXMLElement $translations
      */
-    protected function loadUriSegmentTranslations($translations = [])
+    protected function loadUriSegmentTranslations($translations): void
     {
         /** @var SimpleXMLElement $translation */
         foreach ($translations as $translation) {
@@ -277,10 +277,9 @@ class Config
      *
      * @param string $from
      * @param string $to
-     * @return void
      * @throws DomainException If an invalid uriSegment translation text was found.
      */
-    public function addUriSegmentTranslation($from, $to)
+    public function addUriSegmentTranslation($from, $to): void
     {
         if (empty($from) || empty($to)) {
             throw new DomainException(
@@ -294,11 +293,11 @@ class Config
     /**
      * Load an array of `@api-param` replacement tokens into the configuration system.
      *
-     * @param array $tokens
-     * @return void
+     * @param SimpleXMLElement $tokens
      */
-    protected function loadParameterTokens($tokens = [])
+    protected function loadParameterTokens(SimpleXMLElement $tokens): void
     {
+        /** @var SimpleXMLElement $token */
         foreach ($tokens as $token) {
             $parameter = trim((string) $token['name']);
             $annotation = trim((string) $token);
@@ -315,10 +314,9 @@ class Config
      *
      * @param string $parameter
      * @param string $annotation
-     * @return void
      * @throws DomainException If an invalid parameterTokens token name was found.
      */
-    public function addParameterToken($parameter, $annotation)
+    public function addParameterToken(string $parameter, string $annotation): void
     {
         if (empty($parameter) || empty($annotation)) {
             throw new DomainException(
@@ -333,12 +331,12 @@ class Config
      * Load in generator settings.
      *
      * @param SimpleXMLElement $generators
-     * @return void
      */
-    protected function loadGeneratorSettings(SimpleXMLElement $generators)
+    protected function loadGeneratorSettings(SimpleXMLElement $generators): void
     {
         if (isset($generators->blueprint)) {
             if (isset($generators->blueprint->excludes)) {
+                /** @var SimpleXMLElement $exclude */
                 foreach ($generators->blueprint->excludes->exclude as $exclude) {
                     $group = trim((string) $exclude['group']);
 
@@ -352,10 +350,9 @@ class Config
      * Add a new API Blueprint resource group generator exclusion.
      *
      * @param string $group
-     * @return void
      * @throws DomainException If an invalid Blueprint generator group exclude was detected.
      */
-    public function addBlueprintGroupExclude($group)
+    public function addBlueprintGroupExclude(string $group): void
     {
         if (empty($group)) {
             throw new DomainException(
@@ -371,9 +368,8 @@ class Config
      * Remove a currently configured API Blueprint resource group generator exclusion.
      *
      * @param string $group
-     * @return void
      */
-    public function removeBlueprintGroupExclude($group)
+    public function removeBlueprintGroupExclude(string $group): void
     {
         $excludes = array_flip($this->blueprint_group_excludes);
         if (isset($excludes[$group])) {
@@ -387,11 +383,10 @@ class Config
      * Load in a versions configuration definition.
      *
      * @param SimpleXMLElement $versions
-     * @return void
      * @throws InvalidArgumentException If multiple configured default API versions were detected.
      * @throws DomainException If no default API version was set.
      */
-    protected function loadVersions(SimpleXMLElement $versions)
+    protected function loadVersions(SimpleXMLElement $versions): void
     {
         $api_versions = [];
         foreach ($versions as $version) {
@@ -406,7 +401,7 @@ class Config
 
             $is_default = (bool) $version['default'];
             if ($is_default) {
-                if ($this->getDefaultApiVersion()) {
+                if (!empty($this->default_api_version)) {
                     throw new InvalidArgumentException(
                         'Multiple default API versions have been detected in the Mill `versions` section.'
                     );
@@ -416,7 +411,7 @@ class Config
             }
         }
 
-        if (!$this->getDefaultApiVersion()) {
+        if (empty($this->default_api_version)) {
             throw new DomainException('You must set a default API version.');
         }
 
@@ -434,11 +429,10 @@ class Config
      * Load in a controllers configuration definition.
      *
      * @param SimpleXMLElement $controllers
-     * @return void
      * @throws InvalidArgumentException If a directory configured does not exist.
      * @throws InvalidArgumentException If no controllers were detected.
      */
-    protected function loadControllers(SimpleXMLElement $controllers)
+    protected function loadControllers(SimpleXMLElement $controllers): void
     {
         /** @var SimpleXMLElement $controllers */
         $controllers = $controllers->filter;
@@ -457,11 +451,7 @@ class Config
             $excludes = array_unique($excludes);
         }
 
-        /**
-         * Process classes.
-         *
-         * @var SimpleXMLElement $file
-         */
+        /** @var SimpleXMLElement $class */
         foreach ($controllers->class as $class) {
             $this->addController((string) $class['name']);
         }
@@ -494,10 +484,9 @@ class Config
      * Add a new resource controller into the instance config.
      *
      * @param string $class
-     * @return void
      * @throws InvalidArgumentException If a class could not be found.
      */
-    public function addController($class)
+    public function addController(string $class): void
     {
         if (!class_exists($class)) {
             throw new InvalidArgumentException(
@@ -515,13 +504,12 @@ class Config
      * Load in a representations configuration definition.
      *
      * @param SimpleXMLElement $representations
-     * @return void
      * @throws UncallableRepresentationException If a configured representation does not exist.
      * @throws DomainException If a representation is configured without a `method` attribute.
      * @throws InvalidArgumentException If a directory configured does not exist.
      * @throws InvalidArgumentException If no representations were detected.
      */
-    protected function loadRepresentations(SimpleXMLElement $representations)
+    protected function loadRepresentations(SimpleXMLElement $representations): void
     {
         /** @var SimpleXMLElement $filters */
         $filters = $representations->filter;
@@ -540,11 +528,7 @@ class Config
             $this->excluded_representations = array_unique($this->excluded_representations);
         }
 
-        /**
-         * Process classes.
-         *
-         * @var SimpleXMLElement $class
-         */
+        /** @var SimpleXMLElement $class */
         foreach ($filters->class as $class) {
             $class_name = (string) $class['name'];
             $method = (string) $class['method'] ?: null;
@@ -560,11 +544,7 @@ class Config
             $this->addRepresentation($class_name, $method);
         }
 
-        /**
-         * Process directories.
-         *
-         * @var SimpleXMLElement $directory
-         */
+        /** @var SimpleXMLElement $directory */
         foreach ($filters->directory as $directory) {
             $directory_name = (string) $this->base_dir . $directory['name'];
             if (!is_dir($directory_name)) {
@@ -598,9 +578,8 @@ class Config
      * Add a representation into the excluded list of representations.
      *
      * @param string $class
-     * @return void
      */
-    public function addExcludedRepresentation($class)
+    public function addExcludedRepresentation(string $class): void
     {
         $this->excluded_representations[] = $class;
     }
@@ -609,9 +588,8 @@ class Config
      * Remove a representation that has been set up to be excluded from compilation, from being excluded.
      *
      * @param string $class
-     * @return void
      */
-    public function removeExcludedRepresentation($class)
+    public function removeExcludedRepresentation(string $class): void
     {
         $excludes = array_flip($this->excluded_representations);
         if (isset($excludes[$class])) {
@@ -625,11 +603,10 @@ class Config
      * Add a new representation into the instance config.
      *
      * @param string $class
-     * @param string|null $method
-     * @return void
+     * @param null|string $method
      * @throws UncallableRepresentationException If the representation is uncallable.
      */
-    public function addRepresentation($class, $method = null)
+    public function addRepresentation(string $class, string $method = null): void
     {
         if (!class_exists($class)) {
             throw UncallableRepresentationException::create($class);
@@ -645,11 +622,10 @@ class Config
      * Load in an error representations configuration definition.
      *
      * @param SimpleXMLElement $representations
-     * @return void
      * @throws UncallableErrorRepresentationException If a configured error representation class does not exist.
      * @throws DomainException If an error representation is missing a `method` attribute.
      */
-    protected function loadErrorRepresentations(SimpleXMLElement $representations)
+    protected function loadErrorRepresentations(SimpleXMLElement $representations): void
     {
         /** @var SimpleXMLElement $errors */
         $errors = $representations->errors;
@@ -685,7 +661,7 @@ class Config
      * @param string $class
      * @return bool
      */
-    public function isRepresentationExcluded($class)
+    public function isRepresentationExcluded(string $class): bool
     {
         return in_array($class, $this->getExcludedRepresentations());
     }
@@ -695,7 +671,7 @@ class Config
      *
      * @return null|string
      */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -705,7 +681,7 @@ class Config
      *
      * @return string
      */
-    public function getFirstApiVersion()
+    public function getFirstApiVersion(): string
     {
         return $this->first_api_version;
     }
@@ -715,7 +691,7 @@ class Config
      *
      * @return string
      */
-    public function getDefaultApiVersion()
+    public function getDefaultApiVersion(): string
     {
         return $this->default_api_version;
     }
@@ -725,7 +701,7 @@ class Config
      *
      * @return string
      */
-    public function getLatestApiVersion()
+    public function getLatestApiVersion(): string
     {
         return $this->latest_api_version;
     }
@@ -735,7 +711,7 @@ class Config
      *
      * @return array
      */
-    public function getApiVersions()
+    public function getApiVersions(): array
     {
         return $this->api_versions;
     }
@@ -747,7 +723,7 @@ class Config
      * @return array
      * @throws \Exception If a supplied version was not configured.
      */
-    public function getApiVersion($version)
+    public function getApiVersion(string $version): array
     {
         foreach ($this->api_versions as $data) {
             if ($data['version'] == $version) {
@@ -763,7 +739,7 @@ class Config
      *
      * @return array
      */
-    public function getCapabilities()
+    public function getCapabilities(): array
     {
         return $this->capabilities;
     }
@@ -773,7 +749,7 @@ class Config
      *
      * @return array
      */
-    public function getScopes()
+    public function getScopes(): array
     {
         return $this->scopes;
     }
@@ -783,7 +759,7 @@ class Config
      *
      * @return array
      */
-    public function getUriSegmentTranslations()
+    public function getUriSegmentTranslations(): array
     {
         return $this->uri_segment_translations;
     }
@@ -793,7 +769,7 @@ class Config
      *
      * @return array
      */
-    public function getParameterTokens()
+    public function getParameterTokens(): array
     {
         return $this->parameter_tokens;
     }
@@ -803,7 +779,7 @@ class Config
      *
      * @return array
      */
-    public function getControllers()
+    public function getControllers(): array
     {
         return $this->controllers;
     }
@@ -813,7 +789,7 @@ class Config
      *
      * @return array
      */
-    public function getRepresentations()
+    public function getRepresentations(): array
     {
         return $this->representations;
     }
@@ -823,7 +799,7 @@ class Config
      *
      * @return array
      */
-    public function getErrorRepresentations()
+    public function getErrorRepresentations(): array
     {
         return $this->error_representations;
     }
@@ -833,7 +809,7 @@ class Config
      *
      * @return array
      */
-    public function getAllRepresentations()
+    public function getAllRepresentations(): array
     {
         return array_merge($this->getRepresentations(), $this->getErrorRepresentations());
     }
@@ -843,7 +819,7 @@ class Config
      *
      * @return array
      */
-    public function getExcludedRepresentations()
+    public function getExcludedRepresentations(): array
     {
         return $this->excluded_representations;
     }
@@ -853,7 +829,7 @@ class Config
      *
      * @return array
      */
-    public function getBlueprintGroupExcludes()
+    public function getBlueprintGroupExcludes(): array
     {
         return $this->blueprint_group_excludes;
     }
@@ -866,7 +842,7 @@ class Config
      * @param array $excludes
      * @return array
      */
-    protected function scanDirectoryForClasses($directory, $suffix, array $excludes = [])
+    protected function scanDirectoryForClasses(string $directory, string $suffix, array $excludes = []): array
     {
         $classes = [];
 
@@ -894,7 +870,7 @@ class Config
      * @return bool
      * @throws UnconfiguredRepresentationException If the representation hasn't been configured, or excluded.
      */
-    public function doesRepresentationExist($class)
+    public function doesRepresentationExist(string $class): bool
     {
         $representations = $this->getRepresentations();
         $excluded = $this->getExcludedRepresentations();
@@ -919,7 +895,7 @@ class Config
      * @return bool
      * @throws UnconfiguredErrorRepresentationException If the error representation hasn't been configured.
      */
-    public function doesErrorRepresentationExist($class)
+    public function doesErrorRepresentationExist(string $class): bool
     {
         $representations = $this->getErrorRepresentations();
         if (!isset($representations[$class])) {
@@ -935,7 +911,7 @@ class Config
      * @param string $representation
      * @return bool
      */
-    public function doesErrorRepresentationNeedAnErrorCode($representation)
+    public function doesErrorRepresentationNeedAnErrorCode(string $representation): bool
     {
         $representations = $this->getErrorRepresentations();
         return $representations[$representation]['needs_error_code'];
@@ -945,12 +921,12 @@ class Config
      * Tokenize a given file and return back the FQN of the class inside.
      *
      * @link http://stackoverflow.com/a/7153391/105698
-     * @param string $file
-     * @return string
      * @psalm-suppress MixedArrayAccess
      * @codeCoverageIgnore
+     * @param string $file
+     * @return string
      */
-    private function getClassFQNFromFile($file)
+    private function getClassFQNFromFile(string $file): string
     {
         /** @var resource $fp */
         $fp = fopen($file, 'r');

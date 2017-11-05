@@ -36,7 +36,7 @@ class Documentation
     /**
      * Fuller description of what this resource handles. This should normally consist of Markdown.
      *
-     * @var string|null
+     * @var null|string
      */
     protected $description = null;
 
@@ -50,7 +50,7 @@ class Documentation
     /**
      * @param string $class
      */
-    public function __construct($class)
+    public function __construct(string $class)
     {
         $this->class = $class;
         $this->parser = new Parser($this->class);
@@ -59,11 +59,11 @@ class Documentation
     /**
      * Parse the instance class into actionable annotations and documentation.
      *
-     * @return Documentation
+     * @return self
      * @throws RequiredAnnotationException If a required `@api-label` annotation is missing.
      * @throws MultipleAnnotationsException If multiple `@api-label` annotations were found.
      */
-    public function parse()
+    public function parse(): self
     {
         $annotations = $this->parser->getAnnotations();
 
@@ -91,9 +91,9 @@ class Documentation
      *
      * Example: `$documentation = (new Documentation($class))->parseMethods()->toArray();`
      *
-     * @return Documentation
+     * @return self
      */
-    public function parseMethods()
+    public function parseMethods(): self
     {
         $this->getMethods();
         return $this;
@@ -104,7 +104,7 @@ class Documentation
      *
      * @return array
      */
-    public function getMethods()
+    public function getMethods(): array
     {
         if (!empty($this->methods)) {
             return $this->methods;
@@ -123,7 +123,7 @@ class Documentation
      *
      * @return string
      */
-    public function getClass()
+    public function getClass(): string
     {
         return $this->class;
     }
@@ -135,7 +135,7 @@ class Documentation
      * @return Action\Documentation
      * @throws MethodNotImplementedException If the instance class does not implement the supplied method.
      */
-    public function getMethod($method)
+    public function getMethod(string $method): Action\Documentation
     {
         if (empty($this->methods)) {
             $this->getMethods();
@@ -153,7 +153,7 @@ class Documentation
      *
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         $data = [
             'class' => $this->class,

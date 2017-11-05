@@ -6,7 +6,7 @@ use Mill\Tests\Fixtures\AnnotationStub;
 
 class AnnotationTest extends \PHPUnit\Framework\TestCase
 {
-    public function testAnnotationFailsIfARequiredFieldWasNotSuppliedToRequired()
+    public function testAnnotationFailsIfARequiredFieldWasNotSuppliedToRequired(): void
     {
         $docblock = 'This is a test';
 

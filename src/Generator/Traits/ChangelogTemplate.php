@@ -25,7 +25,7 @@ trait ChangelogTemplate
      * @param array $content
      * @return string
      */
-    protected function renderText($template, array $content = [])
+    protected function renderText(string $template, array $content = []): string
     {
         if (is_null($this->template_engine)) {
             $this->template_engine = new Engine;
@@ -47,7 +47,7 @@ trait ChangelogTemplate
      * @param array $content
      * @return array
      */
-    protected function transformTemplateIntoHtml($template, array $content = [])
+    protected function transformTemplateIntoHtml(string $template, array $content = []): array
     {
         $data_attributes = [];
         foreach ($content as $key => $value) {
@@ -81,7 +81,7 @@ trait ChangelogTemplate
                     $searches[] = '{' . $key . '}';
                     if (is_array($value)) {
                         $replacements[] = $this->joinWords(
-                            array_map(function ($value) use ($html, $key, $data_attributes) {
+                            array_map(function (string $value) use ($html, $key, $data_attributes): string {
                                 return sprintf($html, $key, $data_attributes, $value);
                             }, $value)
                         );
@@ -110,7 +110,7 @@ trait ChangelogTemplate
      * @param array $content
      * @return array
      */
-    protected function transformTemplateIntoMarkdown($template, array $content = [])
+    protected function transformTemplateIntoMarkdown(string $template, array $content = []): array
     {
         $searches = [];
         $replacements = [];
@@ -126,7 +126,7 @@ trait ChangelogTemplate
                     $searches[] = '{' . $key . '}';
                     if (is_array($value)) {
                         $replacements[] = $this->joinWords(
-                            array_map(function ($val) {
+                            array_map(function (string $val): string {
                                 return sprintf('`%s`', $val);
                             }, $value)
                         );
@@ -155,7 +155,7 @@ trait ChangelogTemplate
      * @param array $words
      * @return string
      */
-    protected function joinWords(array $words)
+    protected function joinWords(array $words): string
     {
         if (count($words) <= 2) {
             return implode(' and ', $words);
@@ -169,9 +169,8 @@ trait ChangelogTemplate
      * Set the current changelog template output format.
      *
      * @param string $format
-     * @return void
      */
-    public function setOutputFormat($format = 'json')
+    public function setOutputFormat($format = 'json'): void
     {
         $this->output_format = $format;
     }

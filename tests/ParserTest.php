@@ -8,7 +8,7 @@ class ParserTest extends TestCase
 {
     use ReaderTestingTrait;
 
-    public function testParseAnnotationsOnClassWithNoMethod()
+    public function testParseAnnotationsOnClassWithNoMethod(): void
     {
         $class = '\Mill\Examples\Showtimes\Controllers\Movie';
         $docs = (new Parser($class))->getAnnotations();
@@ -32,9 +32,8 @@ These actions will allow you to pull information on a specific movie.', $annotat
      * @dataProvider providerParseAnnotationsOnClassMethod
      * @param string $method
      * @param array $expected
-     * @return void
      */
-    public function testParseAnnotationsOnClassMethod($method, array $expected)
+    public function testParseAnnotationsOnClassMethod(string $method, array $expected): void
     {
         $class = '\Mill\Examples\Showtimes\Controllers\Movie';
         $annotations = (new Parser($class))->getAnnotations($method);
@@ -55,7 +54,7 @@ These actions will allow you to pull information on a specific movie.', $annotat
         }
     }
 
-    public function testParsingADeprecatedDecorator()
+    public function testParsingADeprecatedDecorator(): void
     {
         $this->overrideReadersWithFakeDocblockReturn('/**
           * @api-label Update a piece of content.
@@ -76,7 +75,7 @@ These actions will allow you to pull information on a specific movie.', $annotat
         $this->assertTrue($annotations['uri'][1]->isDeprecated());
     }
 
-    public function testParseAnnotationsOnClassMethodThatDoesntExist()
+    public function testParseAnnotationsOnClassMethodThatDoesntExist(): void
     {
         $class = '\Mill\Examples\Showtimes\Controllers\Movie';
 
@@ -88,10 +87,7 @@ These actions will allow you to pull information on a specific movie.', $annotat
         }
     }
 
-    /**
-     * @return array
-     */
-    public function providerParseAnnotationsOnClassMethod()
+    public function providerParseAnnotationsOnClassMethod(): array
     {
         return [
             'GET' => [

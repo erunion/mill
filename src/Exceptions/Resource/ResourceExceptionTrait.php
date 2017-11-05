@@ -1,23 +1,17 @@
 <?php
 namespace Mill\Exceptions\Resource;
 
-use Mill\Exceptions\ExceptionTrait;
-
 trait ResourceExceptionTrait
 {
-    use ExceptionTrait;
-
-    /**
-     * @var string|null
-     */
+    /** @var null|string */
     public $decorator = null;
 
     /**
      * Get the decorator that this resource exception was triggered for.
      *
-     * @return string|null
+     * @return null|string
      */
-    public function getDecorator()
+    public function getDecorator(): ?string
     {
         return $this->decorator;
     }

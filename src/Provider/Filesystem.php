@@ -14,7 +14,7 @@ class Filesystem implements \Pimple\ServiceProviderInterface
      */
     public function register(Container $container)
     {
-        $container['filesystem'] = function (Container $c) {
+        $container['filesystem'] = function (Container $c): \League\Flysystem\Filesystem {
             $adapter = new Local('/');
 
             return new \League\Flysystem\Filesystem($adapter);

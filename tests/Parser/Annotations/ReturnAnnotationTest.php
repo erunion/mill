@@ -13,13 +13,13 @@ class ReturnAnnotationTest extends AnnotationTest
      * @dataProvider providerAnnotation
      * @param string $content
      * @param bool $visible
-     * @param Version|null $version
+     * @param $version
      * @param array $expected
-     * @return void
      */
     public function testAnnotation(string $content, bool $visible, $version, array $expected): void
     {
-        $annotation = (new ReturnAnnotation($content, __CLASS__, __METHOD__, $version))->process();
+        $annotation = new ReturnAnnotation($content, __CLASS__, __METHOD__, $version);
+        $annotation->process();
         $annotation->setVisibility($visible);
 
         $this->assertAnnotation($annotation, $expected);
@@ -29,9 +29,8 @@ class ReturnAnnotationTest extends AnnotationTest
      * @dataProvider providerAnnotation
      * @param string $content
      * @param bool $visible
-     * @param Version|null $version
+     * @param $version
      * @param array $expected
-     * @return void
      */
     public function testHydrate(string $content, bool $visible, $version, array $expected): void
     {
@@ -46,11 +45,6 @@ class ReturnAnnotationTest extends AnnotationTest
         $this->assertAnnotation($annotation, $expected);
     }
 
-    /**
-     * @param ReturnAnnotation $annotation
-     * @param array $expected
-     * @return void
-     */
     private function assertAnnotation(ReturnAnnotation $annotation, array $expected): void
     {
         $this->assertTrue($annotation->requiresVisibilityDecorator());
@@ -74,9 +68,6 @@ class ReturnAnnotationTest extends AnnotationTest
         $this->assertEmpty($annotation->getAliases());
     }
 
-    /**
-     * @return array
-     */
     public function providerAnnotation(): array
     {
         return [
@@ -289,9 +280,6 @@ class ReturnAnnotationTest extends AnnotationTest
         ];
     }
 
-    /**
-     * @return array
-     */
     public function providerAnnotationFailsOnInvalidContent(): array
     {
         return [

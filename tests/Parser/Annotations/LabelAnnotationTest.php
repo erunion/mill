@@ -10,11 +10,12 @@ class LabelAnnotationTest extends AnnotationTest
      * @dataProvider providerAnnotation
      * @param string $content
      * @param array $expected
-     * @return void
      */
     public function testAnnotation(string $content, array $expected): void
     {
-        $annotation = (new LabelAnnotation($content, __CLASS__, __METHOD__))->process();
+        $annotation = new LabelAnnotation($content, __CLASS__, __METHOD__);
+        $annotation->process();
+
         $this->assertAnnotation($annotation, $expected);
     }
 
@@ -22,7 +23,6 @@ class LabelAnnotationTest extends AnnotationTest
      * @dataProvider providerAnnotation
      * @param string $content
      * @param array $expected
-     * @return void
      */
     public function testHydrate(string $content, array $expected): void
     {
@@ -37,11 +37,6 @@ class LabelAnnotationTest extends AnnotationTest
         $this->assertAnnotation($annotation, $expected);
     }
 
-    /**
-     * @param LabelAnnotation $annotation
-     * @param array $expected
-     * @return void
-     */
     private function assertAnnotation(LabelAnnotation $annotation, array $expected): void
     {
         $this->assertFalse($annotation->requiresVisibilityDecorator());
@@ -55,9 +50,6 @@ class LabelAnnotationTest extends AnnotationTest
         $this->assertEmpty($annotation->getAliases());
     }
 
-    /**
-     * @return array
-     */
     public function providerAnnotation(): array
     {
         return [
@@ -70,9 +62,6 @@ class LabelAnnotationTest extends AnnotationTest
         ];
     }
 
-    /**
-     * @return array
-     */
     public function providerAnnotationFailsOnInvalidContent(): array
     {
         return [

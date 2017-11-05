@@ -17,8 +17,8 @@ class Container extends \Pimple\Container
      *
      * Objects and parameters can be passed as argument to the constructor.
      *
-     * @param array $values The parameters or objects.
      * @codeCoverageIgnore
+     * @param array $values The parameters or objects.
      */
     public function __construct(array $values = [])
     {
@@ -42,10 +42,10 @@ class Container extends \Pimple\Container
     /**
      * Return the current instance of the container.
      *
-     * @return Container
      * @codeCoverageIgnore
+     * @return self
      */
-    public static function getInstance()
+    public static function getInstance(): self
     {
         if (!self::$instance instanceof Container) {
             throw new \InvalidArgumentException(
@@ -61,7 +61,7 @@ class Container extends \Pimple\Container
      *
      * @return \Mill\Config
      */
-    public static function getConfig()
+    public static function getConfig(): \Mill\Config
     {
         return self::getInstance()['config'];
     }
@@ -71,7 +71,7 @@ class Container extends \Pimple\Container
      *
      * @return \League\Flysystem\Filesystem
      */
-    public static function getFilesystem()
+    public static function getFilesystem(): \League\Flysystem\Filesystem
     {
         return self::getInstance()['filesystem'];
     }
@@ -81,7 +81,7 @@ class Container extends \Pimple\Container
      *
      * @return \Closure
      */
-    public static function getAnnotationReader()
+    public static function getAnnotationReader(): \Closure
     {
         return self::getInstance()['reader.annotations'];
     }
@@ -91,7 +91,7 @@ class Container extends \Pimple\Container
      *
      * @return \Closure
      */
-    public static function getRepresentationAnnotationReader()
+    public static function getRepresentationAnnotationReader(): \Closure
     {
         return self::getInstance()['reader.annotations.representation'];
     }

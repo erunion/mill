@@ -12,7 +12,7 @@ use Mill\Parser\Version;
  */
 class VersionTest extends \PHPUnit\Framework\TestCase
 {
-    public function testParse()
+    public function testParse(): void
     {
         $version = '>3.4';
         $parsed = new Version($version, __CLASS__, __METHOD__);
@@ -25,7 +25,7 @@ class VersionTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($parsed->isRange());
     }
 
-    public function testMatches()
+    public function testMatches(): void
     {
         $version = '3.*';
         $parsed = new Version($version, __CLASS__, __METHOD__);
@@ -39,7 +39,7 @@ class VersionTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function testParseFailsOnBadVersionSchemas()
+    public function testParseFailsOnBadVersionSchemas(): void
     {
         try {
             new Version('', __CLASS__, __METHOD__);

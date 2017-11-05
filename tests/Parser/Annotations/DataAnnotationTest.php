@@ -14,9 +14,8 @@ class DataAnnotationTest extends AnnotationTest
      * @param string $content
      * @param Version|null $version
      * @param array $expected
-     * @return void
      */
-    public function testAnnotation(string $content, $version, array $expected): void
+    public function testAnnotation(string $content, ?Version $version, array $expected): void
     {
         $annotation = $this->getDataAnnotationFromDocblock($content, __CLASS__);
         $this->assertAnnotation($annotation, $expected);
@@ -27,9 +26,8 @@ class DataAnnotationTest extends AnnotationTest
      * @param string $content
      * @param Version|null $version
      * @param array $expected
-     * @return void
      */
-    public function testHydrate(string $content, $version, array $expected): void
+    public function testHydrate(string $content, ?Version $version, array $expected): void
     {
         $annotation = DataAnnotation::hydrate(array_merge(
             $expected,
@@ -42,11 +40,6 @@ class DataAnnotationTest extends AnnotationTest
         $this->assertAnnotation($annotation, $expected);
     }
 
-    /**
-     * @param DataAnnotation $annotation
-     * @param array $expected
-     * @return void
-     */
     private function assertAnnotation(DataAnnotation $annotation, array $expected): void
     {
         $this->assertFalse($annotation->requiresVisibilityDecorator());
@@ -69,9 +62,6 @@ class DataAnnotationTest extends AnnotationTest
         }
     }
 
-    /**
-     * @return array
-     */
     public function providerAnnotation(): array
     {
         return [
@@ -254,9 +244,6 @@ class DataAnnotationTest extends AnnotationTest
         ];
     }
 
-    /**
-     * @return array
-     */
     public function providerAnnotationFailsOnInvalidContent(): array
     {
         return [

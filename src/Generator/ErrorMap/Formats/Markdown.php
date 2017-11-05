@@ -25,9 +25,9 @@ class Markdown extends Generator
      * Set the current error map we're going to build a representation for.
      *
      * @param array $error_map
-     * @return Markdown
+     * @return self
      */
-    public function setErrorMap(array $error_map = [])
+    public function setErrorMap(array $error_map = []): self
     {
         $this->error_map = $error_map;
         return $this;
@@ -38,7 +38,7 @@ class Markdown extends Generator
      *
      * @return array
      */
-    public function generate()
+    public function generate(): array
     {
         $markdown = [];
 

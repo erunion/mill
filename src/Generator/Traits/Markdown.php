@@ -6,10 +6,10 @@ trait Markdown
     /**
      * Return a repeated new line character.
      *
-     * @param integer $repeat
+     * @param int $repeat
      * @return string
      */
-    protected function line($repeat = 1)
+    protected function line(int $repeat = 1): string
     {
         return str_repeat("\n", $repeat);
     }
@@ -17,10 +17,10 @@ trait Markdown
     /**
      * Return a repeated tab character.
      *
-     * @param integer $repeat
+     * @param int $repeat
      * @return string
      */
-    protected function tab($repeat = 1)
+    protected function tab(int $repeat = 1): string
     {
         return str_repeat('    ', $repeat);
     }

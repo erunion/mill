@@ -17,6 +17,7 @@ class Blueprint extends Generator
 
     /**
      * Current list of representations for the current API version we're working with.
+     *
      * @var array
      */
     private $representations = [];
@@ -26,7 +27,7 @@ class Blueprint extends Generator
      *
      * @return array
      */
-    public function generate()
+    public function generate(): array
     {
         parent::generate();
 
@@ -75,16 +76,10 @@ class Blueprint extends Generator
                             $action_contents .= $this->line(2);
                         }
 
-                        // Generate scopes
                         $action_contents .= $this->processScopes($action);
-
-                        // Process parameters
                         $action_contents .= $this->processParameters($action);
-
-                        // Generate request
                         $action_contents .= $this->processRequest($action);
 
-                        // Generate response
                         $coded_responses = [];
                         /** @var ReturnAnnotation|ThrowsAnnotation $response */
                         foreach ($action->getResponses() as $response) {
@@ -166,7 +161,7 @@ class Blueprint extends Generator
      * Process an action and generate a scopes description.
      *
      * @param Action\Documentation $action
-     * @return string|false
+     * @return false|string
      */
     protected function processScopes(Action\Documentation $action)
     {
@@ -196,7 +191,7 @@ class Blueprint extends Generator
      * Process an action and generate a parameters Blueprint.
      *
      * @param Action\Documentation $action
-     * @return string|false
+     * @return false|string
      */
     protected function processParameters(Action\Documentation $action)
     {
@@ -217,6 +212,7 @@ class Blueprint extends Generator
                 $field = str_replace($from, $to, $field);
             }
 
+            /** @var array $values */
             $values = $segment->getValues();
             $type = $this->convertTypeToCompatibleType($segment->getType());
 
@@ -257,7 +253,7 @@ class Blueprint extends Generator
      * @param Action\Documentation $action
      * @return string
      */
-    protected function processRequest(Action\Documentation $action)
+    protected function processRequest(Action\Documentation $action): string
     {
         $params = $action->getParameters();
         if (empty($params)) {
@@ -322,7 +318,7 @@ class Blueprint extends Generator
      * @throws \Exception If a non-200 response is missing a description.
      * @throws NoAnnotationsException If a used representation does not have any documentation.
      */
-    protected function processResponses(Action\Documentation $action, $http_code, array $responses = [])
+    protected function processResponses(Action\Documentation $action, string $http_code, array $responses = []): string
     {
         $http_code = substr($http_code, 0, 3);
 
@@ -392,10 +388,10 @@ class Blueprint extends Generator
      * Recursively process an array of representation fields.
      *
      * @param array $fields
-     * @param integer $indent
+     * @param int $indent
      * @return string
      */
-    private function processRepresentationFields($fields = [], $indent = 2)
+    private function processRepresentationFields(array $fields = [], int $indent = 2): string
     {
         $blueprint = '';
 
@@ -492,7 +488,7 @@ class Blueprint extends Generator
      * @param array $structures
      * @return string
      */
-    protected function processCombinedFile($groups = [], $structures = [])
+    protected function processCombinedFile(array $groups = [], array $structures = []): string
     {
         $blueprint = 'FORMAT: 1A';
         $blueprint .= $this->line(2);
@@ -534,10 +530,10 @@ class Blueprint extends Generator
      *
      * @link https://github.com/apiaryio/mson/blob/master/MSON%20Specification.md#2-types
      * @param string $type
-     * @param mixed $subtype
+     * @param false|string $subtype
      * @return string
      */
-    private function convertTypeToCompatibleType($type, $subtype = false)
+    private function convertTypeToCompatibleType(string $type, $subtype = false): string
     {
         switch ($type) {
             case 'enum':
@@ -588,9 +584,9 @@ class Blueprint extends Generator
      * Pull a representation from the current versioned set of representations.
      *
      * @param string $representation
-     * @return \Mill\Parser\Representation\Documentation|false
+     * @return false|\Mill\Parser\Representation\Documentation
      */
-    private function getRepresentation($representation)
+    private function getRepresentation(string $representation)
     {
         return (isset($this->representations[$representation])) ? $this->representations[$representation] : false;
     }

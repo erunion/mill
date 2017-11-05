@@ -10,13 +10,7 @@ use Mill\Parser\Version;
  */
 class DescriptionAnnotation extends Annotation
 {
-    const REQUIRES_VISIBILITY_DECORATOR = false;
-    const SUPPORTS_DEPRECATION = false;
-    const SUPPORTS_VERSIONING = false;
-
     /**
-     * Description.
-     *
      * @var string
      */
     protected $description;
@@ -36,7 +30,7 @@ class DescriptionAnnotation extends Annotation
      *
      * @return array
      */
-    protected function parser()
+    protected function parser(): array
     {
         return [
             'description' => $this->docblock
@@ -51,7 +45,7 @@ class DescriptionAnnotation extends Annotation
      *
      * @return void
      */
-    protected function interpreter()
+    protected function interpreter(): void
     {
         $this->description = $this->required('description');
     }
@@ -60,7 +54,7 @@ class DescriptionAnnotation extends Annotation
      * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
      *
      * @param array $data
-     * @param Version|null $version
+     * @param null|Version $version
      * @return self
      */
     public static function hydrate(array $data = [], Version $version = null): self
@@ -77,7 +71,7 @@ class DescriptionAnnotation extends Annotation
      *
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }

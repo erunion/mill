@@ -20,7 +20,6 @@ class ThrowsAnnotation extends Annotation
     use HasHttpCodeResponseTrait;
 
     const REQUIRES_VISIBILITY_DECORATOR = true;
-    const SUPPORTS_DEPRECATION = false;
     const SUPPORTS_VERSIONING = true;
 
     const REGEX_ERROR_CODE = '/^(\(.*\))/';
@@ -31,7 +30,7 @@ class ThrowsAnnotation extends Annotation
     /**
      * Optional unique error code for the error that this exception handles.
      *
-     * @var string|null|false
+     * @var false|null|string
      */
     protected $error_code = null;
 
@@ -67,9 +66,12 @@ class ThrowsAnnotation extends Annotation
      * @throws MissingRepresentationErrorCodeException If a supplied representation has been configured as requiring
      *      an error code, but is missing it.
      */
-    protected function parser()
+    protected function parser(): array
     {
         $config = Container::getConfig();
+
+        /** @var string $method */
+        $method = $this->method;
 
         $parsed = [];
         $content = trim($this->docblock);
@@ -79,7 +81,7 @@ class ThrowsAnnotation extends Annotation
             $parsed['http_code'] = $matches[1];
 
             if (!$this->isValidHttpCode($parsed['http_code'])) {
-                throw UnknownReturnCodeException::create('throws', $this->docblock, $this->class, $this->method);
+                throw UnknownReturnCodeException::create('throws', $this->docblock, $this->class, $method);
             }
 
             $parsed['http_code'] .= ' ' . $this->getHttpCodeMessage($parsed['http_code']);
@@ -103,7 +105,7 @@ class ThrowsAnnotation extends Annotation
             try {
                 $config->doesErrorRepresentationExist($representation);
             } catch (UnconfiguredErrorRepresentationException $e) {
-                throw UnknownErrorRepresentationException::create($representation, $this->class, $this->method);
+                throw UnknownErrorRepresentationException::create($representation, $this->class, $method);
             }
         }
 
@@ -114,7 +116,7 @@ class ThrowsAnnotation extends Annotation
                 $parsed['error_code'] = $error_code;
             } else {
                 if (!defined($error_code)) {
-                    throw UncallableErrorCodeException::create($this->docblock, $this->class, $this->method);
+                    throw UncallableErrorCodeException::create($this->docblock, $this->class, $method);
                 }
 
                 $parsed['error_code'] = constant($error_code);
@@ -126,7 +128,7 @@ class ThrowsAnnotation extends Annotation
         // Capability is surrounded by +plusses+.
         if (preg_match(self::REGEX_CAPABILITY, $content, $matches)) {
             $capability = substr($matches[1], 1, -1);
-            $parsed['capability'] = (new CapabilityAnnotation($capability, $this->class, $this->method))->process();
+            $parsed['capability'] = (new CapabilityAnnotation($capability, $this->class, $method))->process();
 
             $content = trim(preg_replace(self::REGEX_CAPABILITY, '', $content));
         }
@@ -153,7 +155,7 @@ class ThrowsAnnotation extends Annotation
                 throw MissingRepresentationErrorCodeException::create(
                     $representation,
                     $this->class,
-                    $this->method
+                    $method
                 );
             }
         }
@@ -169,7 +171,7 @@ class ThrowsAnnotation extends Annotation
      *
      * @return void
      */
-    protected function interpreter()
+    protected function interpreter(): void
     {
         $this->http_code = $this->required('http_code');
         $this->representation = $this->required('representation');
@@ -187,10 +189,10 @@ class ThrowsAnnotation extends Annotation
      * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
      *
      * @param array $data
-     * @param Version|null $version
+     * @param null|Version $version
      * @return self
      */
-    public static function hydrate(array $data = [], Version $version = null): self
+    public static function hydrate(array $data = [], Version $version = null)
     {
         /** @var ThrowsAnnotation $annotation */
         $annotation = parent::hydrate($data, $version);
@@ -207,7 +209,7 @@ class ThrowsAnnotation extends Annotation
      *
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -227,7 +229,7 @@ class ThrowsAnnotation extends Annotation
     /**
      * Return the unique error code for the error that this exception handles.
      *
-     * @return string|null|false
+     * @return false|null|string
      */
     public function getErrorCode()
     {
@@ -237,7 +239,7 @@ class ThrowsAnnotation extends Annotation
     /**
      * Set the unique error code for the error that this exception handles.
      *
-     * @param string|null|false $error_code
+     * @param false|null|string $error_code
      * @return self
      */
     public function setErrorCode($error_code): self
