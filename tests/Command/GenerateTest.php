@@ -27,7 +27,7 @@ class GenerateTest extends \PHPUnit\Framework\TestCase
         $this->config_file = __DIR__ . '/../../resources/examples/mill.xml';
     }
 
-    public function testGenerate(): void
+    public function testCommand(): void
     {
         /** @var string $output_dir */
         $output_dir = tempnam(sys_get_temp_dir(), 'mill-generate-test-');
@@ -93,7 +93,7 @@ class GenerateTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function testGenerateWithDryRun(): void
+    public function testCommandWithDryRun(): void
     {
         $this->tester->execute([
             'command' => $this->command->getName(),
@@ -108,7 +108,7 @@ class GenerateTest extends \PHPUnit\Framework\TestCase
         $this->assertContains('API version: 1.1', $output);
     }
 
-    public function testGenerateWithDefaultVersion(): void
+    public function testCommandWithDefaultVersion(): void
     {
         $this->tester->execute([
             'command' => $this->command->getName(),
@@ -124,7 +124,7 @@ class GenerateTest extends \PHPUnit\Framework\TestCase
         $this->assertContains('API version: 1.1', $output);
     }
 
-    public function testGenerateWithSpecificConstraint(): void
+    public function testCommandWithSpecificConstraint(): void
     {
         $this->tester->execute([
             'command' => $this->command->getName(),
@@ -144,7 +144,7 @@ class GenerateTest extends \PHPUnit\Framework\TestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage The supplied Mill configuration file does not exist.
      */
-    public function testGenerateFailsOnInvalidConfigFile(): void
+    public function testCommandFailsOnInvalidConfigFile(): void
     {
         $this->tester->execute([
             'command' => $this->command->getName(),
@@ -152,7 +152,7 @@ class GenerateTest extends \PHPUnit\Framework\TestCase
         ]);
     }
 
-    public function testGenerateFailsOnInvalidVersionConstraint(): void
+    public function testCommandFailsOnInvalidVersionConstraint(): void
     {
         $this->tester->execute([
             'command' => $this->command->getName(),

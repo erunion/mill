@@ -28,12 +28,12 @@ class ChangelogTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider providerTestChangelog
+     * @dataProvider providerTestCommand
      * @param bool $private_objects
      * @param array $capabilities
      * @param string $expected_file
      */
-    public function testChangelog(bool $private_objects, array $capabilities, string $expected_file): void
+    public function testCommand(bool $private_objects, array $capabilities, string $expected_file): void
     {
         /** @var string $output_dir */
         $output_dir = tempnam(sys_get_temp_dir(), 'mill-generate-test-');
@@ -71,7 +71,7 @@ class ChangelogTest extends \PHPUnit\Framework\TestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage The supplied Mill configuration file does not exist.
      */
-    public function testGenerateFailsOnInvalidConfigFile(): void
+    public function testCommandFailsOnInvalidConfigFile(): void
     {
         $this->tester->execute([
             'command' => $this->command->getName(),
@@ -79,7 +79,7 @@ class ChangelogTest extends \PHPUnit\Framework\TestCase
         ]);
     }
 
-    public function providerTestChangelog(): array
+    public function providerTestCommand(): array
     {
         return [
             // Complete changelog. All documentation parsed.
