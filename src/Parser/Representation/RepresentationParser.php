@@ -100,7 +100,7 @@ class RepresentationParser extends Parser
                     break;
 
                 case 'see':
-                    $see_pointers = explode(' ', $content);
+                    $see_pointers[] = explode(' ', $content);
                     break;
 
                 case 'version':
@@ -121,52 +121,54 @@ class RepresentationParser extends Parser
 
         // If we matched an `@api-see` annotation, then let's parse it out into viable annotations.
         if (!empty($see_pointers)) {
-            list($see_class, $see_method) = explode('::', array_shift($see_pointers));
-            if (in_array(strtolower($see_class), ['self', 'static'])) {
-                $see_class = $this->class;
-            }
+            foreach ($see_pointers as $pointer) {
+                list($see_class, $see_method) = explode('::', array_shift($pointer));
+                if (in_array(strtolower($see_class), ['self', 'static'])) {
+                    $see_class = $this->class;
+                }
 
-            $prefix = array_shift($see_pointers);
+                $prefix = array_shift($pointer);
 
-            // Pass in the current array (by reference) of found annotations that we have so we can do depth traversal
-            // for version and capability requirements of any implied children, by way of dot-notation.
-            $parser = new self($see_class);
-            $see_annotations = $parser->getAnnotations($see_method);
+                // Pass in the current array (by reference) of found annotations that we have so we can do depth
+                // traversal for version and capability requirements of any implied children, by way of dot-notation.
+                $parser = new self($see_class);
+                $see_annotations = $parser->getAnnotations($see_method);
 
-            /** @var DataAnnotation $annotation */
-            foreach ($see_annotations as $name => $annotation) {
-                // If this `@api-see` is being used with an `@api-version`, then the version here should always be
-                // applied to any annotations we're including with the `@api-see`.
-                //
-                // If, however, an annotation we're loading has its own versioning set, we'll combine the pointers
-                // version with the annotations version to create a new constraint specifically for that annotation.
-                //
-                // For example, if `external_urls` is versioned at `>=1.1`, and points to a method to load
-                // `external_urls.tickets`, but that's versioned at `<1.1.3`, the new parsed constraint for
-                // `external_urls.tickets` will be `>=1.1 <1.1.3`.
-                if ($version) {
-                    $annotation_version = $annotation->getVersion();
-                    if ($annotation_version) {
-                        $new_constraint = implode(' ', [
-                            $version->getConstraint(),
-                            $annotation_version->getConstraint()
-                        ]);
+                /** @var DataAnnotation $annotation */
+                foreach ($see_annotations as $name => $annotation) {
+                    // If this `@api-see` is being used with an `@api-version`, then the version here should always be
+                    // applied to any annotations we're including with the `@api-see`.
+                    //
+                    // If, however, an annotation we're loading has its own versioning set, we'll combine the pointers
+                    // version with the annotations version to create a new constraint specifically for that annotation.
+                    //
+                    // For example, if `external_urls` is versioned at `>=1.1`, and points to a method to load
+                    // `external_urls.tickets`, but that's versioned at `<1.1.3`, the new parsed constraint for
+                    // `external_urls.tickets` will be `>=1.1 <1.1.3`.
+                    if ($version) {
+                        $annotation_version = $annotation->getVersion();
+                        if ($annotation_version) {
+                            $new_constraint = implode(' ', [
+                                $version->getConstraint(),
+                                $annotation_version->getConstraint()
+                            ]);
 
-                        $updated_version = new Version($new_constraint, $this->class, $method);
-                        $annotation->setVersion($updated_version);
-                    } else {
-                        $annotation->setVersion($version);
+                            $updated_version = new Version($new_constraint, $this->class, $method);
+                            $annotation->setVersion($updated_version);
+                        } else {
+                            $annotation->setVersion($version);
+                        }
+                    }
+
+                    // If this `@api-see` has a prefix to attach to found annotation identifiers, do so.
+                    if (!empty($prefix)) {
+                        $see_annotations[$prefix . '.' . $name] = $annotation->setIdentifierPrefix($prefix);
+                        unset($see_annotations[$name]);
                     }
                 }
 
-                // If this `@api-see` has a prefix to attach to found annotation identifiers, do so.
-                if (!empty($prefix)) {
-                    $see_annotations[$prefix . '.' . $name] = $annotation->setIdentifierPrefix($prefix);
-                    unset($see_annotations[$name]);
-                }
+                $annotations += $see_annotations;
             }
-
-            $annotations += $see_annotations;
         }
 
         return $annotations;
