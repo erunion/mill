@@ -68,7 +68,7 @@ class ParamAnnotation extends Annotation
     protected $values = [];
 
     /**
-     * Return an array of items that should be included in an array representation of this annotation.
+     * An array of items that should be included in an array representation of this annotation.
      *
      * @var array
      */
@@ -85,10 +85,7 @@ class ParamAnnotation extends Annotation
     ];
 
     /**
-     * Parse the annotation out and return an array of data that we can use to then interpret this annotations'
-     * representation.
-     *
-     * @return array
+     * {@inheritdoc}
      * @throws UnsupportedTypeException If an unsupported parameter type has been supplied.
      */
     protected function parser(): array
@@ -128,12 +125,7 @@ class ParamAnnotation extends Annotation
     }
 
     /**
-     * Interpret the parsed annotation data and set local variables to build the annotation.
-     *
-     * To facilitate better error messaging, the order in which items are interpreted here should be match the schema
-     * of the annotation.
-     *
-     * @return void
+     * {@inheritdoc}
      */
     protected function interpreter(): void
     {
@@ -149,11 +141,7 @@ class ParamAnnotation extends Annotation
     }
 
     /**
-     * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
-     *
-     * @param array $data
-     * @param null|Version $version
-     * @return self
+     * {@inheritdoc}
      */
     public static function hydrate(array $data = [], Version $version = null): self
     {
@@ -171,8 +159,6 @@ class ParamAnnotation extends Annotation
     }
 
     /**
-     * Get the field that this parameter represents.
-     *
      * @return string
      */
     public function getField(): string
@@ -191,8 +177,6 @@ class ParamAnnotation extends Annotation
     }
 
     /**
-     * Get the sample data that this parameter might accept.
-     *
      * @return false|string
      */
     public function getSampleData()
@@ -211,8 +195,6 @@ class ParamAnnotation extends Annotation
     }
 
     /**
-     * Get the type of variable that this parameter is.
-     *
      * @return string
      */
     public function getType(): string
@@ -231,8 +213,6 @@ class ParamAnnotation extends Annotation
     }
 
     /**
-     * Get the description for this parameter.
-     *
      * @return string
      */
     public function getDescription(): string
@@ -251,8 +231,6 @@ class ParamAnnotation extends Annotation
     }
 
     /**
-     * Is this parameter required?
-     *
      * @return bool
      */
     public function isRequired(): bool
@@ -271,8 +249,6 @@ class ParamAnnotation extends Annotation
     }
 
     /**
-     * Is this parameter nullable?
-     *
      * @return bool
      */
     public function isNullable(): bool
@@ -291,8 +267,6 @@ class ParamAnnotation extends Annotation
     }
 
     /**
-     * Get the enumerated values that are allowed on this parameter.
-     *
      * @return array|null
      */
     public function getValues()

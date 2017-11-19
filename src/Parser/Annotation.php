@@ -135,7 +135,7 @@ abstract class Annotation
     protected $parsed_data = [];
 
     /**
-     * Return an array of items that should be included in an array representation of this annotation.
+     * An array of items that should be included in an array representation of this annotation.
      *
      * @var array
      */

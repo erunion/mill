@@ -2,6 +2,7 @@
 namespace Mill\Tests\Parser\Resource\Action;
 
 use Mill\Exceptions\BaseException;
+use Mill\Parser\Annotations\MinVersionAnnotation;
 use Mill\Parser\Resource\Action\Documentation;
 use Mill\Parser\Version;
 use Mill\Tests\ReaderTestingTrait;
@@ -68,7 +69,7 @@ class DocumentationTest extends TestCase
         /** @var \Mill\Parser\Annotations\MinVersionAnnotation $min_version */
         $min_version = $parser->getMinimumVersion();
         if ($expected['minimum_version']) {
-            $this->assertInstanceOf('\Mill\Parser\Annotations\MinVersionAnnotation', $min_version);
+            $this->assertInstanceOf(MinVersionAnnotation::class, $min_version);
             $this->assertSame($expected['minimum_version'], $min_version->getMinimumVersion());
         } else {
             $this->assertNull($min_version);

@@ -94,35 +94,35 @@ These actions will allow you to pull information on a specific movie.', $annotat
                 'method' => 'GET',
                 'expected' => [
                     'contentType' => [
-                        'class' => '\Mill\Parser\Annotations\ContentTypeAnnotation',
+                        'class' => Parser\Annotations\ContentTypeAnnotation::class,
                         'count' => 2
                     ],
                     'description' => [
-                        'class' => '\Mill\Parser\Annotations\DescriptionAnnotation',
+                        'class' => Parser\Annotations\DescriptionAnnotation::class,
                         'count' => 1
                     ],
                     'label' => [
-                        'class' => '\Mill\Parser\Annotations\LabelAnnotation',
+                        'class' => Parser\Annotations\LabelAnnotation::class,
                         'count' => 1
                     ],
                     'minVersion' => [
-                        'class' => '\Mill\Parser\Annotations\MinVersionAnnotation',
+                        'class' => Parser\Annotations\MinVersionAnnotation::class,
                         'count' => 1
                     ],
                     'return' => [
-                        'class' => '\Mill\Parser\Annotations\ReturnAnnotation',
+                        'class' => Parser\Annotations\ReturnAnnotation::class,
                         'count' => 2
                     ],
                     'throws' => [
-                        'class' => '\Mill\Parser\Annotations\ThrowsAnnotation',
+                        'class' => Parser\Annotations\ThrowsAnnotation::class,
                         'count' => 3
                     ],
                     'uri' => [
-                        'class' => '\Mill\Parser\Annotations\UriAnnotation',
+                        'class' => Parser\Annotations\UriAnnotation::class,
                         'count' => 2
                     ],
                     'uriSegment' => [
-                        'class' => '\Mill\Parser\Annotations\UriSegmentAnnotation',
+                        'class' => Parser\Annotations\UriSegmentAnnotation::class,
                         'count' => 2
                     ]
                 ]
@@ -131,43 +131,43 @@ These actions will allow you to pull information on a specific movie.', $annotat
                 'method' => 'PATCH',
                 'expected' => [
                     'contentType' => [
-                        'class' => '\Mill\Parser\Annotations\ContentTypeAnnotation',
+                        'class' => Parser\Annotations\ContentTypeAnnotation::class,
                         'count' => 2
                     ],
                     'description' => [
-                        'class' => '\Mill\Parser\Annotations\DescriptionAnnotation',
+                        'class' => Parser\Annotations\DescriptionAnnotation::class,
                         'count' => 1
                     ],
                     'label' => [
-                        'class' => '\Mill\Parser\Annotations\LabelAnnotation',
+                        'class' => Parser\Annotations\LabelAnnotation::class,
                         'count' => 1
                     ],
                     'minVersion' => [
-                        'class' => '\Mill\Parser\Annotations\MinVersionAnnotation',
+                        'class' => Parser\Annotations\MinVersionAnnotation::class,
                         'count' => 1
                     ],
                     'param' => [
-                        'class' => '\Mill\Parser\Annotations\ParamAnnotation',
+                        'class' => Parser\Annotations\ParamAnnotation::class,
                         'count' => 11
                     ],
                     'return' => [
-                        'class' => '\Mill\Parser\Annotations\ReturnAnnotation',
+                        'class' => Parser\Annotations\ReturnAnnotation::class,
                         'count' => 2
                     ],
                     'scope' => [
-                        'class' => '\Mill\Parser\Annotations\ScopeAnnotation',
+                        'class' => Parser\Annotations\ScopeAnnotation::class,
                         'count' => 1
                     ],
                     'throws' => [
-                        'class' => '\Mill\Parser\Annotations\ThrowsAnnotation',
+                        'class' => Parser\Annotations\ThrowsAnnotation::class,
                         'count' => 6
                     ],
                     'uri' => [
-                        'class' => '\Mill\Parser\Annotations\UriAnnotation',
+                        'class' => Parser\Annotations\UriAnnotation::class,
                         'count' => 1
                     ],
                     'uriSegment' => [
-                        'class' => '\Mill\Parser\Annotations\UriSegmentAnnotation',
+                        'class' => Parser\Annotations\UriSegmentAnnotation::class,
                         'count' => 1
                     ]
                 ]
@@ -176,43 +176,43 @@ These actions will allow you to pull information on a specific movie.', $annotat
                 'method' => 'DELETE',
                 'expected' => [
                     'capability' => [
-                        'class' => '\Mill\Parser\Annotations\CapabilityAnnotation',
+                        'class' => Parser\Annotations\CapabilityAnnotation::class,
                         'count' => 1
                     ],
                     'contentType' => [
-                        'class' => '\Mill\Parser\Annotations\ContentTypeAnnotation',
+                        'class' => Parser\Annotations\ContentTypeAnnotation::class,
                         'count' => 1
                     ],
                     'description' => [
-                        'class' => '\Mill\Parser\Annotations\DescriptionAnnotation',
+                        'class' => Parser\Annotations\DescriptionAnnotation::class,
                         'count' => 1
                     ],
                     'label' => [
-                        'class' => '\Mill\Parser\Annotations\LabelAnnotation',
+                        'class' => Parser\Annotations\LabelAnnotation::class,
                         'count' => 1
                     ],
                     'minVersion' => [
-                        'class' => '\Mill\Parser\Annotations\MinVersionAnnotation',
+                        'class' => Parser\Annotations\MinVersionAnnotation::class,
                         'count' => 1
                     ],
                     'return' => [
-                        'class' => '\Mill\Parser\Annotations\ReturnAnnotation',
+                        'class' => Parser\Annotations\ReturnAnnotation::class,
                         'count' => 1
                     ],
                     'scope' => [
-                        'class' => '\Mill\Parser\Annotations\ScopeAnnotation',
+                        'class' => Parser\Annotations\ScopeAnnotation::class,
                         'count' => 1
                     ],
                     'throws' => [
-                        'class' => '\Mill\Parser\Annotations\ThrowsAnnotation',
+                        'class' => Parser\Annotations\ThrowsAnnotation::class,
                         'count' => 1
                     ],
                     'uri' => [
-                        'class' => '\Mill\Parser\Annotations\UriAnnotation',
+                        'class' => Parser\Annotations\UriAnnotation::class,
                         'count' => 1
                     ],
                     'uriSegment' => [
-                        'class' => '\Mill\Parser\Annotations\UriSegmentAnnotation',
+                        'class' => Parser\Annotations\UriSegmentAnnotation::class,
                         'count' => 1
                     ]
                 ]

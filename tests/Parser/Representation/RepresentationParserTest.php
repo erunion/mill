@@ -3,6 +3,7 @@ namespace Mill\Tests\Parser\Representation;
 
 use Mill\Exceptions\BaseException;
 use Mill\Parser\Annotation;
+use Mill\Parser\Annotations\DataAnnotation;
 use Mill\Parser\Representation\RepresentationParser;
 use Mill\Tests\ReaderTestingTrait;
 use Mill\Tests\TestCase;
@@ -28,7 +29,7 @@ class RepresentationParserTest extends TestCase
             // Assert that annotations were parsed correctly as `@api-data`.
             foreach ($annotations as $name => $annotation) {
                 $this->assertInstanceOf(
-                    '\Mill\Parser\Annotations\DataAnnotation',
+                    DataAnnotation::class,
                     $annotation,
                     sprintf('%s is not a data annotation.', $name)
                 );

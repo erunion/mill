@@ -1,6 +1,9 @@
 <?php
 namespace Mill\Tests\Parser\Representation;
 
+use Mill\Exceptions\Annotations\MultipleAnnotationsException;
+use Mill\Exceptions\Annotations\RequiredAnnotationException;
+use Mill\Exceptions\Resource\NoAnnotationsException;
 use Mill\Parser\Representation\Documentation;
 use Mill\Tests\TestCase;
 
@@ -588,17 +591,17 @@ class DocumentationTest extends TestCase
             'no-annotations' => [
                 'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithNoAnnotations',
                 'method' => 'create',
-                'expected.exception' => '\Mill\Exceptions\Resource\NoAnnotationsException'
+                'expected.exception' => NoAnnotationsException::class
             ],
             'no-annotations-on-the-class' => [
                 'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithNoClassAnnotations',
                 'method' => 'create',
-                'expected.exception' => '\Mill\Exceptions\Resource\NoAnnotationsException'
+                'expected.exception' => NoAnnotationsException::class
             ],
             'missing-a-required-label-annotation' => [
                 'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithRequiredLabelAnnotationMissing',
                 'method' => 'create',
-                'expected.exception' => 'Mill\Exceptions\Annotations\RequiredAnnotationException',
+                'expected.exception' => RequiredAnnotationException::class,
                 'asserts' => [
                     'getAnnotation' => 'label'
                 ]
@@ -606,7 +609,7 @@ class DocumentationTest extends TestCase
             'multiple-label-annotations' => [
                 'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithMultipleLabelAnnotations',
                 'method' => 'create',
-                'expected.exception' => '\Mill\Exceptions\Annotations\MultipleAnnotationsException'
+                'expected.exception' => MultipleAnnotationsException::class
             ]
         ];
     }
