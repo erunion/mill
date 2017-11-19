@@ -2,6 +2,8 @@
 namespace Mill\Tests;
 
 use Mill\Config;
+use Mill\Exceptions\Config\UncallableErrorRepresentationException;
+use Mill\Exceptions\Config\UncallableRepresentationException;
 
 class ConfigTest extends TestCase
 {
@@ -264,7 +266,7 @@ XML
             'versions.multiple-defaults' => [
                 'includes' => ['controllers', 'representations'],
                 'exception' => [
-                    'exception' => '\InvalidArgumentException',
+                    'exception' => \InvalidArgumentException::class,
                     'regex' => '/Multiple default API versions/'
                 ],
                 'xml' => <<<XML
@@ -302,7 +304,7 @@ XML
             'controllers.directory.invalid' => [
                 'includes' => ['versions', 'representations'],
                 'exception' => [
-                    'exception' => 'InvalidArgumentException',
+                    'exception' => \InvalidArgumentException::class,
                     'regex' => '/does not exist/'
                 ],
                 'xml' => <<<XML
@@ -317,7 +319,7 @@ XML
             'controllers.none-found' => [
                 'includes' => ['versions', 'representations'],
                 'exception' => [
-                    'exception' => '\InvalidArgumentException',
+                    'exception' => \InvalidArgumentException::class,
                     'regex' => '/requires a set of controllers/'
                 ],
                 'xml' => <<<XML
@@ -332,7 +334,7 @@ XML
             'controllers.class.uncallable' => [
                 'includes' => ['versions', 'representations'],
                 'exception' => [
-                    'exception' => '\InvalidArgumentException',
+                    'exception' => \InvalidArgumentException::class,
                     'regex' => '/could not be called/'
                 ],
                 'xml' => <<<XML
@@ -351,7 +353,7 @@ XML
             'representations.none-found' => [
                 'includes' => ['versions', 'controllers'],
                 'exception' => [
-                    'exception' => '\InvalidArgumentException',
+                    'exception' => \InvalidArgumentException::class,
                     'regex' => '/requires a set of representations/'
                 ],
                 'xml' => <<<XML
@@ -380,7 +382,7 @@ XML
             'representations.class.uncallable' => [
                 'includes' => ['versions', 'controllers'],
                 'exception' => [
-                    'exception' => '\Mill\Exceptions\Config\UncallableRepresentationException'
+                    'exception' => UncallableRepresentationException::class
                 ],
                 'xml' => <<<XML
 <representations>
@@ -394,7 +396,7 @@ XML
             'representations.directory.invalid' => [
                 'includes' => ['versions', 'controllers'],
                 'exception' => [
-                    'exception' => '\InvalidArgumentException',
+                    'exception' => \InvalidArgumentException::class,
                     'regex' => '/does not exist/'
                 ],
                 'xml' => <<<XML
@@ -409,7 +411,7 @@ XML
             'representations.error.uncallable' => [
                 'includes' => ['versions', 'controllers'],
                 'exception' => [
-                    'exception' => '\Mill\Exceptions\Config\UncallableErrorRepresentationException'
+                    'exception' => UncallableErrorRepresentationException::class
                 ],
                 'xml' => <<<XML
 <representations>

@@ -51,7 +51,7 @@ class UriSegmentAnnotation extends Annotation
     protected $values = [];
 
     /**
-     * Return an array of items that should be included in an array representation of this annotation.
+     * An array of items that should be included in an array representation of this annotation.
      *
      * @var array
      */
@@ -64,10 +64,7 @@ class UriSegmentAnnotation extends Annotation
     ];
 
     /**
-     * Parse the annotation out and return an array of data that we can use to then interpret this annotations'
-     * representation.
-     *
-     * @return array
+     * {@inheritdoc}
      */
     protected function parser(): array
     {
@@ -94,12 +91,7 @@ class UriSegmentAnnotation extends Annotation
     }
 
     /**
-     * Interpret the parsed annotation data and set local variables to build the annotation.
-     *
-     * To facilitate better error messaging, the order in which items are interpreted here should be match the schema
-     * of the annotation.
-     *
-     * @return void
+     * {@inheritdoc}
      */
     protected function interpreter(): void
     {
@@ -113,11 +105,7 @@ class UriSegmentAnnotation extends Annotation
     }
 
     /**
-     * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
-     *
-     * @param array $data
-     * @param null|Version $version
-     * @return UriSegmentAnnotation
+     * {@inheritdoc}
      */
     public static function hydrate(array $data = [], Version $version = null)
     {
@@ -133,8 +121,6 @@ class UriSegmentAnnotation extends Annotation
     }
 
     /**
-     * Get the URI that this annotation is on.
-     *
      * @return string
      */
     public function getUri(): string
@@ -143,8 +129,6 @@ class UriSegmentAnnotation extends Annotation
     }
 
     /**
-     * Set the URI that this annotation is on.
-     *
      * @param string $uri
      * @return self
      */
@@ -155,8 +139,6 @@ class UriSegmentAnnotation extends Annotation
     }
 
     /**
-     * Get the field that this URI segment represents.
-     *
      * @return string
      */
     public function getField(): string
@@ -165,8 +147,6 @@ class UriSegmentAnnotation extends Annotation
     }
 
     /**
-     * Set the field that this URI segment represents.
-     *
      * @param string $field
      * @return self
      */
@@ -177,8 +157,6 @@ class UriSegmentAnnotation extends Annotation
     }
 
     /**
-     * Get the type of field that this URI segment represents.
-     *
      * @return string
      */
     public function getType(): string
@@ -187,8 +165,6 @@ class UriSegmentAnnotation extends Annotation
     }
 
     /**
-     * Set the type of field that this URI segment represents.
-     *
      * @param string $type
      * @return self
      */
@@ -199,8 +175,6 @@ class UriSegmentAnnotation extends Annotation
     }
 
     /**
-     * Get the description for this URI segment.
-     *
      * @return string
      */
     public function getDescription(): string
@@ -209,8 +183,6 @@ class UriSegmentAnnotation extends Annotation
     }
 
     /**
-     * Set the description for this URI segment.
-     *
      * @param string $description
      * @return self
      */
@@ -221,8 +193,6 @@ class UriSegmentAnnotation extends Annotation
     }
 
     /**
-     * Get the enumerated values that are allowed on this URI segment.
-     *
      * @return array|false|null
      */
     public function getValues()
@@ -231,8 +201,6 @@ class UriSegmentAnnotation extends Annotation
     }
 
     /**
-     * Set the enumerated values that are allowed on this URI segment.
-     *
      * @param array|false|null $values
      * @return self
      */

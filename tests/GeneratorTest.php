@@ -101,7 +101,7 @@ class GeneratorTest extends TestCase
 
                 /** @var Documentation $action */
                 foreach ($actual_resource['actions'] as $identifier => $action) {
-                    $this->assertInstanceOf('\Mill\Parser\Resource\Action\Documentation', $action);
+                    $this->assertInstanceOf(Documentation::class, $action);
 
                     // We don't need to test every facet of the generated MethodDocumentation, because we're doing
                     // that in other tests, we just want to make sure that these actions were grouped and compiled

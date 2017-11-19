@@ -42,7 +42,7 @@ class ThrowsAnnotation extends Annotation
     protected $description;
 
     /**
-     * Return an array of items that should be included in an array representation of this annotation.
+     * An array of items that should be included in an array representation of this annotation.
      *
      * @var array
      */
@@ -55,10 +55,7 @@ class ThrowsAnnotation extends Annotation
     ];
 
     /**
-     * Parse the annotation out and return an array of data that we can use to then interpret this annotations'
-     * representation.
-     *
-     * @return array
+     * {@inheritdoc}
      * @throws UnknownReturnCodeException If a supplied HTTP code is invalid.
      * @throws UncallableErrorCodeException If a supplied error code is uncallable.
      * @throws UnknownErrorRepresentationException If a supplied representation has not been configured as allowing
@@ -164,12 +161,7 @@ class ThrowsAnnotation extends Annotation
     }
 
     /**
-     * Interpret the parsed annotation data and set local variables to build the annotation.
-     *
-     * To facilitate better error messaging, the order in which items are interpreted here should be match the schema
-     * of the annotation.
-     *
-     * @return void
+     * {@inheritdoc}
      */
     protected function interpreter(): void
     {
@@ -186,11 +178,7 @@ class ThrowsAnnotation extends Annotation
     }
 
     /**
-     * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
-     *
-     * @param array $data
-     * @param null|Version $version
-     * @return self
+     * {@inheritdoc}
      */
     public static function hydrate(array $data = [], Version $version = null)
     {
@@ -205,8 +193,6 @@ class ThrowsAnnotation extends Annotation
     }
 
     /**
-     * Get the description for this exception.
-     *
      * @return string
      */
     public function getDescription(): string
@@ -215,8 +201,6 @@ class ThrowsAnnotation extends Annotation
     }
 
     /**
-     * Set the description for this exception.
-     *
      * @param string $description
      * @return self
      */
@@ -227,8 +211,6 @@ class ThrowsAnnotation extends Annotation
     }
 
     /**
-     * Return the unique error code for the error that this exception handles.
-     *
      * @return false|null|string
      */
     public function getErrorCode()
@@ -237,8 +219,6 @@ class ThrowsAnnotation extends Annotation
     }
 
     /**
-     * Set the unique error code for the error that this exception handles.
-     *
      * @param false|null|string $error_code
      * @return self
      */

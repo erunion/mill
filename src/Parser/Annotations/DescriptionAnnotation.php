@@ -10,13 +10,11 @@ use Mill\Parser\Version;
  */
 class DescriptionAnnotation extends Annotation
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $description;
 
     /**
-     * Return an array of items that should be included in an array representation of this annotation.
+     * An array of items that should be included in an array representation of this annotation.
      *
      * @var array
      */
@@ -25,10 +23,7 @@ class DescriptionAnnotation extends Annotation
     ];
 
     /**
-     * Parse the annotation out and return an array of data that we can use to then interpret this annotations'
-     * representation.
-     *
-     * @return array
+     * {@inheritdoc}
      */
     protected function parser(): array
     {
@@ -38,12 +33,7 @@ class DescriptionAnnotation extends Annotation
     }
 
     /**
-     * Interpret the parsed annotation data and set local variables to build the annotation.
-     *
-     * To facilitate better error messaging, the order in which items are interpreted here should be match the schema
-     * of the annotation.
-     *
-     * @return void
+     * {@inheritdoc}
      */
     protected function interpreter(): void
     {
@@ -51,11 +41,7 @@ class DescriptionAnnotation extends Annotation
     }
 
     /**
-     * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
-     *
-     * @param array $data
-     * @param null|Version $version
-     * @return self
+     * {@inheritdoc}
      */
     public static function hydrate(array $data = [], Version $version = null): self
     {
@@ -67,8 +53,6 @@ class DescriptionAnnotation extends Annotation
     }
 
     /**
-     * Get the description.
-     *
      * @return string
      */
     public function getDescription(): string
