@@ -200,7 +200,7 @@ class DataAnnotationTest extends AnnotationTest
             ],
             '_complete' => [
                 'content' => '/**
-                  * @api-data content_rating (enum, nullable, MOVIE_RATINGS) - MPAA rating
+                  * @api-data content_rating `G` (enum, nullable, MOVIE_RATINGS) - MPAA rating
                   *  + Members
                   *    - `G`
                   *    - `PG`
@@ -240,7 +240,25 @@ class DataAnnotationTest extends AnnotationTest
                     ],
                     'version' => '1.0'
                 ]
-            ]
+            ],
+            'zeroed-out-sample_data' => [
+                'content' => '/**
+                  * @api-data is_staff `0` (boolean) - Is this user a staff member?
+                  */',
+                'version' => null,
+                'expected' => [
+                    'capability' => false,
+                    'description' => 'Is this user a staff member?',
+                    'identifier' => 'is_staff',
+                    'nullable' => false,
+                    'sample_data' => '0',
+                    'scopes' => [],
+                    'subtype' => false,
+                    'type' => 'boolean',
+                    'values' => false,
+                    'version' => false
+                ]
+            ],
         ];
     }
 

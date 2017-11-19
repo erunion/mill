@@ -185,8 +185,11 @@ class MSON
         preg_match($regex_mson, $content, $matches);
 
         foreach (['field', 'type', 'description', 'sample_data', 'subtype', 'capability'] as $name) {
-            if (isset($matches[$name]) && !empty($matches[$name])) {
-                $this->{$name} = $matches[$name];
+            if (isset($matches[$name])) {
+                // Sample data can be input as "0", so we need some special casing to account for that.
+                if (!empty($matches[$name]) || $name === 'sample_data') {
+                    $this->{$name} = $matches[$name];
+                }
             }
         }
 

@@ -215,11 +215,14 @@ abstract class Annotation
      * Extract an optional field from the parsed dataset.
      *
      * @param string $field
+     * @param bool $allow_zero
      * @return false|mixed
      */
-    protected function optional(string $field)
+    protected function optional(string $field, $allow_zero = false)
     {
-        if (empty($this->parsed_data[$field])) {
+        if ($allow_zero && $this->parsed_data[$field] === '0') {
+            return $this->parsed_data[$field];
+        } elseif (empty($this->parsed_data[$field])) {
             return false;
         }
 
