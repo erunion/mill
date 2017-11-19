@@ -142,7 +142,7 @@ class DataAnnotation extends Annotation
     protected function interpreter(): void
     {
         $this->identifier = $this->required('identifier');
-        $this->sample_data = $this->optional('sample_data');
+        $this->sample_data = $this->optional('sample_data', true);
         $this->type = $this->required('type');
         $this->subtype = $this->optional('subtype');
         $this->description = $this->required('description');

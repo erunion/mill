@@ -70,7 +70,7 @@ class Movie extends Representation
             'cast' => $this->movie->getCast(),
 
             /**
-             * @api-data kid_friendly (boolean) - Kid friendly?
+             * @api-data kid_friendly `0` (boolean) - Kid friendly?
              */
             'kid_friendly' => $this->movie->is_kid_friendly,
 

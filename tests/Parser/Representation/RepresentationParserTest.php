@@ -326,7 +326,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Kid friendly?',
                             'identifier' => 'kid_friendly',
                             'nullable' => false,
-                            'sample_data' => false,
+                            'sample_data' => '0',
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'boolean',
