@@ -72,7 +72,7 @@ class ErrorMap extends Application
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -102,7 +102,7 @@ class ErrorMap extends Application
                 $version = new Version($version, __CLASS__, __METHOD__);
             } catch (UnrecognizedSchemaException $e) {
                 $output->writeLn('<error>' . $e->getValidationMessage() . '</error>');
-                return;
+                return 1;
             }
         }
 
@@ -131,5 +131,7 @@ class ErrorMap extends Application
         }
 
         $output->writeln(['', '<success>Done!</success>']);
+
+        return 0;
     }
 }

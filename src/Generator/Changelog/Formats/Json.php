@@ -31,6 +31,8 @@ class Json extends Generator
     /**
      * Take compiled API documentation and generate a JSON-encoded changelog over the life of the API.
      *
+     * @psalm-suppress ImplementedReturnTypeMismatch
+     * @psalm-suppress InvalidReturnStatement
      * @return string
      */
     public function generate()
