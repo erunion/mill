@@ -1,4 +1,8 @@
 # Changelog
+## [2.6.3] - 2017-12-12
+## Added
+- Returning `visible` in `ReturnAnnotation->toArray()` calls.
+
 ## [2.6.2] - 2017-11-03
 ## Changed
 - Slightly altered the wording on scope and multi-exception entries in generated API Blueprint files.
@@ -192,6 +196,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[2.6.3]: https://github.com/vimeo/mill/compare/2.6.2...2.6.3
 [2.6.2]: https://github.com/vimeo/mill/compare/2.6.1...2.6.2
 [2.6.1]: https://github.com/vimeo/mill/compare/2.6.0...2.6.1
 [2.6.0]: https://github.com/vimeo/mill/compare/2.5.6...2.6.0
