@@ -33,7 +33,7 @@ class Application extends Command
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -45,5 +45,7 @@ class Application extends Command
         $this->container = new Container([
             'config.path' => $config_file
         ]);
+
+        return 0;
     }
 }
