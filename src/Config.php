@@ -130,6 +130,7 @@ class Config
     /**
      * Create a new configuration object from a given config file.
      *
+     * @psalm-suppress UnresolvableInclude
      * @param Filesystem $filesystem
      * @param string $config_file
      * @param bool $load_bootstrap

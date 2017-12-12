@@ -48,7 +48,7 @@ class Changelog extends Application
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -80,5 +80,7 @@ class Changelog extends Application
         );
 
         $output->writeln(['', '<success>Done!</success>']);
+
+        return 0;
     }
 }

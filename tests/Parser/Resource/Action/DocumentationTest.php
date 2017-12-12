@@ -236,7 +236,8 @@ DESCRIPTION;
                                 'http_code' => '200 OK',
                                 'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
                                 'type' => 'object',
-                                'version' => false
+                                'version' => false,
+                                'visible' => true
                             ],
                             [
                                 'description' => 'If no content has been modified since the supplied Last-Modified ' .
@@ -244,7 +245,8 @@ DESCRIPTION;
                                 'http_code' => '304 Not Modified',
                                 'representation' => false,
                                 'type' => 'notmodified',
-                                'version' => false
+                                'version' => false,
+                                'visible' => true
                             ]
                         ],
                         'throws' => [
@@ -484,14 +486,16 @@ DESCRIPTION;
                                 'http_code' => '200 OK',
                                 'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
                                 'type' => 'object',
-                                'version' => false
+                                'version' => false,
+                                'visible' => true
                             ],
                             [
                                 'description' => false,
                                 'http_code' => '202 Accepted',
                                 'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
                                 'type' => 'accepted',
-                                'version' => '>=1.1.3'
+                                'version' => '>=1.1.3',
+                                'visible' => true
                             ]
                         ],
                         'scope' => [
@@ -611,7 +615,8 @@ DESCRIPTION;
                                 'http_code' => '204 No Content',
                                 'representation' => false,
                                 'type' => 'deleted',
-                                'version' => false
+                                'version' => false,
+                                'visible' => false
                             ]
                         ],
                         'scope' => [
