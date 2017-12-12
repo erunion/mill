@@ -45,7 +45,8 @@ class ReturnAnnotation extends Annotation
         'description',
         'http_code',
         'representation',
-        'type'
+        'type',
+        'visible'
     ];
 
     /**
