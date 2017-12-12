@@ -571,12 +571,15 @@ class Documentation
         $action = new self($data['class'], $data['method']);
 
         $annotations['label'][] = $parser->hydrateAnnotation('label', $data['class'], $data['method'], $data);
-        $annotations['description'][] = $parser->hydrateAnnotation(
-            'description',
-            $data['class'],
-            $data['method'],
-            $data
-        );
+
+        if (!empty($data['description'])) {
+            $annotations['description'][] = $parser->hydrateAnnotation(
+                'description',
+                $data['class'],
+                $data['method'],
+                $data
+            );
+        }
 
         foreach ($data['content_types'] as $content_type) {
             $annotations['contentType'][] = $parser->hydrateAnnotation(
