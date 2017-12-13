@@ -373,6 +373,40 @@ class Documentation
     }
 
     /**
+     * Get a combined array of the resource action URI and any URI aliases that it might have.
+     *
+     * @return array
+     */
+    public function getUriAndAliases()
+    {
+        $uri = $this->getUri();
+        $uris = array_merge([
+            $uri->getCleanPath() => $uri
+        ], $this->getUriAliases());
+
+        ksort($uris);
+
+        return $uris;
+    }
+
+    /**
+     * Get a path-keyed array of any URI aliases that this action might have.
+     *
+     * @return array
+     */
+    public function getUriAliases()
+    {
+        $aliases = [];
+
+        /** @var UriAnnotation $alias */
+        foreach ($this->getUri()->getAliases() as $alias) {
+            $aliases[$alias->getCleanPath()] = $alias;
+        }
+
+        return $aliases;
+    }
+
+    /**
      * Get the raw URI segment annotations that are part of this action.
      *
      * @return array
