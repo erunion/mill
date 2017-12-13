@@ -5,6 +5,7 @@ use Mill\Exceptions\Annotations\InvalidMSONSyntaxException;
 use Mill\Exceptions\Annotations\MissingRequiredFieldException;
 use Mill\Parser\Annotations\CapabilityAnnotation;
 use Mill\Parser\Annotations\ScopeAnnotation;
+use Mill\Parser\Annotations\UriAnnotation;
 
 /**
  * Base class for supported annotations.
@@ -295,7 +296,16 @@ abstract class Annotation
 
         if ($annotation->supportsAliasing()) {
             $annotation->setAliased($data['aliased']);
-            $annotation->setAliases($data['aliases']);
+
+            $aliases = [];
+            foreach ($data['aliases'] as $alias) {
+                $aliases[] = UriAnnotation::hydrate(array_merge([
+                    'class' => $data['class'],
+                    'method' => $data['method']
+                ], $alias));
+            }
+
+            $annotation->setAliases($aliases);
         }
 
         if ($annotation->supportsDeprecation()) {
