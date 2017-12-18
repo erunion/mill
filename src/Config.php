@@ -233,11 +233,21 @@ class Config
     {
         /** @var SimpleXMLElement $capability */
         foreach ($capabilities as $capability) {
-            $this->capabilities[] = (string) $capability['name'];
+            $this->addCapability((string) $capability['name']);
         }
 
         // Keep things tidy.
         $this->capabilities = array_unique($this->capabilities);
+    }
+
+    /**
+     * Add a new application capability into the instance config.
+     *
+     * @param string $capability
+     */
+    public function addCapability(string $capability): void
+    {
+        $this->capabilities[] = $capability;
     }
 
     /**
