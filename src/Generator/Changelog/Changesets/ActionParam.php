@@ -14,7 +14,7 @@ class ActionParam extends Changeset
         return [
             'plural' => [
                 Changelog::DEFINITION_ADDED => 'The following parameters have been added to {method} on {uri}:',
-                Changelog::DEFINITION_REMOVED => 'The following parameters have been removed to {method} on {uri}:'
+                Changelog::DEFINITION_REMOVED => 'The following parameters have been removed from {method} on {uri}:'
             ],
             'singular' => [
                 Changelog::DEFINITION_ADDED => 'A {parameter} request parameter was added to {method} on {uri}.',
