@@ -13,7 +13,7 @@ class ContentType extends Changeset
     {
         return [
             'singular' => [
-                Changelog::DEFINITION_CHANGED => 'On {uri}, {method} requests will return a {content_type} ' .
+                Changelog::DEFINITION_CHANGED => 'On {uri}, {method} requests now return a {content_type} ' .
                     'Content-Type header.'
             ]
         ];
