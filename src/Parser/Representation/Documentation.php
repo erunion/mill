@@ -132,6 +132,54 @@ class Documentation
     }
 
     /**
+     * Filter down, and return, all annotations on this representation that match a specific visibility.
+     *
+     * @psalm-suppress RedundantCondition
+     * @param array|null $only_capabilities
+     * @return array
+     */
+    public function filterAnnotationsForVisibility(?array $only_capabilities): array
+    {
+        if (is_null($only_capabilities)) {
+            return $this->representation;
+        }
+
+        /** @var Parser\Annotation $annotation */
+        foreach ($this->representation as $name => $annotation) {
+            // If this annotation has a capability, but that capability isn't in the set of capabilities we're
+            // generating documentation for, filter it out.
+            $capability = $annotation->getCapability();
+            if (!empty($capability)) {
+                if ($capability instanceof Parser\Annotations\CapabilityAnnotation) {
+                    /** @var Parser\Annotations\CapabilityAnnotation $capability */
+                    $capability = $capability->getCapability();
+                }
+
+                // If we don't even have capabilities to look for, then filter this annotation out completely.
+                if (!is_null($only_capabilities) && empty($only_capabilities)) {
+                    unset($this->representation[$name]);
+                    continue;
+                }
+
+                if (!empty($capability) &&
+                    (
+                        !is_null($only_capabilities) &&
+                        !in_array($capability, $only_capabilities)
+                    )
+                ) {
+                    unset($this->representation[$name]);
+                    continue;
+                }
+
+                // Capabilities override individual annotation visibility.
+                continue;
+            }
+        }
+
+        return $this->representation;
+    }
+
+    /**
      * Get the representation class that we're parsing.
      *
      * @return string

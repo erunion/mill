@@ -61,10 +61,10 @@
             "mv resources/examples/Showtimes/blueprints/changelog.md resources/examples/Showtimes/blueprints/changelog-public-only-all-capabilities.md",
 
             "./bin/mill changelog --config=resources/examples/mill.xml --private=false --capability=BUY_TICKETS --capability=FEATURE_FLAG resources/examples/Showtimes/blueprints/",
-            "mv resources/examples/Showtimes/blueprints/changelog.md resources/examples/Showtimes/blueprints/changelog-public-only-unmatched-capabilities.md",
+            "mv resources/examples/Showtimes/blueprints/changelog.md resources/examples/Showtimes/blueprints/changelog-public-only-matched-with-tickets-and-feature-capabilities.md",
 
             "./bin/mill changelog --config=resources/examples/mill.xml --private=false --capability=DELETE_CONTENT resources/examples/Showtimes/blueprints/",
-            "mv resources/examples/Showtimes/blueprints/changelog.md resources/examples/Showtimes/blueprints/changelog-public-only-matched-capabilities.md",
+            "mv resources/examples/Showtimes/blueprints/changelog.md resources/examples/Showtimes/blueprints/changelog-public-only-matched-with-delete-capabilities.md",
 
             "./bin/mill changelog --config=resources/examples/mill.xml resources/examples/Showtimes/blueprints/"
         ],

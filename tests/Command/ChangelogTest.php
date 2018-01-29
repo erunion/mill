@@ -96,23 +96,23 @@ class ChangelogTest extends \PHPUnit\Framework\TestCase
                 'expected' => 'changelog-public-only-all-capabilities.md'
             ],
 
-            // Changelog with public-only parsed docs and unmatched capabilities
-            'changelog-public-docs-with-unmatched-capabilities' => [
+            // Changelog with public-only parsed docs and matched `BUY_TICKETS` and `FEATURE_FLAG` capabilities
+            'changelog-public-only-matched-with-tickets-and-feature-capabilities' => [
                 'private_objects' => false,
                 'capabilities' => [
                     'BUY_TICKETS',
                     'FEATURE_FLAG'
                 ],
-                'expected' => 'changelog-public-only-unmatched-capabilities.md'
+                'expected' => 'changelog-public-only-matched-with-tickets-and-feature-capabilities.md'
             ],
 
-            // Changelog with public-only parsed docs and matched capabilities
-            'changelog-public-docs-with-matched-capabilities' => [
+            // Changelog with public-only parsed docs and matched `DELETE_CONTENT` capabilities
+            'changelog-public-only-matched-with-delete-capabilities' => [
                 'private_objects' => false,
                 'capabilities' => [
                     'DELETE_CONTENT'
                 ],
-                'expected' => 'changelog-public-only-matched-capabilities.md'
+                'expected' => 'changelog-public-only-matched-with-delete-capabilities.md'
             ]
         ];
     }

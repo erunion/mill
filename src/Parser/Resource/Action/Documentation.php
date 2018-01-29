@@ -306,6 +306,7 @@ class Documentation
      *
      * @param null|string|Version $version
      * @return string
+     * @throws \Exception
      */
     public function getContentType($version = null): string
     {
@@ -516,6 +517,7 @@ class Documentation
      * Filter down, and return, all annotations on this action that match a specific visibility. This can either be
      * public, public+private, or capability-locked.
      *
+     * @psalm-suppress RedundantCondition
      * @param bool $allow_private
      * @param array|null $only_capabilities
      * @return array
@@ -557,6 +559,7 @@ class Documentation
                     // If we don't even have capabilities to look for, then filter this annotation out completely.
                     if (!is_null($only_capabilities) && empty($only_capabilities)) {
                         unset($this->annotations[$name][$k]);
+                        continue;
                     }
 
                     $all_found = true;

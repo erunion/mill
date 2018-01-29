@@ -141,14 +141,6 @@ class ChangelogTest extends TestCase
                                 'uri' => '/movies/{id}',
                                 'http_code' => '403 Forbidden',
                                 'representation' => 'Coded error',
-                                'description' => 'If something cool happened.'
-                            ],
-                            [
-                                'resource_namespace' => 'Movies',
-                                'method' => 'PATCH',
-                                'uri' => '/movies/{id}',
-                                'http_code' => '403 Forbidden',
-                                'representation' => 'Coded error',
                                 'description' => 'If the user is not allowed to edit that movie.'
                             ]
                         ]
@@ -390,7 +382,27 @@ class ChangelogTest extends TestCase
                                     '/movies/{id}' => [
                                         Changelog::CHANGESET_TYPE_ACTION_THROWS => [
                                             'e7dc298139' => $actions['1.1.3']['/movies/{id}']['throws']['e7dc298139'],
-                                            '162944fa14' => $actions['1.1.3']['/movies/{id}']['throws']['162944fa14']
+                                            '162944fa14' => call_user_func(
+                                                function () use ($actions): array {
+                                                    $actions =
+                                                        $actions['1.1.3']['/movies/{id}']['throws']['162944fa14'];
+
+                                                    // Add in the "If something cool happened." exception. It's the
+                                                    // only private/capability-free exception we're testing, and it
+                                                    // should be available on the complete changelog.
+                                                    $actions[2] = $actions[1];
+                                                    $actions[1] = [
+                                                        'resource_namespace' => 'Movies',
+                                                        'method' => 'PATCH',
+                                                        'uri' => '/movies/{id}',
+                                                        'http_code' => '403 Forbidden',
+                                                        'representation' => 'Coded error',
+                                                        'description' => 'If something cool happened.'
+                                                    ];
+
+                                                    return $actions;
+                                                }
+                                            )
                                         ],
                                         Changelog::CHANGESET_TYPE_ACTION_RETURN => [
                                             '162944fa14' => $actions['1.1.3']['/movies/{id}']['return']['162944fa14']
@@ -688,8 +700,8 @@ class ChangelogTest extends TestCase
                 ]
             ],
 
-            // Changelog with public-only parsed docs and unmatched capabilities
-            'changelog-public-docs-with-unmatched-capabilities' => [
+            // Changelog with public-only parsed docs with matched
+            'changelog-public-docs-with-matched-capabilities' => [
                 'private_objects' => false,
                 'capabilities' => [
                     'BUY_TICKETS',
@@ -854,162 +866,6 @@ class ChangelogTest extends TestCase
                 ],
             ],
 
-            // Changelog with public-only parsed docs and matched capabilities
-            'changelog-public-docs-with-matched-capabilities' => [
-                'private_objects' => false,
-                'capabilities' => [
-                    'DELETE_CONTENT'
-                ],
-                'expected' => [
-                    '1.1.3' => [
-                        '_details' => [
-                            'release_date' => '2017-05-27',
-                            'description' => 'Changed up the responses for `/movie/{id}`, `/movies/{id}` and `/movies`.'
-                        ],
-                        'added' => [
-                            'resources' => [
-                                'Movies' => [
-                                    '/movies/{id}' => [
-                                        Changelog::CHANGESET_TYPE_ACTION_THROWS => [
-                                            'e7dc298139' => $actions['1.1.3']['/movies/{id}']['throws']['e7dc298139'],
-                                            '162944fa14' => $actions['1.1.3']['/movies/{id}']['throws']['162944fa14']
-                                        ],
-                                        Changelog::CHANGESET_TYPE_ACTION_RETURN => [
-                                            '162944fa14' => $actions['1.1.3']['/movies/{id}']['return']['162944fa14']
-                                        ]
-                                    ],
-                                    '/movies' => [
-                                        Changelog::CHANGESET_TYPE_ACTION_RETURN => [
-                                            '3781891d58' => $actions['1.1.3']['/movies']['return']['3781891d58']
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'removed' => [
-                            'representations' => [
-                                'Movie' => [
-                                    Changelog::CHANGESET_TYPE_REPRESENTATION_DATA => [
-                                        'ba8ac44626' => $representations['1.1.3']['Movie']['ba8ac44626']
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ],
-                    '1.1.2' => [
-                        '_details' => [
-                            'release_date' => '2017-04-01'
-                        ],
-                        'changed' => [
-                            'resources' => [
-                                'Movies' => [
-                                    '/movies/{id}' => [
-                                        Changelog::CHANGESET_TYPE_CONTENT_TYPE => [
-                                            '979fc6e97f' =>
-                                                $actions['1.1.2']['/movies/{id}']['content_type']['979fc6e97f'],
-                                            'f4628f751a' =>
-                                                $actions['1.1.2']['/movies/{id}']['content_type']['f4628f751a']
-                                        ]
-                                    ],
-                                    '/movies' => [
-                                        Changelog::CHANGESET_TYPE_CONTENT_TYPE => [
-                                            '979fc6e97f' =>
-                                                $actions['1.1.2']['/movies']['content_type']['979fc6e97f'],
-                                            '066564ef49' =>
-                                                $actions['1.1.2']['/movies']['content_type']['066564ef49']
-                                        ]
-                                    ]
-                                ],
-                                'Theaters' => [
-                                    '/theaters/{id}' => [
-                                        Changelog::CHANGESET_TYPE_CONTENT_TYPE => [
-                                            '979fc6e97f' =>
-                                                $actions['1.1.2']['/theaters/{id}']['content_type']['979fc6e97f'],
-                                            'f4628f751a' =>
-                                                $actions['1.1.2']['/theaters/{id}']['content_type']['f4628f751a']
-                                        ]
-                                    ],
-                                    '/theaters' => [
-                                        Changelog::CHANGESET_TYPE_CONTENT_TYPE => [
-                                            '979fc6e97f' =>
-                                                $actions['1.1.2']['/theaters']['content_type']['979fc6e97f'],
-                                            '066564ef49' =>
-                                                $actions['1.1.2']['/theaters']['content_type']['066564ef49']
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'removed' => [
-                            'resources' => [
-                                'Theaters' => [
-                                    '/theaters/{id}' => [
-                                        Changelog::CHANGESET_TYPE_ACTION_THROWS => [
-                                            'b3a16c4d74' =>
-                                                $actions['1.1.2']['/theaters/{id}']['action_throws']['b3a16c4d74']
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ],
-                    '1.1.1' => [
-                        '_details' => [
-                            'release_date' => '2017-03-01'
-                        ],
-                        'added' => [
-                            'resources' => [
-                                'Movies' => [
-                                    '/movies/{id}' => [
-                                        Changelog::CHANGESET_TYPE_ACTION_PARAM => [
-                                            '162944fa14' => $actions['1.1.1']['/movies/{id}']['param']['162944fa14']
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ],
-                    '1.1' => [
-                        '_details' => [
-                            'release_date' => '2017-02-01'
-                        ],
-                        'added' => [
-                            'representations' => [
-                                'Movie' => [
-                                    Changelog::CHANGESET_TYPE_REPRESENTATION_DATA => [
-                                        'ba8ac44626' => $representations['1.1']['Movie']['ba8ac44626']
-                                    ]
-                                ]
-                            ],
-                            'resources' => [
-                                'Movies' => [
-                                    '/movies/{id}' => [
-                                        Changelog::CHANGESET_TYPE_ACTION => [
-                                            'd81e7058dd' => $actions['1.1']['/movies/{id}']['action']['d81e7058dd']
-                                        ]
-                                    ],
-                                    '/movies' => [
-                                        Changelog::CHANGESET_TYPE_ACTION_PARAM => [
-                                            '776d02bb83' => $actions['1.1']['/movies']['param']['776d02bb83'],
-                                            '3781891d58' => $actions['1.1']['/movies']['param']['3781891d58']
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'removed' => [
-                            'representations' => [
-                                'Theater' => [
-                                    Changelog::CHANGESET_TYPE_REPRESENTATION_DATA => [
-                                        '4034255a2c' => $representations['1.1']['Theater']['4034255a2c']
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ],
-
             // Changelog with public-only parsed docs
             'changelog-public-docs' => [
                 'private_objects' => false,
@@ -1036,15 +892,6 @@ class ChangelogTest extends TestCase
                                         Changelog::CHANGESET_TYPE_ACTION_RETURN => [
                                             '3781891d58' => $actions['1.1.3']['/movies']['return']['3781891d58']
                                         ]
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'removed' => [
-                            'representations' => [
-                                'Movie' => [
-                                    Changelog::CHANGESET_TYPE_REPRESENTATION_DATA => [
-                                        'ba8ac44626' => $representations['1.1.3']['Movie']['ba8ac44626']
                                     ]
                                 ]
                             ]
@@ -1129,7 +976,17 @@ class ChangelogTest extends TestCase
                             'representations' => [
                                 'Movie' => [
                                     Changelog::CHANGESET_TYPE_REPRESENTATION_DATA => [
-                                        'ba8ac44626' => $representations['1.1']['Movie']['ba8ac44626']
+                                        'ba8ac44626' => call_user_func(
+                                            function () use ($representations): array {
+                                                $representation = $representations['1.1']['Movie']['ba8ac44626'];
+
+                                                // Remove `external_urls.tickets` since it's private documentation and
+                                                // shouldn't be available under these conditions.
+                                                $representation[2] = $representation[3];
+                                                unset($representation[3]);
+                                                return $representation;
+                                            }
+                                        )
                                     ]
                                 ]
                             ],

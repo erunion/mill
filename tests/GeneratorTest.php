@@ -764,7 +764,6 @@ class GeneratorTest extends TestCase
                             $representation['content.keys'] = array_merge($representation['content.keys'], [
                                 'external_urls',
                                 'external_urls.imdb',
-                                'external_urls.tickets',
                                 'external_urls.trailer'
                             ]);
 
@@ -921,7 +920,6 @@ class GeneratorTest extends TestCase
                             $representation['content.keys'] = array_merge($representation['content.keys'], [
                                 'external_urls',
                                 'external_urls.imdb',
-                                'external_urls.tickets',
                                 'external_urls.trailer'
                             ]);
 
