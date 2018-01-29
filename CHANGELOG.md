@@ -1,4 +1,8 @@
 # Changelog
+## [2.6.4] = 2018-01-11
+## Changed
+- Slightly revised the wording of our changelog templates.
+
 ## [2.6.3] - 2017-12-12
 ## Added
 - Returning `visible` in `ReturnAnnotation->toArray()` calls.
@@ -196,6 +200,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[2.6.4]: https://github.com/vimeo/mill/compare/2.6.3...2.6.4
 [2.6.3]: https://github.com/vimeo/mill/compare/2.6.2...2.6.3
 [2.6.2]: https://github.com/vimeo/mill/compare/2.6.1...2.6.2
 [2.6.1]: https://github.com/vimeo/mill/compare/2.6.0...2.6.1

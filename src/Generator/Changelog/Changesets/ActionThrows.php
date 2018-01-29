@@ -13,13 +13,13 @@ class ActionThrows extends Changeset
     {
         return [
             'plural' => [
-                Changelog::DEFINITION_ADDED => '{uri} will now throw the following errors on {method} requests:',
-                Changelog::DEFINITION_REMOVED => '{uri} will no longer throw the following errors on {method} requests:'
+                Changelog::DEFINITION_ADDED => '{uri} now throws the following errors on {method} requests:',
+                Changelog::DEFINITION_REMOVED => '{uri} no longer throws the following errors on {method} requests:'
             ],
             'singular' => [
                 Changelog::DEFINITION_ADDED => 'On {method} requests to {uri}, a {http_code} with a {representation} ' .
-                    'representation will now be returned: {description}',
-                Changelog::DEFINITION_REMOVED => '{method} requests to {uri} longer will return a {http_code} with a ' .
+                    'representation is now returned: {description}',
+                Changelog::DEFINITION_REMOVED => '{method} requests to {uri} no longer returns a {http_code} with a ' .
                     '{representation} representation: {description}'
             ]
         ];
