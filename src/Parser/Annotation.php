@@ -618,7 +618,7 @@ abstract class Annotation
      * Set a version that this annotation is available on. This is specifically used in tandem with representation
      * depth parsing.
      *
-     * @param false|Version $version
+     * @param Version $version
      * @return self
      */
     public function setVersion(Version $version): self

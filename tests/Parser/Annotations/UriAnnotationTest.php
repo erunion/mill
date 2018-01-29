@@ -32,6 +32,7 @@ class UriAnnotationTest extends AnnotationTest
      */
     public function testHydrate(string $content, bool $visible, bool $deprecated, array $expected): void
     {
+        /** @var UriAnnotation $annotation */
         $annotation = UriAnnotation::hydrate(array_merge(
             $expected['array'],
             [

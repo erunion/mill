@@ -30,6 +30,7 @@ class UriSegmentAnnotationTest extends AnnotationTest
      */
     public function testHydrate(string $uri, string $segment, array $expected): void
     {
+        /** @var UriSegmentAnnotation $annotation */
         $annotation = UriSegmentAnnotation::hydrate(array_merge(
             $expected,
             [

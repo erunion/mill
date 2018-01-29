@@ -325,6 +325,8 @@ class Documentation
                 return $annotation->getContentType();
             }
         }
+
+        throw new \Exception('An unexpected error occurred while retrieving a content type. This should never happen!');
     }
 
     /**

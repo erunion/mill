@@ -136,7 +136,6 @@ class ThrowsAnnotation extends Annotation
                 $description = sprintf('If %s was not found in the %s.', $matches[1], $matches[2]);
             } elseif (preg_match(self::REGEX_THROW_TYPE, $description, $matches)) {
                 $description = sprintf('If %s was not found.', $matches[1]);
-
             }
 
             $parsed['description'] = $description;

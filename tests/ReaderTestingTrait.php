@@ -7,6 +7,9 @@ use Mill\Provider\Reader;
 
 trait ReaderTestingTrait
 {
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $container = Container::getInstance();

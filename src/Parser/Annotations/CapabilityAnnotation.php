@@ -57,6 +57,8 @@ class CapabilityAnnotation extends Annotation
      */
     public static function hydrate(array $data = [], Version $version = null): self
     {
-        return parent::hydrate($data, $version);
+        /** @var CapabilityAnnotation $annotation */
+        $annotation = parent::hydrate($data, $version);
+        return $annotation;
     }
 }
