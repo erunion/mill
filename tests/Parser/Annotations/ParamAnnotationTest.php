@@ -1,6 +1,9 @@
 <?php
 namespace Mill\Tests\Parser\Annotations;
 
+use Mill\Exceptions\Annotations\InvalidMSONSyntaxException;
+use Mill\Exceptions\Annotations\UnsupportedTypeException;
+use Mill\Parser\Annotations\CapabilityAnnotation;
 use Mill\Parser\Annotations\ParamAnnotation;
 use Mill\Parser\Version;
 
@@ -9,18 +12,54 @@ class ParamAnnotationTest extends AnnotationTest
     /**
      * @dataProvider providerAnnotation
      * @param string $content
-     * @param string $version
-     * @param boolean $visible
-     * @param boolean $deprecated
+     * @param Version|null $version
+     * @param bool $visible
+     * @param bool $deprecated
      * @param array $expected
-     * @return void
      */
-    public function testAnnotation($content, $version, $visible, $deprecated, array $expected)
-    {
+    public function testAnnotation(
+        string $content,
+        ?Version $version,
+        bool $visible,
+        bool $deprecated,
+        array $expected
+    ): void {
         $annotation = new ParamAnnotation($content, __CLASS__, __METHOD__, $version);
+        $annotation->process();
         $annotation->setVisibility($visible);
         $annotation->setDeprecated($deprecated);
 
+        $this->assertAnnotation($annotation, $expected);
+    }
+
+    /**
+     * @dataProvider providerAnnotation
+     * @param string $content
+     * @param Version|null $version
+     * @param bool $visible
+     * @param bool $deprecated
+     * @param array $expected
+     */
+    public function testHydrate(
+        string $content,
+        ?Version $version,
+        bool $visible,
+        bool $deprecated,
+        array $expected
+    ): void {
+        $annotation = ParamAnnotation::hydrate(array_merge(
+            $expected,
+            [
+                'class' => __CLASS__,
+                'method' => __METHOD__
+            ]
+        ), $version);
+
+        $this->assertAnnotation($annotation, $expected);
+    }
+
+    private function assertAnnotation(ParamAnnotation $annotation, array $expected): void
+    {
         $this->assertTrue($annotation->requiresVisibilityDecorator());
         $this->assertTrue($annotation->supportsVersioning());
         $this->assertTrue($annotation->supportsDeprecation());
@@ -34,16 +73,13 @@ class ParamAnnotationTest extends AnnotationTest
         $this->assertSame($expected['values'], $annotation->getValues());
 
         if (is_string($expected['capability'])) {
-            $this->assertInstanceOf(
-                '\Mill\Parser\Annotations\CapabilityAnnotation',
-                $annotation->getCapability()
-            );
+            $this->assertInstanceOf(CapabilityAnnotation::class, $annotation->getCapability());
         } else {
             $this->assertFalse($annotation->getCapability());
         }
 
         if ($expected['version']) {
-            $this->assertInstanceOf('Mill\Parser\Version', $annotation->getVersion());
+            $this->assertInstanceOf(Version::class, $annotation->getVersion());
         } else {
             $this->assertFalse($annotation->getVersion());
         }
@@ -51,10 +87,7 @@ class ParamAnnotationTest extends AnnotationTest
         $this->assertEmpty($annotation->getAliases());
     }
 
-    /**
-     * @return array
-     */
-    public function providerAnnotation()
+    public function providerAnnotation(): array
     {
         return [
             '_complete' => [
@@ -396,16 +429,13 @@ class ParamAnnotationTest extends AnnotationTest
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function providerAnnotationFailsOnInvalidContent()
+    public function providerAnnotationFailsOnInvalidContent(): array
     {
         return [
             'invalid-mson' => [
-                'annotation' => '\Mill\Parser\Annotations\ParamAnnotation',
+                'annotation' => ParamAnnotation::class,
                 'content' => '',
-                'expected.exception' => '\Mill\Exceptions\Annotations\InvalidMSONSyntaxException',
+                'expected.exception' => InvalidMSONSyntaxException::class,
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'param',
                     'getDocblock' => '',
@@ -413,9 +443,9 @@ class ParamAnnotationTest extends AnnotationTest
                 ]
             ],
             'unsupported-type' => [
-                'annotation' => '\Mill\Parser\Annotations\ParamAnnotation',
+                'annotation' => ParamAnnotation::class,
                 'content' => 'content_rating `G` (str) - MPAA rating',
-                'expected.exception' => '\Mill\Exceptions\Annotations\UnsupportedTypeException',
+                'expected.exception' => UnsupportedTypeException::class,
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'content_rating `G` (str) - MPAA rating',
                     'getDocblock' => null

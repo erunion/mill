@@ -5,27 +5,25 @@ use League\Flysystem\Filesystem;
 use League\Flysystem\Memory\MemoryAdapter;
 use Mill\Config;
 use Mill\Container;
+use Mill\Exceptions\BaseException;
 use Mill\Parser;
 use Mill\Parser\Annotations\DataAnnotation;
 use Mill\Parser\Representation\RepresentationParser;
 
-class TestCase extends \PHPUnit_Framework_TestCase
+class TestCase extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var Container
-     */
+    /** @var Container */
     protected static $container;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected static $fixturesDir = __DIR__ . '/../tests/_fixtures/';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected static $resourcesDir = __DIR__ . '/../resources/';
 
+    /**
+     * @psalm-suppress MissingReturnType
+     */
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
@@ -35,9 +33,12 @@ class TestCase extends \PHPUnit_Framework_TestCase
         ]);
 
         // Overwrite the stock library local filesystem with an in-memory file system we'll use for testing.
-        $container->extend('filesystem', function ($filesystem, Container $c) {
-            return new Filesystem(new MemoryAdapter);
-        });
+        $container->extend(
+            'filesystem',
+            function (Filesystem $filesystem, Container $c): Filesystem {
+                return new Filesystem(new MemoryAdapter);
+            }
+        );
 
         $config = file_get_contents(static::$fixturesDir . 'mill.test.xml');
         $container->getFilesystem()->write('mill.xml', $config);
@@ -50,7 +51,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
      *
      * @return Container
      */
-    public function getContainer()
+    public function getContainer(): Container
     {
         return self::$container;
     }
@@ -60,7 +61,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
      *
      * @return Config
      */
-    public function getConfig()
+    public function getConfig(): Config
     {
         return $this->getContainer()->getConfig();
     }
@@ -70,7 +71,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
      *
      * @return Filesystem
      */
-    public function getFilesystem()
+    public function getFilesystem(): Filesystem
     {
         return $this->getContainer()->getFilesystem();
     }
@@ -82,25 +83,25 @@ class TestCase extends \PHPUnit_Framework_TestCase
      * @param string $class
      * @return DataAnnotation
      */
-    protected function getDataAnnotationFromDocblock($docblock, $class)
+    protected function getDataAnnotationFromDocblock(string $docblock, string $class): DataAnnotation
     {
         $tags = Parser::getAnnotationsFromDocblock($docblock)->getTags()->toArray();
-        $annotations = (new RepresentationParser($class))->parseAnnotations($tags, $docblock);
+
+        $parser = new RepresentationParser($class);
+        $parser->setMethod(__METHOD__);
+        $annotations = $parser->parseAnnotations($tags, $docblock);
 
         $this->assertCount(1, $annotations);
 
         return array_shift($annotations);
     }
 
-    /**
-     * @param mixed $exception
-     * @param string $class
-     * @param string|null $method
-     * @param array $asserts
-     * @return void
-     */
-    protected function assertExceptionAsserts($exception, $class, $method, $asserts = [])
-    {
+    protected function assertExceptionAsserts(
+        BaseException $exception,
+        string $class,
+        ?string $method,
+        array $asserts = []
+    ): void {
         $this->assertSame($class, $exception->getClass());
 
         // `@api-data` annotation tests don't set up a RepresentationParser with a method, so we don't need to worry

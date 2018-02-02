@@ -1,6 +1,8 @@
 <?php
 namespace Mill\Tests\Parser\Annotations;
 
+use Mill\Exceptions\BaseException;
+use Mill\Parser\Annotations\DataAnnotation;
 use Mill\Tests\TestCase;
 
 abstract class AnnotationTest extends TestCase
@@ -11,21 +13,24 @@ abstract class AnnotationTest extends TestCase
      * @param string $content
      * @param string $exception
      * @param array $asserts
-     * @throws \Exception
-     * @return void
+     * @throws BaseException
      */
-    public function testAnnotationFailsOnInvalidContent($annotation, $content, $exception, array $asserts)
-    {
+    public function testAnnotationFailsOnInvalidContent(
+        string $annotation,
+        string $content,
+        string $exception,
+        array $asserts
+    ): void {
         $this->expectException($exception);
 
         try {
-            if ($annotation === '\Mill\Parser\Annotations\DataAnnotation') {
+            if ($annotation === DataAnnotation::class) {
                 $this->getDataAnnotationFromDocblock($content, __CLASS__);
             } else {
-                new $annotation($content, __CLASS__, __METHOD__);
+                (new $annotation($content, __CLASS__, __METHOD__))->process();
             }
-        } catch (\Exception $e) {
-            if ('\\' . get_class($e) !== $exception) {
+        } catch (BaseException $e) {
+            if (get_class($e) !== $exception) {
                 $this->fail('Unrecognized exception (' . get_class($e) . ') thrown.');
             }
 
@@ -34,13 +39,7 @@ abstract class AnnotationTest extends TestCase
         }
     }
 
-    /**
-     * @return array
-     */
-    abstract public function providerAnnotation();
+    abstract public function providerAnnotation(): array;
 
-    /**
-     * @return array
-     */
-    abstract public function providerAnnotationFailsOnInvalidContent();
+    abstract public function providerAnnotationFailsOnInvalidContent(): array;
 }

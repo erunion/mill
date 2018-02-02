@@ -5,6 +5,7 @@ use Mill\Exceptions\Representation\RestrictedFieldNameException;
 use Mill\Parser\Annotation;
 use Mill\Parser\MSON;
 use Mill\Parser\Representation\Documentation;
+use Mill\Parser\Version;
 
 /**
  * Handler for the `@api-data` annotation.
@@ -12,8 +13,6 @@ use Mill\Parser\Representation\Documentation;
  */
 class DataAnnotation extends Annotation
 {
-    const REQUIRES_VISIBILITY_DECORATOR = false;
-    const SUPPORTS_DEPRECATION = false;
     const SUPPORTS_MSON = true;
     const SUPPORTS_SCOPES = true;
     const SUPPORTS_VERSIONING = true;
@@ -28,9 +27,9 @@ class DataAnnotation extends Annotation
     /**
      * Sample data that this might represent.
      *
-     * @var string
+     * @var false|string
      */
-    protected $sample_data;
+    protected $sample_data = false;
 
     /**
      * Type of data that this represents.
@@ -42,7 +41,7 @@ class DataAnnotation extends Annotation
     /**
      * Subtype of the type of data that this represents.
      *
-     * @var string|false
+     * @var false|string
      */
     protected $subtype = false;
 
@@ -56,7 +55,7 @@ class DataAnnotation extends Annotation
     /**
      * Array of acceptable values for this data.
      *
-     * @var array|null
+     * @var array|false|null
      */
     protected $values = [];
 
@@ -68,7 +67,7 @@ class DataAnnotation extends Annotation
     protected $description;
 
     /**
-     * Return an array of items that should be included in an array representation of this annotation.
+     * An array of items that should be included in an array representation of this annotation.
      *
      * @var array
      */
@@ -80,21 +79,21 @@ class DataAnnotation extends Annotation
         'sample_data',
         'subtype',
         'type',
-        'values',
+        'values'
     ];
 
     /**
-     * Parse the annotation out and return an array of data that we can use to then interpret this annotations'
-     * representation.
-     *
-     * @return array
+     * {@inheritdoc}
      * @throws RestrictedFieldNameException If a restricted `@api-field` name is detected.
      */
-    protected function parser()
+    protected function parser(): array
     {
         $content = trim($this->docblock);
 
-        $mson = (new MSON($this->class, $this->method))->parse($content);
+        /** @var string $method */
+        $method = $this->method;
+
+        $mson = (new MSON($this->class, $method))->parse($content);
         $parsed = [
             'identifier' => $mson->getField(),
             'sample_data' => $mson->getSampleData(),
@@ -108,11 +107,11 @@ class DataAnnotation extends Annotation
 
         // Create a capability annotation if one was supplied.
         if (!empty($parsed['capability'])) {
-            $parsed['capability'] = new CapabilityAnnotation(
+            $parsed['capability'] = (new CapabilityAnnotation(
                 $parsed['capability'],
                 $this->class,
                 $this->method
-            );
+            ))->process();
         }
 
         if (!empty($parsed['identifier'])) {
@@ -130,17 +129,12 @@ class DataAnnotation extends Annotation
     }
 
     /**
-     * Interpret the parsed annotation data and set local variables to build the annotation.
-     *
-     * To facilitate better error messaging, the order in which items are interpreted here should be match the schema
-     * of the annotation.
-     *
-     * @return void
+     * {@inheritdoc}
      */
-    protected function interpreter()
+    protected function interpreter(): void
     {
         $this->identifier = $this->required('identifier');
-        $this->sample_data = $this->optional('sample_data');
+        $this->sample_data = $this->optional('sample_data', true);
         $this->type = $this->required('type');
         $this->subtype = $this->optional('subtype');
         $this->description = $this->required('description');
@@ -151,24 +145,158 @@ class DataAnnotation extends Annotation
     }
 
     /**
-     * Get the field name.
-     *
+     * {@inheritdoc}
+     */
+    public static function hydrate(array $data = [], Version $version = null): self
+    {
+        /** @var DataAnnotation $annotation */
+        $annotation = parent::hydrate($data, $version);
+        $annotation->setDescription($data['description']);
+        $annotation->setIdentifier($data['identifier']);
+        $annotation->setNullable($data['nullable']);
+        $annotation->setSampleData($data['sample_data']);
+        $annotation->setSubtype($data['subtype']);
+        $annotation->setType($data['type']);
+        $annotation->setValues($data['values']);
+
+        return $annotation;
+    }
+
+    /**
      * @return string
      */
-    public function getIdentifier()
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     * @return self
+     */
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIdentifier(): string
     {
         return $this->identifier;
+    }
+
+    /**
+     * @param string $identifier
+     * @return self
+     */
+    public function setIdentifier(string $identifier): self
+    {
+        $this->identifier = $identifier;
+        return $this;
     }
 
     /**
      * Set a dot notation prefix on the identifier.
      *
      * @param string $prefix
-     * @return DataAnnotation
+     * @return self
      */
-    public function setIdentifierPrefix($prefix)
+    public function setIdentifierPrefix($prefix): self
     {
         $this->identifier = $prefix . '.' . $this->identifier;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNullable(): bool
+    {
+        return $this->nullable;
+    }
+
+    /**
+     * @param bool $nullable
+     * @return self
+     */
+    public function setNullable(bool $nullable): self
+    {
+        $this->nullable = $nullable;
+        return $this;
+    }
+
+    /**
+     * @return false|string
+     */
+    public function getSampleData()
+    {
+        return $this->sample_data;
+    }
+
+    /**
+     * @param false|string $sample_data
+     * @return self
+     */
+    public function setSampleData($sample_data): self
+    {
+        $this->sample_data = $sample_data;
+        return $this;
+    }
+
+    /**
+     * @return false|string
+     */
+    public function getSubtype()
+    {
+        return $this->subtype;
+    }
+
+    /**
+     * @param false|string $subtype
+     * @return self
+     */
+    public function setSubtype($subtype): self
+    {
+        $this->subtype = $subtype;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     * @return self
+     */
+    public function setType(string $type): self
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    /**
+     * @return array|false|null
+     */
+    public function getValues()
+    {
+        return $this->values;
+    }
+
+    /**
+     * @param array|false|null $values
+     * @return self
+     */
+    public function setValues($values): self
+    {
+        $this->values = $values;
         return $this;
     }
 }

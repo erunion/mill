@@ -18,15 +18,11 @@ trait HasHttpCodeResponseTrait
      * Name of the representation that this annotation responds with. Can be either a fully qualified class name, or
      * `string`.
      *
-     * @var string
+     * @var false|string
      */
-    protected $representation;
+    protected $representation = false;
 
-    /**
-     * Mapping array of HTTP code to the string that that code represents.
-     *
-     * @var array
-     */
+    /** @var array Mapping array of HTTP code to the string that that code represents. */
     private static $http_codes = [
         // 2xx Success
         200 => 'OK',
@@ -100,18 +96,30 @@ trait HasHttpCodeResponseTrait
      *
      * @return string
      */
-    public function getHttpCode()
+    public function getHttpCode(): string
     {
         return $this->http_code;
     }
 
     /**
+     * Set the HTTP code that this response throws.
+     *
+     * @param string $http_code
+     * @return self
+     */
+    public function setHttpCode(string $http_code): self
+    {
+        $this->http_code = $http_code;
+        return $this;
+    }
+
+    /**
      * Get the HTTP message for a specific HTTP code.
      *
-     * @param string|integer $http_code
+     * @param int|string $http_code
      * @return string
      */
-    public function getHttpCodeMessage($http_code)
+    public function getHttpCodeMessage($http_code): string
     {
         return self::$http_codes[$http_code];
     }
@@ -121,7 +129,7 @@ trait HasHttpCodeResponseTrait
      *
      * @return bool
      */
-    public function isNon200HttpCode()
+    public function isNon200HttpCode(): bool
     {
         $message = explode(' ', $this->http_code);
         $code = array_shift($message);
@@ -135,7 +143,7 @@ trait HasHttpCodeResponseTrait
      * @param string $http_code
      * @return bool
      */
-    public function isValidHttpCode($http_code)
+    public function isValidHttpCode(string $http_code): bool
     {
         return isset(self::$http_codes[$http_code]);
     }
@@ -143,10 +151,22 @@ trait HasHttpCodeResponseTrait
     /**
      * Get the representation that this response returns data in.
      *
-     * @return string
+     * @return false|string
      */
     public function getRepresentation()
     {
         return $this->representation;
+    }
+
+    /**
+     * Set the representation that this response returns data in.
+     *
+     * @param false|string $representation
+     * @return self
+     */
+    public function setRepresentation($representation): self
+    {
+        $this->representation = $representation;
+        return $this;
     }
 }

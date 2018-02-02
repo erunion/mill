@@ -4,6 +4,7 @@ namespace Mill\Parser\Annotations;
 use Mill\Container;
 use Mill\Exceptions\Annotations\InvalidCapabilitySuppliedException;
 use Mill\Parser\Annotation;
+use Mill\Parser\Version;
 
 /**
  * Handler for the `@api-capability` annotation.
@@ -11,12 +12,8 @@ use Mill\Parser\Annotation;
  */
 class CapabilityAnnotation extends Annotation
 {
-    const REQUIRES_VISIBILITY_DECORATOR = false;
-    const SUPPORTS_DEPRECATION = false;
-    const SUPPORTS_VERSIONING = false;
-
     /**
-     * Return an array of items that should be included in an array representation of this annotation.
+     * An array of items that should be included in an array representation of this annotation.
      *
      * @var array
      */
@@ -25,13 +22,10 @@ class CapabilityAnnotation extends Annotation
     ];
 
     /**
-     * Parse the annotation out and return an array of data that we can use to then interpret this annotations'
-     * representation.
-     *
-     * @return array
+     * {@inheritdoc}
      * @throws InvalidCapabilitySuppliedException If a found capability is not present in your config file.
      */
-    protected function parser()
+    protected function parser(): array
     {
         $capability = $this->docblock;
 
@@ -39,7 +33,9 @@ class CapabilityAnnotation extends Annotation
             // Validate the supplied capability with what has been configured as allowable.
             $capabilities = Container::getConfig()->getCapabilities();
             if (!in_array($capability, $capabilities)) {
-                throw InvalidCapabilitySuppliedException::create($capability, $this->class, $this->method);
+                /** @var string $method */
+                $method = $this->method;
+                throw InvalidCapabilitySuppliedException::create($capability, $this->class, $method);
             }
         }
 
@@ -49,15 +45,20 @@ class CapabilityAnnotation extends Annotation
     }
 
     /**
-     * Interpret the parsed annotation data and set local variables to build the annotation.
-     *
-     * To facilitate better error messaging, the order in which items are interpreted here should be match the schema
-     * of the annotation.
-     *
-     * @return void
+     * {@inheritdoc}
      */
-    protected function interpreter()
+    protected function interpreter(): void
     {
         $this->capability = $this->required('capability');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function hydrate(array $data = [], Version $version = null): self
+    {
+        /** @var CapabilityAnnotation $annotation */
+        $annotation = parent::hydrate($data, $version);
+        return $annotation;
     }
 }

@@ -1,20 +1,19 @@
 <?php
 namespace Mill\Exceptions\Annotations;
 
-class InvalidMSONSyntaxException extends \Exception
+use Mill\Exceptions\BaseException;
+
+class InvalidMSONSyntaxException extends BaseException
 {
     use AnnotationExceptionTrait;
 
-    /**
-     * @param string $required_field
-     * @param string $annotation
-     * @param string $docblock
-     * @param string $class
-     * @param string $method
-     * @return InvalidMSONSyntaxException
-     */
-    public static function create($required_field, $annotation, $docblock, $class, $method)
-    {
+    public static function create(
+        string $required_field,
+        string $annotation,
+        string $docblock,
+        string $class,
+        string $method
+    ): InvalidMSONSyntaxException {
         $message = sprintf(
             'Unable to parse a `%s` in the MSON on %s::%s for: `@api-%s %s`',
             $required_field,

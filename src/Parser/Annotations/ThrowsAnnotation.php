@@ -9,6 +9,7 @@ use Mill\Exceptions\Annotations\UnknownReturnCodeException;
 use Mill\Exceptions\Config\UnconfiguredErrorRepresentationException;
 use Mill\Parser\Annotation;
 use Mill\Parser\Annotations\Traits\HasHttpCodeResponseTrait;
+use Mill\Parser\Version;
 
 /**
  * Handler for the `@api-throws` annotation.
@@ -19,7 +20,6 @@ class ThrowsAnnotation extends Annotation
     use HasHttpCodeResponseTrait;
 
     const REQUIRES_VISIBILITY_DECORATOR = true;
-    const SUPPORTS_DEPRECATION = false;
     const SUPPORTS_VERSIONING = true;
 
     const REGEX_ERROR_CODE = '/^(\(.*\))/';
@@ -30,19 +30,19 @@ class ThrowsAnnotation extends Annotation
     /**
      * Optional unique error code for the error that this exception handles.
      *
-     * @var string|null
+     * @var false|null|string
      */
     protected $error_code = null;
 
     /**
      * Description for why this exception can be thrown.
      *
-     * @var string|null
+     * @var string
      */
-    protected $description = null;
+    protected $description;
 
     /**
-     * Return an array of items that should be included in an array representation of this annotation.
+     * An array of items that should be included in an array representation of this annotation.
      *
      * @var array
      */
@@ -51,15 +51,11 @@ class ThrowsAnnotation extends Annotation
         'description',
         'error_code',
         'http_code',
-        'representation',
-        'visible'
+        'representation'
     ];
 
     /**
-     * Parse the annotation out and return an array of data that we can use to then interpret this annotations'
-     * representation.
-     *
-     * @return array
+     * {@inheritdoc}
      * @throws UnknownReturnCodeException If a supplied HTTP code is invalid.
      * @throws UncallableErrorCodeException If a supplied error code is uncallable.
      * @throws UnknownErrorRepresentationException If a supplied representation has not been configured as allowing
@@ -67,19 +63,22 @@ class ThrowsAnnotation extends Annotation
      * @throws MissingRepresentationErrorCodeException If a supplied representation has been configured as requiring
      *      an error code, but is missing it.
      */
-    protected function parser()
+    protected function parser(): array
     {
         $config = Container::getConfig();
+
+        /** @var string $method */
+        $method = $this->method;
 
         $parsed = [];
         $content = trim($this->docblock);
 
-        // Capability is surrounded by +plusses+.
+        // HTTP code is surrounded by +plusses+.
         if (preg_match(self::REGEX_THROW_HTTP_CODE, $content, $matches)) {
             $parsed['http_code'] = $matches[1];
 
             if (!$this->isValidHttpCode($parsed['http_code'])) {
-                throw UnknownReturnCodeException::create('throws', $this->docblock, $this->class, $this->method);
+                throw UnknownReturnCodeException::create('throws', $this->docblock, $this->class, $method);
             }
 
             $parsed['http_code'] .= ' ' . $this->getHttpCodeMessage($parsed['http_code']);
@@ -103,7 +102,7 @@ class ThrowsAnnotation extends Annotation
             try {
                 $config->doesErrorRepresentationExist($representation);
             } catch (UnconfiguredErrorRepresentationException $e) {
-                throw UnknownErrorRepresentationException::create($representation, $this->class, $this->method);
+                throw UnknownErrorRepresentationException::create($representation, $this->class, $method);
             }
         }
 
@@ -114,7 +113,7 @@ class ThrowsAnnotation extends Annotation
                 $parsed['error_code'] = $error_code;
             } else {
                 if (!defined($error_code)) {
-                    throw UncallableErrorCodeException::create($this->docblock, $this->class, $this->method);
+                    throw UncallableErrorCodeException::create($this->docblock, $this->class, $method);
                 }
 
                 $parsed['error_code'] = constant($error_code);
@@ -126,7 +125,7 @@ class ThrowsAnnotation extends Annotation
         // Capability is surrounded by +plusses+.
         if (preg_match(self::REGEX_CAPABILITY, $content, $matches)) {
             $capability = substr($matches[1], 1, -1);
-            $parsed['capability'] = new CapabilityAnnotation($capability, $this->class, $this->method);
+            $parsed['capability'] = (new CapabilityAnnotation($capability, $this->class, $method))->process();
 
             $content = trim(preg_replace(self::REGEX_CAPABILITY, '', $content));
         }
@@ -134,9 +133,9 @@ class ThrowsAnnotation extends Annotation
         $description = trim($content);
         if (!empty($description)) {
             if (preg_match(self::REGEX_THROW_SUB_TYPE, $description, $matches)) {
-                $description = sprintf('If the %s cannot be found in the %s.', $matches[1], $matches[2]);
+                $description = sprintf('If %s was not found in the %s.', $matches[1], $matches[2]);
             } elseif (preg_match(self::REGEX_THROW_TYPE, $description, $matches)) {
-                $description = sprintf('If the %s cannot be found.', $matches[1]);
+                $description = sprintf('If %s was not found.', $matches[1]);
             }
 
             $parsed['description'] = $description;
@@ -153,7 +152,7 @@ class ThrowsAnnotation extends Annotation
                 throw MissingRepresentationErrorCodeException::create(
                     $representation,
                     $this->class,
-                    $this->method
+                    $method
                 );
             }
         }
@@ -162,14 +161,9 @@ class ThrowsAnnotation extends Annotation
     }
 
     /**
-     * Interpret the parsed annotation data and set local variables to build the annotation.
-     *
-     * To facilitate better error messaging, the order in which items are interpreted here should be match the schema
-     * of the annotation.
-     *
-     * @return void
+     * {@inheritdoc}
      */
-    protected function interpreter()
+    protected function interpreter(): void
     {
         $this->http_code = $this->required('http_code');
         $this->representation = $this->required('representation');
@@ -184,22 +178,53 @@ class ThrowsAnnotation extends Annotation
     }
 
     /**
-     * Get the description for this exception.
-     *
-     * @return null|string
+     * {@inheritdoc}
      */
-    public function getDescription()
+    public static function hydrate(array $data = [], Version $version = null)
+    {
+        /** @var ThrowsAnnotation $annotation */
+        $annotation = parent::hydrate($data, $version);
+        $annotation->setDescription($data['description']);
+        $annotation->setErrorCode($data['error_code']);
+        $annotation->setHttpCode($data['http_code']);
+        $annotation->setRepresentation($data['representation']);
+
+        return $annotation;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
     {
         return $this->description;
     }
 
     /**
-     * Return the unique error code for the error that this exception handles.
-     *
-     * @return null|string
+     * @param string $description
+     * @return self
+     */
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * @return false|null|string
      */
     public function getErrorCode()
     {
         return $this->error_code;
+    }
+
+    /**
+     * @param false|null|string $error_code
+     * @return self
+     */
+    public function setErrorCode($error_code): self
+    {
+        $this->error_code = $error_code;
+        return $this;
     }
 }

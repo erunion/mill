@@ -11,7 +11,7 @@ use Mill\Parser\Version;
  */
 class GeneratorTest extends TestCase
 {
-    public function testGeneratorParsesAllVersions()
+    public function testGeneratorParsesAllVersions(): void
     {
         $generator = new Generator($this->getConfig());
         $generator->generate();
@@ -25,7 +25,7 @@ class GeneratorTest extends TestCase
         ], array_keys($generator->getResources()));
     }
 
-    public function testGeneratorButExcludeARepresentation()
+    public function testGeneratorButExcludeARepresentation(): void
     {
         $config = $this->getConfig();
         $config->addExcludedRepresentation('\Mill\Examples\Showtimes\Representations\Movie');
@@ -48,19 +48,18 @@ class GeneratorTest extends TestCase
     /**
      * @dataProvider providerGeneratorWithVersion
      * @param string $version
-     * @param boolean $private_objects
-     * @param array $capabilities
+     * @param bool $private_objects
+     * @param array|null $capabilities
      * @param array $expected_representations
      * @param array $expected_resources
-     * @return void
      */
     public function testGeneratorWithVersion(
-        $version,
-        $private_objects,
-        $capabilities,
+        string $version,
+        bool $private_objects,
+        ?array $capabilities,
         array $expected_representations,
         array $expected_resources
-    ) {
+    ): void {
         $version_obj = new Version($version, __CLASS__, __METHOD__);
         $generator = new Generator($this->getConfig(), $version_obj);
         $generator->setLoadPrivateDocs($private_objects);
@@ -102,7 +101,7 @@ class GeneratorTest extends TestCase
 
                 /** @var Documentation $action */
                 foreach ($actual_resource['actions'] as $identifier => $action) {
-                    $this->assertInstanceOf('\Mill\Parser\Resource\Action\Documentation', $action);
+                    $this->assertInstanceOf(Documentation::class, $action);
 
                     // We don't need to test every facet of the generated MethodDocumentation, because we're doing
                     // that in other tests, we just want to make sure that these actions were grouped and compiled
@@ -178,10 +177,7 @@ class GeneratorTest extends TestCase
         }
     }
 
-    /**
-     * @return array
-     */
-    public function providerGeneratorWithVersion()
+    public function providerGeneratorWithVersion(): array
     {
         // Save us the effort of copy and pasting the same base actions over and over.
         $actions = [
@@ -504,7 +500,7 @@ class GeneratorTest extends TestCase
                     '\Mill\Examples\Showtimes\Representations\Movie' => $representations['Movie'],
                     '\Mill\Examples\Showtimes\Representations\Person' => $representations['Person'],
                     '\Mill\Examples\Showtimes\Representations\Theater' => call_user_func(
-                        function () use ($representations) {
+                        function () use ($representations): array {
                             $representation = $representations['Theater'];
                             $representation['content.keys'] = array_merge($representation['content.keys'], [
                                 'website'
@@ -562,7 +558,7 @@ class GeneratorTest extends TestCase
                     '\Mill\Examples\Showtimes\Representations\Movie' => $representations['Movie'],
                     '\Mill\Examples\Showtimes\Representations\Person' => $representations['Person'],
                     '\Mill\Examples\Showtimes\Representations\Theater' => call_user_func(
-                        function () use ($representations) {
+                        function () use ($representations): array {
                             $representation = $representations['Theater'];
                             $representation['content.keys'] = array_merge($representation['content.keys'], [
                                 'website'
@@ -611,7 +607,7 @@ class GeneratorTest extends TestCase
                 'capabilities' => null,
                 'expected.representations' => array_merge($error_representations, [
                     '\Mill\Examples\Showtimes\Representations\Movie' => call_user_func(
-                        function () use ($representations) {
+                        function () use ($representations): array {
                             $representation = $representations['Movie'];
                             $representation['content.keys'] = array_merge($representation['content.keys'], [
                                 'external_urls',
@@ -638,14 +634,14 @@ class GeneratorTest extends TestCase
                                     '/movies/+id::GET' => $actions['/movies/+id::GET'],
                                     '/movies/+id::PATCH' => $actions['/movies/+id::PATCH'],
                                     '/movies/+id::DELETE' => $actions['/movies/+id::DELETE'],
-                                    '/movies::GET' => call_user_func(function () use ($actions) {
+                                    '/movies::GET' => call_user_func(function () use ($actions): array {
                                         $action = $actions['/movies::GET'];
                                         $action['params.keys'][] = 'page';
                                         $action['annotations.sum']['param']++;
 
                                         return $action;
                                     }),
-                                    '/movies::POST' => call_user_func(function () use ($actions) {
+                                    '/movies::POST' => call_user_func(function () use ($actions): array {
                                         $action = $actions['/movies::POST'];
                                         $action['params.keys'][] = 'imdb';
                                         $action['params.keys'][] = 'trailer';
@@ -689,7 +685,7 @@ class GeneratorTest extends TestCase
                 ],
                 'expected.representations' => array_merge($error_representations, [
                     '\Mill\Examples\Showtimes\Representations\Movie' => call_user_func(
-                        function () use ($representations) {
+                        function () use ($representations): array {
                             $representation = $representations['Movie'];
                             $representation['content.keys'] = array_merge($representation['content.keys'], [
                                 'external_urls',
@@ -714,14 +710,14 @@ class GeneratorTest extends TestCase
                                 'actions.data' => [
                                     '/movies/+id::GET' => $actions['/movies/+id::GET'],
                                     '/movies/+id::PATCH' => $actions['/movies/+id::PATCH'],
-                                    '/movies::GET' => call_user_func(function () use ($actions) {
+                                    '/movies::GET' => call_user_func(function () use ($actions): array {
                                         $action = $actions['/movies::GET'];
                                         $action['params.keys'][] = 'page';
                                         $action['annotations.sum']['param']++;
 
                                         return $action;
                                     }),
-                                    '/movies::POST' => call_user_func(function () use ($actions) {
+                                    '/movies::POST' => call_user_func(function () use ($actions): array {
                                         $action = $actions['/movies::POST'];
                                         $action['params.keys'][] = 'imdb';
                                         $action['params.keys'][] = 'trailer';
@@ -763,12 +759,11 @@ class GeneratorTest extends TestCase
                 ],
                 'expected.representations' => array_merge($error_representations, [
                     '\Mill\Examples\Showtimes\Representations\Movie' => call_user_func(
-                        function () use ($representations) {
+                        function () use ($representations): array {
                             $representation = $representations['Movie'];
                             $representation['content.keys'] = array_merge($representation['content.keys'], [
                                 'external_urls',
                                 'external_urls.imdb',
-                                'external_urls.tickets',
                                 'external_urls.trailer'
                             ]);
 
@@ -789,14 +784,14 @@ class GeneratorTest extends TestCase
                                     '/movies/+id::GET' => $actions['/movies/+id::GET'],
                                     '/movies/+id::PATCH' => $actions['/movies/+id::PATCH'],
                                     '/movies/+id::DELETE' => $actions['/movies/+id::DELETE'],
-                                    '/movies::GET' => call_user_func(function () use ($actions) {
+                                    '/movies::GET' => call_user_func(function () use ($actions): array {
                                         $action = $actions['/movies::GET'];
                                         $action['params.keys'][] = 'page';
                                         $action['annotations.sum']['param']++;
 
                                         return $action;
                                     }),
-                                    '/movies::POST' => call_user_func(function () use ($actions) {
+                                    '/movies::POST' => call_user_func(function () use ($actions): array {
                                         $action = $actions['/movies::POST'];
                                         $action['params.keys'][] = 'imdb';
                                         $action['params.keys'][] = 'trailer';
@@ -836,7 +831,7 @@ class GeneratorTest extends TestCase
                 'capabilities' => null,
                 'expected.representations' => array_merge($error_representations, [
                     '\Mill\Examples\Showtimes\Representations\Movie' => call_user_func(
-                        function () use ($representations) {
+                        function () use ($representations): array {
                             $representation = $representations['Movie'];
                             $representation['content.keys'] = array_merge($representation['content.keys'], [
                                 'external_urls',
@@ -861,7 +856,7 @@ class GeneratorTest extends TestCase
                                 'actions.data' => [
                                     '/movie/+id::GET' => $actions['/movie/+id::GET'],
                                     '/movies/+id::GET' => $actions['/movies/+id::GET'],
-                                    '/movies/+id::PATCH' => call_user_func(function () use ($actions) {
+                                    '/movies/+id::PATCH' => call_user_func(function () use ($actions): array {
                                         $action = $actions['/movies/+id::PATCH'];
                                         $action['params.keys'][] = 'imdb';
 
@@ -872,14 +867,14 @@ class GeneratorTest extends TestCase
                                         return $action;
                                     }),
                                     '/movies/+id::DELETE' => $actions['/movies/+id::DELETE'],
-                                    '/movies::GET' => call_user_func(function () use ($actions) {
+                                    '/movies::GET' => call_user_func(function () use ($actions): array {
                                         $action = $actions['/movies::GET'];
                                         $action['params.keys'][] = 'page';
                                         $action['annotations.sum']['param']++;
 
                                         return $action;
                                     }),
-                                    '/movies::POST' => call_user_func(function () use ($actions) {
+                                    '/movies::POST' => call_user_func(function () use ($actions): array {
                                         $action = $actions['/movies::POST'];
                                         $action['params.keys'][] = 'imdb';
                                         $action['params.keys'][] = 'trailer';
@@ -920,12 +915,11 @@ class GeneratorTest extends TestCase
                 'capabilities' => [],
                 'expected.representations' => array_merge($error_representations, [
                     '\Mill\Examples\Showtimes\Representations\Movie' => call_user_func(
-                        function () use ($representations) {
+                        function () use ($representations): array {
                             $representation = $representations['Movie'];
                             $representation['content.keys'] = array_merge($representation['content.keys'], [
                                 'external_urls',
                                 'external_urls.imdb',
-                                'external_urls.tickets',
                                 'external_urls.trailer'
                             ]);
 
@@ -945,7 +939,7 @@ class GeneratorTest extends TestCase
                                 'actions.data' => [
                                     '/movie/+id::GET' => $actions['/movie/+id::GET'],
                                     '/movies/+id::GET' => $actions['/movies/+id::GET'],
-                                    '/movies/+id::PATCH' => call_user_func(function () use ($actions) {
+                                    '/movies/+id::PATCH' => call_user_func(function () use ($actions): array {
                                         $action = $actions['/movies/+id::PATCH'];
                                         $action['params.keys'][] = 'imdb';
 
@@ -955,14 +949,14 @@ class GeneratorTest extends TestCase
 
                                         return $action;
                                     }),
-                                    '/movies::GET' => call_user_func(function () use ($actions) {
+                                    '/movies::GET' => call_user_func(function () use ($actions): array {
                                         $action = $actions['/movies::GET'];
                                         $action['params.keys'][] = 'page';
                                         $action['annotations.sum']['param']++;
 
                                         return $action;
                                     }),
-                                    '/movies::POST' => call_user_func(function () use ($actions) {
+                                    '/movies::POST' => call_user_func(function () use ($actions): array {
                                         $action = $actions['/movies::POST'];
                                         $action['params.keys'][] = 'imdb';
                                         $action['params.keys'][] = 'trailer';

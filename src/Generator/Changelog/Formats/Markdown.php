@@ -16,9 +16,9 @@ class Markdown extends Json
     /**
      * Take compiled API documentation and generate a Markdown-based changelog over the life of the API.
      *
-     * @return string
+     * @return array
      */
-    public function generate()
+    public function generate(): array
     {
         $markdown = '';
 
@@ -31,7 +31,9 @@ class Markdown extends Json
             $markdown .= $this->line(2);
         }
 
-        $changelog = json_decode(parent::generate(), true);
+        $changelog = parent::generate();
+        $changelog = array_shift($changelog);
+        $changelog = json_decode($changelog, true);
         foreach ($changelog as $version => $data) {
             $markdown .= sprintf('## %s (%s)', $version, $data['_details']['release_date']);
             $markdown .= $this->line();
@@ -65,17 +67,17 @@ class Markdown extends Json
             }
         }
 
-        return $markdown;
+        return [$markdown];
     }
 
     /**
      * Get Markdown syntax for a given changeset.
      *
      * @param array|string $changeset
-     * @param integer $tab
+     * @param int $tab
      * @return string
      */
-    private function getChangesetMarkdown($changeset, $tab = 0)
+    private function getChangesetMarkdown($changeset, int $tab = 0): string
     {
         $markdown = '';
         if (!is_array($changeset)) {

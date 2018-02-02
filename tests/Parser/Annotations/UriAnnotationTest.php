@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Tests\Parser\Annotations;
 
+use Mill\Exceptions\Annotations\MissingRequiredFieldException;
 use Mill\Parser\Annotations\UriAnnotation;
 
 class UriAnnotationTest extends AnnotationTest
@@ -8,17 +9,43 @@ class UriAnnotationTest extends AnnotationTest
     /**
      * @dataProvider providerAnnotation
      * @param string $content
-     * @param boolean $visible
-     * @param boolean $deprecated
+     * @param bool $visible
+     * @param bool $deprecated
      * @param array $expected
-     * @return void
      */
-    public function testAnnotation($content, $visible, $deprecated, array $expected)
+    public function testAnnotation(string $content, bool $visible, bool $deprecated, array $expected): void
     {
         $annotation = new UriAnnotation($content, __CLASS__, __METHOD__);
+        $annotation->process();
         $annotation->setVisibility($visible);
         $annotation->setDeprecated($deprecated);
 
+        $this->assertAnnotation($annotation, $expected);
+    }
+
+    /**
+     * @dataProvider providerAnnotation
+     * @param string $content
+     * @param bool $visible
+     * @param bool $deprecated
+     * @param array $expected
+     */
+    public function testHydrate(string $content, bool $visible, bool $deprecated, array $expected): void
+    {
+        /** @var UriAnnotation $annotation */
+        $annotation = UriAnnotation::hydrate(array_merge(
+            $expected['array'],
+            [
+                'class' => __CLASS__,
+                'method' => __METHOD__
+            ]
+        ));
+
+        $this->assertAnnotation($annotation, $expected);
+    }
+
+    private function assertAnnotation(UriAnnotation $annotation, array $expected): void
+    {
         $this->assertTrue($annotation->requiresVisibilityDecorator());
         $this->assertFalse($annotation->supportsVersioning());
         $this->assertTrue($annotation->supportsDeprecation());
@@ -31,20 +58,18 @@ class UriAnnotationTest extends AnnotationTest
         $this->assertEmpty($annotation->getAliases());
     }
 
-    public function testConfiguredUriSegmentTranslations()
+    public function testConfiguredUriSegmentTranslations(): void
     {
         $this->getConfig()->addUriSegmentTranslation('movie_id', 'id');
 
         $annotation = new UriAnnotation('{Movies\Showtimes} /movies/+movie_id/showtimes', __CLASS__, __METHOD__);
+        $annotation->process();
 
         $this->assertSame('/movies/{id}/showtimes', $annotation->getCleanPath());
         $this->assertSame('/movies/+movie_id/showtimes', $annotation->toArray()['path']);
     }
 
-    /**
-     * @return array
-     */
-    public function providerAnnotation()
+    public function providerAnnotation(): array
     {
         return [
             'private' => [
@@ -57,13 +82,13 @@ class UriAnnotationTest extends AnnotationTest
                         'aliased' => false,
                         'aliases' => [],
                         'deprecated' => false,
-                        'group' => 'Movies\Showtimes',
+                        'namespace' => 'Movies\Showtimes',
                         'path' => '/movies/+id/showtimes',
                         'visible' => false
                     ]
                 ]
             ],
-            'private.group_with_no_depth' => [
+            'private.namespace_with_no_depth' => [
                 'content' => '{Movies} /movies',
                 'visible' => false,
                 'deprecated' => false,
@@ -73,7 +98,7 @@ class UriAnnotationTest extends AnnotationTest
                         'aliased' => false,
                         'aliases' => [],
                         'deprecated' => false,
-                        'group' => 'Movies',
+                        'namespace' => 'Movies',
                         'path' => '/movies',
                         'visible' => false
                     ]
@@ -89,7 +114,7 @@ class UriAnnotationTest extends AnnotationTest
                         'aliased' => false,
                         'aliases' => [],
                         'deprecated' => false,
-                        'group' => 'Movies\Showtimes',
+                        'namespace' => 'Movies\Showtimes',
                         'path' => '/movies/+id/showtimes',
                         'visible' => true
                     ]
@@ -105,13 +130,13 @@ class UriAnnotationTest extends AnnotationTest
                         'aliased' => false,
                         'aliases' => [],
                         'deprecated' => true,
-                        'group' => 'Movies\Showtimes',
+                        'namespace' => 'Movies\Showtimes',
                         'path' => '/movies/+id/showtimes',
                         'visible' => true
                     ]
                 ]
             ],
-            'public.non-alphanumeric_group' => [
+            'public.non-alphanumeric_namespace' => [
                 'content' => '{/} /',
                 'visible' => true,
                 'deprecated' => false,
@@ -121,7 +146,7 @@ class UriAnnotationTest extends AnnotationTest
                         'aliased' => false,
                         'aliases' => [],
                         'deprecated' => false,
-                        'group' => '/',
+                        'namespace' => '/',
                         'path' => '/',
                         'visible' => true
                     ]
@@ -130,27 +155,24 @@ class UriAnnotationTest extends AnnotationTest
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function providerAnnotationFailsOnInvalidContent()
+    public function providerAnnotationFailsOnInvalidContent(): array
     {
         return [
-            'missing-group' => [
-                'annotation' => '\Mill\Parser\Annotations\UriAnnotation',
+            'missing-namespace' => [
+                'annotation' => UriAnnotation::class,
                 'content' => '',
-                'expected.exception' => '\Mill\Exceptions\Annotations\MissingRequiredFieldException',
+                'expected.exception' => MissingRequiredFieldException::class,
                 'expected.exception.asserts' => [
-                    'getRequiredField' => 'group',
+                    'getRequiredField' => 'namespace',
                     'getAnnotation' => 'uri',
                     'getDocblock' => '',
                     'getValues' => []
                 ]
             ],
             'missing-path' => [
-                'annotation' => '\Mill\Parser\Annotations\UriAnnotation',
+                'annotation' => UriAnnotation::class,
                 'content' => '{Movies}',
-                'expected.exception' => '\Mill\Exceptions\Annotations\MissingRequiredFieldException',
+                'expected.exception' => MissingRequiredFieldException::class,
                 'expected.exception.asserts' => [
                     'getRequiredField' => 'path',
                     'getAnnotation' => 'uri',

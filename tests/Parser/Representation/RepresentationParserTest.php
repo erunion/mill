@@ -1,6 +1,9 @@
 <?php
 namespace Mill\Tests\Parser\Representation;
 
+use Mill\Exceptions\BaseException;
+use Mill\Parser\Annotation;
+use Mill\Parser\Annotations\DataAnnotation;
 use Mill\Parser\Representation\RepresentationParser;
 use Mill\Tests\ReaderTestingTrait;
 use Mill\Tests\TestCase;
@@ -14,9 +17,8 @@ class RepresentationParserTest extends TestCase
      * @param string $class
      * @param string $method
      * @param array $expected
-     * @return void
      */
-    public function testParseAnnotations($class, $method, array $expected)
+    public function testParseAnnotations(string $class, string $method, array $expected): void
     {
         $parser = new RepresentationParser($class);
         $annotations = $parser->getAnnotations($method);
@@ -27,7 +29,7 @@ class RepresentationParserTest extends TestCase
             // Assert that annotations were parsed correctly as `@api-data`.
             foreach ($annotations as $name => $annotation) {
                 $this->assertInstanceOf(
-                    '\Mill\Parser\Annotations\DataAnnotation',
+                    DataAnnotation::class,
                     $annotation,
                     sprintf('%s is not a data annotation.', $name)
                 );
@@ -44,7 +46,7 @@ class RepresentationParserTest extends TestCase
         }
     }
 
-    public function testRepresentationWithUnknownAnnotations()
+    public function testRepresentationWithUnknownAnnotations(): void
     {
         $docblock = '/**
           * @deprecated
@@ -57,7 +59,7 @@ class RepresentationParserTest extends TestCase
         $this->assertEmpty($annotations);
     }
 
-    public function testRepresentationWithApiSee()
+    public function testRepresentationWithApiSee(): void
     {
         $parser = new RepresentationParser('\Mill\Tests\Fixtures\Representations\RepresentationWithOnlyApiSee');
         $annotations = $parser->getAnnotations('create');
@@ -91,17 +93,16 @@ class RepresentationParserTest extends TestCase
      * @param string $docblock
      * @param string $exception
      * @param array $asserts
-     * @throws \Exception
-     * @return void
+     * @throws BaseException
      */
-    public function testRepresentationsThatWillFailParsing($docblock, $exception, array $asserts)
+    public function testRepresentationsThatWillFailParsing(string $docblock, string $exception, array $asserts): void
     {
         $this->expectException($exception);
         $this->overrideReadersWithFakeDocblockReturn($docblock);
 
         try {
             (new RepresentationParser(__CLASS__))->getAnnotations(__METHOD__);
-        } catch (\Exception $e) {
+        } catch (BaseException $e) {
             if ('\\' . get_class($e) !== $exception) {
                 $this->fail('Unrecognized exception (' . get_class($e) . ') thrown.');
             }
@@ -114,18 +115,20 @@ class RepresentationParserTest extends TestCase
     /**
      * @dataProvider providerRepresentationMethodsThatWillFailParsing
      * @param string $class
-     * @param string $method
+     * @param null|string $method
      * @param string $exception
-     * @throws \Exception
-     * @return void
+     * @throws BaseException
      */
-    public function testRepresentationMethodsThatWillFailParsing($class, $method, $exception)
-    {
+    public function testRepresentationMethodsThatWillFailParsing(
+        string $class,
+        ?string $method,
+        string $exception
+    ): void {
         $this->expectException($exception);
 
         try {
             (new RepresentationParser($class))->getAnnotations($method);
-        } catch (\Exception $e) {
+        } catch (BaseException $e) {
             if ('\\' . get_class($e) !== $exception) {
                 $this->fail('Unrecognized exception (' . get_class($e) . ') thrown.');
             }
@@ -135,7 +138,7 @@ class RepresentationParserTest extends TestCase
         }
     }
 
-    public function testRepresentationThatHasVersioningAcrossMultipleAnnotations()
+    public function testRepresentationThatHasVersioningAcrossMultipleAnnotations(): void
     {
         $class = '\Mill\Tests\Fixtures\Representations\RepresentationWithVersioningAcrossMultipleAnnotations';
         $parser = new RepresentationParser($class);
@@ -149,7 +152,7 @@ class RepresentationParserTest extends TestCase
             'unrelated'
         ], array_keys($annotations));
 
-        $annotations = array_map(function ($annotation) {
+        $annotations = array_map(function (Annotation $annotation): array {
             return $annotation->toArray();
         }, $annotations);
 
@@ -172,10 +175,7 @@ class RepresentationParserTest extends TestCase
         $this->assertEmpty($annotations['unrelated']['scopes']);
     }
 
-    /**
-     * @return array
-     */
-    public function providerParseAnnotations()
+    public function providerParseAnnotations(): array
     {
         return [
             'movie' => [
@@ -327,7 +327,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Kid friendly?',
                             'identifier' => 'kid_friendly',
                             'nullable' => false,
-                            'sample_data' => false,
+                            'sample_data' => '0',
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'boolean',
@@ -424,10 +424,7 @@ class RepresentationParserTest extends TestCase
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function providerRepresentationsThatWillFailParsing()
+    public function providerRepresentationsThatWillFailParsing(): array
     {
         return [
             'docblock-unparseable-mson' => [
@@ -453,10 +450,7 @@ class RepresentationParserTest extends TestCase
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function providerRepresentationMethodsThatWillFailParsing()
+    public function providerRepresentationMethodsThatWillFailParsing(): array
     {
         return [
             'no-method-supplied' => [

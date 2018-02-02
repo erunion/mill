@@ -3,6 +3,9 @@ namespace Mill\Parser;
 
 use Mill\Exceptions\Annotations\InvalidMSONSyntaxException;
 use Mill\Exceptions\Annotations\MissingRequiredFieldException;
+use Mill\Parser\Annotations\CapabilityAnnotation;
+use Mill\Parser\Annotations\ScopeAnnotation;
+use Mill\Parser\Annotations\UriAnnotation;
 
 /**
  * Base class for supported annotations.
@@ -10,7 +13,50 @@ use Mill\Exceptions\Annotations\MissingRequiredFieldException;
  */
 abstract class Annotation
 {
+    /** @var string */
     const REGEX_CAPABILITY = '/(\+[^\+]*\+)/';
+
+    /**
+     * Does this annotation require a visibility decorator?
+     *
+     * @var bool
+     */
+    const REQUIRES_VISIBILITY_DECORATOR = false;
+
+    /**
+     * Does this annotation support aliasing?
+     *
+     * @return bool
+     */
+    const SUPPORTS_ALIASING = false;
+
+    /**
+     * Does this annotation support being deprecated?
+     *
+     * @return bool
+     */
+    const SUPPORTS_DEPRECATION = false;
+
+    /**
+     * Is this annotation written using MSON?
+     *
+     * @return bool
+     */
+    const SUPPORTS_MSON = false;
+
+    /**
+     * Does this annotation support auth token scopes?
+     *
+     * @return bool
+     */
+    const SUPPORTS_SCOPES = false;
+
+    /**
+     * Does this annotation support versioning?
+     *
+     * @return bool
+     */
+    const SUPPORTS_VERSIONING = false;
 
     /**
      * The raw annotation from the docblock.
@@ -29,14 +75,14 @@ abstract class Annotation
     /**
      * Class method that this annotation is within.
      *
-     * @var mixed
+     * @var null|string
      */
-    protected $method;
+    protected $method = null;
 
     /**
      * Capability that this annotation requires.
      *
-     * @var string|bool
+     * @var false|string
      */
     protected $capability = false;
 
@@ -50,7 +96,7 @@ abstract class Annotation
     /**
      * Version representation that this annotation is supported on.
      *
-     * @var \Mill\Parser\Version|false
+     * @var false|Version
      */
     protected $version = false;
 
@@ -83,15 +129,6 @@ abstract class Annotation
     protected $aliased = false;
 
     /**
-     * Array of extra data needed to build the annotation.
-     *
-     * This is used for building representations in the `@api-field` and `@api-type` annotations.
-     *
-     * @var array
-     */
-    protected $extra_data = [];
-
-    /**
      * Array of parsed data from this annotation.
      *
      * @var array
@@ -99,76 +136,41 @@ abstract class Annotation
     protected $parsed_data = [];
 
     /**
-     * Return an array of items that should be included in an array representation of this annotation.
+     * An array of items that should be included in an array representation of this annotation.
      *
      * @var array
      */
     protected $arrayable = [];
 
     /**
-     * Does this annotation require a visibility decorator?
-     *
-     * @var bool|null
-     */
-    const REQUIRES_VISIBILITY_DECORATOR = null;
-
-    /**
-     * Does this annotation support aliasing?
-     *
-     * @return bool
-     */
-    const SUPPORTS_ALIASING = false;
-
-    /**
-     * Does this annotation support being deprecated?
-     *
-     * @return bool|null
-     */
-    const SUPPORTS_DEPRECATION = null;
-
-    /**
-     * Is this annotation written using MSON?
-     *
-     * @return bool|null
-     */
-    const SUPPORTS_MSON = null;
-
-    /**
-     * Does this annotation support auth token scopes?
-     *
-     * @return bool|null
-     */
-    const SUPPORTS_SCOPES = null;
-
-    /**
-     * Does this annotation support versioning?
-     *
-     * @return bool|null
-     */
-    const SUPPORTS_VERSIONING = null;
-
-    /**
      * @param string $doc
      * @param string $class
-     * @param string|null $method
-     * @param \Mill\Parser\Version|null $version
-     * @param array $extra_data
+     * @param null|string $method
+     * @param null|Version $version
      */
-    public function __construct($doc, $class, $method, Version $version = null, $extra_data = [])
+    public function __construct(string $doc, string $class, string $method = null, Version $version = null)
     {
         $this->docblock = $doc;
-
         $this->class = $class;
         $this->method = $method;
 
         // Since you can't set falsy defaults in methods, and we don't want a `null` version, let's force a false
         // default if no version was passed in.
         $this->version = (!empty($version)) ? $version : false;
-        $this->extra_data = $extra_data;
+    }
 
+    /**
+     * Process and parse the annotation docblock that was created.
+     *
+     * @return self
+     */
+    public function process(): self
+    {
         $this->parsed_data = $this->parser();
 
         $this->interpreter();
+
+        return $this;
     }
 
     /**
@@ -176,13 +178,16 @@ abstract class Annotation
      *
      * @param string $field
      * @param bool $is_mson_field
-     * @return mixed
+     * @return string
      * @throws InvalidMSONSyntaxException If the annotation contains invalid MSON.
      * @throws MissingRequiredFieldException If the supplied field is missing in the parsed dataset.
      */
-    protected function required($field, $is_mson_field = true)
+    protected function required(string $field, bool $is_mson_field = true): string
     {
         if (empty($this->parsed_data[$field])) {
+            /** @var string $method */
+            $method = $this->method;
+
             // If this field was written in MSON, but isn't present, and this annotation supports MSON, let's return an
             // invalid MSON exception because that means that we just weren't able to parse the MSON that they supplied.
             if ($is_mson_field && static::SUPPORTS_MSON) {
@@ -191,7 +196,7 @@ abstract class Annotation
                     $this->getAnnotationName(),
                     $this->docblock,
                     $this->class,
-                    $this->method
+                    $method
                 );
             }
 
@@ -200,7 +205,7 @@ abstract class Annotation
                 $this->getAnnotationName(),
                 $this->docblock,
                 $this->class,
-                $this->method
+                $method
             );
         }
 
@@ -211,11 +216,14 @@ abstract class Annotation
      * Extract an optional field from the parsed dataset.
      *
      * @param string $field
-     * @return mixed|null
+     * @param bool $allow_zero
+     * @return false|mixed
      */
-    protected function optional($field)
+    protected function optional(string $field, $allow_zero = false)
     {
-        if (empty($this->parsed_data[$field])) {
+        if ($allow_zero && $this->parsed_data[$field] === '0') {
+            return $this->parsed_data[$field];
+        } elseif (empty($this->parsed_data[$field])) {
             return false;
         }
 
@@ -228,7 +236,7 @@ abstract class Annotation
      * @param string $field
      * @return bool
      */
-    protected function boolean($field)
+    protected function boolean(string $field): bool
     {
         return !empty($this->parsed_data[$field]);
     }
@@ -239,7 +247,7 @@ abstract class Annotation
      *
      * @return array
      */
-    abstract protected function parser();
+    abstract protected function parser(): array;
 
     /**
      * Interpret the parsed annotation data and set local variables to build the annotation.
@@ -249,14 +257,89 @@ abstract class Annotation
      *
      * @return void
      */
-    abstract protected function interpreter();
+    abstract protected function interpreter(): void;
+
+    /**
+     * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
+     *
+     * @param array $data
+     * @param null|Version $version
+     * @return self
+     */
+    public static function hydrate(array $data = [], Version $version = null)
+    {
+        $class = get_called_class();
+
+        /** @var Annotation $annotation */
+        $annotation = new $class('', $data['class'], $data['method'], $version);
+
+        if (array_key_exists('capability', $data) && !empty($data['capability'])) {
+            // Since capability annotations have a `capability` value, let's avoid created a CapabilityAnnotation within
+            // another CapabilityAnnotation.
+            if ($annotation instanceof CapabilityAnnotation) {
+                $capability = $data['capability'];
+            } else {
+                $capability = (new CapabilityAnnotation(
+                    $data['capability'],
+                    $data['class'],
+                    $data['method'],
+                    $version
+                ))->process();
+            }
+
+            $annotation->setCapability($capability);
+        }
+
+        if ($annotation->requiresVisibilityDecorator()) {
+            $annotation->setVisibility($data['visible']);
+        }
+
+        if ($annotation->supportsAliasing()) {
+            $annotation->setAliased($data['aliased']);
+
+            $aliases = [];
+            foreach ($data['aliases'] as $alias) {
+                $aliases[] = UriAnnotation::hydrate(array_merge([
+                    'class' => $data['class'],
+                    'method' => $data['method']
+                ], $alias));
+            }
+
+            $annotation->setAliases($aliases);
+        }
+
+        if ($annotation->supportsDeprecation()) {
+            $annotation->setDeprecated($data['deprecated']);
+        }
+
+        if ($annotation->supportsScopes()) {
+            $scopes = [];
+            foreach ($data['scopes'] as $scope) {
+                $scopes[] = ScopeAnnotation::hydrate(array_merge(
+                    $scope,
+                    [
+                        'class' => __CLASS__,
+                        'method' => __METHOD__
+                    ]
+                ));
+            }
+
+            $annotation->setScopes($scopes);
+        }
+
+        if ($annotation->supportsVersioning() && $version) {
+            $annotation->setVersion($version);
+        }
+
+        return $annotation;
+    }
 
     /**
      * Does this annotation require a visibility decorator?
      *
      * @return bool
      */
-    public function requiresVisibilityDecorator()
+    public function requiresVisibilityDecorator(): bool
     {
         return static::REQUIRES_VISIBILITY_DECORATOR;
     }
@@ -266,7 +349,7 @@ abstract class Annotation
      *
      * @return bool
      */
-    public function supportsAliasing()
+    public function supportsAliasing(): bool
     {
         return static::SUPPORTS_ALIASING;
     }
@@ -276,7 +359,7 @@ abstract class Annotation
      *
      * @return bool
      */
-    public function supportsDeprecation()
+    public function supportsDeprecation(): bool
     {
         return static::SUPPORTS_DEPRECATION;
     }
@@ -286,7 +369,7 @@ abstract class Annotation
      *
      * @return bool
      */
-    public function supportsScopes()
+    public function supportsScopes(): bool
     {
         return static::SUPPORTS_SCOPES;
     }
@@ -296,7 +379,7 @@ abstract class Annotation
      *
      * @return bool
      */
-    public function supportsVersioning()
+    public function supportsVersioning(): bool
     {
         return static::SUPPORTS_VERSIONING;
     }
@@ -306,17 +389,20 @@ abstract class Annotation
      *
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         $arr = [];
         foreach ($this->arrayable as $var) {
-            if ($var === 'visible') {
-                $arr[$var] = $this->isVisible();
-            } elseif ($this->{$var} instanceof Annotation) {
+            if ($this->{$var} instanceof Annotation) {
                 $arr += $this->{$var}->toArray();
             } else {
                 $arr[$var] = $this->{$var};
             }
+        }
+
+        // If this annotation requires visibility decorators, then we should include that.
+        if ($this->requiresVisibilityDecorator()) {
+            $arr['visible'] = $this->isVisible();
         }
 
         // If this annotation supports aliasing, then we should include any aliasing data about it.
@@ -367,7 +453,7 @@ abstract class Annotation
      *
      * @return string
      */
-    protected function getAnnotationName()
+    protected function getAnnotationName(): string
     {
         // Rad snippet for pulling the short name of a class without needing reflection.
         // @link http://stackoverflow.com/a/27457689/105698
@@ -380,7 +466,7 @@ abstract class Annotation
      *
      * @return bool
      */
-    public function isVisible()
+    public function isVisible(): bool
     {
         return !!$this->visible;
     }
@@ -390,7 +476,7 @@ abstract class Annotation
      *
      * @return bool
      */
-    public function hasVisibility()
+    public function hasVisibility(): bool
     {
         return !is_null($this->visible);
     }
@@ -399,9 +485,9 @@ abstract class Annotation
      * Set the visibility on the current annotation.
      *
      * @param bool $visibility
-     * @return Annotation
+     * @return self
      */
-    public function setVisibility($visibility)
+    public function setVisibility(bool $visibility): self
     {
         $this->visible = $visibility;
         return $this;
@@ -412,7 +498,7 @@ abstract class Annotation
      *
      * @return bool
      */
-    public function isDeprecated()
+    public function isDeprecated(): bool
     {
         return $this->deprecated;
     }
@@ -421,9 +507,9 @@ abstract class Annotation
      * Set if this annotation is deprecated or not.
      *
      * @param bool $deprecated
-     * @return Annotation
+     * @return self
      */
-    public function setDeprecated($deprecated)
+    public function setDeprecated(bool $deprecated): self
     {
         $this->deprecated = $deprecated;
         return $this;
@@ -434,7 +520,7 @@ abstract class Annotation
      *
      * @return bool
      */
-    public function isAliased()
+    public function isAliased(): bool
     {
         return $this->aliased;
     }
@@ -443,9 +529,9 @@ abstract class Annotation
      * Set if this annotation is an alias or not.
      *
      * @param bool $aliased
-     * @return Annotation
+     * @return self
      */
-    public function setAliased($aliased)
+    public function setAliased(bool $aliased): self
     {
         $this->aliased = $aliased;
         return $this;
@@ -455,9 +541,9 @@ abstract class Annotation
      * Set any aliases to this annotation.
      *
      * @param array<Annotation> $aliases
-     * @return $this
+     * @return self
      */
-    public function setAliases(array $aliases)
+    public function setAliases(array $aliases): self
     {
         $this->aliases = $aliases;
         return $this;
@@ -468,7 +554,7 @@ abstract class Annotation
      *
      * @return array<Annotation>
      */
-    public function getAliases()
+    public function getAliases(): array
     {
         return $this->aliases;
     }
@@ -477,9 +563,9 @@ abstract class Annotation
      * Set any required authentication scopes to this annotation.
      *
      * @param array<Annotation> $scopes
-     * @return $this
+     * @return self
      */
-    public function setScopes(array $scopes)
+    public function setScopes(array $scopes): self
     {
         $this->scopes = $scopes;
         return $this;
@@ -490,7 +576,7 @@ abstract class Annotation
      *
      * @return array
      */
-    public function getScopes()
+    public function getScopes(): array
     {
         return $this->scopes;
     }
@@ -498,7 +584,7 @@ abstract class Annotation
     /**
      * Return the capability, if any, that has been set.
      *
-     * @return string|false|bool
+     * @return false|string
      */
     public function getCapability()
     {
@@ -509,10 +595,10 @@ abstract class Annotation
      * Set a capability that this annotation requires. This is specifically used in tandem with representation depth
      * parsing.
      *
-     * @param string $capability
-     * @return Annotation
+     * @param false|string $capability
+     * @return self
      */
-    public function setCapability($capability)
+    public function setCapability($capability): self
     {
         $this->capability = $capability;
         return $this;
@@ -521,7 +607,7 @@ abstract class Annotation
     /**
      * Get the version constraint, if any, that this parameter is part of.
      *
-     * @return Version|false
+     * @return false|Version
      */
     public function getVersion()
     {
@@ -533,9 +619,9 @@ abstract class Annotation
      * depth parsing.
      *
      * @param Version $version
-     * @return Annotation
+     * @return self
      */
-    public function setVersion(Version $version)
+    public function setVersion(Version $version): self
     {
         $this->version = $version;
         return $this;

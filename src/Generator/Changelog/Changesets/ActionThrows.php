@@ -7,9 +7,9 @@ use Mill\Generator\Changelog\Changeset;
 class ActionThrows extends Changeset
 {
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
-    public function getTemplates()
+    public function getTemplates(): array
     {
         return [
             'plural' => [
@@ -26,9 +26,9 @@ class ActionThrows extends Changeset
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
-    public function compileAddedOrRemovedChangeset($definition, array $changes = [])
+    public function compileAddedOrRemovedChangeset(string $definition, array $changes = [])
     {
         $templates = $this->getTemplates();
 
@@ -59,7 +59,7 @@ class ActionThrows extends Changeset
                 $template = $templates['plural'][$definition];
                 $entries[] = [
                     $this->renderText($template, [
-                        'resource_group' => $change['resource_group'],
+                        'resource_namespace' => $change['resource_namespace'],
                         'method' => $method,
                         'uri' => $change['uri']
                     ]),
@@ -77,9 +77,9 @@ class ActionThrows extends Changeset
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
-    public function compileChangedChangeset($definition, array $changes = [])
+    public function compileChangedChangeset(string $definition, array $changes = [])
     {
         throw new \Exception($definition . ' action throws changes are not yet supported.');
     }

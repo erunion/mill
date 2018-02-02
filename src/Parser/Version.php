@@ -40,7 +40,7 @@ class Version
      * @param string $method
      * @throws UnrecognizedSchemaException If an `@api-version` annotation was found with an unrecognized schema.
      */
-    public function __construct($constraint, $class, $method)
+    public function __construct(string $constraint, string $class, string $method)
     {
         $this->class = $class;
         $this->method = $method;
@@ -59,7 +59,7 @@ class Version
      * @param string $version
      * @return bool
      */
-    public function matches($version)
+    public function matches(string $version): bool
     {
         return Semver::satisfies($version, $this->getConstraint());
     }
@@ -67,7 +67,7 @@ class Version
     /**
      * @return string
      */
-    public function getConstraint()
+    public function getConstraint(): string
     {
         return $this->constraint->getPrettyString();
     }
@@ -77,7 +77,7 @@ class Version
      *
      * @return bool
      */
-    public function isRange()
+    public function isRange(): bool
     {
         return $this->constraint instanceof MultiConstraint;
     }

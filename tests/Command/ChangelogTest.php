@@ -5,24 +5,18 @@ use Mill\Command\Changelog;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class ChangelogTest extends \PHPUnit_Framework_TestCase
+class ChangelogTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \Symfony\Component\Console\Command\Command
-     */
+    /** @var \Symfony\Component\Console\Command\Command */
     protected $command;
 
-    /**
-     * @var CommandTester
-     */
+    /** @var CommandTester */
     protected $tester;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $config_file;
 
-    public function setUp()
+    public function setUp(): void
     {
         $application = new Application();
         $application->add(new Changelog);
@@ -34,13 +28,12 @@ class ChangelogTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider providerTestChangelog
-     * @param boolean $private_objects
+     * @dataProvider providerTestCommand
+     * @param bool $private_objects
      * @param array $capabilities
      * @param string $expected_file
-     * @return void
      */
-    public function testChangelog($private_objects, $capabilities, $expected_file)
+    public function testCommand(bool $private_objects, array $capabilities, string $expected_file): void
     {
         /** @var string $output_dir */
         $output_dir = tempnam(sys_get_temp_dir(), 'mill-generate-test-');
@@ -78,7 +71,7 @@ class ChangelogTest extends \PHPUnit_Framework_TestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage The supplied Mill configuration file does not exist.
      */
-    public function testGenerateFailsOnInvalidConfigFile()
+    public function testCommandFailsOnInvalidConfigFile(): void
     {
         $this->tester->execute([
             'command' => $this->command->getName(),
@@ -86,10 +79,7 @@ class ChangelogTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    /**
-     * @return array
-     */
-    public function providerTestChangelog()
+    public function providerTestCommand(): array
     {
         return [
             // Complete changelog. All documentation parsed.
@@ -106,23 +96,23 @@ class ChangelogTest extends \PHPUnit_Framework_TestCase
                 'expected' => 'changelog-public-only-all-capabilities.md'
             ],
 
-            // Changelog with public-only parsed docs and unmatched capabilities
-            'changelog-public-docs-with-unmatched-capabilities' => [
+            // Changelog with public-only parsed docs and matched `BUY_TICKETS` and `FEATURE_FLAG` capabilities
+            'changelog-public-only-matched-with-tickets-and-feature-capabilities' => [
                 'private_objects' => false,
                 'capabilities' => [
                     'BUY_TICKETS',
                     'FEATURE_FLAG'
                 ],
-                'expected' => 'changelog-public-only-unmatched-capabilities.md'
+                'expected' => 'changelog-public-only-matched-with-tickets-and-feature-capabilities.md'
             ],
 
-            // Changelog with public-only parsed docs and matched capabilities
-            'changelog-public-docs-with-matched-capabilities' => [
+            // Changelog with public-only parsed docs and matched `DELETE_CONTENT` capabilities
+            'changelog-public-only-matched-with-delete-capabilities' => [
                 'private_objects' => false,
                 'capabilities' => [
                     'DELETE_CONTENT'
                 ],
-                'expected' => 'changelog-public-only-matched-capabilities.md'
+                'expected' => 'changelog-public-only-matched-with-delete-capabilities.md'
             ]
         ];
     }

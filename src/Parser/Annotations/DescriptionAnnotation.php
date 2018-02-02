@@ -2,6 +2,7 @@
 namespace Mill\Parser\Annotations;
 
 use Mill\Parser\Annotation;
+use Mill\Parser\Version;
 
 /**
  * Handler for descriptions.
@@ -9,19 +10,11 @@ use Mill\Parser\Annotation;
  */
 class DescriptionAnnotation extends Annotation
 {
-    const REQUIRES_VISIBILITY_DECORATOR = false;
-    const SUPPORTS_DEPRECATION = false;
-    const SUPPORTS_VERSIONING = false;
-
-    /**
-     * Description.
-     *
-     * @var string
-     */
+    /** @var string */
     protected $description;
 
     /**
-     * Return an array of items that should be included in an array representation of this annotation.
+     * An array of items that should be included in an array representation of this annotation.
      *
      * @var array
      */
@@ -30,12 +23,9 @@ class DescriptionAnnotation extends Annotation
     ];
 
     /**
-     * Parse the annotation out and return an array of data that we can use to then interpret this annotations'
-     * representation.
-     *
-     * @return array
+     * {@inheritdoc}
      */
-    protected function parser()
+    protected function parser(): array
     {
         return [
             'description' => $this->docblock
@@ -43,25 +33,40 @@ class DescriptionAnnotation extends Annotation
     }
 
     /**
-     * Interpret the parsed annotation data and set local variables to build the annotation.
-     *
-     * To facilitate better error messaging, the order in which items are interpreted here should be match the schema
-     * of the annotation.
-     *
-     * @return void
+     * {@inheritdoc}
      */
-    protected function interpreter()
+    protected function interpreter(): void
     {
         $this->description = $this->required('description');
     }
 
     /**
-     * Get the description.
-     *
+     * {@inheritdoc}
+     */
+    public static function hydrate(array $data = [], Version $version = null): self
+    {
+        /** @var DescriptionAnnotation $annotation */
+        $annotation = parent::hydrate($data, $version);
+        $annotation->setDescription($data['description']);
+
+        return $annotation;
+    }
+
+    /**
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
+    }
+
+    /**
+     * @param string $description
+     * @return self
+     */
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
+        return $this;
     }
 }

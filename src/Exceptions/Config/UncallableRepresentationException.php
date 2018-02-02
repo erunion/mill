@@ -1,18 +1,14 @@
 <?php
 namespace Mill\Exceptions\Config;
 
-class UncallableRepresentationException extends \Exception
+use Mill\Exceptions\BaseException;
+
+class UncallableRepresentationException extends BaseException
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     public $representation;
 
-    /**
-     * @param string $representation
-     * @return UncallableRepresentationException
-     */
-    public static function create($representation)
+    public static function create(string $representation): UncallableRepresentationException
     {
         $message = sprintf(
             'The `%s` representation is being used, but is uncallable.',

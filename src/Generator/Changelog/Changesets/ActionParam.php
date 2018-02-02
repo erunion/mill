@@ -7,9 +7,9 @@ use Mill\Generator\Changelog\Changeset;
 class ActionParam extends Changeset
 {
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
-    public function getTemplates()
+    public function getTemplates(): array
     {
         return [
             'plural' => [
@@ -25,9 +25,9 @@ class ActionParam extends Changeset
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
-    public function compileAddedOrRemovedChangeset($definition, array $changes = [])
+    public function compileAddedOrRemovedChangeset(string $definition, array $changes = [])
     {
         $templates = $this->getTemplates();
 
@@ -56,7 +56,7 @@ class ActionParam extends Changeset
                 $template = $templates['plural'][$definition];
                 $entry[] = [
                     $this->renderText($template, [
-                        'resource_group' => $changes[0]['resource_group'],
+                        'resource_namespace' => $changes[0]['resource_namespace'],
                         'method' => $method,
                         'uri' => $changes[0]['uri']
                     ]),
@@ -68,7 +68,7 @@ class ActionParam extends Changeset
 
             $template = $templates['singular'][$definition];
             $entry[] = $this->renderText($template, [
-                'resource_group' => $changes[0]['resource_group'],
+                'resource_namespace' => $changes[0]['resource_namespace'],
                 'parameter' => array_shift($params),
                 'method' => $method,
                 'uri' => $changes[0]['uri']
@@ -79,9 +79,9 @@ class ActionParam extends Changeset
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
-    public function compileChangedChangeset($definition, array $changes = [])
+    public function compileChangedChangeset(string $definition, array $changes = [])
     {
         throw new \Exception($definition . ' action param changes are not yet supported.');
     }

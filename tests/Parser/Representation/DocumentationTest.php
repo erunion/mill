@@ -1,6 +1,9 @@
 <?php
 namespace Mill\Tests\Parser\Representation;
 
+use Mill\Exceptions\Annotations\MultipleAnnotationsException;
+use Mill\Exceptions\Annotations\RequiredAnnotationException;
+use Mill\Exceptions\Resource\NoAnnotationsException;
 use Mill\Parser\Representation\Documentation;
 use Mill\Tests\TestCase;
 
@@ -11,9 +14,8 @@ class DocumentationTest extends TestCase
      * @param string $class
      * @param string $method
      * @param array $expected
-     * @return void
      */
-    public function testParseDocumentationReturnsRepresentation($class, $method, array $expected)
+    public function testParseDocumentationReturnsRepresentation(string $class, string $method, array $expected): void
     {
         $parsed = (new Documentation($class, $method))->parse();
         $representation = $parsed->toArray();
@@ -46,19 +48,18 @@ class DocumentationTest extends TestCase
      * @param string $class
      * @param string $method
      * @param string $exception
-     * @return void
      */
-    public function testParseDocumentationFailsOnBadRepresentations($class, $method, $exception)
-    {
+    public function testParseDocumentationFailsOnBadRepresentations(
+        string $class,
+        string $method,
+        string $exception
+    ): void {
         $this->expectException($exception);
 
         (new Documentation($class, $method))->parse();
     }
 
-    /**
-     * @return array
-     */
-    public function providerParseDocumentationReturnsRepresentation()
+    public function providerParseDocumentationReturnsRepresentation(): array
     {
         return [
             'Movie' => [
@@ -212,7 +213,7 @@ class DocumentationTest extends TestCase
                             'description' => 'Kid friendly?',
                             'identifier' => 'kid_friendly',
                             'nullable' => false,
-                            'sample_data' => false,
+                            'sample_data' => '0',
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'boolean',
@@ -470,7 +471,7 @@ class DocumentationTest extends TestCase
                                 'description' => 'Kid friendly?',
                                 'identifier' => 'kid_friendly',
                                 'nullable' => false,
-                                'sample_data' => false,
+                                'sample_data' => '0',
                                 'scopes' => [],
                                 'subtype' => false,
                                 'type' => 'boolean',
@@ -584,26 +585,23 @@ class DocumentationTest extends TestCase
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function providerParseDocumentationFailsOnBadRepresentations()
+    public function providerParseDocumentationFailsOnBadRepresentations(): array
     {
         return [
             'no-annotations' => [
                 'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithNoAnnotations',
                 'method' => 'create',
-                'expected.exception' => '\Mill\Exceptions\Resource\NoAnnotationsException'
+                'expected.exception' => NoAnnotationsException::class
             ],
             'no-annotations-on-the-class' => [
                 'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithNoClassAnnotations',
                 'method' => 'create',
-                'expected.exception' => '\Mill\Exceptions\Resource\NoAnnotationsException'
+                'expected.exception' => NoAnnotationsException::class
             ],
             'missing-a-required-label-annotation' => [
                 'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithRequiredLabelAnnotationMissing',
                 'method' => 'create',
-                'expected.exception' => 'Mill\Exceptions\Annotations\RequiredAnnotationException',
+                'expected.exception' => RequiredAnnotationException::class,
                 'asserts' => [
                     'getAnnotation' => 'label'
                 ]
@@ -611,7 +609,7 @@ class DocumentationTest extends TestCase
             'multiple-label-annotations' => [
                 'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithMultipleLabelAnnotations',
                 'method' => 'create',
-                'expected.exception' => '\Mill\Exceptions\Annotations\MultipleAnnotationsException'
+                'expected.exception' => MultipleAnnotationsException::class
             ]
         ];
     }

@@ -1,6 +1,9 @@
 <?php
 namespace Mill\Tests\Parser\Annotations;
 
+use Mill\Exceptions\Annotations\InvalidMSONSyntaxException;
+use Mill\Exceptions\Annotations\MissingRequiredFieldException;
+use Mill\Exceptions\Annotations\UnsupportedTypeException;
 use Mill\Parser\Annotations\UriSegmentAnnotation;
 
 class UriSegmentAnnotationTest extends AnnotationTest
@@ -10,20 +13,44 @@ class UriSegmentAnnotationTest extends AnnotationTest
      * @param string $uri
      * @param string $segment
      * @param array $expected
-     * @return void
      */
-    public function testAnnotation($uri, $segment, array $expected)
+    public function testAnnotation(string $uri, string $segment, array $expected): void
     {
         $annotation = new UriSegmentAnnotation($segment, __CLASS__, __METHOD__, null);
+        $annotation->process();
 
+        $this->assertAnnotation($annotation, $expected);
+    }
+
+    /**
+     * @dataProvider providerAnnotation
+     * @param string $uri
+     * @param string $segment
+     * @param array $expected
+     */
+    public function testHydrate(string $uri, string $segment, array $expected): void
+    {
+        /** @var UriSegmentAnnotation $annotation */
+        $annotation = UriSegmentAnnotation::hydrate(array_merge(
+            $expected,
+            [
+                'class' => __CLASS__,
+                'method' => __METHOD__
+            ]
+        ));
+
+        $this->assertAnnotation($annotation, $expected);
+    }
+
+    private function assertAnnotation(UriSegmentAnnotation $annotation, array $expected): void
+    {
         $this->assertFalse($annotation->requiresVisibilityDecorator());
         $this->assertFalse($annotation->supportsVersioning());
         $this->assertFalse($annotation->supportsDeprecation());
         $this->assertFalse($annotation->supportsAliasing());
 
-        $this->assertSame($uri, $annotation->getUri());
-
         $this->assertSame($expected, $annotation->toArray());
+        $this->assertSame($expected['uri'], $annotation->getUri());
         $this->assertSame($expected['field'], $annotation->getField());
         $this->assertSame($expected['type'], $annotation->getType());
         $this->assertSame($expected['description'], $annotation->getDescription());
@@ -32,10 +59,7 @@ class UriSegmentAnnotationTest extends AnnotationTest
         $this->assertEmpty($annotation->getAliases());
     }
 
-    /**
-     * @return array
-     */
-    public function providerAnnotation()
+    public function providerAnnotation(): array
     {
         return [
             'bare' => [
@@ -69,16 +93,13 @@ class UriSegmentAnnotationTest extends AnnotationTest
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function providerAnnotationFailsOnInvalidContent()
+    public function providerAnnotationFailsOnInvalidContent(): array
     {
         return [
             'invalid-mson' => [
-                'annotation' => '\Mill\Parser\Annotations\UriSegmentAnnotation',
+                'annotation' => UriSegmentAnnotation::class,
                 'content' => '{/movies/+id}',
-                'expected.exception' => '\Mill\Exceptions\Annotations\InvalidMSONSyntaxException',
+                'expected.exception' => InvalidMSONSyntaxException::class,
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'urisegment',
                     'getDocblock' => '{/movies/+id}',
@@ -86,9 +107,9 @@ class UriSegmentAnnotationTest extends AnnotationTest
                 ]
             ],
             'missing-uri' => [
-                'annotation' => '\Mill\Parser\Annotations\UriSegmentAnnotation',
+                'annotation' => UriSegmentAnnotation::class,
                 'content' => '',
-                'expected.exception' => '\Mill\Exceptions\Annotations\MissingRequiredFieldException',
+                'expected.exception' => MissingRequiredFieldException::class,
                 'expected.exception.asserts' => [
                     'getRequiredField' => 'uri',
                     'getAnnotation' => 'urisegment',
@@ -97,9 +118,9 @@ class UriSegmentAnnotationTest extends AnnotationTest
                 ]
             ],
             'unsupported-type' => [
-                'annotation' => '\Mill\Parser\Annotations\UriSegmentAnnotation',
+                'annotation' => UriSegmentAnnotation::class,
                 'content' => '{/movies/+id} id (str) - Movie ID',
-                'expected.exception' => '\Mill\Exceptions\Annotations\UnsupportedTypeException',
+                'expected.exception' => UnsupportedTypeException::class,
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'id (str) - Movie ID',
                     'getDocblock' => null

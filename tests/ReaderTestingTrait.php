@@ -1,11 +1,15 @@
 <?php
 namespace Mill\Tests;
 
+use Closure;
 use Mill\Container;
 use Mill\Provider\Reader;
 
 trait ReaderTestingTrait
 {
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $container = Container::getInstance();
@@ -24,22 +28,27 @@ trait ReaderTestingTrait
      * in order to test parser failures.
      *
      * @param string $docblock
-     * @return void
      */
-    protected function overrideReadersWithFakeDocblockReturn($docblock)
+    protected function overrideReadersWithFakeDocblockReturn(string $docblock): void
     {
         $container = Container::getInstance();
 
-        $container->extend('reader.annotations', function ($reader, Container $c) use ($docblock) {
-            return function () use ($docblock) {
-                return $docblock;
-            };
-        });
+        $container->extend(
+            'reader.annotations',
+            function (Closure $reader, Container $c) use ($docblock): Closure {
+                return function () use ($docblock): string {
+                    return $docblock;
+                };
+            }
+        );
 
-        $container->extend('reader.annotations.representation', function ($reader, Container $c) use ($docblock) {
-            return function () use ($docblock) {
-                return $docblock;
-            };
-        });
+        $container->extend(
+            'reader.annotations.representation',
+            function (Closure $reader, Container $c) use ($docblock): Closure {
+                return function () use ($docblock): string {
+                    return $docblock;
+                };
+            }
+        );
     }
 }

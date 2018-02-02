@@ -25,9 +25,9 @@ class Markdown extends Generator
      * Set the current error map we're going to build a representation for.
      *
      * @param array $error_map
-     * @return Markdown
+     * @return self
      */
-    public function setErrorMap(array $error_map = [])
+    public function setErrorMap(array $error_map = []): self
     {
         $this->error_map = $error_map;
         return $this;
@@ -38,11 +38,11 @@ class Markdown extends Generator
      *
      * @return array
      */
-    public function generate()
+    public function generate(): array
     {
         $markdown = [];
 
-        foreach ($this->error_map as $version => $groups) {
+        foreach ($this->error_map as $version => $namespaces) {
             $content = '';
 
             $api_name = $this->config->getName();
@@ -54,8 +54,8 @@ class Markdown extends Generator
                 $content .= $this->line(2);
             }
 
-            foreach ($groups as $group => $actions) {
-                $content .= sprintf('## %s', $group);
+            foreach ($namespaces as $namespace => $actions) {
+                $content .= sprintf('## %s', $namespace);
                 $content .= $this->line(1);
 
                 $content .= '| Error Code | URI | Method | HTTP Code | Description |';

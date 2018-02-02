@@ -1,7 +1,9 @@
 <?php
 namespace Mill\Exceptions\Annotations;
 
-class InvalidCapabilitySuppliedException extends \Exception
+use Mill\Exceptions\BaseException;
+
+class InvalidCapabilitySuppliedException extends BaseException
 {
     use AnnotationExceptionTrait;
 
@@ -10,14 +12,11 @@ class InvalidCapabilitySuppliedException extends \Exception
      */
     public $capability;
 
-    /**
-     * @param string $capability
-     * @param string $class
-     * @param string $method
-     * @return InvalidCapabilitySuppliedException
-     */
-    public static function create($capability, $class, $method)
-    {
+    public static function create(
+        string $capability,
+        string $class,
+        string $method
+    ): InvalidCapabilitySuppliedException {
         $message = sprintf(
             'The capability on `@api-capability %s` in %s::%s is not present in your config.',
             $capability,
@@ -38,7 +37,7 @@ class InvalidCapabilitySuppliedException extends \Exception
      *
      * @return string
      */
-    public function getCapability()
+    public function getCapability(): string
     {
         return $this->capability;
     }

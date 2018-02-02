@@ -7,6 +7,7 @@ use Mill\Exceptions\Annotations\UnknownReturnCodeException;
 use Mill\Exceptions\Config\UnconfiguredRepresentationException;
 use Mill\Parser\Annotation;
 use Mill\Parser\Annotations\Traits\HasHttpCodeResponseTrait;
+use Mill\Parser\Version;
 
 /**
  * Handler for the `@api-return` annotation.
@@ -17,7 +18,6 @@ class ReturnAnnotation extends Annotation
     use HasHttpCodeResponseTrait;
 
     const REQUIRES_VISIBILITY_DECORATOR = true;
-    const SUPPORTS_DEPRECATION = false;
     const SUPPORTS_VERSIONING = true;
 
     const REGEX_TYPE = '/^({[^}]*})/';
@@ -25,7 +25,7 @@ class ReturnAnnotation extends Annotation
     /**
      * Description for what this annotations' action return is.
      *
-     * @var string|null
+     * @var false|null|string
      */
     protected $description = null;
 
@@ -37,7 +37,7 @@ class ReturnAnnotation extends Annotation
     protected $type;
 
     /**
-     * Return an array of items that should be included in an array representation of this annotation.
+     * An array of items that should be included in an array representation of this annotation.
      *
      * @var array
      */
@@ -50,13 +50,10 @@ class ReturnAnnotation extends Annotation
     ];
 
     /**
-     * Parse the annotation out and return an array of data that we can use to then interpret this annotations'
-     * representation.
-     *
-     * @return array
+     * {@inheritdoc}
      * @throws UnknownRepresentationException If a supplied representation has not been configured.
      */
-    protected function parser()
+    protected function parser(): array
     {
         $parsed = [];
         $content = trim($this->docblock);
@@ -87,7 +84,9 @@ class ReturnAnnotation extends Annotation
                 try {
                     Container::getConfig()->doesRepresentationExist($representation);
                 } catch (UnconfiguredRepresentationException $e) {
-                    throw UnknownRepresentationException::create($representation, $this->class, $this->method);
+                    /** @var string $method */
+                    $method = $this->method;
+                    throw UnknownRepresentationException::create($representation, $this->class, $method);
                 }
             } else {
                 $description = trim($representation . ' ' . $description);
@@ -102,14 +101,9 @@ class ReturnAnnotation extends Annotation
     }
 
     /**
-     * Interpret the parsed annotation data and set local variables to build the annotation.
-     *
-     * To facilitate better error messaging, the order in which items are interpreted here should be match the schema
-     * of the annotation.
-     *
-     * @return void
+     * {@inheritdoc}
      */
-    protected function interpreter()
+    protected function interpreter(): void
     {
         $this->http_code = $this->required('http_code');
         $this->representation = $this->optional('representation');
@@ -124,13 +118,28 @@ class ReturnAnnotation extends Annotation
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public static function hydrate(array $data = [], Version $version = null): self
+    {
+        /** @var ReturnAnnotation $annotation */
+        $annotation = parent::hydrate($data, $version);
+        $annotation->setDescription($data['description']);
+        $annotation->setHttpCode($data['http_code']);
+        $annotation->setRepresentation($data['representation']);
+        $annotation->setType($data['type']);
+
+        return $annotation;
+    }
+
+    /**
      * Grab the HTTP code for a given response type.
      *
      * @param string $type
-     * @return integer
+     * @return int
      * @throws UnknownReturnCodeException If an unrecognized return code is found.
      */
-    private function findReturnCodeForType($type)
+    private function findReturnCodeForType(string $type): int
     {
         switch ($type) {
             case 'collection':
@@ -155,14 +164,14 @@ class ReturnAnnotation extends Annotation
                 return 304;
 
             default:
-                throw UnknownReturnCodeException::create('return', $this->docblock, $this->class, $this->method);
+                /** @var string $method */
+                $method = $this->method;
+                throw UnknownReturnCodeException::create('return', $this->docblock, $this->class, $method);
         }
     }
 
     /**
-     * Get the description for this response.
-     *
-     * @return null|string
+     * @return false|null|string
      */
     public function getDescription()
     {
@@ -170,12 +179,30 @@ class ReturnAnnotation extends Annotation
     }
 
     /**
-     * Get the type of object that is being returned for this response.
-     *
+     * @param false|null|string $description
+     * @return self
+     */
+    public function setDescription($description): self
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    /**
      * @return string
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
+    }
+
+    /**
+     * @param string $type
+     * @return self
+     */
+    public function setType(string $type): self
+    {
+        $this->type = $type;
+        return $this;
     }
 }

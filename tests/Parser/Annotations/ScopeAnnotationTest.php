@@ -1,6 +1,8 @@
 <?php
 namespace Mill\Tests\Parser\Annotations;
 
+use Mill\Exceptions\Annotations\InvalidScopeSuppliedException;
+use Mill\Exceptions\Annotations\MissingRequiredFieldException;
 use Mill\Parser\Annotations\ScopeAnnotation;
 
 class ScopeAnnotationTest extends AnnotationTest
@@ -9,12 +11,35 @@ class ScopeAnnotationTest extends AnnotationTest
      * @dataProvider providerAnnotation
      * @param string $content
      * @param array $expected
-     * @return void
      */
-    public function testAnnotation($content, array $expected)
+    public function testAnnotation(string $content, array $expected): void
     {
         $annotation = new ScopeAnnotation($content, __CLASS__, __METHOD__);
+        $annotation->process();
 
+        $this->assertAnnotation($annotation, $expected);
+    }
+
+    /**
+     * @dataProvider providerAnnotation
+     * @param string $content
+     * @param array $expected
+     */
+    public function testHydrate(string $content, array $expected): void
+    {
+        $annotation = ScopeAnnotation::hydrate(array_merge(
+            $expected,
+            [
+                'class' => __CLASS__,
+                'method' => __METHOD__
+            ]
+        ));
+
+        $this->assertAnnotation($annotation, $expected);
+    }
+
+    private function assertAnnotation(ScopeAnnotation $annotation, array $expected): void
+    {
         $this->assertFalse($annotation->requiresVisibilityDecorator());
         $this->assertFalse($annotation->supportsVersioning());
         $this->assertFalse($annotation->supportsDeprecation());
@@ -28,10 +53,7 @@ class ScopeAnnotationTest extends AnnotationTest
         $this->assertEmpty($annotation->getAliases());
     }
 
-    /**
-     * @return array
-     */
-    public function providerAnnotation()
+    public function providerAnnotation(): array
     {
         return [
             'bare' => [
@@ -51,16 +73,13 @@ class ScopeAnnotationTest extends AnnotationTest
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function providerAnnotationFailsOnInvalidContent()
+    public function providerAnnotationFailsOnInvalidContent(): array
     {
         return [
             'missing-scope' => [
-                'annotation' => '\Mill\Parser\Annotations\ScopeAnnotation',
+                'annotation' => ScopeAnnotation::class,
                 'content' => '',
-                'expected.exception' => '\Mill\Exceptions\Annotations\MissingRequiredFieldException',
+                'expected.exception' => MissingRequiredFieldException::class,
                 'expected.exception.asserts' => [
                     'getRequiredField' => 'scope',
                     'getAnnotation' => 'scope',
@@ -69,9 +88,9 @@ class ScopeAnnotationTest extends AnnotationTest
                 ]
             ],
             'scope-was-not-configured' => [
-                'annotation' => '\Mill\Parser\Annotations\ScopeAnnotation',
+                'annotation' => ScopeAnnotation::class,
                 'content' => 'unknownScope',
-                'expected.exception' => '\Mill\Exceptions\Annotations\InvalidScopeSuppliedException',
+                'expected.exception' => InvalidScopeSuppliedException::class,
                 'expected.exception.asserts' => [
                     'getScope' => 'unknownScope',
                     'getAnnotation' => null

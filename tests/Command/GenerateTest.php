@@ -5,24 +5,18 @@ use Mill\Command\Generate;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class GenerateTest extends \PHPUnit_Framework_TestCase
+class GenerateTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \Symfony\Component\Console\Command\Command
-     */
+    /** @var \Symfony\Component\Console\Command\Command */
     protected $command;
 
-    /**
-     * @var CommandTester
-     */
+    /** @var CommandTester */
     protected $tester;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $config_file;
 
-    public function setUp()
+    public function setUp(): void
     {
         $application = new Application();
         $application->add(new Generate);
@@ -33,7 +27,7 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         $this->config_file = __DIR__ . '/../../resources/examples/mill.xml';
     }
 
-    public function testGenerate()
+    public function testCommand(): void
     {
         /** @var string $output_dir */
         $output_dir = tempnam(sys_get_temp_dir(), 'mill-generate-test-');
@@ -99,7 +93,7 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testGenerateWithDryRun()
+    public function testCommandWithDryRun(): void
     {
         $this->tester->execute([
             'command' => $this->command->getName(),
@@ -114,7 +108,7 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         $this->assertContains('API version: 1.1', $output);
     }
 
-    public function testGenerateWithDefaultVersion()
+    public function testCommandWithDefaultVersion(): void
     {
         $this->tester->execute([
             'command' => $this->command->getName(),
@@ -130,7 +124,7 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         $this->assertContains('API version: 1.1', $output);
     }
 
-    public function testGenerateWithSpecificConstraint()
+    public function testCommandWithSpecificConstraint(): void
     {
         $this->tester->execute([
             'command' => $this->command->getName(),
@@ -150,7 +144,7 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage The supplied Mill configuration file does not exist.
      */
-    public function testGenerateFailsOnInvalidConfigFile()
+    public function testCommandFailsOnInvalidConfigFile(): void
     {
         $this->tester->execute([
             'command' => $this->command->getName(),
@@ -158,7 +152,7 @@ class GenerateTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    public function testGenerateFailsOnInvalidVersionConstraint()
+    public function testCommandFailsOnInvalidVersionConstraint(): void
     {
         $this->tester->execute([
             'command' => $this->command->getName(),

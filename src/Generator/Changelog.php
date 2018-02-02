@@ -51,7 +51,7 @@ class Changelog extends Generator
      *
      * @return array
      */
-    public function generate()
+    public function generate(): array
     {
         $this->parsed['representations'] = $this->parseRepresentations();
         $this->parsed['resources'] = $this->parseResources();
@@ -89,11 +89,12 @@ class Changelog extends Generator
      *
      * @return string
      */
-    public function generateJson()
+    public function generateJson(): string
     {
         $json = new Json($this->config);
         $json->setChangelog($this->generate());
-        return $json->generate();
+        $generated = $json->generate();
+        return array_shift($generated);
     }
 
     /**
@@ -101,20 +102,20 @@ class Changelog extends Generator
      *
      * @return string
      */
-    public function generateMarkdown()
+    public function generateMarkdown(): string
     {
         $markdown = new Markdown($this->config);
         $markdown->setChangelog($this->generate());
-        return $markdown->generate();
+        $generated = $markdown->generate();
+        return array_shift($generated);
     }
 
     /**
      * Compile a changelog for a parsed set of representations.
      *
      * @param array $representations
-     * @return void
      */
-    private function buildRepresentationChangelog(array $representations = [])
+    private function buildRepresentationChangelog(array $representations = []): void
     {
         /** @var Documentation $representation */
         foreach ($representations as $representation) {
@@ -158,11 +159,10 @@ class Changelog extends Generator
      * Compile a changelog for a parsed set of resources.
      *
      * @param array $resources
-     * @return void
      */
-    private function buildResourceChangelog(array $resources = [])
+    private function buildResourceChangelog(array $resources = []): void
     {
-        foreach ($resources as $group_name => $data) {
+        foreach ($resources as $namespace => $data) {
             foreach ($data['resources'] as $resource_name => $resource) {
                 /** @var Action\Documentation $action */
                 foreach ($resource['actions'] as $identifier => $action) {
@@ -174,9 +174,9 @@ class Changelog extends Generator
                             self::DEFINITION_ADDED,
                             $min_version,
                             self::CHANGESET_TYPE_ACTION,
-                            $group_name,
+                            $namespace,
                             [
-                                'resource_group' => $group_name,
+                                'resource_namespace' => $namespace,
                                 'method' => $action->getMethod(),
                                 'uri' => $action->getUri()->getCleanPath()
                             ]
@@ -192,9 +192,9 @@ class Changelog extends Generator
                                 self::DEFINITION_CHANGED,
                                 $introduced,
                                 self::CHANGESET_TYPE_CONTENT_TYPE,
-                                $group_name,
+                                $namespace,
                                 [
-                                    'resource_group' => $group_name,
+                                    'resource_namespace' => $namespace,
                                     'method' => $action->getMethod(),
                                     'uri' => $action->getUri()->getCleanPath(),
                                     'content_type' => $content_type->getContentType()
@@ -218,7 +218,7 @@ class Changelog extends Generator
                             }
 
                             $data = [
-                                'resource_group' => $group_name,
+                                'resource_namespace' => $namespace,
                                 'method' => $action->getMethod(),
                                 'uri' => $action->getUri()->getCleanPath()
                             ];
@@ -264,7 +264,7 @@ class Changelog extends Generator
                                     self::DEFINITION_ADDED,
                                     $introduced,
                                     $change_type,
-                                    $group_name,
+                                    $namespace,
                                     $data
                                 );
                             }
@@ -274,7 +274,7 @@ class Changelog extends Generator
                                     self::DEFINITION_REMOVED,
                                     $removed,
                                     $change_type,
-                                    $group_name,
+                                    $namespace,
                                     $data
                                 );
                             }
@@ -289,26 +289,32 @@ class Changelog extends Generator
      * Record an entry into the changelog.
      *
      * @param string $definition
-     * @param string $version
+     * @param false|string $version
      * @param string $change_type
-     * @param string|null $group
+     * @param null|string $namespace
      * @param array $data
-     * @return Changelog
+     * @return self
      */
-    private function record($definition, $version, $change_type, $group = null, array $data = [])
-    {
-        // Since groups can be nested, let's throw changes under the top-level group.
-        if (!is_null($group)) {
-            $group = explode('\\', $group);
-            $group = array_shift($group);
+    private function record(
+        string $definition,
+        $version,
+        string $change_type,
+        string $namespace = null,
+        array $data = []
+    ): self {
+        // Since namespaces can be nested, let's throw changes under the top-level namespace.
+        if (!is_null($namespace)) {
+            $namespace = explode('\\', $namespace);
+            $namespace = array_shift($namespace);
         }
 
         $hash = $this->hashChangeset($change_type, $data);
 
         if ($change_type === self::CHANGESET_TYPE_REPRESENTATION_DATA) {
-            $this->changelog[$version][$definition]['representations'][$group][$change_type][$hash][] = $data;
+            $this->changelog[$version][$definition]['representations'][$namespace][$change_type][$hash][] = $data;
         } else {
-            $this->changelog[$version][$definition]['resources'][$group][$data['uri']][$change_type][$hash][] = $data;
+            $this->changelog[$version][$definition]['resources'][$namespace][$data['uri']][$change_type][$hash][] =
+                $data;
         }
 
         return $this;
@@ -318,8 +324,9 @@ class Changelog extends Generator
      * Get the version that this annotation was introduced. If it was in the first version of the documented API, this
      * will return false.
      *
+     * @psalm-suppress MissingClosureReturnType
      * @param Annotation $annotation
-     * @return mixed
+     * @return false|string
      */
     private function getVersionIntroduced(Annotation $annotation)
     {
@@ -328,13 +335,16 @@ class Changelog extends Generator
             return false;
         }
 
-        $available_in = array_filter($this->supported_versions, function ($supported) use ($data_version) {
-            if ($data_version->matches($supported['version'])) {
-                return $supported['version'];
-            }
+        $available_in = array_filter(
+            $this->supported_versions,
+            function (array $supported) use ($data_version) {
+                if ($data_version->matches($supported['version'])) {
+                    return $supported['version'];
+                }
 
-            return false;
-        });
+                return false;
+            }
+        );
 
         // What is the first version that this existed in?
         $introduced = current($available_in)['version'];
@@ -349,8 +359,9 @@ class Changelog extends Generator
      * Get the version that this annotation was removed. If it still exists in the first version of the documented API,
      * this will return false.
      *
+     * @psalm-suppress MissingClosureReturnType
      * @param Annotation $annotation
-     * @return mixed
+     * @return false|string
      */
     private function getVersionRemoved(Annotation $annotation)
     {
@@ -359,7 +370,7 @@ class Changelog extends Generator
             return false;
         }
 
-        $available_in = array_filter($this->supported_versions, function ($supported) use ($data_version) {
+        $available_in = array_filter($this->supported_versions, function (array $supported) use ($data_version) {
             if ($data_version->matches($supported['version'])) {
                 return $supported['version'];
             }
@@ -374,7 +385,7 @@ class Changelog extends Generator
         }
 
         $recent_version_key = key(
-            array_filter($this->supported_versions, function ($supported) use ($recent_version) {
+            array_filter($this->supported_versions, function (array $supported) use ($recent_version) {
                 return $supported['version'] == $recent_version;
             })
         );
@@ -389,7 +400,7 @@ class Changelog extends Generator
      * @param array $data
      * @return string
      */
-    private function hashChangeset($change_type, array $data)
+    private function hashChangeset(string $change_type, array $data): string
     {
         $hash_data = [];
 

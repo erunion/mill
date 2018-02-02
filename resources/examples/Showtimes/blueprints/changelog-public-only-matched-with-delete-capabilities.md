@@ -12,14 +12,9 @@ Changed up the responses for `/movie/{id}`, `/movies/{id}` and `/movies`.
         - `404 Not Found` with a `Error` representation: For some other reason.
     - `/movies/{id}` now throws the following errors on `PATCH` requests:
         - `404 Not Found` with a `Error` representation: If the trailer URL could not be validated.
-        - `403 Forbidden` with a `Coded error` representation: If something cool happened.
         - `403 Forbidden` with a `Coded error` representation: If the user is not allowed to edit that movie.
     - On `/movies/{id}`, `PATCH` requests now return a `202 Accepted` with a `Movie` representation.
     - `POST` on `/movies` now returns a `201 Created`.
-
-#### Removed
-##### Representations
-- `external_urls.tickets` has been removed from the `Movie` representation.
 
 ## 1.1.2 (2017-04-01)
 ### Reference
@@ -55,12 +50,13 @@ Changed up the responses for `/movie/{id}`, `/movies/{id}` and `/movies`.
 - The `Movie` representation has added the following fields:
     - `external_urls`
     - `external_urls.imdb`
-    - `external_urls.tickets`
     - `external_urls.trailer`
 
 ##### Resources
 - The following Movies resources have added:
-    - `PATCH` on `/movies/{id}` was added.
+    - `/movies/{id}` has been added with support for the following HTTP methods:
+        - `PATCH`
+        - `DELETE`
     - A `page` request parameter was added to `GET` on `/movies`.
     - The following parameters have been added to `POST` on `/movies`:
         - `imdb`

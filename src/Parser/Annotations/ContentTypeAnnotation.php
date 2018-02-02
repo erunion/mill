@@ -2,6 +2,7 @@
 namespace Mill\Parser\Annotations;
 
 use Mill\Parser\Annotation;
+use Mill\Parser\Version;
 
 /**
  * Handler for the `@api-contentType` annotation.
@@ -9,19 +10,13 @@ use Mill\Parser\Annotation;
  */
 class ContentTypeAnnotation extends Annotation
 {
-    const REQUIRES_VISIBILITY_DECORATOR = false;
-    const SUPPORTS_DEPRECATION = false;
     const SUPPORTS_VERSIONING = true;
 
-    /**
-     * Content type.
-     *
-     * @var string
-     */
+    /** @var string */
     protected $content_type;
 
     /**
-     * Return an array of items that should be included in an array representation of this annotation.
+     * An array of items that should be included in an array representation of this annotation.
      *
      * @var array
      */
@@ -30,12 +25,9 @@ class ContentTypeAnnotation extends Annotation
     ];
 
     /**
-     * Parse the annotation out and return an array of data that we can use to then interpret this annotations'
-     * representation.
-     *
-     * @return array
+     * {@inheritdoc}
      */
-    protected function parser()
+    protected function parser(): array
     {
         return [
             'content_type' => $this->docblock
@@ -43,25 +35,40 @@ class ContentTypeAnnotation extends Annotation
     }
 
     /**
-     * Interpret the parsed annotation data and set local variables to build the annotation.
-     *
-     * To facilitate better error messaging, the order in which items are interpreted here should be match the schema
-     * of the annotation.
-     *
-     * @return void
+     * {@inheritdoc}
      */
-    protected function interpreter()
+    protected function interpreter(): void
     {
         $this->content_type = $this->required('content_type');
     }
 
     /**
-     * Get the content type.
-     *
+     * {@inheritdoc}
+     */
+    public static function hydrate(array $data = [], Version $version = null): self
+    {
+        /** @var ContentTypeAnnotation $annotation */
+        $annotation = parent::hydrate($data, $version);
+        $annotation->setContentType($data['content_type']);
+
+        return $annotation;
+    }
+
+    /**
      * @return string
      */
-    public function getContentType()
+    public function getContentType(): string
     {
         return $this->content_type;
+    }
+
+    /**
+     * @param string $content_type
+     * @return self
+     */
+    public function setContentType(string $content_type): self
+    {
+        $this->content_type = $content_type;
+        return $this;
     }
 }

@@ -6,9 +6,9 @@ use Mill\Provider\Config;
 use Mill\Provider\Filesystem;
 use Pimple\Container;
 
-class ConfigTest extends \PHPUnit_Framework_TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
-    public function testRegister()
+    public function testRegister(): void
     {
         $container = new Container;
 
@@ -16,9 +16,12 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $filesystem->register($container);
 
         // Overwrite the stock library local filesystem with an in-memory file system we'll use for testing.
-        $container->extend('filesystem', function ($filesystem, $c) {
-            return new \League\Flysystem\Filesystem(new MemoryAdapter);
-        });
+        $container->extend(
+            'filesystem',
+            function (\League\Flysystem\Filesystem $filesystem, Container $c): \League\Flysystem\Filesystem {
+                return new \League\Flysystem\Filesystem(new MemoryAdapter);
+            }
+        );
 
         $container['filesystem']->write(
             'mill.xml',

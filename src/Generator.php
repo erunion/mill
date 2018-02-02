@@ -30,9 +30,7 @@ class Generator
     protected $supported_versions = [];
 
     /**
-     * Compiled documentation.
-     *
-     * @var array
+     * @var array Compiled documentation.
      */
     protected $compiled = [
         'representations' => [],
@@ -58,7 +56,7 @@ class Generator
 
     /**
      * @param Config $config
-     * @param Version|null $version
+     * @param null|Version $version
      */
     public function __construct(Config $config, Version $version = null)
     {
@@ -73,12 +71,12 @@ class Generator
      *
      * @return array
      */
-    public function generate()
+    public function generate(): array
     {
         // Generate resources.
         $resources = $this->compileResources($this->parseResources());
-        foreach ($resources as $version => $groups) {
-            // Alphabetize the versioned resource groups!
+        foreach ($resources as $version => $namespaces) {
+            // Alphabetize the versioned resource namespaces!
             ksort($resources[$version]);
         }
 
@@ -101,7 +99,7 @@ class Generator
      *
      * @return array
      */
-    protected function parseResources()
+    protected function parseResources(): array
     {
         $resources = [];
         foreach ($this->config->getControllers() as $controller) {
@@ -113,7 +111,7 @@ class Generator
                 /** @var \Mill\Parser\Annotations\UriAnnotation $uri */
                 foreach ($method->getUris() as $uri) {
                     $uri_data = $uri->toArray();
-                    $group = $uri_data['group'];
+                    $namespace = $uri_data['namespace'];
 
                     // Are we generating documentation for a private or protected resource?
                     if (!$this->shouldParseUri($method, $uri)) {
@@ -121,8 +119,8 @@ class Generator
                     }
 
                     $resource_label = $annotations['label'];
-                    if (!isset($resources[$group]['resources'][$resource_label])) {
-                        $resources[$group]['resources'][$resource_label] = [
+                    if (!isset($resources[$namespace]['resources'][$resource_label])) {
+                        $resources[$namespace]['resources'][$resource_label] = [
                             'label' => $annotations['label'],
                             'description' => $annotations['description'],
                             'actions' => []
@@ -139,15 +137,16 @@ class Generator
                         }
                     }
 
-                    // Set the lone URI that this action and group run under.
+                    // Set the lone URI that this action and namespace run under.
                     $action = clone $method;
                     $action->setUri($uri);
                     $action->setUriSegments($segments);
+                    $action->filterAnnotationsForVisibility($this->load_private_docs, $this->load_capability_docs);
 
                     // Hash the action so we don't happen to double up and end up with dupes.
                     $identifier = $action->getUri()->getPath() . '::' . $action->getMethod();
 
-                    $resources[$group]['resources'][$resource_label]['actions'][$identifier] = $action;
+                    $resources[$namespace]['resources'][$resource_label]['actions'][$identifier] = $action;
                 }
             }
         }
@@ -161,11 +160,11 @@ class Generator
      * @param array $parsed
      * @return array
      */
-    private function compileResources(array $parsed = [])
+    private function compileResources(array $parsed = []): array
     {
         $resources = [];
-        foreach ($parsed as $group => $group_data) {
-            foreach ($group_data['resources'] as $resource_label => $resource) {
+        foreach ($parsed as $namespace => $namespace_data) {
+            foreach ($namespace_data['resources'] as $resource_label => $resource) {
                 /** @var Resource\Action\Documentation $action */
                 foreach ($resource['actions'] as $identifier => $action) {
                     // Run through every supported API version and flatten out documentation for it.
@@ -186,8 +185,8 @@ class Generator
 
                         if (!isset($resources[$version])) {
                             $resources[$version] = [];
-                        } elseif (!isset($resources[$version][$group])) {
-                            $resources[$version][$group] = [
+                        } elseif (!isset($resources[$version][$namespace])) {
+                            $resources[$version][$namespace] = [
                                 'resources' => []
                             ];
                         }
@@ -196,10 +195,9 @@ class Generator
                         // generating documentation for.
                         $cloned = clone $action;
                         $cloned->filterAnnotationsForVersion($version);
-                        $cloned->filterAnnotationsForVisibility($this->load_private_docs, $this->load_capability_docs);
 
-                        if (!isset($resources[$version][$group]['resources'][$resource_label])) {
-                            $resources[$version][$group]['resources'][$resource_label] = [
+                        if (!isset($resources[$version][$namespace]['resources'][$resource_label])) {
+                            $resources[$version][$namespace]['resources'][$resource_label] = [
                                 'label' => $resource['label'],
                                 'description' => $resource['description'],
                                 'actions' => []
@@ -210,7 +208,8 @@ class Generator
                         // currently non-hash index from the action array.
                         $identifier = $cloned->getUri()->getPath() . '::' . $cloned->getMethod();
 
-                        $resources[$version][$group]['resources'][$resource_label]['actions'][$identifier] = $cloned;
+                        $resources[$version][$namespace]['resources'][$resource_label]['actions'][$identifier] =
+                            $cloned;
                     }
                 }
             }
@@ -224,7 +223,7 @@ class Generator
      *
      * @return array
      */
-    protected function parseRepresentations()
+    protected function parseRepresentations(): array
     {
         $representations = [];
         $error_representations = $this->config->getErrorRepresentations();
@@ -241,6 +240,8 @@ class Generator
             }
 
             $parsed = (new Representation\Documentation($class, $representation['method']))->parse();
+            $parsed->filterAnnotationsForVisibility($this->load_capability_docs);
+
             $representations[$class] = $parsed;
         }
 
@@ -253,7 +254,7 @@ class Generator
      * @param array $parsed
      * @return array
      */
-    private function compileRepresentations(array $parsed = [])
+    private function compileRepresentations(array $parsed = []): array
     {
         $representations = [];
 
@@ -283,10 +284,10 @@ class Generator
     /**
      * Get compiled representations.
      *
-     * @param Version|string|null $version
+     * @param null|string|Version $version
      * @return array
      */
-    public function getRepresentations($version = null)
+    public function getRepresentations($version = null): array
     {
         if (empty($version)) {
             return $this->compiled['representations'];
@@ -302,10 +303,10 @@ class Generator
     /**
      * Get compiled resources.
      *
-     * @param string|null $version
+     * @param null|string $version
      * @return array
      */
-    public function getResources($version = null)
+    public function getResources(string $version = null): array
     {
         if (empty($version)) {
             return $this->compiled['resources'];
@@ -318,9 +319,9 @@ class Generator
      * Set if we'll be loading documentation that's been marked as being private.
      *
      * @param bool $load_private_docs
-     * @return $this
+     * @return self
      */
-    public function setLoadPrivateDocs($load_private_docs = true)
+    public function setLoadPrivateDocs(bool $load_private_docs = true): self
     {
         $this->load_private_docs = $load_private_docs;
         return $this;
@@ -333,9 +334,9 @@ class Generator
      * that either has no capability, or specific ones, supply an array with those capability names.
      *
      * @param array|null $capabilities
-     * @return $this
+     * @return self
      */
-    public function setLoadCapabilityDocs($capabilities = null)
+    public function setLoadCapabilityDocs(array $capabilities = null): self
     {
         $this->load_capability_docs = $capabilities;
         return $this;
@@ -348,7 +349,7 @@ class Generator
      * @param UriAnnotation $uri
      * @return bool
      */
-    private function shouldParseUri(Resource\Action\Documentation $method, UriAnnotation $uri)
+    private function shouldParseUri(Resource\Action\Documentation $method, UriAnnotation $uri): bool
     {
         $uri_data = $uri->toArray();
         $capabilities = $method->getCapabilities();

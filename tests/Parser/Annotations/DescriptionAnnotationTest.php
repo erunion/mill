@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Tests\Parser\Annotations;
 
+use Mill\Exceptions\Annotations\MissingRequiredFieldException;
 use Mill\Parser\Annotations\DescriptionAnnotation;
 
 class DescriptionAnnotationTest extends AnnotationTest
@@ -9,12 +10,35 @@ class DescriptionAnnotationTest extends AnnotationTest
      * @dataProvider providerAnnotation
      * @param string $content
      * @param array $expected
-     * @return void
      */
-    public function testAnnotation($content, array $expected)
+    public function testAnnotation(string $content, array $expected): void
     {
         $annotation = new DescriptionAnnotation($content, __CLASS__, __METHOD__);
+        $annotation->process();
 
+        $this->assertAnnotation($annotation, $expected);
+    }
+
+    /**
+     * @dataProvider providerAnnotation
+     * @param string $content
+     * @param array $expected
+     */
+    public function testHydrate(string $content, array $expected): void
+    {
+        $annotation = DescriptionAnnotation::hydrate(array_merge(
+            $expected,
+            [
+                'class' => __CLASS__,
+                'method' => __METHOD__
+            ]
+        ));
+
+        $this->assertAnnotation($annotation, $expected);
+    }
+
+    private function assertAnnotation(DescriptionAnnotation $annotation, array $expected): void
+    {
         $this->assertFalse($annotation->requiresVisibilityDecorator());
         $this->assertFalse($annotation->supportsVersioning());
         $this->assertFalse($annotation->supportsDeprecation());
@@ -26,10 +50,7 @@ class DescriptionAnnotationTest extends AnnotationTest
         $this->assertEmpty($annotation->getAliases());
     }
 
-    /**
-     * @return array
-     */
-    public function providerAnnotation()
+    public function providerAnnotation(): array
     {
         return [
             '_complete' => [
@@ -41,16 +62,13 @@ class DescriptionAnnotationTest extends AnnotationTest
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function providerAnnotationFailsOnInvalidContent()
+    public function providerAnnotationFailsOnInvalidContent(): array
     {
         return [
             'missing-description' => [
-                'annotation' => '\Mill\Parser\Annotations\DescriptionAnnotation',
+                'annotation' => DescriptionAnnotation::class,
                 'content' => '',
-                'expected.exception' => '\Mill\Exceptions\Annotations\MissingRequiredFieldException',
+                'expected.exception' => MissingRequiredFieldException::class,
                 'expected.exception.asserts' => [
                     'getRequiredField' => 'description',
                     'getAnnotation' => 'description',

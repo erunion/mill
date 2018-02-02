@@ -13,10 +13,9 @@ foreach ([__DIR__ . '/../../../autoload.php', __DIR__ . '/../vendor/autoload.php
 
 use Symfony\Component\Console\Application;
 
-$application = new Application();
-$application->setName('Mill');
-$application->setVersion('1.0.0');
+$version = PackageVersions\Versions::getVersion('ocramius/package-versions');
 
+$application = new Application('Mill', $version);
 $application->add(new Mill\Command\Changelog);
 $application->add(new Mill\Command\ErrorMap);
 $application->add(new Mill\Command\Generate);

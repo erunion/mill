@@ -23,17 +23,17 @@ class ErrorMap extends Generator
      *
      * @return array
      */
-    public function generate()
+    public function generate(): array
     {
         parent::generate();
 
         foreach ($this->getResources() as $version => $resources) {
-            foreach ($resources as $group_name => $data) {
-                // Groups can have children via the `\` delimiter, but for the error map generator we only care about
-                // the top-level group name.
-                if (strpos($group_name, '\\') != false) {
-                    $parts = explode('\\', $group_name);
-                    $group_name = array_shift($parts);
+            foreach ($resources as $namespace => $data) {
+                // Namespaces can have children via the `\` delimiter, but for the error map generator we only care
+                // about the top-level namespace.
+                if (strpos($namespace, '\\') != false) {
+                    $parts = explode('\\', $namespace);
+                    $namespace = array_shift($parts);
                 }
 
                 foreach ($data['resources'] as $resource_name => $resource) {
@@ -51,7 +51,7 @@ class ErrorMap extends Generator
                             }
 
                             $uri = $action->getUri();
-                            $this->error_map[$version][$group_name][$error_code][] = [
+                            $this->error_map[$version][$namespace][$error_code][] = [
                                 'uri' => $uri->getCleanPath(),
                                 'method' => $action->getMethod(),
                                 'http_code' => $response->getHttpCode(),
@@ -65,10 +65,10 @@ class ErrorMap extends Generator
         }
 
         // Keep things tidy
-        foreach ($this->error_map as $version => $groups) {
-            foreach ($groups as $group => $resources) {
+        foreach ($this->error_map as $version => $namespaces) {
+            foreach ($namespaces as $namespace => $resources) {
                 foreach ($resources as $identifier => $errors) {
-                    usort($this->error_map[$version][$group][$identifier], function ($a, $b) {
+                    usort($this->error_map[$version][$namespace][$identifier], function (array $a, array $b): int {
                         // If the error codes match, then fallback to sorting by the URI.
                         if ($a['error_code'] == $b['error_code']) {
                             // If the URIs match, then fallback to sorting by their methods.
@@ -83,7 +83,7 @@ class ErrorMap extends Generator
                     });
                 }
 
-                ksort($this->error_map[$version][$group]);
+                ksort($this->error_map[$version][$namespace]);
             }
         }
 
@@ -95,7 +95,7 @@ class ErrorMap extends Generator
      *
      * @return array
      */
-    public function generateMarkdown()
+    public function generateMarkdown(): array
     {
         $markdown = new Markdown($this->config);
         $markdown->setErrorMap($this->generate());

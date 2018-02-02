@@ -2,6 +2,7 @@
 namespace Mill\Parser\Annotations;
 
 use Mill\Parser\Annotation;
+use Mill\Parser\Version;
 
 /**
  * Handler for the `@api-label` annotation.
@@ -9,19 +10,11 @@ use Mill\Parser\Annotation;
  */
 class LabelAnnotation extends Annotation
 {
-    const REQUIRES_VISIBILITY_DECORATOR = false;
-    const SUPPORTS_DEPRECATION = false;
-    const SUPPORTS_VERSIONING = false;
-
-    /**
-     * Label
-     *
-     * @var string
-     */
+    /** @var string */
     protected $label;
 
     /**
-     * Return an array of items that should be included in an array representation of this annotation.
+     * An array of items that should be included in an array representation of this annotation.
      *
      * @var array
      */
@@ -30,12 +23,9 @@ class LabelAnnotation extends Annotation
     ];
 
     /**
-     * Parse the annotation out and return an array of data that we can use to then interpret this annotations'
-     * representation.
-     *
-     * @return array
+     * {@inheritdoc}
      */
-    protected function parser()
+    protected function parser(): array
     {
         return [
             'label' => $this->docblock
@@ -43,25 +33,40 @@ class LabelAnnotation extends Annotation
     }
 
     /**
-     * Interpret the parsed annotation data and set local variables to build the annotation.
-     *
-     * To facilitate better error messaging, the order in which items are interpreted here should be match the schema
-     * of the annotation.
-     *
-     * @return void
+     * {@inheritdoc}
      */
-    protected function interpreter()
+    protected function interpreter(): void
     {
         $this->label = $this->required('label');
     }
 
     /**
-     * Get the label.
-     *
+     * {@inheritdoc}
+     */
+    public static function hydrate(array $data = [], Version $version = null): self
+    {
+        /** @var LabelAnnotation $annotation */
+        $annotation = parent::hydrate($data, $version);
+        $annotation->setLabel($data['label']);
+
+        return $annotation;
+    }
+
+    /**
      * @return string
      */
-    public function getLabel()
+    public function getLabel(): string
     {
         return $this->label;
+    }
+
+    /**
+     * @param string $label
+     * @return self
+     */
+    public function setLabel(string $label): self
+    {
+        $this->label = $label;
+        return $this;
     }
 }

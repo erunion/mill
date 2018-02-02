@@ -7,7 +7,7 @@ namespace Mill\Tests\Fixtures\Representations;
  */
 class RepresentationWithMultipleLabelAnnotations
 {
-    public function create()
+    public function create(): array
     {
         return [
             /**

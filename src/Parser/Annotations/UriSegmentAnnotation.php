@@ -3,6 +3,7 @@ namespace Mill\Parser\Annotations;
 
 use Mill\Parser\Annotation;
 use Mill\Parser\MSON;
+use Mill\Parser\Version;
 
 /**
  * Handler for the `@api-uriSegment` annotation.
@@ -10,10 +11,7 @@ use Mill\Parser\MSON;
  */
 class UriSegmentAnnotation extends Annotation
 {
-    const REQUIRES_VISIBILITY_DECORATOR = false;
-    const SUPPORTS_DEPRECATION = false;
     const SUPPORTS_MSON = true;
-    const SUPPORTS_VERSIONING = false;
 
     const REGEX_URI = '/^({[^}]*})/';
 
@@ -48,12 +46,12 @@ class UriSegmentAnnotation extends Annotation
     /**
      * Array of acceptable values for this parameter.
      *
-     * @var array|null
+     * @var array|false|null
      */
     protected $values = [];
 
     /**
-     * Return an array of items that should be included in an array representation of this annotation.
+     * An array of items that should be included in an array representation of this annotation.
      *
      * @var array
      */
@@ -66,12 +64,9 @@ class UriSegmentAnnotation extends Annotation
     ];
 
     /**
-     * Parse the annotation out and return an array of data that we can use to then interpret this annotations'
-     * representation.
-     *
-     * @return array
+     * {@inheritdoc}
      */
-    protected function parser()
+    protected function parser(): array
     {
         $parsed = [];
         $content = trim($this->docblock);
@@ -82,7 +77,9 @@ class UriSegmentAnnotation extends Annotation
             $content = trim(preg_replace(self::REGEX_URI, '', $content));
         }
 
-        $mson = (new MSON($this->class, $this->method))->parse($content);
+        /** @var string $method */
+        $method = $this->method;
+        $mson = (new MSON($this->class, $method))->parse($content);
         $parsed = array_merge($parsed, [
             'field' => $mson->getField(),
             'type' => $mson->getType(),
@@ -94,14 +91,9 @@ class UriSegmentAnnotation extends Annotation
     }
 
     /**
-     * Interpret the parsed annotation data and set local variables to build the annotation.
-     *
-     * To facilitate better error messaging, the order in which items are interpreted here should be match the schema
-     * of the annotation.
-     *
-     * @return void
+     * {@inheritdoc}
      */
-    protected function interpreter()
+    protected function interpreter(): void
     {
         $this->uri = $this->required('uri', false);
 
@@ -113,52 +105,108 @@ class UriSegmentAnnotation extends Annotation
     }
 
     /**
-     * Get the URI that this annotation is on.
-     *
+     * {@inheritdoc}
+     */
+    public static function hydrate(array $data = [], Version $version = null)
+    {
+        /** @var UriSegmentAnnotation $annotation */
+        $annotation = parent::hydrate($data, $version);
+        $annotation->setDescription($data['description']);
+        $annotation->setField($data['field']);
+        $annotation->setType($data['type']);
+        $annotation->setUri($data['uri']);
+        $annotation->setValues($data['values']);
+
+        return $annotation;
+    }
+
+    /**
      * @return string
      */
-    public function getUri()
+    public function getUri(): string
     {
         return $this->uri;
     }
 
     /**
-     * Get the field that this URI segment represents.
-     *
+     * @param string $uri
+     * @return self
+     */
+    public function setUri(string $uri): self
+    {
+        $this->uri = $uri;
+        return $this;
+    }
+
+    /**
      * @return string
      */
-    public function getField()
+    public function getField(): string
     {
         return $this->field;
     }
 
     /**
-     * Get the type of field that this URI segment represents.
-     *
+     * @param string $field
+     * @return self
+     */
+    public function setField(string $field): self
+    {
+        $this->field = $field;
+        return $this;
+    }
+
+    /**
      * @return string
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
 
     /**
-     * Get the description for this URI segment.
-     *
+     * @param string $type
+     * @return self
+     */
+    public function setType(string $type): self
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    /**
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
 
     /**
-     * Get the enumerated values that are allowed on this URI segment.
-     *
-     * @return array|null
+     * @param string $description
+     * @return self
+     */
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * @return array|false|null
      */
     public function getValues()
     {
         return $this->values;
+    }
+
+    /**
+     * @param array|false|null $values
+     * @return self
+     */
+    public function setValues($values): self
+    {
+        $this->values = $values;
+        return $this;
     }
 }

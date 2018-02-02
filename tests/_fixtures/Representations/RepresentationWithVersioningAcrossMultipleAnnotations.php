@@ -6,7 +6,7 @@ namespace Mill\Tests\Fixtures\Representations;
  */
 class RepresentationWithVersioningAcrossMultipleAnnotations
 {
-    public function create()
+    public function create(): void
     {
         /**
          * @api-data unrelated (string) - An piece of data unrelated to the connections.
@@ -24,7 +24,7 @@ class RepresentationWithVersioningAcrossMultipleAnnotations
          */
     }
 
-    public function someMethod()
+    public function someMethod(): void
     {
         /**
          * @api-data uri (uri) - URI that resolves to the connection data.

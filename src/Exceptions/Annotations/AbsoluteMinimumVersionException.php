@@ -1,18 +1,17 @@
 <?php
 namespace Mill\Exceptions\Annotations;
 
-class AbsoluteMinimumVersionException extends \Exception
+use Mill\Exceptions\BaseException;
+
+class AbsoluteMinimumVersionException extends BaseException
 {
     use AnnotationExceptionTrait;
 
-    /**
-     * @param string $annotation
-     * @param string $class
-     * @param string $method
-     * @return AbsoluteMinimumVersionException
-     */
-    public static function create($annotation, $class, $method)
-    {
+    public static function create(
+        string $annotation,
+        string $class,
+        string $method
+    ): AbsoluteMinimumVersionException {
         $message = sprintf(
             'The version on `@api-minVersion %s` in %s::%s is not an absolute version.',
             $annotation,
