@@ -1,7 +1,6 @@
 <?php
 namespace Mill\Provider;
 
-use Closure;
 use Pimple\Container;
 
 class Reader implements \Pimple\ServiceProviderInterface
@@ -15,16 +14,14 @@ class Reader implements \Pimple\ServiceProviderInterface
      */
     public function register(Container $container)
     {
-        $container['reader.annotations'] = function (Container $c): Closure {
-            return function (string $class, string $method = null) {
-                return (new \Mill\Reader)->getAnnotations($class, $method);
-            };
+        $container['reader.annotations'] = function (Container $c): \Mill\Parser\Reader {
+            return new \Mill\Parser\Reader;
         };
 
-        $container['reader.annotations.representation'] = function (Container $c): Closure {
+        /*$container['reader.annotations.representation'] = function (Container $c): Closure {
             return function (string $class, string $method): string {
                 return (new \Mill\Reader)->getRepresentationAnnotations($class, $method);
             };
-        };
+        };*/
     }
 }

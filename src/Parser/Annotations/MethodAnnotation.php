@@ -5,13 +5,13 @@ use Mill\Parser\Annotation;
 use Mill\Parser\Version;
 
 /**
- * Handler for descriptions.
+ * Handler for the `@api-method` annotation.
  *
  */
-class DescriptionAnnotation extends Annotation
+class MethodAnnotation extends Annotation
 {
     /** @var string */
-    protected $description;
+    protected $method;
 
     /**
      * An array of items that should be included in an array representation of this annotation.
@@ -19,7 +19,7 @@ class DescriptionAnnotation extends Annotation
      * @var array
      */
     protected $arrayable = [
-        'description'
+        'method'
     ];
 
     /**
@@ -27,8 +27,10 @@ class DescriptionAnnotation extends Annotation
      */
     protected function parser(): array
     {
+        // @todo reject bad http methods
+
         return [
-            'description' => $this->content
+            'method' => $this->content
         ];
     }
 
@@ -37,17 +39,17 @@ class DescriptionAnnotation extends Annotation
      */
     protected function interpreter(): void
     {
-        $this->description = $this->required('description');
+        $this->method = $this->required('method');
     }
 
     /**
      * {@inheritdoc}
      */
-    /*public static function hydrate(array $data = [], Version $version = null): self
+    /*public static function hydrate(array $data = [], Version $version = null): self\
     {
-        // @var DescriptionAnnotation $annotation
+        // @var MethodAnnotation $annotation
         $annotation = parent::hydrate($data, $version);
-        $annotation->setDescription($data['description']);
+        $annotation->setMethod($data['method']);
 
         return $annotation;
     }*/
@@ -55,18 +57,18 @@ class DescriptionAnnotation extends Annotation
     /**
      * @return string
      */
-    public function getDescription(): string
+    public function getMethod(): string
     {
-        return $this->description;
+        return $this->method;
     }
 
     /**
-     * @param string $description
+     * @param string $method
      * @return self
      */
-    public function setDescription(string $description): self
+    public function setMethod(string $method): self
     {
-        $this->description = $description;
+        $this->method = $method;
         return $this;
     }
 }

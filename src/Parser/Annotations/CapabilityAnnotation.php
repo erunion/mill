@@ -27,15 +27,14 @@ class CapabilityAnnotation extends Annotation
      */
     protected function parser(): array
     {
-        $capability = $this->docblock;
+        $capability = $this->content;
 
         if (!empty($capability)) {
             // Validate the supplied capability with what has been configured as allowable.
-            $capabilities = Container::getConfig()->getCapabilities();
-            if (!in_array($capability, $capabilities)) {
-                /** @var string $method */
-                $method = $this->method;
-                throw InvalidCapabilitySuppliedException::create($capability, $this->class, $method);
+            if (!in_array($capability, $this->config->getCapabilities())) {
+                $this->application->trigger(
+                    InvalidCapabilitySuppliedException::create($capability, $this->docblock)
+                );
             }
         }
 
@@ -55,8 +54,8 @@ class CapabilityAnnotation extends Annotation
     /**
      * {@inheritdoc}
      */
-    public static function hydrate(array $data = [], Version $version = null): self
+    /*public static function hydrate(array $data = [], Version $version = null): self
     {
         return parent::hydrate($data, $version);
-    }
+    }*/
 }

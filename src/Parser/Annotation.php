@@ -1,15 +1,15 @@
 <?php
 namespace Mill\Parser;
 
+use Mill\Application;
+use Mill\Config;
+use Mill\Container;
 use Mill\Exceptions\Annotations\InvalidMSONSyntaxException;
 use Mill\Exceptions\Annotations\MissingRequiredFieldException;
 use Mill\Parser\Annotations\CapabilityAnnotation;
 use Mill\Parser\Annotations\ScopeAnnotation;
+use Mill\Parser\Reader\Docblock;
 
-/**
- * Base class for supported annotations.
- *
- */
 abstract class Annotation
 {
     /** @var string */
@@ -57,26 +57,21 @@ abstract class Annotation
      */
     const SUPPORTS_VERSIONING = false;
 
+    /** @var Application */
+    protected $application;
+
+    /** @var \Mill\Config */
+    protected $config;
+
     /**
      * The raw annotation from the docblock.
      *
      * @var string
      */
+    protected $content;
+
+    /** @var Docblock */
     protected $docblock;
-
-    /**
-     * Class that this annotation is within.
-     *
-     * @var string
-     */
-    protected $class;
-
-    /**
-     * Class method that this annotation is within.
-     *
-     * @var null|string
-     */
-    protected $method = null;
 
     /**
      * Capability that this annotation requires.
@@ -142,16 +137,21 @@ abstract class Annotation
     protected $arrayable = [];
 
     /**
-     * @param string $doc
-     * @param string $class
-     * @param null|string $method
-     * @param null|Version $version
+     * @param Application $application
+     * @param string $content
+     * @param Docblock $docblock
+     * @param Version|null $version
      */
-    public function __construct(string $doc, string $class, string $method = null, Version $version = null)
-    {
-        $this->docblock = $doc;
-        $this->class = $class;
-        $this->method = $method;
+    public function __construct(
+        Application $application,
+        string $content,
+        Docblock $docblock,
+        Version $version = null
+    ) {
+        $this->application = $application;
+        $this->config = $application->getConfig();
+        $this->content = trim($content);
+        $this->docblock = $docblock;
 
         // Since you can't set falsy defaults in methods, and we don't want a `null` version, let's force a false
         // default if no version was passed in.
@@ -184,28 +184,17 @@ abstract class Annotation
     protected function required(string $field, bool $is_mson_field = true): string
     {
         if (empty($this->parsed_data[$field])) {
-            /** @var string $method */
-            $method = $this->method;
-
             // If this field was written in MSON, but isn't present, and this annotation supports MSON, let's return an
             // invalid MSON exception because that means that we just weren't able to parse the MSON that they supplied.
             if ($is_mson_field && static::SUPPORTS_MSON) {
-                throw InvalidMSONSyntaxException::create(
-                    $field,
-                    $this->getAnnotationName(),
-                    $this->docblock,
-                    $this->class,
-                    $method
+                $this->application->trigger(
+                    InvalidMSONSyntaxException::create($field, $this->getAnnotationName(), $this->docblock)
+                );
+            } else {
+                $this->application->trigger(
+                    MissingRequiredFieldException::create($field, $this->getAnnotationName(), $this->docblock)
                 );
             }
-
-            throw MissingRequiredFieldException::create(
-                $field,
-                $this->getAnnotationName(),
-                $this->docblock,
-                $this->class,
-                $method
-            );
         }
 
         return $this->parsed_data[$field];
@@ -265,11 +254,11 @@ abstract class Annotation
      * @param null|Version $version
      * @return self
      */
-    public static function hydrate(array $data = [], Version $version = null)
+    /*public static function hydrate(array $data = [], Version $version = null)
     {
         $class = get_called_class();
 
-        /** @var Annotation $annotation */
+        // @var Annotation $annotation
         $annotation = new $class('', $data['class'], $data['method'], $version);
 
         if (array_key_exists('capability', $data) && !empty($data['capability'])) {
@@ -322,7 +311,7 @@ abstract class Annotation
         }
 
         return $annotation;
-    }
+    }*/
 
     /**
      * Does this annotation require a visibility decorator?
@@ -615,5 +604,10 @@ abstract class Annotation
     {
         $this->version = $version;
         return $this;
+    }
+
+    public function getDocblock(): Docblock
+    {
+        return $this->docblock;
     }
 }

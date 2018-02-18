@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mill
     name="Mill unit test API, Showtimes"
-    bootstrap="vendor/autoload.php"
+    language="php"
 >
     <versions>
         <version name="1.0" releaseDate="2017-01-01" />
@@ -27,29 +27,29 @@
         <filter>
             <directory name="resources/examples/Showtimes/Controllers/" suffix=".php" />
 
-            <excludes>
+            <!--<excludes>-->
                 <!-- This is here just for code coverage purposes, and to verify that we're able to exclude controllers
                     when loading a config XML file. -->
-                <exclude name="\IAmNotARealClass" />
-            </excludes>
+                <!--<exclude name="\IAmNotARealClass" />-->
+            <!--</excludes>-->
         </filter>
     </controllers>
 
     <representations>
         <filter>
-            <directory name="resources/examples/Showtimes/Representations/" method="create" suffix=".php"  />
-            <class name="\Mill\Examples\Showtimes\Representations\Movie" method="create" />
+            <directory name="resources/examples/Showtimes/Representations/" suffix=".php"  />
+            <file name="resources/examples/Showtimes/Representations/Movie.php" />
 
             <excludes>
-                <exclude name="\Mill\Examples\Showtimes\Representations\Error" />
-                <exclude name="\Mill\Examples\Showtimes\Representations\CodedError" />
-                <exclude name="\Mill\Examples\Showtimes\Representations\Representation" />
+                <file name="resources/examples/Showtimes/Representations/Error.php" />
+                <file name="resources/examples/Showtimes/Representations/CodedError.php" />
+                <file name="resources/examples/Showtimes/Representations/Representation.php" />
             </excludes>
         </filter>
 
         <errors>
-            <class name="\Mill\Examples\Showtimes\Representations\Error" method="create" needsErrorCode="false" />
-            <class name="\Mill\Examples\Showtimes\Representations\CodedError" method="create" needsErrorCode="true" />
+            <file name="resources/examples/Showtimes/Representations/Error.php" needsErrorCode="false" />
+            <file name="resources/examples/Showtimes/Representations/CodedError.php" needsErrorCode="true" />
         </errors>
     </representations>
 

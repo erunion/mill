@@ -9,6 +9,7 @@ use Mill\Exceptions\Annotations\UnknownReturnCodeException;
 use Mill\Exceptions\Config\UnconfiguredErrorRepresentationException;
 use Mill\Parser\Annotation;
 use Mill\Parser\Annotations\Traits\HasHttpCodeResponseTrait;
+use Mill\Parser\HTTPResponseMSON;
 use Mill\Parser\Version;
 
 /**
@@ -65,31 +66,16 @@ class ThrowsAnnotation extends Annotation
      */
     protected function parser(): array
     {
-        $config = Container::getConfig();
+        $mson = (new HTTPResponseMSON($this->application, $this->docblock))->parse($this->content);
+        $parsed = [
+            'capability' => $mson->getCapability(),
+            'description' => $mson->getDescription(),
+            'error_code' => $mson->getErrorCode(),
+            'http_code' => $mson->getHttpCode(),
+            'representation' => $mson->getRepresentation()
+        ];
 
-        /** @var string $method */
-        $method = $this->method;
-
-        $parsed = [];
-        $content = trim($this->docblock);
-
-        // HTTP code is surrounded by +plusses+.
-        if (preg_match(self::REGEX_THROW_HTTP_CODE, $content, $matches)) {
-            $parsed['http_code'] = $matches[1];
-
-            if (!$this->isValidHttpCode($parsed['http_code'])) {
-                throw UnknownReturnCodeException::create('throws', $this->docblock, $this->class, $method);
-            }
-
-            $parsed['http_code'] .= ' ' . $this->getHttpCodeMessage($parsed['http_code']);
-            $content = trim(preg_replace(self::REGEX_THROW_HTTP_CODE, '', $content));
-        }
-
-        $parts = explode(' ', $content);
-        $parsed['representation'] = array_shift($parts);
-
-        // Representation is by itself, so put the pieces back together so we can do some more regex.
-        $content = implode(' ', $parts);
+        $parsed['http_code'] .= ' ' . $this->getHttpCodeMessage($parsed['http_code']);
 
         if (!empty($parsed['representation'])) {
             $representation = $parsed['representation'];
@@ -99,62 +85,21 @@ class ThrowsAnnotation extends Annotation
             // for documentation.
             //
             // If the class doesn't exist, this method call will throw an exception back out.
-            try {
-                $config->doesErrorRepresentationExist($representation);
-            } catch (UnconfiguredErrorRepresentationException $e) {
-                throw UnknownErrorRepresentationException::create($representation, $this->class, $method);
+            if (!$this->application->hasRepresentation($representation)) {
+                $this->application->trigger(
+                    UnknownErrorRepresentationException::create($representation, $this->docblock)
+                );
             }
-        }
-
-        // Error codes are marked with `(\SomeError\Class::CASE)` or `(1337)` parens.
-        if (preg_match(self::REGEX_ERROR_CODE, $content, $matches)) {
-            $error_code = substr($matches[1], 1, -1);
-            if (is_numeric($error_code)) {
-                $parsed['error_code'] = $error_code;
-            } else {
-                if (!defined($error_code)) {
-                    throw UncallableErrorCodeException::create($this->docblock, $this->class, $method);
-                }
-
-                $parsed['error_code'] = constant($error_code);
-            }
-
-            $content = trim(preg_replace(self::REGEX_ERROR_CODE, '', $content));
-        }
-
-        // Capability is surrounded by +plusses+.
-        if (preg_match(self::REGEX_CAPABILITY, $content, $matches)) {
-            $capability = substr($matches[1], 1, -1);
-            $parsed['capability'] = (new CapabilityAnnotation($capability, $this->class, $method))->process();
-
-            $content = trim(preg_replace(self::REGEX_CAPABILITY, '', $content));
-        }
-
-        $description = trim($content);
-        if (!empty($description)) {
-            if (preg_match(self::REGEX_THROW_SUB_TYPE, $description, $matches)) {
-                $description = sprintf('If the %s cannot be found in the %s.', $matches[1], $matches[2]);
-            } elseif (preg_match(self::REGEX_THROW_TYPE, $description, $matches)) {
-                $description = sprintf('If the %s cannot be found.', $matches[1]);
-            }
-
-            $parsed['description'] = $description;
-        }
-
-        // Now that we've parsed out both the representation and error code, make sure that a representation that
-        // requires an error code, actually has one.
-        if (!empty($parsed['representation'])) {
-            $representation = $parsed['representation'];
 
             // If this representation requires an error code (as defined in the config file), but we don't have one,
             // throw an error.
-            if ($config->doesErrorRepresentationNeedAnErrorCode($representation) && !isset($parsed['error_code'])) {
-                throw MissingRepresentationErrorCodeException::create(
-                    $representation,
-                    $this->class,
-                    $method
+            /*if ($this->config->doesErrorRepresentationNeedAnErrorCode($representation) &&
+                empty($parsed['error_code'])
+            ) {
+                $this->application->trigger(
+                    MissingRepresentationErrorCodeException::create($representation, $this->docblock)
                 );
-            }
+            }*/
         }
 
         return $parsed;
@@ -180,9 +125,9 @@ class ThrowsAnnotation extends Annotation
     /**
      * {@inheritdoc}
      */
-    public static function hydrate(array $data = [], Version $version = null)
+    /*public static function hydrate(array $data = [], Version $version = null)
     {
-        /** @var ThrowsAnnotation $annotation */
+        // @var ThrowsAnnotation $annotation
         $annotation = parent::hydrate($data, $version);
         $annotation->setDescription($data['description']);
         $annotation->setErrorCode($data['error_code']);
@@ -190,7 +135,7 @@ class ThrowsAnnotation extends Annotation
         $annotation->setRepresentation($data['representation']);
 
         return $annotation;
-    }
+    }*/
 
     /**
      * @return string

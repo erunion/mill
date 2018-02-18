@@ -2,6 +2,7 @@
 namespace Mill\Exceptions\Annotations;
 
 use Mill\Exceptions\BaseException;
+use Mill\Parser\Reader\Docblock;
 
 class MissingRepresentationErrorCodeException extends BaseException
 {
@@ -9,22 +10,20 @@ class MissingRepresentationErrorCodeException extends BaseException
 
     public static function create(
         string $representation,
-        string $class,
-        string $method
+        Docblock $docblock
     ): MissingRepresentationErrorCodeException {
         $message = sprintf(
-            'The `%s` error representation on `@api-throws %s` in %s::%s is missing an error code, but is required ' .
-                'to have one in your config file.',
+            'The `%s` error representation on `@api-throws %s` on line %s in %s is missing an error code, but is ' .
+                'required to have one in your config file.',
             $representation,
             $representation,
-            $class,
-            $method
+            $docblock->getLines(),
+            $docblock->getFilename()
         );
 
         $exception = new self($message);
-        $exception->docblock = $representation;
-        $exception->class = $class;
-        $exception->method = $method;
+        $exception->content = $representation;
+        $exception->docblock = $docblock;
 
         return $exception;
     }

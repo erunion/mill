@@ -38,18 +38,15 @@ class ScopeAnnotation extends Annotation
      */
     protected function parser(): array
     {
-        $parts = explode(' ', $this->docblock);
+        $parts = explode(' ', $this->content);
 
         $scope = array_shift($parts);
         $description = trim(implode(' ', $parts));
 
         if (!empty($scope)) {
             // Validate the supplied scope with what has been configured as allowable.
-            $scopes = Container::getConfig()->getScopes();
-            if (!in_array($scope, $scopes)) {
-                /** @var string $method */
-                $method = $this->method;
-                throw InvalidScopeSuppliedException::create($scope, $this->class, $method);
+            if (!$this->config->getScopes($scope)) {
+                $this->application->trigger(InvalidScopeSuppliedException::create($scope, $this->docblock));
             }
         }
 
@@ -71,15 +68,15 @@ class ScopeAnnotation extends Annotation
     /**
      * {@inheritdoc}
      */
-    public static function hydrate(array $data = [], Version $version = null): self
+    /*public static function hydrate(array $data = [], Version $version = null): self
     {
-        /** @var ScopeAnnotation $annotation */
+        // @var ScopeAnnotation $annotation
         $annotation = parent::hydrate($data, $version);
         $annotation->setScope($data['scope']);
         $annotation->setDescription($data['description']);
 
         return $annotation;
-    }
+    }*/
 
     /**
      * @return string

@@ -2,6 +2,7 @@
 namespace Mill\Exceptions\Resource;
 
 use Mill\Exceptions\BaseException;
+use Mill\Parser\Reader\Docblock;
 
 class UnsupportedDecoratorException extends BaseException
 {
@@ -10,22 +11,20 @@ class UnsupportedDecoratorException extends BaseException
     public static function create(
         string $decorator,
         string $annotation,
-        string $class,
-        string $method
+        Docblock $docblock
     ): UnsupportedDecoratorException {
         $message = sprintf(
-            'An unsupported decorator, `%s`, was found on `@api-%s` in %s::%s.',
+            'An unsupported decorator, `%s`, was found on `@api-%s` on line %s in %s.',
             $decorator,
             $annotation,
-            $class,
-            $method
+            $docblock->getLines(),
+            $docblock->getFilename()
         );
 
         $exception = new self($message);
         $exception->decorator = $decorator;
         $exception->annotation = $annotation;
-        $exception->class = $class;
-        $exception->method = $method;
+        $exception->docblock = $docblock;
 
         return $exception;
     }

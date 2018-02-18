@@ -9,12 +9,15 @@ trait ReaderTestingTrait
 {
     public function setUp()
     {
+        parent::setUp();
+
         $container = Container::getInstance();
 
         // We're setting custom Readers in a number of tests, so let's just quickly reset it and re-register before
         // running any tests.
         unset($container['reader.annotations']);
-        unset($container['reader.annotations.representation']);
+        //unset($container['reader.annotations.representation']);
+
         $container->register(new Reader());
     }
 
@@ -32,20 +35,24 @@ trait ReaderTestingTrait
 
         $container->extend(
             'reader.annotations',
-            function (Closure $reader, Container $c) use ($docblock): Closure {
-                return function () use ($docblock): string {
-                    return $docblock;
-                };
+            function (\Mill\Parser\Reader $reader, Container $c) use ($docblock): \Mill\Parser\Reader {
+                $reader = \Mockery::mock(\Mill\Parser\Reader::class)
+                    ->shouldAllowMockingProtectedMethods()
+                    ->makePartial();
+
+                $reader->shouldReceive('readFile')->andReturn($docblock);
+
+                return $reader;
             }
         );
 
-        $container->extend(
+        /*$container->extend(
             'reader.annotations.representation',
             function (Closure $reader, Container $c) use ($docblock): Closure {
                 return function () use ($docblock): string {
                     return $docblock;
                 };
             }
-        );
+        );*/
     }
 }

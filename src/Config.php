@@ -35,6 +35,13 @@ class Config
     protected $name = null;
 
     /**
+     * Language of your application. Used to determine methods which to parse annotations.
+     *
+     * @var string
+     */
+    protected $language;
+
+    /**
      * The first version of your API.
      *
      * @var string
@@ -174,6 +181,13 @@ class Config
             $config->name = (string) $xml['name'];
         }
 
+        $language = strtolower((string) $xml['language']);
+        if (!in_array($language, ['php'])) {
+            throw new InvalidArgumentException(sprintf('Sorry, Mill does not yet support %s files.', $language));
+        }
+
+        $config->language = $language;
+
         // Load in the user-configured bootstrap. This should either be a Composer autoload file, or set up the
         // applications autoloader so we have access to their application classes for controller and representation
         // lookups and parsing.
@@ -181,9 +195,9 @@ class Config
         // Since this library is designed to be used in two cases (CLI and programmatically), if you use it
         // programmatically in your application, it'll automatically have access to your autoloader, and this'll be
         // unnecessary.
-        if ($load_bootstrap) {
+        /*if ($load_bootstrap) {
             require_once $config->base_dir . $xml['bootstrap'];
-        }
+        }*/
 
         if (isset($xml->capabilities)) {
             $config->capabilities = [];
@@ -441,18 +455,18 @@ class Config
             /** @var SimpleXMLElement $exclude_config */
             $exclude_config = $controllers->excludes;
 
-            /** @var SimpleXMLElement $exclude */
-            foreach ($exclude_config->exclude as $exclude) {
-                $excludes[] = (string) $exclude['name'];
+            /** @var SimpleXMLElement $file */
+            foreach ($exclude_config->file as $file) {
+                $excludes[] = (string) $file['name'];
             }
 
             // Keep things tidy.
             $excludes = array_unique($excludes);
         }
 
-        /** @var SimpleXMLElement $class */
-        foreach ($controllers->class as $class) {
-            $this->addController((string) $class['name']);
+        /** @var SimpleXMLElement $file */
+        foreach ($controllers->file as $file) {
+            $this->addController((string) $file['name']);
         }
 
         /** @var SimpleXMLElement $directory */
@@ -466,7 +480,7 @@ class Config
 
             $this->controllers = array_merge(
                 $this->controllers,
-                $this->scanDirectoryForClasses($directory_name, $suffix, $excludes)
+                $this->scanDirectoryForFiles($directory_name, $suffix, $excludes)
             );
         }
 
@@ -482,21 +496,16 @@ class Config
     /**
      * Add a new resource controller into the instance config.
      *
-     * @param string $class
-     * @throws InvalidArgumentException If a class could not be found.
+     * @param string $filename
+     * @throws InvalidArgumentException If a controller file could not be found.
      */
-    public function addController(string $class): void
+    public function addController(string $filename): void
     {
-        if (!class_exists($class)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'The `%s` controller class could not be called. Is your bootstrap set up properly?',
-                    $class
-                )
-            );
+        if (!file_exists($this->base_dir . $filename)) {
+            throw new InvalidArgumentException(sprintf('The `%s` controller could not be found.', $filename));
         }
 
-        $this->controllers[] = $class;
+        $this->controllers[] = $filename;
     }
 
     /**
@@ -518,29 +527,18 @@ class Config
             /** @var SimpleXMLElement $exclude_config */
             $exclude_config = $filters->excludes;
 
-            /** @var SimpleXMLElement $exclude */
-            foreach ($exclude_config->exclude as $exclude) {
-                $this->addExcludedRepresentation((string) $exclude['name']);
+            /** @var SimpleXMLElement $file */
+            foreach ($exclude_config->file as $file) {
+                $this->addExcludedRepresentation((string) $file['name']);
             }
 
             // Keep things tidy.
             $this->excluded_representations = array_unique($this->excluded_representations);
         }
 
-        /** @var SimpleXMLElement $class */
-        foreach ($filters->class as $class) {
-            $class_name = (string) $class['name'];
-            $method = (string) $class['method'] ?: null;
-            if (empty($method)) {
-                throw new DomainException(
-                    sprintf(
-                        'The `%s` representation class declaration is missing a `method` attribute.',
-                        $class_name
-                    )
-                );
-            }
-
-            $this->addRepresentation($class_name, $method);
+        /** @var SimpleXMLElement $file */
+        foreach ($filters->file as $file) {
+            $this->addRepresentation((string) $file['name']);
         }
 
         /** @var SimpleXMLElement $directory */
@@ -551,17 +549,15 @@ class Config
             }
 
             $suffix = (string) $directory['suffix'] ?: '.php';
-            $method = (string) $directory['method'] ?: null;
+            $files = $this->scanDirectoryForFiles($directory_name, $suffix, $this->excluded_representations);
 
-            $classes = $this->scanDirectoryForClasses($directory_name, $suffix, $this->excluded_representations);
-            /** @var string $class */
-            foreach ($classes as $class) {
-                // Class declarations should always take priority over directories.
-                if (isset($this->representations[$class])) {
+            /** @var string $file */
+            foreach ($files as $file) {
+                if (in_array($file, $this->representations)) {
                     continue;
                 }
 
-                $this->addRepresentation($class, $method);
+                $this->addRepresentation($file);
             }
         }
 
@@ -576,11 +572,15 @@ class Config
     /**
      * Add a representation into the excluded list of representations.
      *
-     * @param string $class
+     * @param string $filename
      */
-    public function addExcludedRepresentation(string $class): void
+    public function addExcludedRepresentation(string $filename): void
     {
-        $this->excluded_representations[] = $class;
+        if (!file_exists($this->base_dir . $filename)) {
+            throw new InvalidArgumentException(sprintf('The `%s` excluded representation could not be found.', $filename));
+        }
+
+        $this->excluded_representations[] = $filename;
     }
 
     /**
@@ -601,54 +601,43 @@ class Config
     /**
      * Add a new representation into the instance config.
      *
-     * @param string $class
-     * @param null|string $method
-     * @throws UncallableRepresentationException If the representation is uncallable.
+     * @param string $filename
      */
-    public function addRepresentation(string $class, string $method = null): void
+    public function addRepresentation(string $filename): void
     {
-        if (!class_exists($class)) {
-            throw UncallableRepresentationException::create($class);
+        if (!file_exists($this->base_dir . $filename)) {
+            throw new InvalidArgumentException(sprintf('The `%s` representation could not be found.', $filename));
         }
 
-        $this->representations[$class] = [
-            'class' => $class,
-            'method' => $method
-        ];
+        $this->representations[] = $filename;
     }
 
     /**
      * Load in an error representations configuration definition.
      *
      * @param SimpleXMLElement $representations
-     * @throws UncallableErrorRepresentationException If a configured error representation class does not exist.
-     * @throws DomainException If an error representation is missing a `method` attribute.
      */
     protected function loadErrorRepresentations(SimpleXMLElement $representations): void
     {
         /** @var SimpleXMLElement $errors */
         $errors = $representations->errors;
 
-        /** @var SimpleXMLElement $class */
-        foreach ($errors->class as $class) {
-            $class_name = (string) $class['name'];
-            $method = (string) $class['method'] ?: null;
-            $needs_error_code = (string) $class['needsErrorCode'];
+        /** @var SimpleXMLElement $file */
+        foreach ($errors->file as $file) {
+            $filename = (string) $file['name'];
+            $needs_error_code = (string) $file['needsErrorCode'];
 
-            if (!class_exists($class_name)) {
-                throw UncallableErrorRepresentationException::create($class_name);
-            } elseif (empty($method)) {
-                throw new DomainException(
+            if (!file_exists($this->base_dir . $filename)) {
+                throw new InvalidArgumentException(
                     sprintf(
-                        'The `%s` error representation class declaration is missing a `method` attribute.',
-                        $class_name
+                        'The `%s` error representation could not be found.',
+                        $filename
                     )
                 );
             }
 
-            $this->error_representations[$class_name] = [
-                'class' => $class_name,
-                'method' => $method,
+            $this->error_representations[$filename] = [
+                'filename' => $filename,
                 'needs_error_code' => (strtolower($needs_error_code) === 'true')
             ];
         }
@@ -673,6 +662,14 @@ class Config
     public function getName(): ?string
     {
         return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLanguage(): string
+    {
+        return $this->language;
     }
 
     /**
@@ -744,6 +741,17 @@ class Config
     }
 
     /**
+     * Has a capability been configured?
+     *
+     * @param string $capability
+     * @return bool
+     */
+    public function hasCapability(string $capability): bool
+    {
+        return in_array($capability, $this->getCapabilities());
+    }
+
+    /**
      * Get the array of configured application authentication scopes.
      *
      * @return array
@@ -751,6 +759,17 @@ class Config
     public function getScopes(): array
     {
         return $this->scopes;
+    }
+
+    /**
+     * Has an authentication scope been configured?
+     *
+     * @param string $scope
+     * @return bool
+     */
+    public function hasScope(string $scope): bool
+    {
+        return in_array($scope, $this->getScopes());
     }
 
     /**
@@ -810,6 +829,7 @@ class Config
      */
     public function getAllRepresentations(): array
     {
+        throw new \Exception('config::getallrepresentations will no longer work.');
         return array_merge($this->getRepresentations(), $this->getErrorRepresentations());
     }
 
@@ -834,54 +854,54 @@ class Config
     }
 
     /**
-     * Recursively scan a directory for a set of classes, excluding any that we don't want along the way.
+     * Recursively scan a directory for a set of files, excluding any that we don't want along the way.
      *
      * @param string $directory
      * @param string $suffix
      * @param array $excludes
      * @return array
      */
-    protected function scanDirectoryForClasses(string $directory, string $suffix, array $excludes = []): array
+    protected function scanDirectoryForFiles(string $directory, string $suffix, array $excludes = []): array
     {
-        $classes = [];
+        $files = [];
 
         $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
         $regex = new RegexIterator($iterator, '/^.+(' . $suffix . ')$/i', RecursiveRegexIterator::GET_MATCH);
         foreach ($regex as $file) {
             $file = array_shift($file);
-
-            $class = $this->getClassFQNFromFile($file);
-            if (in_array($class, $excludes)) {
+            $file = ltrim($file, $this->base_dir);
+            if (in_array($file, $excludes)) {
                 continue;
             }
 
-            $classes[] = $class;
+            $files[] = $file;
         }
 
-        return $classes;
+        return $files;
     }
 
     /**
      * Check if a specific representation exists. If the representation has been configured as being excluded, then act
      * as if it doesn't exist (but don't throw an exception).
      *
-     * @param string $class
+     * @param string $file
      * @return bool
      * @throws UnconfiguredRepresentationException If the representation hasn't been configured, or excluded.
      */
-    public function doesRepresentationExist(string $class): bool
+    public function hasRepresentation(string $file): bool
     {
+        throw new \Exception('no longer use config->hasrepresentation');
         $representations = $this->getRepresentations();
         $excluded = $this->getExcludedRepresentations();
 
         // If the representation is excluded, just act like it doesn't exist.
-        if (in_array($class, $excluded)) {
+        if (in_array($file, $excluded)) {
             return false;
         }
 
         // However, if it isn't, but also hasn't been configured, fail out.
-        if (!isset($representations[$class])) {
-            throw UnconfiguredRepresentationException::create($class);
+        if (!in_array($file, $representations)) {
+            throw UnconfiguredRepresentationException::create($file);
         }
 
         return true;
@@ -890,15 +910,15 @@ class Config
     /**
      * Check if a specific error representation exists.
      *
-     * @param string $class
+     * @param string $file
      * @return bool
      * @throws UnconfiguredErrorRepresentationException If the error representation hasn't been configured.
      */
-    public function doesErrorRepresentationExist(string $class): bool
+    public function hasErrorRepresentation(string $file): bool
     {
         $representations = $this->getErrorRepresentations();
-        if (!isset($representations[$class])) {
-            throw UnconfiguredErrorRepresentationException::create($class);
+        if (!isset($representations[$file])) {
+            throw UnconfiguredErrorRepresentationException::create($file);
         }
 
         return true;
@@ -907,13 +927,15 @@ class Config
     /**
      * Check if a given error representation requires an error code.
      *
-     * @param string $representation
+     * @param string $file
      * @return bool
      */
-    public function doesErrorRepresentationNeedAnErrorCode(string $representation): bool
+    public function doesErrorRepresentationNeedAnErrorCode(string $file): bool
     {
+        // @notetoself this won't work because this array has them keyed by filename, not representation name. this
+        // function should get moved into the Application and merged with the preload system.
         $representations = $this->getErrorRepresentations();
-        return $representations[$representation]['needs_error_code'];
+        return $representations[$file]['needs_error_code'];
     }
 
     /**
@@ -925,9 +947,9 @@ class Config
      * @param string $file
      * @return string
      */
-    private function getClassFQNFromFile(string $file): string
+    /*private function getClassFQNFromFile(string $file): string
     {
-        /** @var resource $fp */
+        // @var resource $fp
         $fp = fopen($file, 'r');
         $class = $namespace = $buffer = '';
         $i = 0;
@@ -969,5 +991,5 @@ class Config
         }
 
         return implode('\\', [$namespace, $class]);
-    }
+    }*/
 }

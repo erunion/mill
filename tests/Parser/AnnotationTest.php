@@ -2,23 +2,24 @@
 namespace Mill\Parser;
 
 use Mill\Exceptions\Annotations\MissingRequiredFieldException;
+use Mill\Parser\Reader\Docblock;
 use Mill\Tests\Fixtures\AnnotationStub;
+use Mill\Tests\TestCase;
 
-class AnnotationTest extends \PHPUnit\Framework\TestCase
+class AnnotationTest extends TestCase
 {
     public function testAnnotationFailsIfARequiredFieldWasNotSuppliedToRequired(): void
     {
-        $docblock = 'This is a test';
+        $content = 'This is a test';
+        $docblock = new Docblock($content, __FILE__, 0, strlen($content));
 
         try {
-            (new AnnotationStub($docblock, __CLASS__, __METHOD__))->process();
+            (new AnnotationStub($this->application, $content, $docblock))->process();
             $this->fail('MissingRequiredFieldException not thrown.');
         } catch (MissingRequiredFieldException $e) {
             $this->assertSame('test', $e->getRequiredField());
             $this->assertSame('stub', $e->getAnnotation());
             $this->assertSame($docblock, $e->getDocblock());
-            $this->assertSame(__CLASS__, $e->getClass());
-            $this->assertSame(__METHOD__, $e->getMethod());
 
             $this->assertEmpty($e->getValues());
         }

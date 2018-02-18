@@ -2,32 +2,29 @@
 namespace Mill\Exceptions\Annotations;
 
 use Mill\Exceptions\BaseException;
+use Mill\Parser\Reader\Docblock;
 
 class InvalidCapabilitySuppliedException extends BaseException
 {
     use AnnotationExceptionTrait;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $capability;
 
     public static function create(
         string $capability,
-        string $class,
-        string $method
+        Docblock $docblock
     ): InvalidCapabilitySuppliedException {
         $message = sprintf(
-            'The capability on `@api-capability %s` in %s::%s is not present in your config.',
+            'The capability, `%s`, on line %s in %s is not present in your config.',
             $capability,
-            $class,
-            $method
+            $docblock->getLines(),
+            $docblock->getFilename()
         );
 
         $exception = new self($message);
         $exception->capability = $capability;
-        $exception->class = $class;
-        $exception->method = $method;
+        $exception->docblock = $docblock;
 
         return $exception;
     }

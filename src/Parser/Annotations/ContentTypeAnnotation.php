@@ -30,7 +30,7 @@ class ContentTypeAnnotation extends Annotation
     protected function parser(): array
     {
         return [
-            'content_type' => $this->docblock
+            'content_type' => $this->content
         ];
     }
 
@@ -45,14 +45,14 @@ class ContentTypeAnnotation extends Annotation
     /**
      * {@inheritdoc}
      */
-    public static function hydrate(array $data = [], Version $version = null): self
+    /*public static function hydrate(array $data = [], Version $version = null): self
     {
-        /** @var ContentTypeAnnotation $annotation */
+        // @var ContentTypeAnnotation $annotation
         $annotation = parent::hydrate($data, $version);
         $annotation->setContentType($data['content_type']);
 
         return $annotation;
-    }
+    }*/
 
     /**
      * @return string

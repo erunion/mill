@@ -3,6 +3,7 @@ namespace Mill\Tests\Parser\Annotations;
 
 use Mill\Exceptions\BaseException;
 use Mill\Parser\Annotations\DataAnnotation;
+use Mill\Parser\Reader\Docblock;
 use Mill\Tests\TestCase;
 
 abstract class AnnotationTest extends TestCase
@@ -27,14 +28,16 @@ abstract class AnnotationTest extends TestCase
             if ($annotation === DataAnnotation::class) {
                 $this->getDataAnnotationFromDocblock($content, __CLASS__);
             } else {
-                (new $annotation($content, __CLASS__, __METHOD__))->process();
+                $docblock = new Docblock($content, __FILE__, 0, strlen($content));
+                (new $annotation($this->application, $content, $docblock))->process();
             }
         } catch (BaseException $e) {
             if (get_class($e) !== $exception) {
                 $this->fail('Unrecognized exception (' . get_class($e) . ') thrown.');
             }
 
-            $this->assertExceptionAsserts($e, __CLASS__, __METHOD__, $asserts);
+            //$this->assertExceptionAsserts($e, __CLASS__, __METHOD__, $asserts);
+            $this->assertExceptionAsserts($e, $asserts);
             throw $e;
         }
     }

@@ -1,13 +1,45 @@
 <?php
 namespace Mill\Parser;
 
+use Mill\Application;
 use Mill\Container;
 use Mill\Exceptions\Annotations\UnsupportedTypeException;
 use Mill\Exceptions\Config\UnconfiguredRepresentationException;
 use Mill\Exceptions\MSON\MissingOptionsException;
+use Mill\Parser\Reader\Docblock;
 
 class MSON
 {
+    /**
+     * This is the regex to match a Mill-flavored MSON string.
+     *
+     * Examples:
+     *
+     *  - content_rating (string) - MPAA rating
+     *  - content_rating `G` (string, required) - MPAA rating
+     *  - content_rating `G` (string, required, nullable) - MPAA rating
+     *  - content_rating `G` (string, optional, MOVIE_RATINGS) - MPAA rating
+     *  - content_rating `G` (string, optional, nullable, MOVIE_RATINGS) - MPAA rating
+     *  - content_rating `G` (string, MOVIE_RATINGS) - MPAA rating
+     *  - websites.description (string) - The websites' description
+     *  - websites (array<object>) - The users' list of websites.
+     *  - cast (array<Person>) - Cast
+     *  - director (Person) - Director
+     *
+     * @var string
+     */
+    const REGEX_MSON = '/' .
+        '(' .
+            '(?P<field>[\w.\*]+) (`(?P<sample_data>.+)` )?' .
+            '\(' .
+                '(?P<type>[\w\\\]+)(<(?P<subtype>[\w\\\]+)>)?' .
+                '(, (?P<required>required|optional))?' .
+                '(, (?P<nullable>nullable))?' .
+                '(, (?P<capability>\w+))?' .
+            '\)(\n|\s)+-(\n|\s)+(?P<description>.+)' .
+        ')' .
+        '/uis';
+
     /**
      * This is the regex to match Mill-flavored MSON enum members.
      *
@@ -29,7 +61,10 @@ class MSON
      * @var string
      * @todo Add a test for a member description that exists on multiple lines.
      */
-    const REGEX_MSON_ENUM = '/(?:\+ Members\n(?:\s*?))?(?:- `(?P<value>.*?)`( - (?P<description>.*?))?)(?:$|\n)/ui';
+    const REGEX_MSON_ENUM = '/' .
+        '(?:\+ Members\n(?:\s*?))?' .
+            '(?:- `(?P<value>.*?)`( - (?P<description>.*?))?)(?:$|\n)' .
+        '/ui';
 
     /**
      * Take a multi-line string or paragraph, remove any multi-lines, and contract sentences.
@@ -43,19 +78,18 @@ class MSON
      */
     const REGEX_CLEAN_MULTILINE = '/(\s)?[ \t]*(\r\n|\n)[ \t]*(\s)/';
 
-    /**
-     * Controller that this MSON is being parsed from.
-     *
-     * @var string
-     */
-    protected $class;
+    /** @var Application */
+    protected $application;
 
     /**
-     * Controller method that MSON is being parsed from.
+     * The docblock that this MSON is being parsed from.
      *
-     * @var string
+     * @var Docblock
      */
-    protected $method;
+    protected $docblock;
+
+    /** @var \Mill\Config */
+    protected $config;
 
     /**
      * Name of the field that was parsed out of the MSON content.
@@ -141,48 +175,27 @@ class MSON
     ];
 
     /**
-     * @param string $class
-     * @param string $method
+     * @param Application $application
+     * @param Docblock $docblock
      */
-    public function __construct(string $class, string $method)
+    public function __construct(Application $application, Docblock $docblock)
     {
-        $this->class = $class;
-        $this->method = $method;
+        $this->application = $application;
+        $this->docblock = $docblock;
+        $this->config = $application->getConfig();
     }
 
     /**
      * Given a piece of Mill-flavored MSON content, parse it out.
      *
-     * @param string $content
+     * @param string $annotation
      * @return self
      * @throws UnsupportedTypeException If an unsupported MSON field type has been supplied.
      * @throws MissingOptionsException If a supplied MSON type of `enum` missing corresponding acceptable values.
      */
-    public function parse(string $content): self
+    public function parse(string $content)
     {
-        /**
-         * This is the regex to match a Mill-flavored MSON string.
-         *
-         * Examples:
-         *
-         *  - content_rating (string) - MPAA rating
-         *  - content_rating `G` (string, required) - MPAA rating
-         *  - content_rating `G` (string, required, nullable) - MPAA rating
-         *  - content_rating `G` (string, optional, MOVIE_RATINGS) - MPAA rating
-         *  - content_rating `G` (string, optional, nullable, MOVIE_RATINGS) - MPAA rating
-         *  - content_rating `G` (string, MOVIE_RATINGS) - MPAA rating
-         *  - websites.description (string) - The websites' description
-         *  - websites (array<object>) - The users' list of websites.
-         *  - cast (array<\Mill\Examples\Showtimes\Representations\Person>) - Cast
-         *  - director (\Mill\Examples\Showtimes\Representations\Person) - Director
-         *
-         * @var string
-         */
-        $regex_mson = '/((?P<field>[\w.\*]+) (`(?P<sample_data>.+)` )?' .
-            '\((?P<type>[\w\\\]+)(<(?P<subtype>[\w\\\]+)>)?(, (?P<required>required|optional))?(, ' .
-            '(?P<nullable>nullable))?(, (?P<capability>\w+))?\)(\n|\s)+-(\n|\s)+(?P<description>.+))/uis';
-
-        preg_match($regex_mson, $content, $matches);
+        preg_match(self::REGEX_MSON, $content, $matches);
 
         foreach (['field', 'type', 'description', 'sample_data', 'subtype', 'capability'] as $name) {
             if (isset($matches[$name])) {
@@ -207,14 +220,12 @@ class MSON
 
         // Verify that the supplied type, and any subtype if present, is supported.
         if (!empty($this->type)) {
-            $config = Container::getConfig();
-
             if (!in_array(strtolower($this->type), $this->supported_types)) {
                 try {
                     // If this isn't a valid representation, then it's an invalid type.
-                    $config->doesRepresentationExist($this->type);
+                    $this->config->hasRepresentation($this->type);
                 } catch (UnconfiguredRepresentationException $e) {
-                    throw UnsupportedTypeException::create($content, $this->class, $this->method);
+                    $this->application->trigger(UnsupportedTypeException::create($content, $this->docblock));
                 }
             }
 
@@ -224,15 +235,17 @@ class MSON
                         if (!in_array(strtolower($this->subtype), $this->supported_types)) {
                             try {
                                 // If this isn't a valid representation, then it's an invalid type.
-                                $config->doesRepresentationExist($this->subtype);
+                                $this->config->hasRepresentation($this->subtype);
                             } catch (UnconfiguredRepresentationException $e) {
-                                throw UnsupportedTypeException::create($content, $this->class, $this->method);
+                                $this->application->trigger(
+                                    UnsupportedTypeException::create($content, $this->docblock)
+                                );
                             }
                         }
                         break;
 
                     default:
-                        throw UnsupportedTypeException::create($content, $this->class, $this->method);
+                        $this->application->trigger(UnsupportedTypeException::create($content, $this->docblock));
                 }
             }
         }
@@ -254,7 +267,7 @@ class MSON
         }
 
         if ($this->type === 'enum' && empty($this->values)) {
-            throw MissingOptionsException::create($this->type, $this->class, $this->method);
+            $this->application->trigger(MissingOptionsException::create($this->type, $this->docblock));
         }
 
         return $this;
@@ -284,8 +297,6 @@ class MSON
     }
 
     /**
-     * Name of the field that was parsed out of the MSON content.
-     *
      * @return null|string
      */
     public function getField(): ?string
@@ -294,8 +305,6 @@ class MSON
     }
 
     /**
-     * Sample data that was parsed out of the MSON content.
-     *
      * @return false|string
      */
     public function getSampleData()
@@ -304,8 +313,6 @@ class MSON
     }
 
     /**
-     * Type of field that this MSON content represents.
-     *
      * @return null|string
      */
     public function getType(): ?string
@@ -314,8 +321,6 @@ class MSON
     }
 
     /**
-     * Subtype of the type of field that this MSON content represents.
-     *
      * @return false|string
      */
     public function getSubtype()
@@ -324,8 +329,6 @@ class MSON
     }
 
     /**
-     * Is this MSON content designated as being required?
-     *
      * @return bool
      */
     public function isRequired(): bool
@@ -334,8 +337,6 @@ class MSON
     }
 
     /**
-     * Is this MSON content designated as nullable?
-     *
      * @return bool
      */
     public function isNullable(): bool
@@ -344,8 +345,6 @@ class MSON
     }
 
     /**
-     * Application-specific capability that was parsed out of the MSON content.
-     *
      * @return false|string
      */
     public function getCapability()
@@ -354,8 +353,6 @@ class MSON
     }
 
     /**
-     * Parsed description from the MSON content.
-     *
      * @return null|string
      */
     public function getDescription(): ?string

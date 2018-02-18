@@ -47,7 +47,7 @@ class UriAnnotation extends Annotation
     protected function parser(): array
     {
         $parsed = [];
-        $content = $this->docblock;
+        $content = $this->content;
 
         // Namespace is surrounded by `{curly braces}`.
         if (preg_match(self::NAMESPACE_REGEX, $content, $matches)) {
@@ -72,15 +72,15 @@ class UriAnnotation extends Annotation
     /**
      * {@inheritdoc}
      */
-    public static function hydrate(array $data = [], Version $version = null)
+    /*public static function hydrate(array $data = [], Version $version = null)
     {
-        /** @var UriAnnotation $annotation */
+        // @var UriAnnotation $annotation
         $annotation = parent::hydrate($data, $version);
         $annotation->setNamespace($data['namespace']);
         $annotation->setPath($data['path']);
 
         return $annotation;
-    }
+    }*/
 
     /**
      * @return string
@@ -126,7 +126,7 @@ class UriAnnotation extends Annotation
         $path = preg_replace('/[@#+*!~]((\w|_)+)(\/|$)/', '{$1}$3', $this->getPath());
 
         // If we have any URI segment translations configured, let's process them.
-        $translations = Container::getConfig()->getUriSegmentTranslations();
+        $translations = $this->config->getUriSegmentTranslations();
         foreach ($translations as $from => $to) {
             $path = str_replace('{' . $from . '}', '{' . $to . '}', $path);
         }

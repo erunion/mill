@@ -2,27 +2,25 @@
 namespace Mill\Exceptions\Version;
 
 use Mill\Exceptions\BaseException;
+use Mill\Parser\Reader\Docblock;
 
 class UnrecognizedSchemaException extends BaseException
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     public $version = null;
 
-    public static function create(string $version, string $class, string $method): UnrecognizedSchemaException
+    public static function create(string $version, Docblock $docblock): UnrecognizedSchemaException
     {
         $message = sprintf(
-            'A `@api-version` annotation in %s::%s was found with an unrecognized schema of `%s`.',
-            $class,
-            $method,
+            'An `@api-version` annotation on line %s in %s was found with an unrecognized schema of `%s`.',
+            $docblock->getLines(),
+            $docblock->getFilename(),
             $version
         );
 
         $exception = new self($message);
         $exception->version = $version;
-        $exception->class = $class;
-        $exception->method = $method;
+        $exception->docblock = $docblock;
 
         return $exception;
     }

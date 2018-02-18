@@ -1,35 +1,24 @@
 <?php
 namespace Mill\Exceptions;
 
+use Mill\Parser\Reader\Docblock;
+
 class BaseException extends \Exception
 {
-    /** @var string */
-    public $class;
-
-    /** @var null|string */
-    public $method = null;
+    /** @var Docblock */
+    public $docblock;
 
     /** @var null|string */
     public $annotation = null;
 
     /**
-     * Get the class that this exception occurred in.
+     * Get the docblock that this exception occurred within.
      *
-     * @return string
+     * @return Docblock
      */
-    public function getClass(): string
+    public function getDocblock(): Docblock
     {
-        return $this->class;
-    }
-
-    /**
-     * Get the class method that this exception occurred in.
-     *
-     * @return null|string
-     */
-    public function getMethod(): ?string
-    {
-        return $this->method;
+        return $this->docblock;
     }
 
     /**

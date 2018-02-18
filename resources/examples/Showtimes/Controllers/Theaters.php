@@ -2,7 +2,7 @@
 namespace Mill\Examples\Showtimes\Controllers;
 
 /**
- * @api-label Movie Theaters
+ * @api-resource Movie Theaters
  */
 class Theaters
 {
@@ -15,9 +15,9 @@ class Theaters
      *
      * @api-param:public location (string, required) - Location you want theaters in.
      *
-     * @api-return:public {collection} \Mill\Examples\Showtimes\Representations\Theater
+     * @api-return:public (collection, Theater)
      *
-     * @api-throws:public {400} \Mill\Examples\Showtimes\Representations\Error If the location is invalid.
+     * @api-throws:public (400, Error) If the location is invalid.
      *
      * @api-version >=1.1.2
      * @api-contentType application/mill.example.theater
@@ -43,10 +43,9 @@ class Theaters
      * @api-param:public address (string, required) - Theater address
      * @api-param:public phone_number (string, required) - Theater phone number
      *
-     * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Theater
+     * @api-return:public (object, Theater)
      *
-     * @api-throws:public {400} \Mill\Examples\Showtimes\Representations\Error If there is a problem with the
-     *      request.
+     * @api-throws:public (400, Error) If there is a problem with the request.
      *
      * @api-version >=1.1.2
      * @api-contentType application/mill.example.theater

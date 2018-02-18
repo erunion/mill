@@ -2,6 +2,7 @@
 namespace Mill\Exceptions\Annotations;
 
 use Mill\Exceptions\BaseException;
+use Mill\Parser\Reader\Docblock;
 
 class MissingRequiredFieldException extends BaseException
 {
@@ -10,25 +11,20 @@ class MissingRequiredFieldException extends BaseException
     public static function create(
         string $required_field,
         string $annotation,
-        string $docblock,
-        string $class,
-        string $method
+        Docblock $docblock
     ): MissingRequiredFieldException {
         $message = sprintf(
-            'You must add a `%s` to `@api-%s %s` in %s::%s.',
+            'You must add a `%s` to the `@api-%s` annotation on line %s in %s.',
             $required_field,
             $annotation,
-            $docblock,
-            $class,
-            $method
+            $docblock->getLines(),
+            $docblock->getFilename()
         );
 
         $exception = new self($message);
         $exception->required_field = $required_field;
         $exception->annotation = $annotation;
         $exception->docblock = $docblock;
-        $exception->class = $class;
-        $exception->method = $method;
 
         return $exception;
     }

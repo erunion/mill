@@ -1,13 +1,12 @@
 <?php
 namespace Mill;
 
-use gossi\docblock\Docblock;
 use gossi\docblock\tags\UnknownTag;
 use Mill\Exceptions\Resource\UnsupportedDecoratorException;
 use Mill\Parser\Annotation;
 use Mill\Parser\MSON;
+use Mill\Parser\Reader\Docblock;
 use Mill\Parser\Version;
-use ReflectionClass;
 
 /**
  * Class for tokenizing a docblock on a given class or method.
@@ -17,26 +16,28 @@ class Parser
 {
     const REGEX_DECORATOR = '/^(?P<decorator>(:\w+)+)?/u';
 
+    /** @var Application */
+    protected $application;
+
+    /** @var Parser\Reader */
+    protected $reader;
+
     /**
-     * The current class that we're going to be parsing.
+     * The current file that we're going to be parsing.
      *
      * @var string
      */
-    protected $class;
+    protected $file;
 
     /**
-     * The current class method that we're parsing. Used to give better error messaging.
-     *
-     * @var null|string
+     * @param Application $application
+     * @param string $file
      */
-    protected $method;
-
-    /**
-     * @param string $class
-     */
-    public function __construct(string $class)
+    public function __construct(Application $application, string $file)
     {
-        $this->class = $class;
+        $this->application = $application;
+        $this->file = $file;
+        $this->reader = Container::getAnnotationReader();
     }
 
     /**
@@ -44,7 +45,7 @@ class Parser
      *
      * @return array
      */
-    public function getHttpMethods()
+    /*public function getHttpMethods()
     {
         $methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
@@ -58,45 +59,80 @@ class Parser
         }
 
         return $valid_methods;
+    }*/
+
+    /**
+     * Quickly scan through the docblocks of the current file for a specific annotation. This is used to preload
+     * assets before doing a full scan. Without doing this, representation maps would not be able to be validated
+     * fully when doing a full scan.
+     *
+     * @param string $name
+     * @return Annotation
+     * @throws \Exception
+     */
+    public function getAnnotation(string $name): Annotation
+    {
+        $docblocks = $this->getDocblocks();
+        foreach ($docblocks as $docblock) {
+            $parser = $docblock->getAnnotations();
+            $tags = $parser->getTags();
+            if (!empty($tags)) {
+                /** @var UnknownTag $tag */
+                foreach ($tags as $tag) {
+                    if ($tag->getTagName() !== 'api-' . $name) {
+                        continue;
+                    }
+
+                    $annotation = $this->parseAnnotations([$tag], $docblock);
+                    return array_shift($annotation[$name]);
+                }
+            }
+        }
+
+        throw new \Exception(sprintf(
+            'An `@api-%s` annotation was not found within `%s`.',
+            $name,
+            $this->file
+        ));
     }
 
     /**
-     * Locate, and parse, the annotations for a class or method.
+     * Locate, and parse, the annotations on a file.
      *
-     * @param null|string $method_name
-     * @return array An array containing all the found annotations.
+     * @return array
      */
-    public function getAnnotations(string $method_name = null): array
+    public function getAnnotations(): array
     {
-        if (!empty($method_name)) {
-            $this->method = $method_name;
+        $docblocks = $this->getDocblocks();
+
+        $annotations = [];
+        foreach ($docblocks as $docblock) {
+            $annotations[] = $this->parseDocblock($docblock);
         }
 
-        $reader = Container::getAnnotationReader();
-        $comments = $reader($this->class, $method_name);
+        return $annotations;
 
-        if (empty($comments)) {
-            return [];
-        }
+/*print_r([
+    'annotations' => count($annotations)
+]);exit;*/
 
-        return $this->parseDocblock($comments);
+        //return $this->parseDocblock($comments);
     }
 
     /**
      * Parse a docblock comment into its parts.
      *
      * @link https://github.com/facebook/libphutil/blob/master/src/parser/docblock/PhutilDocblockParser.php
-     * @param string $docblock
+     * @param Docblock $docblock
      * @param boolean $parse_description If we want to parse out an unstructured `description` annotation.
-     * @return array Array of parsed annotations.
+     * @return array
      */
-    protected function parseDocblock(string $docblock, bool $parse_description = true): array
+    protected function parseDocblock(Docblock $docblock, bool $parse_description = true): array
     {
-        $original_docblock = $docblock;
         $annotations = [];
-        $matches = null;
+        //$matches = null;
 
-        $parser = self::getAnnotationsFromDocblock($docblock);
+        $parser = $docblock->getAnnotations();
         $tags = $parser->getTags();
         if (!empty($tags)) {
             $annotation_tags = [];
@@ -112,23 +148,21 @@ class Parser
                 $annotation_tags[] = $tag;
             }
 
-            $annotations = $this->parseAnnotations($annotation_tags, $original_docblock);
+            $annotations = $this->parseAnnotations($annotation_tags, $docblock);
         }
 
         // Only parse out a `description` annotation if we need to (like in the instance of not parsing a
         // representation).
-        if (!$parse_description) {
-            return $annotations;
-        }
+        if ($parse_description) {
+            // Reconstruct the description as the developer wrote it.
+            $description = implode("\n\n", array_filter([
+                $parser->getShortDescription(),
+                $parser->getLongDescription()
+            ]));
 
-        // Reconstruct the description as the developer wrote it.
-        $description = implode("\n\n", array_filter([
-            $parser->getShortDescription(),
-            $parser->getLongDescription()
-        ]));
-
-        if (!empty($description)) {
-            $annotations['description'][] = $this->buildAnnotation('description', null, $description);
+            if (!empty($description)) {
+                $annotations['description'][] = $this->buildAnnotation($docblock, 'description', null, $description);
+            }
         }
 
         return $annotations;
@@ -138,15 +172,15 @@ class Parser
      * Parse a group of our custom annotations.
      *
      * @param array $tags
-     * @param string $original_content
+     * @param Docblock $docblock
      * @return array
      */
-    protected function parseAnnotations(array $tags, string $original_content): array
+    protected function parseAnnotations(array $tags, Docblock $docblock): array
     {
         $annotations = [];
         $version = null;
 
-        /** @var \gossi\docblock\tags\UnknownTag $tag */
+        /** @var UnknownTag $tag */
         foreach ($tags as $tag) {
             $annotation = $this->getAnnotationNameFromTag($tag);
             $content = $tag->getDescription();
@@ -162,14 +196,17 @@ class Parser
             switch ($annotation) {
                 // Handle the `@api-version` annotation block.
                 case 'version':
-                    /** @var string $method */
-                    $method = $this->method;
-                    $version = new Version($content, $this->class, $method);
+                    $version = new Version($this->application, $content, $docblock);
+                    break;
+
+                case 'see':
+                    // @todo rebuild `@api-see support
                     break;
 
                 // Parse all other annotations.
                 default:
                     $annotations[$annotation][] = $this->buildAnnotation(
+                        $docblock,
                         $annotation,
                         $decorators,
                         $content,
@@ -190,7 +227,7 @@ class Parser
      * @param array $data
      * @return Annotation
      */
-    public function hydrateAnnotation(string $name, string $class, string $method, array $data = []): Annotation
+    /*public function hydrateAnnotation(string $name, string $class, string $method, array $data = []): Annotation
     {
         $annotation_class = $this->getAnnotationClass(str_replace('_', '', $name));
 
@@ -209,11 +246,12 @@ class Parser
             ),
             $version
         );
-    }
+    }*/
 
     /**
      * Build up an array of annotation data.
      *
+     * @param Docblock $docblock
      * @param string $name
      * @param null|string $decorators
      * @param string $content
@@ -222,6 +260,7 @@ class Parser
      * @throws UnsupportedDecoratorException If an unsupported decorator is found on an annotation.
      */
     private function buildAnnotation(
+        Docblock $docblock,
         string $name,
         ?string $decorators,
         string $content,
@@ -238,7 +277,7 @@ class Parser
         }
 
         /** @var Annotation $annotation */
-        $annotation = (new $class($content, $this->class, $this->method, $version))->process();
+        $annotation = (new $class($this->application, $content, $docblock, $version))->process();
 
         if (!empty($decorators)) {
             $decorators = explode(':', ltrim($decorators, ':'));
@@ -259,13 +298,8 @@ class Parser
                         break;
 
                     default:
-                        /** @var string $method */
-                        $method = $this->method;
-                        throw UnsupportedDecoratorException::create(
-                            $decorator,
-                            $name,
-                            $this->class,
-                            $method
+                        $this->application->trigger(
+                            UnsupportedDecoratorException::create($decorator, $name, $docblock)
                         );
                 }
             }
@@ -306,27 +340,6 @@ class Parser
     }
 
     /**
-     * Parse out annotations from a supplied docblock.
-     *
-     * @param string $docblock
-     * @return Docblock
-     */
-    public static function getAnnotationsFromDocblock(string $docblock): Docblock
-    {
-        return new Docblock($docblock);
-    }
-
-    /**
-     * @param null|string $method
-     * @return self
-     */
-    public function setMethod(string $method = null): self
-    {
-        $this->method = $method;
-        return $this;
-    }
-
-    /**
      * Given an UnknownTag object, get back the Mill annotation name from it.
      *
      * @param UnknownTag $tag
@@ -336,5 +349,15 @@ class Parser
     {
         $annotation = $tag->getTagName();
         return substr($annotation, 4);
+    }
+
+    protected function getDocblocks(): array
+    {
+        $docblocks = $this->reader->getAnnotations($this->file);
+        if (empty($docblocks)) {
+            return [];
+        }
+
+        return $docblocks;
     }
 }

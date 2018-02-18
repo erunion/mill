@@ -1,8 +1,8 @@
 <?php
 namespace Mill\Command;
 
-use Mill\Application;
 use Mill\Config;
+use Mill\Console\Application;
 use Mill\Generator;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

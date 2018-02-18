@@ -2,7 +2,7 @@
 namespace Mill\Examples\Showtimes\Representations;
 
 /**
- * @api-label Coded error
+ * @api-representation Coded error
  */
 class CodedError extends Representation
 {

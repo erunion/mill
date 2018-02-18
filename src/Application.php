@@ -1,49 +1,134 @@
 <?php
 namespace Mill;
 
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Formatter\OutputFormatterStyle;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
+use Mill\Exceptions\BaseException;
+use Mill\Exceptions\Config\UnconfiguredRepresentationException;
+use Mill\Parser\Annotations\RepresentationAnnotation;
 
-class Application extends Command
+class Application
 {
-    const DS = DIRECTORY_SEPARATOR;
+    /** @var Config */
+    protected $config;
+
+    /** @var array */
+    protected $controllers = [];
+
+    /** @var array */
+    protected $preloaded = [
+        'representations' => []
+    ];
+
+    /** @var array */
+    protected $representations = [];
+
+    /** @var bool */
+    protected $trigger_errors = true;
+
+    /** @var array */
+    protected $triggered_errors = [];
 
     /**
-     * @var \Pimple\Container
+     * Application constructor.
+     *
+     * @param Config $config
      */
-    protected $container;
-
-    /**
-     * @return void
-     */
-    protected function configure()
+    public function __construct(Config $config)
     {
-        $this->addOption(
-            'config',
-            null,
-            InputOption::VALUE_OPTIONAL,
-            'Path to your `mill.xml` config file.',
-            'mill.xml'
-        );
+        $this->config = $config;
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return void
+     * Quickly scan and preload all representations by their defined name, `@api-resource`, so when we later do a full
+     * application scan, we can link called out representations in `@api-data`, `@api-return` and `@api-throws`
+     * annotations.
+     *
+     * @throws \Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function preload(): void
     {
-        $style = new OutputFormatterStyle('green', null, ['bold']);
-        $output->getFormatter()->setStyle('success', $style);
+        // Preload representations
+        foreach ($this->config->getRepresentations() as $representation) {
+            $this->preloadRepresentation($representation);
+        }
 
-        $config_file = realpath($input->getOption('config'));
+        // Preload error representations
+        foreach ($this->config->getErrorRepresentations() as $representation) {
+            $this->preloadRepresentation($representation['filename']);
+        }
+    }
 
-        $this->container = new Container([
-            'config.path' => $config_file
-        ]);
+    /**
+     * @param string $representation
+     * @throws \Exception
+     */
+    private function preloadRepresentation(string $representation): void
+    {
+        /** @var RepresentationAnnotation $annotation */
+        $annotation = (new Parser($this, $representation))->getAnnotation('representation');
+        $name = $annotation->getName();
+        if (isset($this->preloaded['representations'][$name])) {
+            /** @var RepresentationAnnotation $representation */
+            $representation = $this->preloaded['representations'][$name];
+            throw new \Exception(sprintf(
+                'The `@api-representation %s` annotation in `%s` is not valid as another representation with ' .
+                    'the name of `%s` already exists within `%s`.',
+                $name,
+                $representation,
+                $name,
+                $representation->getDocblock()->getFilename()
+            ));
+        }
+
+        $this->preloaded['representations'][$name] = $annotation->getDocblock()->getFilename();
+    }
+
+    /*public function loadRepresentation(string $file): bool
+    {
+        if (!$this->config->hasRepresentation($file)) {
+            return false;
+        }
+
+        $this->representations[$file] = (new Parser($this, $file))->getAnnotations();
+
+print_r([
+    'ha sit',
+    $file,
+    $this->representations[$file]
+]);exit;
+    }*/
+
+    /**
+     * Check if a specific representation exists.
+     *
+     * @param string $name
+     * @return bool
+     */
+    public function hasRepresentation(string $name): bool
+    {
+        if (isset($this->preloaded['representations'][$name]) || isset($this->representations[$name])) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function trigger(BaseException $exception): void
+    {
+        if ($this->trigger_errors) {
+            throw $exception;
+        }
+
+        $this->triggered_errors[] = $exception;
+    }
+
+    public function triggerErrors($throw = true): self
+    {
+        $this->trigger_errors = $throw;
+        return $this;
+    }
+
+    public function getConfig(): Config
+    {
+        return $this->config;
     }
 }

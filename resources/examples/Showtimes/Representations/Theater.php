@@ -4,7 +4,7 @@ namespace Mill\Examples\Showtimes\Representations;
 /**
  * Data representation for a specific movie theater.
  *
- * @api-label Theater
+ * @api-representation Theater
  */
 class Theater extends Representation
 {
@@ -45,7 +45,7 @@ class Theater extends Representation
             'website' => $this->theater->website,
 
             /**
-             * @api-data movies (array<\Mill\Examples\Showtimes\Representations\Movie>) - Movies currently playing
+             * @api-data movies (array<Movie>) - Movies currently playing
              */
             'movies' => $this->theater->getMovies(),
 

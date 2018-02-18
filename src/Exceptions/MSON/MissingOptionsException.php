@@ -2,27 +2,25 @@
 namespace Mill\Exceptions\MSON;
 
 use Mill\Exceptions\BaseException;
+use Mill\Parser\Reader\Docblock;
 
 class MissingOptionsException extends BaseException
 {
-    /**
-     * @var null|string
-     */
+    /** @var null|string */
     public $type = null;
 
-    public static function create(string $type, string $class, string $method): MissingOptionsException
+    public static function create(string $type, Docblock $docblock): MissingOptionsException
     {
         $message = sprintf(
-            'A MSON type of `%s` in %s::%s requires accompanying acceptable values.',
+            'A MSON type of `%s` on line %s in %s requires accompanying acceptable values.',
             $type,
-            $class,
-            $method
+            $docblock->getLines(),
+            $docblock->getFilename()
         );
 
         $exception = new self($message);
         $exception->type = $type;
-        $exception->class = $class;
-        $exception->method = $method;
+        $exception->docblock = $docblock;
 
         return $exception;
     }

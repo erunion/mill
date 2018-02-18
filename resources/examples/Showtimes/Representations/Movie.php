@@ -4,7 +4,7 @@ namespace Mill\Examples\Showtimes\Representations;
 /**
  * Data representation for a specific movie.
  *
- * @api-label Movie
+ * @api-representation Movie
  */
 class Movie extends Representation
 {
@@ -58,13 +58,13 @@ class Movie extends Representation
             'genres' => $this->movie->getGenres(),
 
             /**
-             * @api-data director (\Mill\Examples\Showtimes\Representations\Person) - Director
+             * @api-data director (Person) - Director
              * @api-scope public
              */
             'director' => $this->movie->director,
 
             /**
-             * @api-data cast (array<\Mill\Examples\Showtimes\Representations\Person>) - Cast
+             * @api-data cast (array<Person>) - Cast
              * @api-scope public
              */
             'cast' => $this->movie->getCast(),
@@ -75,7 +75,7 @@ class Movie extends Representation
             'kid_friendly' => $this->movie->is_kid_friendly,
 
             /**
-             * @api-data theaters (array<\Mill\Examples\Showtimes\Representations\Theater>) - Theaters the movie is
+             * @api-data theaters (array<Theater>) - Theaters the movie is
              *      currently showing in
              */
             'theaters' => $this->movie->getTheaters(),

@@ -1,12 +1,12 @@
 <?php
 namespace Mill\Parser\Annotations;
 
-use Mill\Container;
 use Mill\Exceptions\Annotations\UnknownRepresentationException;
 use Mill\Exceptions\Annotations\UnknownReturnCodeException;
 use Mill\Exceptions\Config\UnconfiguredRepresentationException;
 use Mill\Parser\Annotation;
 use Mill\Parser\Annotations\Traits\HasHttpCodeResponseTrait;
+use Mill\Parser\HTTPResponseMSON;
 use Mill\Parser\Version;
 
 /**
@@ -19,8 +19,6 @@ class ReturnAnnotation extends Annotation
 
     const REQUIRES_VISIBILITY_DECORATOR = true;
     const SUPPORTS_VERSIONING = true;
-
-    const REGEX_TYPE = '/^({[^}]*})/';
 
     /**
      * Description for what this annotations' action return is.
@@ -54,47 +52,27 @@ class ReturnAnnotation extends Annotation
      */
     protected function parser(): array
     {
-        $parsed = [];
-        $content = trim($this->docblock);
+        $mson = (new HTTPResponseMSON($this->application, $this->docblock))->parse($this->content);
+        $parsed = [
+            'description' => $mson->getDescription(),
+            'http_code' => null,
+            'representation' => $mson->getRepresentation(),
+            'type' => $mson->getHttpCode(),
+        ];
 
-        // Parameter type is surrounded by `{curly braces}`.
-        if (preg_match(self::REGEX_TYPE, $content, $matches)) {
-            $parsed['type'] = substr($matches[1], 1, -1);
+        $http_code = $this->findReturnCodeForType($parsed['type']);
+        $parsed['http_code'] = $http_code . ' ' . $this->getHttpCodeMessage($http_code);
 
-            $code = $this->findReturnCodeForType($parsed['type']);
-            $parsed['http_code'] = $code . ' ' . $this->getHttpCodeMessage($code);
-
-            $content = trim(preg_replace(self::REGEX_TYPE, '', $content));
-        }
-
-        $parts = explode(' ', $content);
-        $representation = array_shift($parts);
-        $description = trim(implode(' ', $parts));
-
-        if (!empty($representation)) {
-            // If the supplied representation /looks/ like a PHP FQN, then treat it as such, and verify that it's been
-            // either configured or ignored.
-            if (preg_match('/\\\([\\w]+)/', $representation)) {
-                // Verify that the supplied representation class exists. If it's being excluded, we can just go ahead
-                // and set it here anyways, as we'll be looking further up the stack to determine if we should actually
-                // parse it for documentation.
-                //
-                // If the class doesn't exist, this method call will throw an exception back out.
-                try {
-                    Container::getConfig()->doesRepresentationExist($representation);
-                } catch (UnconfiguredRepresentationException $e) {
-                    /** @var string $method */
-                    $method = $this->method;
-                    throw UnknownRepresentationException::create($representation, $this->class, $method);
-                }
-            } else {
-                $description = trim($representation . ' ' . $description);
-                $representation = false;
+        if (!empty($parsed['representation'])) {
+            // Verify that the supplied representation exists. If it's being excluded, we can just go ahead and set it
+            // here anyways, as we'll be looking further up the stack to determine if we should actually parsed it for
+            // documentation.
+            if (!$this->application->hasRepresentation($parsed['representation'])) {
+                $this->application->trigger(
+                    UnknownRepresentationException::create($parsed['representation'], $this->docblock)
+                );
             }
         }
-
-        $parsed['representation'] = $representation;
-        $parsed['description'] = (!empty($description)) ? $description : null;
 
         return $parsed;
     }
@@ -119,9 +97,9 @@ class ReturnAnnotation extends Annotation
     /**
      * {@inheritdoc}
      */
-    public static function hydrate(array $data = [], Version $version = null): self
+    /*public static function hydrate(array $data = [], Version $version = null): self
     {
-        /** @var ReturnAnnotation $annotation */
+        // @var ReturnAnnotation $annotation
         $annotation = parent::hydrate($data, $version);
         $annotation->setDescription($data['description']);
         $annotation->setHttpCode($data['http_code']);
@@ -129,7 +107,7 @@ class ReturnAnnotation extends Annotation
         $annotation->setType($data['type']);
 
         return $annotation;
-    }
+    }*/
 
     /**
      * Grab the HTTP code for a given response type.
@@ -163,9 +141,9 @@ class ReturnAnnotation extends Annotation
                 return 304;
 
             default:
-                /** @var string $method */
-                $method = $this->method;
-                throw UnknownReturnCodeException::create('return', $this->docblock, $this->class, $method);
+                $this->application->trigger(
+                    UnknownReturnCodeException::create('return', $this->content, $this->docblock)
+                );
         }
     }
 

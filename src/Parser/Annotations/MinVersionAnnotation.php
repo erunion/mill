@@ -35,12 +35,11 @@ class MinVersionAnnotation extends Annotation
      */
     protected function parser(): array
     {
-        /** @var string $method */
-        $method = $this->method;
-
-        $parsed = new Version($this->docblock, $this->class, $method);
+        $parsed = new Version($this->application, $this->content, $this->docblock);
         if ($parsed->isRange()) {
-            throw AbsoluteMinimumVersionException::create($this->docblock, $this->class, $method);
+            $this->application->trigger(
+                AbsoluteMinimumVersionException::create($this->content, $this->docblock)
+            );
         }
 
         return [
@@ -61,14 +60,14 @@ class MinVersionAnnotation extends Annotation
     /**
      * {@inheritdoc}
      */
-    public static function hydrate(array $data = [], Version $version = null): self
+    /*public static function hydrate(array $data = [], Version $version = null): self
     {
-        /** @var MinVersionAnnotation $annotation */
+        // @var MinVersionAnnotation $annotation
         $annotation = parent::hydrate($data, $version);
         $annotation->setMinimumVersion($data['minimum_version']);
 
         return $annotation;
-    }
+    }*/
 
     /**
      * @return string

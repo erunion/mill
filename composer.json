@@ -30,7 +30,8 @@
         "league/flysystem-memory": "^1.0",
         "vimeo/psalm": "^0.3",
         "squizlabs/php_codesniffer": "^3.0",
-        "phpunit/phpunit": "^6.1"
+        "phpunit/phpunit": "^6.1",
+        "mockery/mockery": "^1.0"
     },
     "suggest": {
         "ext-xml": "Required for config file processing."

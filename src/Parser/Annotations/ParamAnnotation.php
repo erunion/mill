@@ -90,17 +90,15 @@ class ParamAnnotation extends Annotation
      */
     protected function parser(): array
     {
-        $content = trim($this->docblock);
+        $content = $this->content;
 
         // Swap in shortcode tokens (if present).
-        $tokens = Container::getConfig()->getParameterTokens();
+        $tokens = $this->config->getParameterTokens();
         if (!empty($tokens)) {
             $content = str_replace(array_keys($tokens), array_values($tokens), $content);
         }
 
-        /** @var string $method */
-        $method = $this->method;
-        $mson = (new MSON($this->class, $method))->parse($content);
+        $mson = (new MSON($this->application, $this->docblock))->parse($content);
         $parsed = [
             'field' => $mson->getField(),
             'sample_data' => $mson->getSampleData(),
@@ -115,9 +113,9 @@ class ParamAnnotation extends Annotation
         // Create a capability annotation if one was supplied.
         if (!empty($parsed['capability'])) {
             $parsed['capability'] = (new CapabilityAnnotation(
+                $this->application,
                 $parsed['capability'],
-                $this->class,
-                $this->method
+                $this->docblock
             ))->process();
         }
 
@@ -143,9 +141,9 @@ class ParamAnnotation extends Annotation
     /**
      * {@inheritdoc}
      */
-    public static function hydrate(array $data = [], Version $version = null): self
+    /*public static function hydrate(array $data = [], Version $version = null): self
     {
-        /** @var ParamAnnotation $annotation */
+        // @var ParamAnnotation $annotation
         $annotation = parent::hydrate($data, $version);
         $annotation->setDescription($data['description']);
         $annotation->setField($data['field']);
@@ -156,7 +154,7 @@ class ParamAnnotation extends Annotation
         $annotation->setValues($data['values']);
 
         return $annotation;
-    }
+    }*/
 
     /**
      * @return string

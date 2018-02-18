@@ -2,24 +2,24 @@
 namespace Mill\Exceptions\Representation;
 
 use Mill\Exceptions\BaseException;
+use Mill\Parser\Reader\Docblock;
 use Mill\Parser\Representation\Documentation;
 
 class RestrictedFieldNameException extends BaseException
 {
     use RepresentationExceptionTrait;
 
-    public static function create(string $class, ?string $method): RestrictedFieldNameException
+    public static function create(Docblock $docblock): RestrictedFieldNameException
     {
         $message = sprintf(
-            '`%s` is a reserved `@api-field` name, and cannot be used in %s::%s.',
+            '`%s` is a reserved `@api-field` name, and cannot be used on line %s in %s.',
             Documentation::DOT_NOTATION_ANNOTATION_DATA_KEY,
-            $class,
-            $method
+            $docblock->getLines(),
+            $docblock->getFilename()
         );
 
         $exception = new self($message);
-        $exception->class = $class;
-        $exception->method = $method;
+        $exception->docblock = $docblock;
 
         return $exception;
     }

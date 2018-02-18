@@ -1,8 +1,8 @@
 <?php
 namespace Mill\Command;
 
-use Mill\Application;
 use Mill\Config;
+use Mill\Console\Application;
 use Mill\Exceptions\Version\UnrecognizedSchemaException;
 use Mill\Generator;
 use Mill\Parser\Version;

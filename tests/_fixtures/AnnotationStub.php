@@ -15,7 +15,7 @@ class AnnotationStub extends Annotation
     protected function parser(): array
     {
         return [
-            'foo' => $this->docblock
+            'foo' => $this->content
         ];
     }
 

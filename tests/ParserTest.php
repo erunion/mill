@@ -8,32 +8,62 @@ class ParserTest extends TestCase
 {
     use ReaderTestingTrait;
 
-    public function testParseAnnotationsOnClassWithNoMethod(): void
+    /**
+     * @dataProvider providerParseAnnotationsOnFile
+     * @param array $expected_methods
+     */
+    public function testParseAnnotationsOnFile($file, array $expected_methods): void
     {
-        $class = '\Mill\Examples\Showtimes\Controllers\Movie';
-        $docs = (new Parser($class))->getAnnotations();
+        $docs = (new Parser($this->application, $file))->getAnnotations();
 
-        $this->assertCount(2, $docs);
-        $this->assertCount(1, $docs['description']);
-        $this->assertCount(1, $docs['label']);
+        $this->assertCount(4, $docs);
 
-        /** @var \Mill\Parser\Annotations\LabelAnnotation $annotation */
-        $annotation = $docs['label'][0];
-        $this->assertSame('Movies', $annotation->toArray()['label']);
+        // top-level block
+        $this->assertCount(2, $docs[0]);
+        $this->assertCount(1, $docs[0]['description']);
+        $this->assertCount(1, $docs[0]['resource']);
 
-        /** @var \Mill\Parser\Annotations\DescriptionAnnotation $annotation */
-        $annotation = $docs['description'][0];
-        $this->assertSame('Information on a specific movie.
+        // `@api-method` blocks
+        $i = 1;
+        foreach ($expected_methods as $method => $method_annotations) {
+            $this->assertSame($method, $docs[$i]['method'][0]->getMethod());
+            $this->assertSame(array_keys($method_annotations), array_keys($docs[$i]));
 
-These actions will allow you to pull information on a specific movie.', $annotation->toArray()['description']);
+            foreach ($method_annotations as $annotation => $assertions) {
+                $this->assertInstanceOf(
+                    $assertions[0],
+                    $docs[$i][$annotation][0],
+                    'Mismatch on `' . $annotation . '` instance type in ' . $method
+                );
+
+                $this->assertCount(
+                    $assertions[1],
+                    $docs[$i][$annotation],
+                    'Mismatch on `' . $annotation . '` total in ' . $method
+                );
+            }
+
+            $i++;
+        }
+
+        /** @var Parser\Annotations\ResourceAnnotation $annotation */
+        $annotation = $docs[0]['resource'][0];
+        $this->assertSame('Movies', $annotation->toArray()['name']);
+
+        /** @var Parser\Annotations\DescriptionAnnotation $annotation */
+        $annotation = $docs[0]['description'][0];
+        $this->assertSame(
+            "Information on a specific movie.\n\nThese actions will allow you to pull information on a specific movie.",
+            $annotation->toArray()['description']
+        );
     }
 
     /**
-     * @dataProvider providerParseAnnotationsOnClassMethod
+     * @ddataProvider providerParseAnnotationsOnClassMethod
      * @param string $method
      * @param array $expected
      */
-    public function testParseAnnotationsOnClassMethod(string $method, array $expected): void
+    /*public function testParseAnnotationsOnClassMethod(string $method, array $expected): void
     {
         $class = '\Mill\Examples\Showtimes\Controllers\Movie';
         $annotations = (new Parser($class))->getAnnotations($method);
@@ -52,30 +82,32 @@ These actions will allow you to pull information on a specific movie.', $annotat
                 $this->assertInstanceOf($expected[$annotation]['class'], $obj, '`' . $annotation . '` mismatch');
             }
         }
-    }
+    }*/
 
     public function testParsingADeprecatedDecorator(): void
     {
         $this->overrideReadersWithFakeDocblockReturn('/**
           * @api-label Update a piece of content.
           *
+          * @api-method GET
           * @api-uri:public {Foo\Bar} /foo
           * @api-uri:private:deprecated {Foo\Bar} /bar
           *
           * @api-contentType application/json
           * @api-scope public
           *
-          * @api-return:public {ok}
+          * @api-return:public (ok)
           */');
 
-        $annotations = (new Parser(__CLASS__))->getAnnotations(__METHOD__);
+        $docs = (new Parser($this->application, __FILE__))->getAnnotations();
+        $annotations = $docs[0];
 
         $this->assertArrayHasKey('uri', $annotations);
         $this->assertFalse($annotations['uri'][0]->isDeprecated());
         $this->assertTrue($annotations['uri'][1]->isDeprecated());
     }
 
-    public function testParseAnnotationsOnClassMethodThatDoesntExist(): void
+    /*public function testParseAnnotationsOnClassMethodThatDoesntExist(): void
     {
         $class = '\Mill\Examples\Showtimes\Controllers\Movie';
 
@@ -85,135 +117,52 @@ These actions will allow you to pull information on a specific movie.', $annotat
             $this->assertSame($class, $e->getClass());
             $this->assertSame('POST', $e->getMethod());
         }
-    }
+    }*/
 
-    public function providerParseAnnotationsOnClassMethod(): array
+    /**
+     * @return array
+     */
+    public function providerParseAnnotationsOnFile(): array
     {
         return [
-            'GET' => [
-                'method' => 'GET',
-                'expected' => [
-                    'contentType' => [
-                        'class' => Parser\Annotations\ContentTypeAnnotation::class,
-                        'count' => 2
+            'test-movie-controller' => [
+                'file' => 'resources/examples/Showtimes/Controllers/Movie.php',
+                'methods' => [
+                    'GET' => [
+                        'label' => [Parser\Annotations\LabelAnnotation::class, 1],
+                        'method' => [Parser\Annotations\MethodAnnotation::class, 1],
+                        'uri' => [Parser\Annotations\UriAnnotation::class, 2],
+                        'uriSegment' => [Parser\Annotations\UriSegmentAnnotation::class, 2],
+                        'return' => [Parser\Annotations\ReturnAnnotation::class, 2],
+                        'throws' => [Parser\Annotations\ThrowsAnnotation::class, 3],
+                        'contentType' => [Parser\Annotations\ContentTypeAnnotation::class, 2],
+                        'description' => [Parser\Annotations\DescriptionAnnotation::class, 1]
                     ],
-                    'description' => [
-                        'class' => Parser\Annotations\DescriptionAnnotation::class,
-                        'count' => 1
+                    'PATCH' => [
+                        'label' => [Parser\Annotations\LabelAnnotation::class, 1],
+                        'method' => [Parser\Annotations\MethodAnnotation::class, 1],
+                        'uri' => [Parser\Annotations\UriAnnotation::class, 1],
+                        'uriSegment' => [Parser\Annotations\UriSegmentAnnotation::class, 1],
+                        'scope' => [Parser\Annotations\ScopeAnnotation::class, 1],
+                        'minVersion' => [Parser\Annotations\MinVersionAnnotation::class, 1],
+                        'param' => [Parser\Annotations\ParamAnnotation::class, 11],
+                        'return' => [Parser\Annotations\ReturnAnnotation::class, 2],
+                        'throws' => [Parser\Annotations\ThrowsAnnotation::class, 6],
+                        'contentType' => [Parser\Annotations\ContentTypeAnnotation::class, 2],
+                        'description' => [Parser\Annotations\DescriptionAnnotation::class, 1]
                     ],
-                    'label' => [
-                        'class' => Parser\Annotations\LabelAnnotation::class,
-                        'count' => 1
-                    ],
-                    'minVersion' => [
-                        'class' => Parser\Annotations\MinVersionAnnotation::class,
-                        'count' => 1
-                    ],
-                    'return' => [
-                        'class' => Parser\Annotations\ReturnAnnotation::class,
-                        'count' => 2
-                    ],
-                    'throws' => [
-                        'class' => Parser\Annotations\ThrowsAnnotation::class,
-                        'count' => 3
-                    ],
-                    'uri' => [
-                        'class' => Parser\Annotations\UriAnnotation::class,
-                        'count' => 2
-                    ],
-                    'uriSegment' => [
-                        'class' => Parser\Annotations\UriSegmentAnnotation::class,
-                        'count' => 2
-                    ]
-                ]
-            ],
-            'PATCH' => [
-                'method' => 'PATCH',
-                'expected' => [
-                    'contentType' => [
-                        'class' => Parser\Annotations\ContentTypeAnnotation::class,
-                        'count' => 2
-                    ],
-                    'description' => [
-                        'class' => Parser\Annotations\DescriptionAnnotation::class,
-                        'count' => 1
-                    ],
-                    'label' => [
-                        'class' => Parser\Annotations\LabelAnnotation::class,
-                        'count' => 1
-                    ],
-                    'minVersion' => [
-                        'class' => Parser\Annotations\MinVersionAnnotation::class,
-                        'count' => 1
-                    ],
-                    'param' => [
-                        'class' => Parser\Annotations\ParamAnnotation::class,
-                        'count' => 11
-                    ],
-                    'return' => [
-                        'class' => Parser\Annotations\ReturnAnnotation::class,
-                        'count' => 2
-                    ],
-                    'scope' => [
-                        'class' => Parser\Annotations\ScopeAnnotation::class,
-                        'count' => 1
-                    ],
-                    'throws' => [
-                        'class' => Parser\Annotations\ThrowsAnnotation::class,
-                        'count' => 6
-                    ],
-                    'uri' => [
-                        'class' => Parser\Annotations\UriAnnotation::class,
-                        'count' => 1
-                    ],
-                    'uriSegment' => [
-                        'class' => Parser\Annotations\UriSegmentAnnotation::class,
-                        'count' => 1
-                    ]
-                ]
-            ],
-            'DELETE' => [
-                'method' => 'DELETE',
-                'expected' => [
-                    'capability' => [
-                        'class' => Parser\Annotations\CapabilityAnnotation::class,
-                        'count' => 1
-                    ],
-                    'contentType' => [
-                        'class' => Parser\Annotations\ContentTypeAnnotation::class,
-                        'count' => 1
-                    ],
-                    'description' => [
-                        'class' => Parser\Annotations\DescriptionAnnotation::class,
-                        'count' => 1
-                    ],
-                    'label' => [
-                        'class' => Parser\Annotations\LabelAnnotation::class,
-                        'count' => 1
-                    ],
-                    'minVersion' => [
-                        'class' => Parser\Annotations\MinVersionAnnotation::class,
-                        'count' => 1
-                    ],
-                    'return' => [
-                        'class' => Parser\Annotations\ReturnAnnotation::class,
-                        'count' => 1
-                    ],
-                    'scope' => [
-                        'class' => Parser\Annotations\ScopeAnnotation::class,
-                        'count' => 1
-                    ],
-                    'throws' => [
-                        'class' => Parser\Annotations\ThrowsAnnotation::class,
-                        'count' => 1
-                    ],
-                    'uri' => [
-                        'class' => Parser\Annotations\UriAnnotation::class,
-                        'count' => 1
-                    ],
-                    'uriSegment' => [
-                        'class' => Parser\Annotations\UriSegmentAnnotation::class,
-                        'count' => 1
+                    'DELETE' => [
+                        'label' => [Parser\Annotations\LabelAnnotation::class, 1],
+                        'method' => [Parser\Annotations\MethodAnnotation::class, 1],
+                        'uri' => [Parser\Annotations\UriAnnotation::class, 1],
+                        'uriSegment' => [Parser\Annotations\UriSegmentAnnotation::class, 1],
+                        'contentType' => [Parser\Annotations\ContentTypeAnnotation::class, 1],
+                        'capability' => [Parser\Annotations\CapabilityAnnotation::class, 1],
+                        'scope' => [Parser\Annotations\ScopeAnnotation::class, 1],
+                        'minVersion' => [Parser\Annotations\MinVersionAnnotation::class, 1],
+                        'return' => [Parser\Annotations\ReturnAnnotation::class, 1],
+                        'throws' => [Parser\Annotations\ThrowsAnnotation::class, 1],
+                        'description' => [Parser\Annotations\DescriptionAnnotation::class, 1],
                     ]
                 ]
             ]

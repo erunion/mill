@@ -1,26 +1,28 @@
 <?php
 namespace Mill\Exceptions\Annotations;
 
+use Mill\Parser\Reader\Docblock;
+
 trait AnnotationExceptionTrait
 {
     /** @var null|string */
-    public $docblock = null;
+    //public $content = null;
 
     /** @var null|string */
     public $required_field = null;
 
     /** @var array */
-    public $values = [];
+    //public $values = [];
 
     /**
-     * Get the raw docblock for this annotation.
+     * Get the raw content for this annotation.
      *
      * @return null|string
      */
-    public function getDocblock(): ?string
+    /*public function getContent(): ?string
     {
-        return $this->docblock;
-    }
+        return $this->content;
+    }*
 
     /**
      * Get the required field that this annotation is missing.
@@ -37,8 +39,8 @@ trait AnnotationExceptionTrait
      *
      * @return array
      */
-    public function getValues(): array
+    /*public function getValues(): array
     {
         return $this->values;
-    }
+    }*/
 }

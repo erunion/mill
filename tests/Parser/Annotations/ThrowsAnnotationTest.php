@@ -80,7 +80,7 @@ class ThrowsAnnotationTest extends AnnotationTest
     {
         return [
             'bare' => [
-                'content' => '{404} \Mill\Examples\Showtimes\Representations\Error If the movie could not be found.',
+                'content' => '(404, Error) If the movie could not be found.',
                 'version' => null,
                 'visible' => true,
                 'expected' => [
@@ -88,14 +88,13 @@ class ThrowsAnnotationTest extends AnnotationTest
                     'description' => 'If the movie could not be found.',
                     'error_code' => false,
                     'http_code' => '404 Not Found',
-                    'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                    'representation' => 'Error',
                     'version' => false,
                     'visible' => true
                 ]
             ],
             'capability' => [
-                'content' => '{404} \Mill\Examples\Showtimes\Representations\Error +BUY_TICKETS+ If the movie could ' .
-                    'not be found.',
+                'content' => '(404, Error, BUY_TICKETS) If the movie could not be found.',
                 'version' => null,
                 'visible' => true,
                 'expected' => [
@@ -103,13 +102,13 @@ class ThrowsAnnotationTest extends AnnotationTest
                     'description' => 'If the movie could not be found.',
                     'error_code' => false,
                     'http_code' => '404 Not Found',
-                    'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                    'representation' => 'Error',
                     'version' => false,
                     'visible' => true
                 ]
             ],
             'description' => [
-                'content' => '{400} \Mill\Examples\Showtimes\Representations\Error If an unknown error occurred.',
+                'content' => '(400, Error) If an unknown error occurred.',
                 'version' => null,
                 'visible' => true,
                 'expected' => [
@@ -117,14 +116,13 @@ class ThrowsAnnotationTest extends AnnotationTest
                     'description' => 'If an unknown error occurred.',
                     'error_code' => false,
                     'http_code' => '400 Bad Request',
-                    'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                    'representation' => 'Error',
                     'version' => false,
                     'visible' => true
                 ]
             ],
             'description.has_parenthesis' => [
-                'content' => '{403} \Mill\Examples\Showtimes\Representations\Error This is a description with a ' .
-                    '(parenthesis of something).',
+                'content' => '(403, Error) This is a description with a (parenthesis of something).',
                 'version' => null,
                 'visible' => true,
                 'expected' => [
@@ -132,13 +130,13 @@ class ThrowsAnnotationTest extends AnnotationTest
                     'description' => 'This is a description with a (parenthesis of something).',
                     'error_code' => false,
                     'http_code' => '403 Forbidden',
-                    'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                    'representation' => 'Error',
                     'version' => false,
                     'visible' => true
                 ]
             ],
             'description.throw_type' => [
-                'content' => '{404} \Mill\Examples\Showtimes\Representations\Error {movie}',
+                'content' => '(404, Error) {movie}',
                 'version' => null,
                 'visible' => true,
                 'expected' => [
@@ -146,13 +144,13 @@ class ThrowsAnnotationTest extends AnnotationTest
                     'description' => 'If the movie cannot be found.',
                     'error_code' => false,
                     'http_code' => '404 Not Found',
-                    'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                    'representation' => 'Error',
                     'version' => false,
                     'visible' => true
                 ]
             ],
             'description.throw_type.subthrow_type' => [
-                'content' => '{404} \Mill\Examples\Showtimes\Representations\Error {movie,theater}',
+                'content' => '(404, Error) {movie,theater}',
                 'version' => null,
                 'visible' => true,
                 'expected' => [
@@ -160,15 +158,13 @@ class ThrowsAnnotationTest extends AnnotationTest
                     'description' => 'If the movie cannot be found in the theater.',
                     'error_code' => false,
                     'http_code' => '404 Not Found',
-                    'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                    'representation' => 'Error',
                     'version' => false,
                     'visible' => true
                 ]
             ],
             'error_code' => [
-                'content' => '{403} \Mill\Examples\Showtimes\Representations\CodedError ' .
-                    '(Mill\Examples\Showtimes\Representations\CodedError::DISALLOWED) If the user is not allowed to ' .
-                    'edit that movie.',
+                'content' => '(403, Coded error, 666) If the user is not allowed to edit that movie.',
                 'version' => null,
                 'visible' => true,
                 'expected' => [
@@ -176,14 +172,13 @@ class ThrowsAnnotationTest extends AnnotationTest
                     'description' => 'If the user is not allowed to edit that movie.',
                     'error_code' => '666',
                     'http_code' => '403 Forbidden',
-                    'representation' => '\Mill\Examples\Showtimes\Representations\CodedError',
+                    'representation' => 'Coded error',
                     'version' => false,
                     'visible' => true
                 ]
             ],
             'error_code.numerical' => [
-                'content' => '{403} \Mill\Examples\Showtimes\Representations\CodedError (1337) If something cool ' .
-                    'happened.',
+                'content' => '(403, Coded error, 1337) If something cool happened.',
                 'version' => null,
                 'visible' => true,
                 'expected' => [
@@ -191,13 +186,13 @@ class ThrowsAnnotationTest extends AnnotationTest
                     'description' => 'If something cool happened.',
                     'error_code' => '1337',
                     'http_code' => '403 Forbidden',
-                    'representation' => '\Mill\Examples\Showtimes\Representations\CodedError',
+                    'representation' => 'Coded error',
                     'version' => false,
                     'visible' => true
                 ]
             ],
             'private' => [
-                'content' => '{404} \Mill\Examples\Showtimes\Representations\Error {movie}',
+                'content' => '(404, Error) {movie}',
                 'version' => null,
                 'visible' => false,
                 'expected' => [
@@ -205,13 +200,13 @@ class ThrowsAnnotationTest extends AnnotationTest
                     'description' => 'If the movie cannot be found.',
                     'error_code' => false,
                     'http_code' => '404 Not Found',
-                    'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                    'representation' => 'Error',
                     'version' => false,
                     'visible' => false
                 ]
             ],
             'versioned' => [
-                'content' => '{404} \Mill\Examples\Showtimes\Representations\Error {movie}',
+                'content' => '(404, Error) {movie}',
                 'version' => new Version('1.1 - 1.2', __CLASS__, __METHOD__),
                 'visible' => false,
                 'expected' => [
@@ -219,14 +214,13 @@ class ThrowsAnnotationTest extends AnnotationTest
                     'description' => 'If the movie cannot be found.',
                     'error_code' => false,
                     'http_code' => '404 Not Found',
-                    'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                    'representation' => 'Error',
                     'version' => '1.1 - 1.2',
                     'visible' => false
                 ]
             ],
             '_complete.description' => [
-                'content' => '{404} \Mill\Examples\Showtimes\Representations\Error +BUY_TICKETS+ ' .
-                    'If the tickets URL does not exist.',
+                'content' => '(404, Error, BUY_TICKETS) If the tickets URL does not exist.',
                 'version' => null,
                 'visible' => true,
                 'expected' => [
@@ -234,15 +228,13 @@ class ThrowsAnnotationTest extends AnnotationTest
                     'description' => 'If the tickets URL does not exist.',
                     'error_code' => false,
                     'http_code' => '404 Not Found',
-                    'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                    'representation' => 'Error',
                     'version' => false,
                     'visible' => true
                 ]
             ],
             '_complete.error_code' => [
-                'content' => '{404} \Mill\Examples\Showtimes\Representations\CodedError ' .
-                    '(\Mill\Examples\Showtimes\Representations\CodedError::DISALLOWED) +BUY_TICKETS+ ' .
-                    '{movie,theater}',
+                'content' => '(404, Coded error, 666, BUY_TICKETS) {movie,theater}',
                 'version' => null,
                 'visible' => true,
                 'expected' => [
@@ -250,14 +242,13 @@ class ThrowsAnnotationTest extends AnnotationTest
                     'description' => 'If the movie cannot be found in the theater.',
                     'error_code' => '666',
                     'http_code' => '404 Not Found',
-                    'representation' => '\Mill\Examples\Showtimes\Representations\CodedError',
+                    'representation' => 'Coded error',
                     'version' => false,
                     'visible' => true
                 ]
             ],
             '_complete.type_subtype' => [
-                'content' => '{404} \Mill\Examples\Showtimes\Representations\Error +BUY_TICKETS+ ' .
-                    '{movie,theater}',
+                'content' => '(404, Error, BUY_TICKETS) {movie,theater}',
                 'version' => null,
                 'visible' => true,
                 'expected' => [
@@ -265,7 +256,7 @@ class ThrowsAnnotationTest extends AnnotationTest
                     'description' => 'If the movie cannot be found in the theater.',
                     'error_code' => false,
                     'http_code' => '404 Not Found',
-                    'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                    'representation' => 'Error',
                     'version' => false,
                     'visible' => true
                 ]
@@ -320,7 +311,7 @@ class ThrowsAnnotationTest extends AnnotationTest
                     'getValues' => []
                 ]
             ],
-            'error-code-is-uncallable' => [
+            /*'error-code-is-uncallable' => [
                 'annotation' => ThrowsAnnotation::class,
                 'content' => '{404} \Mill\Examples\Showtimes\Representations\CodedError (\Uncallable::CONSTANT)',
                 'expected.exception' => UncallableErrorCodeException::class,
@@ -331,7 +322,7 @@ class ThrowsAnnotationTest extends AnnotationTest
                         '(\Uncallable::CONSTANT)',
                     'getValues' => []
                 ]
-            ],
+            ],*/
             'error-code-is-required-but-missing' => [
                 'annotation' => ThrowsAnnotation::class,
                 'content' => '{403} \Mill\Examples\Showtimes\Representations\CodedError',

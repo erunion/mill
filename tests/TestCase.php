@@ -3,6 +3,7 @@ namespace Mill\Tests;
 
 use League\Flysystem\Filesystem;
 use League\Flysystem\Memory\MemoryAdapter;
+use Mill\Application;
 use Mill\Config;
 use Mill\Container;
 use Mill\Exceptions\BaseException;
@@ -12,18 +13,15 @@ use Mill\Parser\Representation\RepresentationParser;
 
 class TestCase extends \PHPUnit\Framework\TestCase
 {
+    const FIXTURES_DIR = __DIR__ . '/../tests/_fixtures/';
+    const RESOURCES_DIR = __DIR__ . '/../resources/';
+
     /** @var Container */
     protected static $container;
 
-    /** @var string */
-    protected static $fixturesDir = __DIR__ . '/../tests/_fixtures/';
+    /** @var Application */
+    protected $application;
 
-    /** @var string */
-    protected static $resourcesDir = __DIR__ . '/../resources/';
-
-    /**
-     * @psalm-suppress MissingReturnType
-     */
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
@@ -40,10 +38,18 @@ class TestCase extends \PHPUnit\Framework\TestCase
             }
         );
 
-        $config = file_get_contents(static::$fixturesDir . 'mill.test.xml');
+        $config = file_get_contents(self::FIXTURES_DIR . 'mill.test.xml');
         $container->getFilesystem()->write('mill.xml', $config);
 
         static::$container = $container;
+    }
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->application = new Application($this->getConfig());
+        $this->application->preload();
     }
 
     /**
@@ -98,17 +104,17 @@ class TestCase extends \PHPUnit\Framework\TestCase
 
     protected function assertExceptionAsserts(
         BaseException $exception,
-        string $class,
-        ?string $method,
+        //string $class,
+        //?string $method,
         array $asserts = []
     ): void {
-        $this->assertSame($class, $exception->getClass());
+        //$this->assertSame($class, $exception->getClass());
 
         // `@api-data` annotation tests don't set up a RepresentationParser with a method, so we don't need to worry
         // about asserting this.
-        if (get_class($this) !== 'Mill\Tests\Parser\Annotations\DataAnnotationTest') {
+        /*if (get_class($this) !== 'Mill\Tests\Parser\Annotations\DataAnnotationTest') {
             $this->assertSame($method, $exception->getMethod());
-        }
+        }*/
 
         foreach ($asserts as $method => $expected) {
             $this->assertSame($expected, $exception->{$method}(), $method . '() does not match expected.');

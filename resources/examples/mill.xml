@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mill
     name="Mill unit test API, Showtimes"
-    bootstrap="../../vendor/autoload.php"
+    language="php"
 >
     <versions>
         <version name="1.0" releaseDate="2017-01-01" />
@@ -24,15 +24,15 @@
             <directory name="Showtimes/Representations/" method="create" suffix=".php"  />
 
             <excludes>
-                <exclude name="\Mill\Examples\Showtimes\Representations\Error" />
-                <exclude name="\Mill\Examples\Showtimes\Representations\CodedError" />
-                <exclude name="\Mill\Examples\Showtimes\Representations\Representation" />
+                <file name="Showtimes/Representations/Error.php" />
+                <file name="Showtimes/Representations/CodedError.php" />
+                <file name="Showtimes/Representations/Representation.php" />
             </excludes>
         </filter>
 
         <errors>
-            <class name="\Mill\Examples\Showtimes\Representations\Error" method="create" needsErrorCode="false" />
-            <class name="\Mill\Examples\Showtimes\Representations\CodedError" method="create" needsErrorCode="true" />
+            <file name="Showtimes/Representations/Error.php" needsErrorCode="false" />
+            <file name="Showtimes/Representations/CodedError.php" needsErrorCode="true" />
         </errors>
     </representations>
 

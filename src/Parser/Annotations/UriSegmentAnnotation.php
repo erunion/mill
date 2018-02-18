@@ -69,7 +69,7 @@ class UriSegmentAnnotation extends Annotation
     protected function parser(): array
     {
         $parsed = [];
-        $content = trim($this->docblock);
+        $content = $this->content;
 
         // URI is surrounded by `{curly braces}`.
         if (preg_match(self::REGEX_URI, $content, $matches)) {
@@ -77,9 +77,7 @@ class UriSegmentAnnotation extends Annotation
             $content = trim(preg_replace(self::REGEX_URI, '', $content));
         }
 
-        /** @var string $method */
-        $method = $this->method;
-        $mson = (new MSON($this->class, $method))->parse($content);
+        $mson = (new MSON($this->application, $this->docblock))->parse($content);
         $parsed = array_merge($parsed, [
             'field' => $mson->getField(),
             'type' => $mson->getType(),
@@ -107,9 +105,9 @@ class UriSegmentAnnotation extends Annotation
     /**
      * {@inheritdoc}
      */
-    public static function hydrate(array $data = [], Version $version = null)
+    /*public static function hydrate(array $data = [], Version $version = null)
     {
-        /** @var UriSegmentAnnotation $annotation */
+        // @var UriSegmentAnnotation $annotation
         $annotation = parent::hydrate($data, $version);
         $annotation->setDescription($data['description']);
         $annotation->setField($data['field']);
@@ -118,7 +116,7 @@ class UriSegmentAnnotation extends Annotation
         $annotation->setValues($data['values']);
 
         return $annotation;
-    }
+    }*/
 
     /**
      * @return string

@@ -28,7 +28,7 @@ class LabelAnnotation extends Annotation
     protected function parser(): array
     {
         return [
-            'label' => $this->docblock
+            'label' => $this->content
         ];
     }
 
@@ -43,14 +43,14 @@ class LabelAnnotation extends Annotation
     /**
      * {@inheritdoc}
      */
-    public static function hydrate(array $data = [], Version $version = null): self
+    /*public static function hydrate(array $data = [], Version $version = null): self
     {
-        /** @var LabelAnnotation $annotation */
+        // @var LabelAnnotation $annotation
         $annotation = parent::hydrate($data, $version);
         $annotation->setLabel($data['label']);
 
         return $annotation;
-    }
+    }*/
 
     /**
      * @return string

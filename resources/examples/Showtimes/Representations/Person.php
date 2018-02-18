@@ -4,7 +4,7 @@ namespace Mill\Examples\Showtimes\Representations;
 /**
  * Data representation for a specific person.
  *
- * @api-label Person
+ * @api-representation Person
  */
 class Person extends Representation
 {

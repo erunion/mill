@@ -2,6 +2,7 @@
 namespace Mill\Exceptions\Annotations;
 
 use Mill\Exceptions\BaseException;
+use Mill\Parser\Reader\Docblock;
 
 class InvalidMSONSyntaxException extends BaseException
 {
@@ -10,25 +11,20 @@ class InvalidMSONSyntaxException extends BaseException
     public static function create(
         string $required_field,
         string $annotation,
-        string $docblock,
-        string $class,
-        string $method
+        Docblock $docblock
     ): InvalidMSONSyntaxException {
         $message = sprintf(
-            'Unable to parse a `%s` in the MSON on %s::%s for: `@api-%s %s`',
+            'Unable to parse a `%s` within the MSON for the `@api-%s` annotation on line %s in %s.',
             $required_field,
-            $class,
-            $method,
             $annotation,
-            $docblock
+            $docblock->getLines(),
+            $docblock->getFilename()
         );
 
         $exception = new self($message);
         $exception->required_field = $required_field;
         $exception->annotation = $annotation;
         $exception->docblock = $docblock;
-        $exception->class = $class;
-        $exception->method = $method;
 
         return $exception;
     }

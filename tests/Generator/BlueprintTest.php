@@ -10,7 +10,7 @@ class BlueprintTest extends TestCase
 
     public function testGeneration(): void
     {
-        $dir = static::$resourcesDir . 'examples/Showtimes/blueprints/';
+        $dir = self::RESOURCES_DIR . 'examples/Showtimes/blueprints/';
 
         $blueprint = new Blueprint($this->getConfig());
         $generated = $blueprint->generate();

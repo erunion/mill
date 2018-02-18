@@ -5,13 +5,13 @@ use Mill\Parser\Annotation;
 use Mill\Parser\Version;
 
 /**
- * Handler for descriptions.
+ * Handler for the `@api-resource` annotation.
  *
  */
-class DescriptionAnnotation extends Annotation
+class ResourceAnnotation extends Annotation
 {
     /** @var string */
-    protected $description;
+    protected $name;
 
     /**
      * An array of items that should be included in an array representation of this annotation.
@@ -19,7 +19,7 @@ class DescriptionAnnotation extends Annotation
      * @var array
      */
     protected $arrayable = [
-        'description'
+        'name'
     ];
 
     /**
@@ -28,7 +28,7 @@ class DescriptionAnnotation extends Annotation
     protected function parser(): array
     {
         return [
-            'description' => $this->content
+            'name' => $this->content
         ];
     }
 
@@ -37,7 +37,7 @@ class DescriptionAnnotation extends Annotation
      */
     protected function interpreter(): void
     {
-        $this->description = $this->required('description');
+        $this->name = $this->required('name');
     }
 
     /**
@@ -45,9 +45,9 @@ class DescriptionAnnotation extends Annotation
      */
     /*public static function hydrate(array $data = [], Version $version = null): self
     {
-        // @var DescriptionAnnotation $annotation
+        // @var ResourceAnnotation $annotation
         $annotation = parent::hydrate($data, $version);
-        $annotation->setDescription($data['description']);
+        $annotation->setName($data['name']);
 
         return $annotation;
     }*/
@@ -55,18 +55,18 @@ class DescriptionAnnotation extends Annotation
     /**
      * @return string
      */
-    public function getDescription(): string
+    public function getName(): string
     {
-        return $this->description;
+        return $this->name;
     }
 
     /**
-     * @param string $description
+     * @param string $name
      * @return self
      */
-    public function setDescription(string $description): self
+    public function setName(string $name): self
     {
-        $this->description = $description;
+        $this->name = $name;
         return $this;
     }
 }

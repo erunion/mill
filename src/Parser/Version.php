@@ -5,7 +5,9 @@ use Composer\Semver\Constraint\ConstraintInterface;
 use Composer\Semver\Constraint\MultiConstraint;
 use Composer\Semver\Semver;
 use Composer\Semver\VersionParser;
+use Mill\Application;
 use Mill\Exceptions\Version\UnrecognizedSchemaException;
+use Mill\Parser\Reader\Docblock;
 
 /**
  * Version parsing class for realizing a `@api-version` annotation.
@@ -13,43 +15,29 @@ use Mill\Exceptions\Version\UnrecognizedSchemaException;
  */
 class Version
 {
-    /**
-     * The parsed semver constraint object.
-     *
-     * @var ConstraintInterface
-     */
+    /** @var ConstraintInterface */
     protected $constraint;
 
-    /**
-     * Class that this version is within.
-     *
-     * @var string
-     */
-    protected $class;
+    /** @var string */
+    protected $docblock;
 
     /**
-     * Class method that this version is within.
-     *
-     * @var string
-     */
-    protected $method;
-
-    /**
+     * @param Application $application
      * @param string $constraint
-     * @param string $class
-     * @param string $method
+     * @param Docblock $docblock
      * @throws UnrecognizedSchemaException If an `@api-version` annotation was found with an unrecognized schema.
      */
-    public function __construct(string $constraint, string $class, string $method)
+    public function __construct(Application $application, string $constraint, Docblock $docblock)
     {
-        $this->class = $class;
-        $this->method = $method;
+        $this->docblock = $docblock;
 
         try {
             $parser = new VersionParser;
             $this->constraint = $parser->parseConstraints($constraint);
         } catch (\UnexpectedValueException $e) {
-            throw UnrecognizedSchemaException::create($constraint, $this->class, $this->method);
+            $application->trigger(
+                UnrecognizedSchemaException::create($constraint, $this->docblock)
+            );
         }
     }
 

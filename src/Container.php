@@ -79,9 +79,9 @@ class Container extends \Pimple\Container
     /**
      * Return the current instance of the annotation reader.
      *
-     * @return \Closure
+     * @return \Mill\Parser\Reader
      */
-    public static function getAnnotationReader(): \Closure
+    public static function getAnnotationReader(): \Mill\Parser\Reader
     {
         return self::getInstance()['reader.annotations'];
     }
@@ -91,8 +91,8 @@ class Container extends \Pimple\Container
      *
      * @return \Closure
      */
-    public static function getRepresentationAnnotationReader(): \Closure
+    /*public static function getRepresentationAnnotationReader(): \Closure
     {
         return self::getInstance()['reader.annotations.representation'];
-    }
+    }*/
 }

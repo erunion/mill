@@ -88,12 +88,7 @@ class DataAnnotation extends Annotation
      */
     protected function parser(): array
     {
-        $content = trim($this->docblock);
-
-        /** @var string $method */
-        $method = $this->method;
-
-        $mson = (new MSON($this->class, $method))->parse($content);
+        $mson = (new MSON($this->application, $this->docblock))->parse($this->content);
         $parsed = [
             'identifier' => $mson->getField(),
             'sample_data' => $mson->getSampleData(),
@@ -108,15 +103,15 @@ class DataAnnotation extends Annotation
         // Create a capability annotation if one was supplied.
         if (!empty($parsed['capability'])) {
             $parsed['capability'] = (new CapabilityAnnotation(
+                $this->application,
                 $parsed['capability'],
-                $this->class,
-                $this->method
+                $this->docblock
             ))->process();
         }
 
         if (!empty($parsed['identifier'])) {
             if (strtoupper($parsed['identifier']) === Documentation::DOT_NOTATION_ANNOTATION_DATA_KEY) {
-                throw RestrictedFieldNameException::create($this->class, $this->method);
+                $this->application->trigger(RestrictedFieldNameException::create($this->docblock));
             }
         }
 
@@ -147,9 +142,9 @@ class DataAnnotation extends Annotation
     /**
      * {@inheritdoc}
      */
-    public static function hydrate(array $data = [], Version $version = null): self
+    /*public static function hydrate(array $data = [], Version $version = null): self
     {
-        /** @var DataAnnotation $annotation */
+        // @var DataAnnotation $annotation
         $annotation = parent::hydrate($data, $version);
         $annotation->setDescription($data['description']);
         $annotation->setIdentifier($data['identifier']);
@@ -160,7 +155,7 @@ class DataAnnotation extends Annotation
         $annotation->setValues($data['values']);
 
         return $annotation;
-    }
+    }*/
 
     /**
      * @return string

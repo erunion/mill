@@ -15,7 +15,7 @@ trait HasHttpCodeResponseTrait
     protected $http_code;
 
     /**
-     * Name of the representation that this annotation responds with. Can be either a fully qualified class name, or
+     * Name of the representation that this annotation responds with. Can be either a parsed representation name, or
      * `string`.
      *
      * @var false|string
