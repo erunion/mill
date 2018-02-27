@@ -584,7 +584,7 @@ abstract class Annotation
     /**
      * Return the capability, if any, that has been set.
      *
-     * @return false|string
+     * @return false|string|CapabilityAnnotation
      */
     public function getCapability()
     {

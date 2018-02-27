@@ -320,7 +320,6 @@ class Documentation
 
         /** @var Parser\Annotations\ContentTypeAnnotation $annotation */
         foreach ($this->content_types as $annotation) {
-            /** @var Version $annotation_version */
             $annotation_version = $annotation->getVersion();
             if (!$annotation_version || ($version && $annotation_version->matches($version))) {
                 return $annotation->getContentType();

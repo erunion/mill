@@ -157,6 +157,8 @@ class Generator
     /**
      * Compile parsed resources into a versioned collection.
      *
+     * @psalm-suppress EmptyArrayAccess Psalm thinks that `$resources[$version][$namespace]['resources']` is an empty
+     *      value array. It is not.
      * @param array $parsed
      * @return array
      */
