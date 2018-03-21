@@ -422,7 +422,7 @@ class Blueprint extends Generator
                     }
 
                     $description .= sprintf(
-                        ' This data requires a bearer token with %s scope%s.',
+                        ' This data requires a bearer token with the %s scope%s.',
                         '`' . implode(', ', $strings) . '`',
                         (count($strings) > 1) ? 's' : null
                     );
