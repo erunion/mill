@@ -141,6 +141,7 @@ class Generator
                     $action = clone $method;
                     $action->setUri($uri);
                     $action->setUriSegments($segments);
+                    $action->filterAnnotationsForVisibility($this->load_private_docs, $this->load_capability_docs);
 
                     // Hash the action so we don't happen to double up and end up with dupes.
                     $identifier = $action->getUri()->getPath() . '::' . $action->getMethod();
@@ -156,6 +157,8 @@ class Generator
     /**
      * Compile parsed resources into a versioned collection.
      *
+     * @psalm-suppress EmptyArrayAccess Psalm thinks that `$resources[$version][$namespace]['resources']` is an empty
+     *      value array. It is not.
      * @param array $parsed
      * @return array
      */
@@ -194,7 +197,6 @@ class Generator
                         // generating documentation for.
                         $cloned = clone $action;
                         $cloned->filterAnnotationsForVersion($version);
-                        $cloned->filterAnnotationsForVisibility($this->load_private_docs, $this->load_capability_docs);
 
                         if (!isset($resources[$version][$namespace]['resources'][$resource_label])) {
                             $resources[$version][$namespace]['resources'][$resource_label] = [
@@ -240,6 +242,8 @@ class Generator
             }
 
             $parsed = (new Representation\Documentation($class, $representation['method']))->parse();
+            $parsed->filterAnnotationsForVisibility($this->load_capability_docs);
+
             $representations[$class] = $parsed;
         }
 

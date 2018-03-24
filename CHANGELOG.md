@@ -1,42 +1,73 @@
 # Changelog
+## [3.0.2] - 2018-03-21
+### Fixed
+- Cleaned up some API Blueprint verbage surrounding representation scopes.
+
+## [3.0.1] - 2018-02-27
+### Changed
+- `symfony/console` requirement is now `^3.2 || ^4.0`.
+- Upgraded `vimeo/psalm` to v1.0
+
+## [3.0.0] - 2018-02-01
+### Added
+- A new object hydration system. [#127](https://github.com/vimeo/mill/issues/127)
+- `./mill --version` will now display the version of Mill you have installed. [#131](https://github.com/vimeo/mill/issues/131)
+
+### Changed
+- Upped the library requirement to PHP 7.1 [#13](https://github.com/vimeo/mill/issues/13)
+- Renamed `@api-uri` "group" arguments to "namespace". [#132](https://github.com/vimeo/mill/issues/132)
+
+### Fixed
+- Support for multiple `@api-see` on the same representation data. [#134](https://github.com/vimeo/mill/issues/134)
+- Sample data that was `0` would not get generated into API Blueprint files. [#125](https://github.com/vimeo/mill/issues/125)
+- Private documentation could be exposed in changelogs. [#119](https://github.com/vimeo/mill/issues/119)
+
+## [2.6.4] - 2018-01-11
+### Changed
+- Slightly revised the wording of our changelog templates.
+
+## [2.6.3] - 2017-12-12
+### Added
+- Returning `visible` in `ReturnAnnotation->toArray()` calls.
+
 ## [2.6.2] - 2017-11-03
-## Changed
+### Changed
 - Slightly altered the wording on scope and multi-exception entries in generated API Blueprint files.
 
 ## [2.6.1] - 2017-09-02
-## Fixed
+### Fixed
 - Fixed a bug where annotations that were documented as being public, but behind a capability were being exposed under some circumstances.
 
 ## [2.6.0] - 2017-08-25
-## Added
+### Added
 - A new `errors` command for generating Markdown representation of all documented API errors.
 - Support for `nullable` flags in MSON-supported annotations. [#104](https://github.com/vimeo/mill/issues/104)
 
-## Fixed
+### Fixed
 - Compatibility issues with `enum` parameter types in compiled API Blueprint files. [#113](https://github.com/vimeo/mill/issues/113)
 
 ## [2.5.6] - 2017-08-18
-## Changed
+### Changed
 - Changelog versions are now sorted with SemVer rules.
 
 ## [2.5.5] - 2017-08-16
-## Changed
+### Changed
 - No longer watermarking compiled API Blueprint `api.apib` files with a link to Mill and the time of generation.
 
 ## [2.5.4] - 2017-07-25
-## Fixed
+### Fixed
 - Fixed some PHP 5.4 compatibility issues with the new changelog work.
 
 ## [2.5.3] - 2017-07-24
-## Changed
+### Changed
 - JSON formatted changelogs now have more relevant data attributes in their HTML elements.
 
 ## [2.5.2] - 2017-07-17
-## Changed
+### Changed
 - Better grouping of like-resource grouped items in generated changelogs.
 
 ## [2.5.1] - 2017-07-11
-## Removed
+### Removed
 - Removed the newly added in 2.5.0 dependency, `doctrine/collections`, because it requires >=PHP 5.6, and Mill 2.x still needs to support PHP 5.4.
 
 ## [2.5.0] - 2017-07-10
@@ -192,6 +223,11 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[3.0.2]: https://github.com/vimeo/mill/compare/3.0.1...3.0.2
+[3.0.1]: https://github.com/vimeo/mill/compare/3.0.0...3.0.1
+[3.0.0]: https://github.com/vimeo/mill/compare/2.6.4...3.0.0
+[2.6.4]: https://github.com/vimeo/mill/compare/2.6.3...2.6.4
+[2.6.3]: https://github.com/vimeo/mill/compare/2.6.2...2.6.3
 [2.6.2]: https://github.com/vimeo/mill/compare/2.6.1...2.6.2
 [2.6.1]: https://github.com/vimeo/mill/compare/2.6.0...2.6.1
 [2.6.0]: https://github.com/vimeo/mill/compare/2.5.6...2.6.0

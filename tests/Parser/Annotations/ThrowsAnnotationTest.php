@@ -37,6 +37,7 @@ class ThrowsAnnotationTest extends AnnotationTest
      */
     public function testHydrate(string $content, $version, bool $visible, array $expected): void
     {
+        /** @var ThrowsAnnotation $annotation */
         $annotation = ThrowsAnnotation::hydrate(array_merge(
             $expected,
             [
@@ -141,7 +142,7 @@ class ThrowsAnnotationTest extends AnnotationTest
                 'visible' => true,
                 'expected' => [
                     'capability' => false,
-                    'description' => 'If the movie cannot be found.',
+                    'description' => 'If movie was not found.',
                     'error_code' => false,
                     'http_code' => '404 Not Found',
                     'representation' => 'Error',
@@ -155,7 +156,7 @@ class ThrowsAnnotationTest extends AnnotationTest
                 'visible' => true,
                 'expected' => [
                     'capability' => false,
-                    'description' => 'If the movie cannot be found in the theater.',
+                    'description' => 'If movie was not found in the theater.',
                     'error_code' => false,
                     'http_code' => '404 Not Found',
                     'representation' => 'Error',
@@ -197,7 +198,7 @@ class ThrowsAnnotationTest extends AnnotationTest
                 'visible' => false,
                 'expected' => [
                     'capability' => false,
-                    'description' => 'If the movie cannot be found.',
+                    'description' => 'If movie was not found.',
                     'error_code' => false,
                     'http_code' => '404 Not Found',
                     'representation' => 'Error',
@@ -211,7 +212,7 @@ class ThrowsAnnotationTest extends AnnotationTest
                 'visible' => false,
                 'expected' => [
                     'capability' => false,
-                    'description' => 'If the movie cannot be found.',
+                    'description' => 'If movie was not found.',
                     'error_code' => false,
                     'http_code' => '404 Not Found',
                     'representation' => 'Error',
@@ -239,7 +240,7 @@ class ThrowsAnnotationTest extends AnnotationTest
                 'visible' => true,
                 'expected' => [
                     'capability' => 'BUY_TICKETS',
-                    'description' => 'If the movie cannot be found in the theater.',
+                    'description' => 'If movie was not found in the theater.',
                     'error_code' => '666',
                     'http_code' => '404 Not Found',
                     'representation' => 'Coded error',
@@ -253,7 +254,7 @@ class ThrowsAnnotationTest extends AnnotationTest
                 'visible' => true,
                 'expected' => [
                     'capability' => 'BUY_TICKETS',
-                    'description' => 'If the movie cannot be found in the theater.',
+                    'description' => 'If movie was not found in the theater.',
                     'error_code' => false,
                     'http_code' => '404 Not Found',
                     'representation' => 'Error',

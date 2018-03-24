@@ -22,16 +22,16 @@
         "league/flysystem": "^1.0",
         "composer/semver": "^1.4",
         "gossi/docblock": "^1.5",
-        "symfony/console": "^3.2",
         "nicmart/string-template": "^0.1.1",
-        "ocramius/package-versions": "^1.1"
+        "ocramius/package-versions": "^1.1",
+        "symfony/console": "^3.2 || ^4.0"
     },
     "require-dev": {
         "league/flysystem-memory": "^1.0",
-        "vimeo/psalm": "^0.3",
         "squizlabs/php_codesniffer": "^3.0",
-        "phpunit/phpunit": "^6.1",
-        "mockery/mockery": "^1.0"
+        "mockery/mockery": "^1.0",
+        "vimeo/psalm": "^1.0",
+        "phpunit/phpunit": "^7.0"
     },
     "suggest": {
         "ext-xml": "Required for config file processing."
@@ -62,10 +62,10 @@
             "mv resources/examples/Showtimes/blueprints/changelog.md resources/examples/Showtimes/blueprints/changelog-public-only-all-capabilities.md",
 
             "./bin/mill changelog --config=resources/examples/mill.xml --private=false --capability=BUY_TICKETS --capability=FEATURE_FLAG resources/examples/Showtimes/blueprints/",
-            "mv resources/examples/Showtimes/blueprints/changelog.md resources/examples/Showtimes/blueprints/changelog-public-only-unmatched-capabilities.md",
+            "mv resources/examples/Showtimes/blueprints/changelog.md resources/examples/Showtimes/blueprints/changelog-public-only-matched-with-tickets-and-feature-capabilities.md",
 
             "./bin/mill changelog --config=resources/examples/mill.xml --private=false --capability=DELETE_CONTENT resources/examples/Showtimes/blueprints/",
-            "mv resources/examples/Showtimes/blueprints/changelog.md resources/examples/Showtimes/blueprints/changelog-public-only-matched-capabilities.md",
+            "mv resources/examples/Showtimes/blueprints/changelog.md resources/examples/Showtimes/blueprints/changelog-public-only-matched-with-delete-capabilities.md",
 
             "./bin/mill changelog --config=resources/examples/mill.xml resources/examples/Showtimes/blueprints/"
         ],

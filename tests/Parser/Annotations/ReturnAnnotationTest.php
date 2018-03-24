@@ -13,7 +13,7 @@ class ReturnAnnotationTest extends AnnotationTest
      * @dataProvider providerAnnotation
      * @param string $content
      * @param bool $visible
-     * @param $version
+     * @param null|Version $version
      * @param array $expected
      */
     public function testAnnotation(string $content, bool $visible, $version, array $expected): void
@@ -97,6 +97,19 @@ class ReturnAnnotationTest extends AnnotationTest
                     'visible' => true
                 ]
             ],
+            'private' => [
+                'content' => '{notmodified} If no data has been changed.',
+                'visible' => false,
+                'version' => null,
+                'expected' => [
+                    'description' => 'If no data has been changed.',
+                    'http_code' => '304 Not Modified',
+                    'representation' => false,
+                    'type' => 'notmodified',
+                    'version' => false,
+                    'visible' => false
+                ]
+            ],
             'versioned' => [
                 'content' => '(collection, Movie)',
                 'visible' => true,
@@ -140,7 +153,6 @@ class ReturnAnnotationTest extends AnnotationTest
             ],
             'directory' => [
                 'content' => '(directory, Movie)',
-                'visible' => true,
                 'visible' => true,
                 'version' => null,
                 'expected' => [

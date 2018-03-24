@@ -28,6 +28,7 @@ class UnrecognizedSchemaException extends BaseException
     /**
      * Get a clean error message for this exception that can be used in inline-validation use cases.
      *
+     * @psalm-suppress InvalidNullableReturnType This will always return a string.
      * @return string
      */
     public function getValidationMessage(): string

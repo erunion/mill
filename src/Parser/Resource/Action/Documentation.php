@@ -306,6 +306,7 @@ class Documentation
      *
      * @param null|string|Version $version
      * @return string
+     * @throws \Exception
      */
     public function getContentType($version = null): string
     {
@@ -319,14 +320,13 @@ class Documentation
 
         /** @var Parser\Annotations\ContentTypeAnnotation $annotation */
         foreach ($this->content_types as $annotation) {
-            /** @var Version $annotation_version */
             $annotation_version = $annotation->getVersion();
-            if (!$annotation_version) {
-                return $annotation->getContentType();
-            } elseif ($version && $annotation_version->matches($version)) {
+            if (!$annotation_version || ($version && $annotation_version->matches($version))) {
                 return $annotation->getContentType();
             }
         }
+
+        throw new \Exception('An unexpected error occurred while retrieving a content type. This should never happen!');
     }
 
     /**
@@ -372,6 +372,40 @@ class Documentation
     public function setUri(UriAnnotation $uri): void
     {
         $this->annotations['uri'] = [$uri];
+    }
+
+    /**
+     * Get a combined array of the resource action URI and any URI aliases that it might have.
+     *
+     * @return array
+     */
+    public function getUriAndAliases()
+    {
+        $uri = $this->getUri();
+        $uris = array_merge([
+            $uri->getCleanPath() => $uri
+        ], $this->getUriAliases());
+
+        ksort($uris);
+
+        return $uris;
+    }
+
+    /**
+     * Get a path-keyed array of any URI aliases that this action might have.
+     *
+     * @return array
+     */
+    public function getUriAliases()
+    {
+        $aliases = [];
+
+        /** @var UriAnnotation $alias */
+        foreach ($this->getUri()->getAliases() as $alias) {
+            $aliases[$alias->getCleanPath()] = $alias;
+        }
+
+        return $aliases;
     }
 
     /**
@@ -482,6 +516,7 @@ class Documentation
      * Filter down, and return, all annotations on this action that match a specific visibility. This can either be
      * public, public+private, or capability-locked.
      *
+     * @psalm-suppress RedundantCondition
      * @param bool $allow_private
      * @param array|null $only_capabilities
      * @return array
@@ -523,6 +558,7 @@ class Documentation
                     // If we don't even have capabilities to look for, then filter this annotation out completely.
                     if (!is_null($only_capabilities) && empty($only_capabilities)) {
                         unset($this->annotations[$name][$k]);
+                        continue;
                     }
 
                     $all_found = true;
@@ -573,12 +609,15 @@ class Documentation
         $action = new self($data['class'], $data['method']);
 
         $annotations['label'][] = $parser->hydrateAnnotation('label', $data['class'], $data['method'], $data);
-        $annotations['description'][] = $parser->hydrateAnnotation(
-            'description',
-            $data['class'],
-            $data['method'],
-            $data
-        );
+
+        if (!empty($data['description'])) {
+            $annotations['description'][] = $parser->hydrateAnnotation(
+                'description',
+                $data['class'],
+                $data['method'],
+                $data
+            );
+        }
 
         foreach ($data['content_types'] as $content_type) {
             $annotations['contentType'][] = $parser->hydrateAnnotation(

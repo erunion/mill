@@ -284,7 +284,16 @@ abstract class Annotation
 
         if ($annotation->supportsAliasing()) {
             $annotation->setAliased($data['aliased']);
-            $annotation->setAliases($data['aliases']);
+
+            $aliases = [];
+            foreach ($data['aliases'] as $alias) {
+                $aliases[] = UriAnnotation::hydrate(array_merge([
+                    'class' => $data['class'],
+                    'method' => $data['method']
+                ], $alias));
+            }
+
+            $annotation->setAliases($aliases);
         }
 
         if ($annotation->supportsDeprecation()) {
@@ -563,7 +572,7 @@ abstract class Annotation
     /**
      * Return the capability, if any, that has been set.
      *
-     * @return false|string
+     * @return false|string|CapabilityAnnotation
      */
     public function getCapability()
     {
@@ -597,7 +606,7 @@ abstract class Annotation
      * Set a version that this annotation is available on. This is specifically used in tandem with representation
      * depth parsing.
      *
-     * @param false|Version $version
+     * @param Version $version
      * @return self
      */
     public function setVersion(Version $version): self
