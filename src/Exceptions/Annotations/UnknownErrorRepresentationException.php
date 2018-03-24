@@ -13,7 +13,7 @@ class UnknownErrorRepresentationException extends BaseException
         string $method
     ): UnknownErrorRepresentationException {
         $message = sprintf(
-            'The `@api-throws %s` in %s::%s has an unknown representation. Is it present in your config file?',
+            'The `@api-error %s` in %s::%s has an unknown representation. Is it present in your config file?',
             $representation,
             $class,
             $method

@@ -12,10 +12,10 @@ use Mill\Parser\Annotations\Traits\HasHttpCodeResponseTrait;
 use Mill\Parser\Version;
 
 /**
- * Handler for the `@api-throws` annotation.
+ * Handler for the `@api-error` annotation.
  *
  */
-class ThrowsAnnotation extends Annotation
+class ErrorAnnotation extends Annotation
 {
     use HasHttpCodeResponseTrait;
 
@@ -23,9 +23,9 @@ class ThrowsAnnotation extends Annotation
     const SUPPORTS_VERSIONING = true;
 
     const REGEX_ERROR_CODE = '/^(\(.*\))/';
-    const REGEX_THROW_HTTP_CODE = '/{([\d]+)}/';
-    const REGEX_THROW_TYPE = '/{([\w\s]+)}/';
-    const REGEX_THROW_SUB_TYPE = '/{([\w\s]+),([\w\s]+)}/';
+    const REGEX_ERROR_HTTP_CODE = '/{([\d]+)}/';
+    const REGEX_ERROR_TYPE = '/{([\w\s]+)}/';
+    const REGEX_ERROR_SUB_TYPE = '/{([\w\s]+),([\w\s]+)}/';
 
     /**
      * Optional unique error code for the error that this exception handles.
@@ -35,7 +35,7 @@ class ThrowsAnnotation extends Annotation
     protected $error_code = null;
 
     /**
-     * Description for why this exception can be thrown.
+     * Description for why this exception can be triggered.
      *
      * @var string
      */
@@ -74,15 +74,15 @@ class ThrowsAnnotation extends Annotation
         $content = trim($this->docblock);
 
         // HTTP code is surrounded by +plusses+.
-        if (preg_match(self::REGEX_THROW_HTTP_CODE, $content, $matches)) {
+        if (preg_match(self::REGEX_ERROR_HTTP_CODE, $content, $matches)) {
             $parsed['http_code'] = $matches[1];
 
             if (!$this->isValidHttpCode($parsed['http_code'])) {
-                throw UnknownReturnCodeException::create('throws', $this->docblock, $this->class, $method);
+                throw UnknownReturnCodeException::create('error', $this->docblock, $this->class, $method);
             }
 
             $parsed['http_code'] .= ' ' . $this->getHttpCodeMessage($parsed['http_code']);
-            $content = trim(preg_replace(self::REGEX_THROW_HTTP_CODE, '', $content));
+            $content = trim(preg_replace(self::REGEX_ERROR_HTTP_CODE, '', $content));
         }
 
         $parts = explode(' ', $content);
@@ -132,9 +132,9 @@ class ThrowsAnnotation extends Annotation
 
         $description = trim($content);
         if (!empty($description)) {
-            if (preg_match(self::REGEX_THROW_SUB_TYPE, $description, $matches)) {
+            if (preg_match(self::REGEX_ERROR_SUB_TYPE, $description, $matches)) {
                 $description = sprintf('If %s was not found in the %s.', $matches[1], $matches[2]);
-            } elseif (preg_match(self::REGEX_THROW_TYPE, $description, $matches)) {
+            } elseif (preg_match(self::REGEX_ERROR_TYPE, $description, $matches)) {
                 $description = sprintf('If %s was not found.', $matches[1]);
             }
 
@@ -182,7 +182,7 @@ class ThrowsAnnotation extends Annotation
      */
     public static function hydrate(array $data = [], Version $version = null)
     {
-        /** @var ThrowsAnnotation $annotation */
+        /** @var ErrorAnnotation $annotation */
         $annotation = parent::hydrate($data, $version);
         $annotation->setDescription($data['description']);
         $annotation->setErrorCode($data['error_code']);

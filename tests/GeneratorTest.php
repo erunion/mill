@@ -196,8 +196,8 @@ class GeneratorTest extends TestCase
                 'uri.visible' => false,
                 'params.keys' => [],
                 'annotations.sum' => [
+                    'error' => 1,
                     'return' => 2,
-                    'throws' => 1,
                     'uri' => 1,
                     'uriSegment' => 1
                 ]
@@ -211,9 +211,9 @@ class GeneratorTest extends TestCase
                     'location'
                 ],
                 'annotations.sum' => [
+                    'error' => 1,
                     'param' => 1,
                     'return' => 1,
-                    'throws' => 1,
                     'uri' => 1
                 ]
             ],
@@ -234,10 +234,10 @@ class GeneratorTest extends TestCase
                     'runtime'
                 ],
                 'annotations.sum' => [
+                    'error' => 2,
                     'param' => 9,
                     'return' => 1,
                     'scope' => 1,
-                    'throws' => 2,
                     'uri' => 1
                 ]
             ],
@@ -256,8 +256,8 @@ class GeneratorTest extends TestCase
                 'uri.visible' => true,
                 'params.keys' => [],
                 'annotations.sum' => [
+                    'error' => 1,
                     'return' => 2,
-                    'throws' => 1,
                     'uri' => 1,
                     'uriSegment' => 1
                 ]
@@ -288,11 +288,11 @@ class GeneratorTest extends TestCase
                     'trailer'
                 ],
                 'annotations.sum' => [
+                    'error' => 3,
                     'minVersion' => 1,
                     'param' => 10,
                     'return' => 1,
                     'scope' => 1,
-                    'throws' => 3,
                     'uri' => 1,
                     'uriSegment' => 1
                 ]
@@ -313,10 +313,10 @@ class GeneratorTest extends TestCase
                 'params.keys' => [],
                 'annotations.sum' => [
                     'capability' => 1,
+                    'error' => 1,
                     'minVersion' => 1,
                     'return' => 1,
                     'scope' => 1,
-                    'throws' => 1,
                     'uri' => 1,
                     'uriSegment' => 1
                 ]
@@ -330,9 +330,9 @@ class GeneratorTest extends TestCase
                     'location'
                 ],
                 'annotations.sum' => [
+                    'error' => 1,
                     'param' => 1,
                     'return' => 1,
-                    'throws' => 1,
                     'uri' => 1
                 ]
             ],
@@ -347,10 +347,10 @@ class GeneratorTest extends TestCase
                     'phone_number'
                 ],
                 'annotations.sum' => [
+                    'error' => 1,
                     'param' => 3,
                     'return' => 1,
                     'scope' => 1,
-                    'throws' => 1,
                     'uri' => 1
                 ]
             ],
@@ -369,8 +369,8 @@ class GeneratorTest extends TestCase
                 'uri.visible' => true,
                 'params.keys' => [],
                 'annotations.sum' => [
+                    'error' => 1,
                     'return' => 2,
-                    'throws' => 1,
                     'uri' => 1,
                     'uriSegment' => 1
                 ]
@@ -394,10 +394,10 @@ class GeneratorTest extends TestCase
                     'phone_number'
                 ],
                 'annotations.sum' => [
+                    'error' => 3,
                     'param' => 3,
                     'return' => 1,
                     'scope' => 1,
-                    'throws' => 3,
                     'uri' => 1,
                     'uriSegment' => 1
                 ]
@@ -417,9 +417,9 @@ class GeneratorTest extends TestCase
                 'uri.visible' => false,
                 'params.keys' => [],
                 'annotations.sum' => [
+                    'error' => 1,
                     'return' => 1,
                     'scope' => 1,
-                    'throws' => 1,
                     'uri' => 1,
                     'uriSegment' => 1
                 ]

@@ -3,10 +3,10 @@ namespace Mill\Generator;
 
 use Mill\Exceptions\Resource\NoAnnotationsException;
 use Mill\Generator;
+use Mill\Parser\Annotations\ErrorAnnotation;
 use Mill\Parser\Annotations\ParamAnnotation;
 use Mill\Parser\Annotations\ReturnAnnotation;
 use Mill\Parser\Annotations\ScopeAnnotation;
-use Mill\Parser\Annotations\ThrowsAnnotation;
 use Mill\Parser\Annotations\UriSegmentAnnotation;
 use Mill\Parser\Representation\Documentation;
 use Mill\Parser\Resource\Action;
@@ -82,7 +82,7 @@ class Blueprint extends Generator
                         $action_contents .= $this->processRequest($action);
 
                         $coded_responses = [];
-                        /** @var ReturnAnnotation|ThrowsAnnotation $response */
+                        /** @var ReturnAnnotation|ErrorAnnotation $response */
                         foreach ($action->getResponses() as $response) {
                             $coded_responses[$response->getHttpCode()][] = $response;
                         }
@@ -339,13 +339,13 @@ class Blueprint extends Generator
                 $blueprint .= sprintf('There are %s ways that this status code can be encountered:', $response_count);
                 $blueprint .= $this->line();
 
-                /** @var ReturnAnnotation|ThrowsAnnotation $response */
+                /** @var ReturnAnnotation|ErrorAnnotation $response */
                 foreach ($responses as $response) {
                     $description = $response->getDescription();
                     $description = (!empty($description)) ? $description : 'Standard request.';
                     $blueprint .= $this->tab(2);
                     $blueprint .= sprintf(' * %s', $description);
-                    if ($response instanceof ThrowsAnnotation) {
+                    if ($response instanceof ErrorAnnotation) {
                         $error_code = $response->getErrorCode();
                         if ($error_code) {
                             $blueprint .= sprintf(' Unique error code: %s', $error_code);
@@ -357,7 +357,7 @@ class Blueprint extends Generator
             }
         }
 
-        /** @var ReturnAnnotation|ThrowsAnnotation $response */
+        /** @var ReturnAnnotation|ErrorAnnotation $response */
         $response = array_shift($responses);
         $representation = $response->getRepresentation();
         $representations = $this->getRepresentations($this->version);

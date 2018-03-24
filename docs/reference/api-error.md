@@ -1,17 +1,17 @@
 ---
 layout: default
-title: "@api-throws"
-permalink: /reference/api-throws
+title: "@api-error"
+permalink: /reference/api-error
 ---
 
-# @api-throws
+# @api-error
 ---
 
 This represents an exception that may be thrown inside of a resource action.
 
 ## Syntax
 ```php
-@api-throws:visibility {http code} \Representation (error code) +capability+ description
+@api-error:visibility {http code} \Representation (error code) +capability+ description
 ```
 
 ## Requirements
@@ -31,11 +31,11 @@ This represents an exception that may be thrown inside of a resource action.
 | `description` | ✓ | A short description describing why, or what, this error is. |
 
 ## Types and subtypes
-In addition to supporting straight descriptions, the [`@api-throws`]({{ site.github.url }}/reference/api-throws) annotation also supports
+In addition to supporting straight descriptions, the [`@api-error`]({{ site.github.url }}/reference/api-error) annotation also supports
 the concept of "types" and "subtypes". For example:
 
 ```php
-@api-throws:public {404} \ErrorRepresentation {user}
+@api-error:public {404} \ErrorRepresentation {user}
 ```
 
 In this case, this exception will be thrown when the `{user}` passed into the route (usually via the URI) is not found.
@@ -44,7 +44,7 @@ The generated error message for this becomes: "If the user cannot be found."
 There also exist the concept of a subtype, represented as:
 
 ```php
-@api-throws:public {404} \ErrorRepresentation {user,group}
+@api-error:public {404} \ErrorRepresentation {user,group}
 ```
 
 This means that if the supplied group could not be found for the supplied user, an exception will be thrown. The
@@ -57,7 +57,7 @@ Usage with a capability and description type:
 /**
  * …
  *
- * @api-throws:public {404} \ErrorRepresentation +SomeCapability+ {user}
+ * @api-error:public {404} \ErrorRepresentation +SomeCapability+ {user}
  */
 public function PATCH()
 {
@@ -71,8 +71,8 @@ With an error code:
 /**
  * …
  *
- * @api-throws:public {403} \ErrorRepresentation (\AppError::USER_NOT_ALLOWED)
- *     If the user isn't allowed to do something.
+ * @api-error:public {403} \ErrorRepresentation (\AppError::USER_NOT_ALLOWED) If
+ *     the user isn't allowed to do something.
  */
 public function PATCH()
 {
@@ -86,7 +86,7 @@ Standard usage:
 /**
  * …
  *
- * @api-throws:public {404} \ErrorRepresentation If the user isn't allowed to do
+ * @api-error:public {404} \ErrorRepresentation If the user isn't allowed to do
  *     something.
  */
 public function PATCH()

@@ -101,6 +101,10 @@ These actions will allow you to pull information on a specific movie.', $annotat
                         'class' => Parser\Annotations\DescriptionAnnotation::class,
                         'count' => 1
                     ],
+                    'error' => [
+                        'class' => Parser\Annotations\ErrorAnnotation::class,
+                        'count' => 3
+                    ],
                     'label' => [
                         'class' => Parser\Annotations\LabelAnnotation::class,
                         'count' => 1
@@ -112,10 +116,6 @@ These actions will allow you to pull information on a specific movie.', $annotat
                     'return' => [
                         'class' => Parser\Annotations\ReturnAnnotation::class,
                         'count' => 2
-                    ],
-                    'throws' => [
-                        'class' => Parser\Annotations\ThrowsAnnotation::class,
-                        'count' => 3
                     ],
                     'uri' => [
                         'class' => Parser\Annotations\UriAnnotation::class,
@@ -138,6 +138,10 @@ These actions will allow you to pull information on a specific movie.', $annotat
                         'class' => Parser\Annotations\DescriptionAnnotation::class,
                         'count' => 1
                     ],
+                    'error' => [
+                        'class' => Parser\Annotations\ErrorAnnotation::class,
+                        'count' => 6
+                    ],
                     'label' => [
                         'class' => Parser\Annotations\LabelAnnotation::class,
                         'count' => 1
@@ -157,10 +161,6 @@ These actions will allow you to pull information on a specific movie.', $annotat
                     'scope' => [
                         'class' => Parser\Annotations\ScopeAnnotation::class,
                         'count' => 1
-                    ],
-                    'throws' => [
-                        'class' => Parser\Annotations\ThrowsAnnotation::class,
-                        'count' => 6
                     ],
                     'uri' => [
                         'class' => Parser\Annotations\UriAnnotation::class,
@@ -187,6 +187,10 @@ These actions will allow you to pull information on a specific movie.', $annotat
                         'class' => Parser\Annotations\DescriptionAnnotation::class,
                         'count' => 1
                     ],
+                    'error' => [
+                        'class' => Parser\Annotations\ErrorAnnotation::class,
+                        'count' => 1
+                    ],
                     'label' => [
                         'class' => Parser\Annotations\LabelAnnotation::class,
                         'count' => 1
@@ -201,10 +205,6 @@ These actions will allow you to pull information on a specific movie.', $annotat
                     ],
                     'scope' => [
                         'class' => Parser\Annotations\ScopeAnnotation::class,
-                        'count' => 1
-                    ],
-                    'throws' => [
-                        'class' => Parser\Annotations\ThrowsAnnotation::class,
                         'count' => 1
                     ],
                     'uri' => [

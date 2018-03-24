@@ -7,18 +7,18 @@ use Mill\Generator\Changelog\Formats\Json;
 use Mill\Generator\Changelog\Formats\Markdown;
 use Mill\Parser\Annotation;
 use Mill\Parser\Annotations\ContentTypeAnnotation;
+use Mill\Parser\Annotations\ErrorAnnotation;
 use Mill\Parser\Annotations\ParamAnnotation;
 use Mill\Parser\Annotations\ReturnAnnotation;
-use Mill\Parser\Annotations\ThrowsAnnotation;
 use Mill\Parser\Representation\Documentation;
 use Mill\Parser\Resource\Action;
 
 class Changelog extends Generator
 {
     const CHANGESET_TYPE_ACTION = 'action';
+    const CHANGESET_TYPE_ACTION_ERROR = 'action_error';
     const CHANGESET_TYPE_ACTION_PARAM = 'action_param';
     const CHANGESET_TYPE_ACTION_RETURN = 'action_return';
-    const CHANGESET_TYPE_ACTION_THROWS = 'action_throws';
     const CHANGESET_TYPE_CONTENT_TYPE = 'content_type';
     const CHANGESET_TYPE_REPRESENTATION_DATA = 'representation_data';
 
@@ -203,7 +203,7 @@ class Changelog extends Generator
                         }
                     }
 
-                    // Diff action `param`, `return` and `throws` annotations.
+                    // Diff action `param`, `return` and `error` annotations.
                     foreach ($action->getAnnotations() as $annotation_name => $annotations) {
                         /** @var Annotation $annotation */
                         foreach ($annotations as $annotation) {
@@ -244,13 +244,13 @@ class Changelog extends Generator
                                 } else {
                                     $data['representation'] = false;
                                 }
-                            } elseif ($annotation instanceof ThrowsAnnotation) {
-                                $change_type = self::CHANGESET_TYPE_ACTION_THROWS;
+                            } elseif ($annotation instanceof ErrorAnnotation) {
+                                $change_type = self::CHANGESET_TYPE_ACTION_ERROR;
 
                                 /** @var Documentation $representation */
                                 $representation = $this->parsed['representations'][$annotation->getRepresentation()];
 
-                                /** @var ThrowsAnnotation $annotation */
+                                /** @var ErrorAnnotation $annotation */
                                 $data['http_code'] = $annotation->getHttpCode();
                                 $data['representation'] = $representation->getLabel();
                                 $data['description'] = $annotation->getDescription();
@@ -422,7 +422,7 @@ class Changelog extends Generator
                 $hash_data['uri'] = $data['uri'];
                 break;
 
-            case self::CHANGESET_TYPE_ACTION_THROWS:
+            case self::CHANGESET_TYPE_ACTION_ERROR:
                 $hash_data['method'] = $data['method'];
                 $hash_data['uri'] = $data['uri'];
                 break;

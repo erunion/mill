@@ -210,6 +210,35 @@ DESCRIPTION;
                     'minimum_version' => false,
                     'responses.length' => 5,
                     'annotations' => [
+                        'error' => [
+                            [
+                                'capability' => false,
+                                'description' => 'If the movie could not be found.',
+                                'error_code' => false,
+                                'http_code' => '404 Not Found',
+                                'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                                'version' => false,
+                                'visible' => true
+                            ],
+                            [
+                                'capability' => false,
+                                'description' => 'For no reason.',
+                                'error_code' => false,
+                                'http_code' => '404 Not Found',
+                                'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                                'version' => '>=1.1.3',
+                                'visible' => true
+                            ],
+                            [
+                                'capability' => false,
+                                'description' => 'For some other reason.',
+                                'error_code' => false,
+                                'http_code' => '404 Not Found',
+                                'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                                'version' => '>=1.1.3',
+                                'visible' => true
+                            ]
+                        ],
                         'uri' => [
                             [
                                 'aliased' => true,
@@ -271,35 +300,6 @@ DESCRIPTION;
                                 'version' => false,
                                 'visible' => true
                             ]
-                        ],
-                        'throws' => [
-                            [
-                                'capability' => false,
-                                'description' => 'If the movie could not be found.',
-                                'error_code' => false,
-                                'http_code' => '404 Not Found',
-                                'representation' => '\Mill\Examples\Showtimes\Representations\Error',
-                                'version' => false,
-                                'visible' => true
-                            ],
-                            [
-                                'capability' => false,
-                                'description' => 'For no reason.',
-                                'error_code' => false,
-                                'http_code' => '404 Not Found',
-                                'representation' => '\Mill\Examples\Showtimes\Representations\Error',
-                                'version' => '>=1.1.3',
-                                'visible' => true
-                            ],
-                            [
-                                'capability' => false,
-                                'description' => 'For some other reason.',
-                                'error_code' => false,
-                                'http_code' => '404 Not Found',
-                                'representation' => '\Mill\Examples\Showtimes\Representations\Error',
-                                'version' => '>=1.1.3',
-                                'visible' => true
-                            ]
                         ]
                     ]
                 ]
@@ -325,6 +325,62 @@ DESCRIPTION;
                     'responses.length' => 8,
                     'uri.aliases' => [],
                     'annotations' => [
+                        'error' => [
+                            [
+                                'capability' => false,
+                                'description' => 'If there is a problem with the request.',
+                                'error_code' => false,
+                                'http_code' => '400 Bad Request',
+                                'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                                'version' => false,
+                                'visible' => true
+                            ],
+                            [
+                                'capability' => false,
+                                'description' => 'If the IMDB URL could not be validated.',
+                                'error_code' => false,
+                                'http_code' => '400 Bad Request',
+                                'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                                'version' => false,
+                                'visible' => true
+                            ],
+                            [
+                                'capability' => false,
+                                'description' => 'If the movie could not be found.',
+                                'error_code' => false,
+                                'http_code' => '404 Not Found',
+                                'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                                'version' => false,
+                                'visible' => true
+                            ],
+                            [
+                                'capability' => false,
+                                'description' => 'If the trailer URL could not be validated.',
+                                'error_code' => false,
+                                'http_code' => '404 Not Found',
+                                'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                                'version' => '>=1.1.3',
+                                'visible' => true
+                            ],
+                            [
+                                'capability' => false,
+                                'description' => 'If something cool happened.',
+                                'error_code' => '1337',
+                                'http_code' => '403 Forbidden',
+                                'representation' => '\Mill\Examples\Showtimes\Representations\CodedError',
+                                'version' => '>=1.1.3',
+                                'visible' => false
+                            ],
+                            [
+                                'capability' => false,
+                                'description' => 'If the user is not allowed to edit that movie.',
+                                'error_code' => '666',
+                                'http_code' => '403 Forbidden',
+                                'representation' => '\Mill\Examples\Showtimes\Representations\CodedError',
+                                'version' => '>=1.1.3',
+                                'visible' => true
+                            ]
+                        ],
                         'uri' => [
                             [
                                 'aliased' => false,
@@ -526,62 +582,6 @@ DESCRIPTION;
                                 'description' => false,
                                 'scope' => 'edit'
                             ]
-                        ],
-                        'throws' => [
-                            [
-                                'capability' => false,
-                                'description' => 'If there is a problem with the request.',
-                                'error_code' => false,
-                                'http_code' => '400 Bad Request',
-                                'representation' => '\Mill\Examples\Showtimes\Representations\Error',
-                                'version' => false,
-                                'visible' => true
-                            ],
-                            [
-                                'capability' => false,
-                                'description' => 'If the IMDB URL could not be validated.',
-                                'error_code' => false,
-                                'http_code' => '400 Bad Request',
-                                'representation' => '\Mill\Examples\Showtimes\Representations\Error',
-                                'version' => false,
-                                'visible' => true
-                            ],
-                            [
-                                'capability' => false,
-                                'description' => 'If the movie could not be found.',
-                                'error_code' => false,
-                                'http_code' => '404 Not Found',
-                                'representation' => '\Mill\Examples\Showtimes\Representations\Error',
-                                'version' => false,
-                                'visible' => true
-                            ],
-                            [
-                                'capability' => false,
-                                'description' => 'If the trailer URL could not be validated.',
-                                'error_code' => false,
-                                'http_code' => '404 Not Found',
-                                'representation' => '\Mill\Examples\Showtimes\Representations\Error',
-                                'version' => '>=1.1.3',
-                                'visible' => true
-                            ],
-                            [
-                                'capability' => false,
-                                'description' => 'If something cool happened.',
-                                'error_code' => '1337',
-                                'http_code' => '403 Forbidden',
-                                'representation' => '\Mill\Examples\Showtimes\Representations\CodedError',
-                                'version' => '>=1.1.3',
-                                'visible' => false
-                            ],
-                            [
-                                'capability' => false,
-                                'description' => 'If the user is not allowed to edit that movie.',
-                                'error_code' => '666',
-                                'http_code' => '403 Forbidden',
-                                'representation' => '\Mill\Examples\Showtimes\Representations\CodedError',
-                                'version' => '>=1.1.3',
-                                'visible' => true
-                            ]
                         ]
                     ]
                 ]
@@ -606,6 +606,17 @@ DESCRIPTION;
                         'capability' => [
                             [
                                 'capability' => 'DELETE_CONTENT'
+                            ]
+                        ],
+                        'error' => [
+                            [
+                                'capability' => false,
+                                'description' => 'If the movie could not be found.',
+                                'error_code' => false,
+                                'http_code' => '404 Not Found',
+                                'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                                'version' => false,
+                                'visible' => false
                             ]
                         ],
                         'uri' => [
@@ -646,17 +657,6 @@ DESCRIPTION;
                             [
                                 'description' => false,
                                 'scope' => 'delete'
-                            ]
-                        ],
-                        'throws' => [
-                            [
-                                'capability' => false,
-                                'description' => 'If the movie could not be found.',
-                                'error_code' => false,
-                                'http_code' => '404 Not Found',
-                                'representation' => '\Mill\Examples\Showtimes\Representations\Error',
-                                'version' => false,
-                                'visible' => false
                             ]
                         ]
                     ]
@@ -872,13 +872,13 @@ DESCRIPTION;
                   * @api-contentType application/json
                   * @api-scope public
                   * @api-return:private {collection} \Mill\Examples\Showtimes\Representations\Representation
-                  * @api-throws:public {403} \Mill\Examples\Showtimes\Representations\CodedError
+                  * @api-error:public {403} \Mill\Examples\Showtimes\Representations\CodedError
                   *      (Mill\Examples\Showtimes\Representations\CodedError::DISALLOWED) If the user isn\'t allowed to
                   *      do something.
                   */',
                 'expected.exception' => '\Mill\Exceptions\Resource\PublicDecoratorOnPrivateActionException',
                 'expected.exception.asserts' => [
-                    'getAnnotation' => 'throws'
+                    'getAnnotation' => 'error'
                 ]
             ],
             'too-many-aliases' => [
@@ -891,7 +891,7 @@ DESCRIPTION;
                   * @api-contentType application/json
                   * @api-scope public
                   * @api-return:private {collection} \Mill\Examples\Showtimes\Representations\Representation
-                  * @api-throws:public {403} \Mill\Examples\Showtimes\Representations\CodedError
+                  * @api-error:public {403} \Mill\Examples\Showtimes\Representations\CodedError
                   *      (Mill\Examples\Showtimes\Representations\CodedError::DISALLOWED) If the user isn\'t allowed to
                   *      do something.
                   */',

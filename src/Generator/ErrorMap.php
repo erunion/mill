@@ -3,8 +3,8 @@ namespace Mill\Generator;
 
 use Mill\Generator;
 use Mill\Generator\ErrorMap\Formats\Markdown;
+use Mill\Parser\Annotations\ErrorAnnotation;
 use Mill\Parser\Annotations\ReturnAnnotation;
-use Mill\Parser\Annotations\ThrowsAnnotation;
 use Mill\Parser\Resource\Action;
 
 class ErrorMap extends Generator
@@ -39,9 +39,9 @@ class ErrorMap extends Generator
                 foreach ($data['resources'] as $resource_name => $resource) {
                     /** @var Action\Documentation $action */
                     foreach ($resource['actions'] as $identifier => $action) {
-                        /** @var ReturnAnnotation|ThrowsAnnotation $response */
+                        /** @var ReturnAnnotation|ErrorAnnotation $response */
                         foreach ($action->getResponses() as $response) {
-                            if (!$response instanceof ThrowsAnnotation) {
+                            if (!$response instanceof ErrorAnnotation) {
                                 continue;
                             }
 

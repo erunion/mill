@@ -7,10 +7,10 @@ Changed up the responses for `/movie/{id}`, `/movies/{id}` and `/movies`.
 #### Added
 ##### Resources
 - The following Movies resources have added:
-    - `/movies/{id}` now throws the following errors on `GET` requests:
+    - `/movies/{id}` now returns the following errors on `GET` requests:
         - `404 Not Found` with a `Error` representation: For no reason.
         - `404 Not Found` with a `Error` representation: For some other reason.
-    - `/movies/{id}` now throws the following errors on `PATCH` requests:
+    - `/movies/{id}` now returns the following errors on `PATCH` requests:
         - `404 Not Found` with a `Error` representation: If the trailer URL could not be validated.
         - `403 Forbidden` with a `Coded error` representation: If the user is not allowed to edit that movie.
     - On `/movies/{id}`, `PATCH` requests now return a `202 Accepted` with a `Movie` representation.

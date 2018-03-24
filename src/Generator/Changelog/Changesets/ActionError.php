@@ -4,7 +4,7 @@ namespace Mill\Generator\Changelog\Changesets;
 use Mill\Generator\Changelog;
 use Mill\Generator\Changelog\Changeset;
 
-class ActionThrows extends Changeset
+class ActionError extends Changeset
 {
     /**
      * {@inheritDoc}
@@ -13,8 +13,8 @@ class ActionThrows extends Changeset
     {
         return [
             'plural' => [
-                Changelog::DEFINITION_ADDED => '{uri} now throws the following errors on {method} requests:',
-                Changelog::DEFINITION_REMOVED => '{uri} no longer throws the following errors on {method} requests:'
+                Changelog::DEFINITION_ADDED => '{uri} now returns the following errors on {method} requests:',
+                Changelog::DEFINITION_REMOVED => '{uri} no longer returns the following errors on {method} requests:'
             ],
             'singular' => [
                 Changelog::DEFINITION_ADDED => 'On {method} requests to {uri}, a {http_code} with a {representation} ' .
@@ -81,6 +81,6 @@ class ActionThrows extends Changeset
      */
     public function compileChangedChangeset(string $definition, array $changes = [])
     {
-        throw new \Exception($definition . ' action throws changes are not yet supported.');
+        throw new \Exception($definition . ' action error changes are not yet supported.');
     }
 }
