@@ -35,7 +35,7 @@ class Movie
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Movie
      * @api-return:public {notmodified} If no content has been modified since the supplied Last-Modified header.
      *
-     * @api-throws:public {404} \Mill\Examples\Showtimes\Representations\Error If the movie could not be found.
+     * @api-error:public {404} \Mill\Examples\Showtimes\Representations\Error If the movie could not be found.
      *
      * @api-version >=1.1.2
      * @api-contentType application/mill.example.movie
@@ -44,8 +44,8 @@ class Movie
      * @api-contentType application/json
      *
      * @api-version >=1.1.3
-     * @api-throws:public {404} \Mill\Examples\Showtimes\Representations\Error For no reason.
-     * @api-throws:public {404} \Mill\Examples\Showtimes\Representations\Error For some other reason.
+     * @api-error:public {404} \Mill\Examples\Showtimes\Representations\Error For no reason.
+     * @api-error:public {404} \Mill\Examples\Showtimes\Representations\Error For some other reason.
      */
     public function GET()
     {
@@ -85,10 +85,9 @@ class Movie
      *
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Movie
      *
-     * @api-throws:public {400} \Mill\Examples\Showtimes\Representations\Error If there is a problem with the
-     *      request.
-     * @api-throws:public {400} \Mill\Examples\Showtimes\Representations\Error If the IMDB URL could not be validated.
-     * @api-throws:public {404} \Mill\Examples\Showtimes\Representations\Error If the movie could not be found.
+     * @api-error:public {400} \Mill\Examples\Showtimes\Representations\Error If there is a problem with the request.
+     * @api-error:public {400} \Mill\Examples\Showtimes\Representations\Error If the IMDB URL could not be validated.
+     * @api-error:public {404} \Mill\Examples\Showtimes\Representations\Error If the movie could not be found.
      *
      * @api-version >=1.1.2
      * @api-contentType application/mill.example.movie
@@ -101,10 +100,9 @@ class Movie
      *
      * @api-version >=1.1.3
      * @api-return:public {accepted} \Mill\Examples\Showtimes\Representations\Movie
-     * @api-throws:public {404} \Mill\Examples\Showtimes\Representations\Error If the trailer URL could not be
-     *      validated.
-     * @api-throws:private {403} \Mill\Examples\Showtimes\Representations\CodedError (1337) If something cool happened.
-     * @api-throws:public {403} \Mill\Examples\Showtimes\Representations\CodedError
+     * @api-error:public {404} \Mill\Examples\Showtimes\Representations\Error If the trailer URL could not be validated.
+     * @api-error:private {403} \Mill\Examples\Showtimes\Representations\CodedError (1337) If something cool happened.
+     * @api-error:public {403} \Mill\Examples\Showtimes\Representations\CodedError
      *      (Mill\Examples\Showtimes\Representations\CodedError::DISALLOWED) If the user is not allowed to edit that
      *      movie.
      */
@@ -128,7 +126,7 @@ class Movie
      *
      * @api-return:private {deleted}
      *
-     * @api-throws:private {404} \Mill\Examples\Showtimes\Representations\Error If the movie could not be found.
+     * @api-error:private {404} \Mill\Examples\Showtimes\Representations\Error If the movie could not be found.
      */
     public function DELETE()
     {

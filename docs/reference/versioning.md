@@ -35,7 +35,7 @@ example:
 treated as being available across all versions.
 
 Versioning is currently only supported on [`@api-param`]({{ site.github.url }}/reference/api-param),
-[`@api-return`]({{ site.github.url }}/reference/api-return), and [`@api-throws`]({{ site.github.url }}/reference/api-throws).
+[`@api-return`]({{ site.github.url }}/reference/api-return), and [`@api-error`]({{ site.github.url }}/reference/api-error).
 
 ### Representations
 In representations, the [`@api-version`]({{ site.github.url }}/reference/api-version) annotation works as any other annotation.

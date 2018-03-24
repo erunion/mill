@@ -36,7 +36,7 @@ required for a resource action, or a representation data point.
  *
  * @api-scope edit
  *
- * @api-throws:private {403} \Some\ErrorErrorRepresentation If the user isn't
+ * @api-error:private {403} \Some\ErrorErrorRepresentation If the user isn't
  *    allowed to do something.
  */
 public function PATCH()

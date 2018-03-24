@@ -7,10 +7,10 @@ use Mill\Exceptions\Annotations\UncallableErrorCodeException;
 use Mill\Exceptions\Annotations\UnknownErrorRepresentationException;
 use Mill\Exceptions\Annotations\UnknownReturnCodeException;
 use Mill\Parser\Annotations\CapabilityAnnotation;
-use Mill\Parser\Annotations\ThrowsAnnotation;
+use Mill\Parser\Annotations\ErrorAnnotation;
 use Mill\Parser\Version;
 
-class ThrowsAnnotationTest extends AnnotationTest
+class ErrorAnnotationTest extends AnnotationTest
 {
     /**
      * @dataProvider providerAnnotation
@@ -21,7 +21,7 @@ class ThrowsAnnotationTest extends AnnotationTest
      */
     public function testAnnotation(string $content, $version, bool $visible, array $expected): void
     {
-        $annotation = new ThrowsAnnotation($content, __CLASS__, __METHOD__, $version);
+        $annotation = new ErrorAnnotation($content, __CLASS__, __METHOD__, $version);
         $annotation->process();
         $annotation->setVisibility($visible);
 
@@ -37,8 +37,8 @@ class ThrowsAnnotationTest extends AnnotationTest
      */
     public function testHydrate(string $content, $version, bool $visible, array $expected): void
     {
-        /** @var ThrowsAnnotation $annotation */
-        $annotation = ThrowsAnnotation::hydrate(array_merge(
+        /** @var ErrorAnnotation $annotation */
+        $annotation = ErrorAnnotation::hydrate(array_merge(
             $expected,
             [
                 'class' => __CLASS__,
@@ -49,7 +49,7 @@ class ThrowsAnnotationTest extends AnnotationTest
         $this->assertAnnotation($annotation, $expected);
     }
 
-    private function assertAnnotation(ThrowsAnnotation $annotation, array $expected): void
+    private function assertAnnotation(ErrorAnnotation $annotation, array $expected): void
     {
         $this->assertTrue($annotation->requiresVisibilityDecorator());
         $this->assertTrue($annotation->supportsVersioning());
@@ -138,7 +138,7 @@ class ThrowsAnnotationTest extends AnnotationTest
                     'visible' => true
                 ]
             ],
-            'description.throw_type' => [
+            'description.error_type' => [
                 'content' => '{404} \Mill\Examples\Showtimes\Representations\Error {movie}',
                 'version' => null,
                 'visible' => true,
@@ -152,7 +152,7 @@ class ThrowsAnnotationTest extends AnnotationTest
                     'visible' => true
                 ]
             ],
-            'description.throw_type.subthrow_type' => [
+            'description.error_type.suberror_type' => [
                 'content' => '{404} \Mill\Examples\Showtimes\Representations\Error {movie,theater}',
                 'version' => null,
                 'visible' => true,
@@ -278,40 +278,40 @@ class ThrowsAnnotationTest extends AnnotationTest
     {
         return [
             'missing-http-code' => [
-                'annotation' => ThrowsAnnotation::class,
+                'annotation' => ErrorAnnotation::class,
                 'content' => '',
                 'expected.exception' => MissingRequiredFieldException::class,
                 'expected.exception.asserts' => [
                     'getRequiredField' => 'http_code',
-                    'getAnnotation' => 'throws',
+                    'getAnnotation' => 'error',
                     'getDocblock' => '',
                     'getValues' => []
                 ]
             ],
             'missing-representation' => [
-                'annotation' => ThrowsAnnotation::class,
+                'annotation' => ErrorAnnotation::class,
                 'content' => '{404} \Mill\Examples\Showtimes\Representations\Error',
                 'expected.exception' => MissingRequiredFieldException::class,
                 'expected.exception.asserts' => [
                     'getRequiredField' => 'description',
-                    'getAnnotation' => 'throws',
+                    'getAnnotation' => 'error',
                     'getDocblock' => '{404} \Mill\Examples\Showtimes\Representations\Error',
                     'getValues' => []
                 ]
             ],
             'missing-description' => [
-                'annotation' => ThrowsAnnotation::class,
+                'annotation' => ErrorAnnotation::class,
                 'content' => '{404}',
                 'expected.exception' => MissingRequiredFieldException::class,
                 'expected.exception.asserts' => [
                     'getRequiredField' => 'representation',
-                    'getAnnotation' => 'throws',
+                    'getAnnotation' => 'error',
                     'getDocblock' => '{404}',
                     'getValues' => []
                 ]
             ],
             'representation-is-unknown' => [
-                'annotation' => ThrowsAnnotation::class,
+                'annotation' => ErrorAnnotation::class,
                 'content' => '{404} \UnknownRepresentation',
                 'expected.exception' => UnknownErrorRepresentationException::class,
                 'expected.exception.asserts' => [
@@ -322,7 +322,7 @@ class ThrowsAnnotationTest extends AnnotationTest
                 ]
             ],
             'error-code-is-uncallable' => [
-                'annotation' => ThrowsAnnotation::class,
+                'annotation' => ErrorAnnotation::class,
                 'content' => '{404} \Mill\Examples\Showtimes\Representations\CodedError (\Uncallable::CONSTANT)',
                 'expected.exception' => UncallableErrorCodeException::class,
                 'expected.exception.asserts' => [
@@ -334,7 +334,7 @@ class ThrowsAnnotationTest extends AnnotationTest
                 ]
             ],
             'error-code-is-required-but-missing' => [
-                'annotation' => ThrowsAnnotation::class,
+                'annotation' => ErrorAnnotation::class,
                 'content' => '{403} \Mill\Examples\Showtimes\Representations\CodedError',
                 'expected.exception' => MissingRepresentationErrorCodeException::class,
                 'expected.exception.asserts' => [
@@ -345,7 +345,7 @@ class ThrowsAnnotationTest extends AnnotationTest
                 ]
             ],
             'http-code-is-invalid' => [
-                'annotation' => ThrowsAnnotation::class,
+                'annotation' => ErrorAnnotation::class,
                 'content' => '{440} \Mill\Examples\Showtimes\Representations\Error',
                 'expected.exception' => UnknownReturnCodeException::class,
                 'expected.exception.asserts' => [

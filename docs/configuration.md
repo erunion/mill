@@ -81,7 +81,7 @@ controllers return), live.
 
 #### Errors
 The representation `<errors>` setting lets you tell Mill where your error representations are (the content that is
-returned from [`@api-throws`]({{ site.github.url }}/reference/api-throws) annotations. Here you can specify a `<class>`
+returned from [`@api-error`]({{ site.github.url }}/reference/api-error) annotations. Here you can specify a `<class>`
 with a fully-qualified class name.
 
 Required attributes for the `<class>` element are:
@@ -95,8 +95,8 @@ Required attributes for the `<class>` element are:
 /**
  * …
  *
- * @api-throws:public {403} \ErrorRepresentation (\AppError::USER_NOT_ALLOWED)
- *     If the user isn't allowed to do something.
+ * @api-error:public {403} \ErrorRepresentation (\AppError::USER_NOT_ALLOWED) If
+ *     the user isn't allowed to do something.
  */
 public function PATCH()
 {
@@ -120,7 +120,7 @@ specific users, you should use this to document that.
 
 You can find usage details for capabilities in the [`@api-capability`]({{ site.github.url }}/reference/api-capability),
 [`@api-param`]({{ site.github.url }}/reference/api-param), [`@api-return`]({{ site.github.url }}/reference/api-return),
-and [`@api-throws`]({{ site.github.url }}/reference/api-throws) documentation.
+and [`@api-error`]({{ site.github.url }}/reference/api-error) documentation.
 
 ### Scopes
 If your API has an authentication system that requires a specific scope(s) for using an API endpoint, use this to

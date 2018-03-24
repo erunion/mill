@@ -21,8 +21,7 @@ class Theater
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Theater
      * @api-return:public {notmodified} If no content has been modified since the supplied Last-Modified header.
      *
-     * @api-throws:public {404} \Mill\Examples\Showtimes\Representations\Error If the movie theater could not be
-     *      found.
+     * @api-error:public {404} \Mill\Examples\Showtimes\Representations\Error If the movie theater could not be found.
      *
      * @api-version >=1.1.2
      * @api-contentType application/mill.example.theater
@@ -51,17 +50,15 @@ class Theater
      *
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Theater
      *
-     * @api-throws:public {400} \Mill\Examples\Showtimes\Representations\Error If there is a problem with the
-     *      request.
-     * @api-throws:public {404} \Mill\Examples\Showtimes\Representations\Error If the movie movie could not be
-     *      found.
+     * @api-error:public {400} \Mill\Examples\Showtimes\Representations\Error If there is a problem with the request.
+     * @api-error:public {404} \Mill\Examples\Showtimes\Representations\Error If the movie movie could not be found.
      *
      * @api-version >=1.1.2
      * @api-contentType application/mill.example.theater
      *
      * @api-version <1.1.2
      * @api-contentType application/json
-     * @api-throws:public {403} \Mill\Examples\Showtimes\Representations\CodedError (1337) If something cool happened.
+     * @api-error:public {403} \Mill\Examples\Showtimes\Representations\CodedError (1337) If something cool happened.
      */
     public function PATCH()
     {
@@ -81,8 +78,7 @@ class Theater
      *
      * @api-return:private {deleted}
      *
-     * @api-throws:private {404} \Mill\Examples\Showtimes\Representations\Error If the movie theater could not be
-     *      found.
+     * @api-error:private {404} \Mill\Examples\Showtimes\Representations\Error If the movie theater could not be found.
      */
     public function DELETE()
     {

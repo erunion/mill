@@ -90,7 +90,7 @@ class UsersController extends \MyApplication\Controller
      *
      * @api-return:public {collection} \MyApplication\Representation\User
      *
-     * @api-throws:public {503} \MyApplication\Representation\Error If search
+     * @api-error:public {503} \MyApplication\Representation\Error If search
      *     is disabled.
      */
     public function GET()

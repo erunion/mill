@@ -166,8 +166,8 @@ class Json extends Generator
                 $changeset = new Changelog\Changesets\ActionReturn;
                 break;
 
-            case Changelog::CHANGESET_TYPE_ACTION_THROWS:
-                $changeset = new Changelog\Changesets\ActionThrows;
+            case Changelog::CHANGESET_TYPE_ACTION_ERROR:
+                $changeset = new Changelog\Changesets\ActionError;
                 break;
 
             case Changelog::CHANGESET_TYPE_REPRESENTATION_DATA:

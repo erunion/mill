@@ -61,7 +61,7 @@ class ChangelogTest extends TestCase
         $actions = [
             '1.1.3' => [
                 '/movie/{id}' => [
-                    'throws' => [
+                    'error' => [
                         '2e302f7f79' => [
                             [
                                 'resource_namespace' => 'Movies',
@@ -96,18 +96,7 @@ class ChangelogTest extends TestCase
                     ]
                 ],
                 '/movies/{id}' => [
-                    'return' => [
-                        '162944fa14' => [
-                            [
-                                'resource_namespace' => 'Movies',
-                                'method' => 'PATCH',
-                                'uri' => '/movies/{id}',
-                                'http_code' => '202 Accepted',
-                                'representation' => 'Movie'
-                            ]
-                        ]
-                    ],
-                    'throws' => [
+                    'error' => [
                         'e7dc298139' => [
                             [
                                 'resource_namespace' => 'Movies',
@@ -142,6 +131,17 @@ class ChangelogTest extends TestCase
                                 'http_code' => '403 Forbidden',
                                 'representation' => 'Coded error',
                                 'description' => 'If the user is not allowed to edit that movie.'
+                            ]
+                        ]
+                    ],
+                    'return' => [
+                        '162944fa14' => [
+                            [
+                                'resource_namespace' => 'Movies',
+                                'method' => 'PATCH',
+                                'uri' => '/movies/{id}',
+                                'http_code' => '202 Accepted',
+                                'representation' => 'Movie'
                             ]
                         ]
                     ]
@@ -221,7 +221,7 @@ class ChangelogTest extends TestCase
                     ]
                 ],
                 '/theaters/{id}' => [
-                    'action_throws' => [
+                    'action_error' => [
                         'b3a16c4d74' => [
                             [
                                 'resource_namespace' => 'Theaters',
@@ -375,17 +375,16 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Movies' => [
                                     '/movie/{id}' => [
-                                        Changelog::CHANGESET_TYPE_ACTION_THROWS => [
-                                            '2e302f7f79' => $actions['1.1.3']['/movie/{id}']['throws']['2e302f7f79']
+                                        Changelog::CHANGESET_TYPE_ACTION_ERROR => [
+                                            '2e302f7f79' => $actions['1.1.3']['/movie/{id}']['error']['2e302f7f79']
                                         ]
                                     ],
                                     '/movies/{id}' => [
-                                        Changelog::CHANGESET_TYPE_ACTION_THROWS => [
-                                            'e7dc298139' => $actions['1.1.3']['/movies/{id}']['throws']['e7dc298139'],
+                                        Changelog::CHANGESET_TYPE_ACTION_ERROR => [
+                                            'e7dc298139' => $actions['1.1.3']['/movies/{id}']['error']['e7dc298139'],
                                             '162944fa14' => call_user_func(
                                                 function () use ($actions): array {
-                                                    $actions =
-                                                        $actions['1.1.3']['/movies/{id}']['throws']['162944fa14'];
+                                                    $actions = $actions['1.1.3']['/movies/{id}']['error']['162944fa14'];
 
                                                     // Add in the "If something cool happened." exception. It's the
                                                     // only private/capability-free exception we're testing, and it
@@ -477,9 +476,9 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Theaters' => [
                                     '/theaters/{id}' => [
-                                        Changelog::CHANGESET_TYPE_ACTION_THROWS => [
+                                        Changelog::CHANGESET_TYPE_ACTION_ERROR => [
                                             'b3a16c4d74' =>
-                                                $actions['1.1.2']['/theaters/{id}']['action_throws']['b3a16c4d74']
+                                                $actions['1.1.2']['/theaters/{id}']['action_error']['b3a16c4d74']
                                         ]
                                     ]
                                 ]
@@ -562,9 +561,9 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Movies' => [
                                     '/movies/{id}' => [
-                                        Changelog::CHANGESET_TYPE_ACTION_THROWS => [
-                                            'e7dc298139' => $actions['1.1.3']['/movies/{id}']['throws']['e7dc298139'],
-                                            '162944fa14' => $actions['1.1.3']['/movies/{id}']['throws']['162944fa14']
+                                        Changelog::CHANGESET_TYPE_ACTION_ERROR => [
+                                            'e7dc298139' => $actions['1.1.3']['/movies/{id}']['error']['e7dc298139'],
+                                            '162944fa14' => $actions['1.1.3']['/movies/{id}']['error']['162944fa14']
                                         ],
                                         Changelog::CHANGESET_TYPE_ACTION_RETURN => [
                                             '162944fa14' => $actions['1.1.3']['/movies/{id}']['return']['162944fa14']
@@ -634,9 +633,9 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Theaters' => [
                                     '/theaters/{id}' => [
-                                        Changelog::CHANGESET_TYPE_ACTION_THROWS => [
+                                        Changelog::CHANGESET_TYPE_ACTION_ERROR => [
                                             'b3a16c4d74' =>
-                                                $actions['1.1.2']['/theaters/{id}']['action_throws']['b3a16c4d74']
+                                                $actions['1.1.2']['/theaters/{id}']['action_error']['b3a16c4d74']
                                         ]
                                     ]
                                 ]
@@ -717,9 +716,9 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Movies' => [
                                     '/movies/{id}' => [
-                                        Changelog::CHANGESET_TYPE_ACTION_THROWS => [
-                                            'e7dc298139' => $actions['1.1.3']['/movies/{id}']['throws']['e7dc298139'],
-                                            '162944fa14' => $actions['1.1.3']['/movies/{id}']['throws']['162944fa14']
+                                        Changelog::CHANGESET_TYPE_ACTION_ERROR => [
+                                            'e7dc298139' => $actions['1.1.3']['/movies/{id}']['error']['e7dc298139'],
+                                            '162944fa14' => $actions['1.1.3']['/movies/{id}']['error']['162944fa14']
                                         ],
                                         Changelog::CHANGESET_TYPE_ACTION_RETURN => [
                                             '162944fa14' => $actions['1.1.3']['/movies/{id}']['return']['162944fa14']
@@ -791,9 +790,9 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Theaters' => [
                                     '/theaters/{id}' => [
-                                        Changelog::CHANGESET_TYPE_ACTION_THROWS => [
+                                        Changelog::CHANGESET_TYPE_ACTION_ERROR => [
                                             'b3a16c4d74' =>
-                                                $actions['1.1.2']['/theaters/{id}']['action_throws']['b3a16c4d74']
+                                                $actions['1.1.2']['/theaters/{id}']['action_error']['b3a16c4d74']
                                         ]
                                     ]
                                 ]
@@ -880,9 +879,9 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Movies' => [
                                     '/movies/{id}' => [
-                                        Changelog::CHANGESET_TYPE_ACTION_THROWS => [
-                                            'e7dc298139' => $actions['1.1.3']['/movies/{id}']['throws']['e7dc298139'],
-                                            '162944fa14' => $actions['1.1.3']['/movies/{id}']['throws']['162944fa14']
+                                        Changelog::CHANGESET_TYPE_ACTION_ERROR => [
+                                            'e7dc298139' => $actions['1.1.3']['/movies/{id}']['error']['e7dc298139'],
+                                            '162944fa14' => $actions['1.1.3']['/movies/{id}']['error']['162944fa14']
                                         ],
                                         Changelog::CHANGESET_TYPE_ACTION_RETURN => [
                                             '162944fa14' => $actions['1.1.3']['/movies/{id}']['return']['162944fa14']
@@ -943,9 +942,9 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Theaters' => [
                                     '/theaters/{id}' => [
-                                        Changelog::CHANGESET_TYPE_ACTION_THROWS => [
+                                        Changelog::CHANGESET_TYPE_ACTION_ERROR => [
                                             'b3a16c4d74' =>
-                                                $actions['1.1.2']['/theaters/{id}']['action_throws']['b3a16c4d74']
+                                                $actions['1.1.2']['/theaters/{id}']['action_error']['b3a16c4d74']
                                         ]
                                     ]
                                 ]

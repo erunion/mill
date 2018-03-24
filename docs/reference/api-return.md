@@ -56,7 +56,7 @@ application.
 | 304 Not Modified | notmodified |
 
 > **Note:** `@api-return` does not support returning 400 or 500 error codes. If you need those, use
-> [`@api-throws`]({{ site.github.url }}/reference/api-throws) instead.
+> [`@api-error`]({{ site.github.url }}/reference/api-error) instead.
 
 ## Examples
 ```php

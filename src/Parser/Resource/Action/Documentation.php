@@ -75,11 +75,11 @@ class Documentation
      */
     protected static $ACCEPTED_ANNOTATIONS = [
         'capability',
+        'error',
         'param',
         'minVersion',
         'return',
         'scope',
-        'throws',
         'uri',
         'uriSegment'
     ];
@@ -464,16 +464,16 @@ class Documentation
 
     /**
      * Get back any responses that this action can throw. This will include both returns (`@api-return`) and exceptions
-     * (`@api-throws`).
+     * (`@api-error`).
      *
      * @return array
      */
     public function getResponses(): array
     {
         $return = (isset($this->annotations['return'])) ? $this->annotations['return'] : [];
-        $throws = (isset($this->annotations['throws'])) ? $this->annotations['throws'] : [];
+        $error = (isset($this->annotations['error'])) ? $this->annotations['error'] : [];
 
-        return array_merge($return, $throws);
+        return array_merge($return, $error);
     }
 
     /**

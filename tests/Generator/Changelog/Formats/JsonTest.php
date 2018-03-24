@@ -37,7 +37,7 @@ class JsonTest extends TestCase
                             [
                                 '<span class="mill-changelog_uri" data-mill-resource-namespace="Movies" ' .
                                     'data-mill-method="GET" data-mill-uri="/movie/{id}">/movie/{id}</span> now ' .
-                                    'throws the following errors on <span class="mill-changelog_method" ' .
+                                    'returns the following errors on <span class="mill-changelog_method" ' .
                                     'data-mill-resource-namespace="Movies" data-mill-method="GET" ' .
                                     'data-mill-uri="/movie/{id}">GET</span> requests:',
                                 [
@@ -61,7 +61,7 @@ class JsonTest extends TestCase
                             [
                                 '<span class="mill-changelog_uri" data-mill-resource-namespace="Movies" ' .
                                     'data-mill-method="GET" data-mill-uri="/movies/{id}">/movies/{id}</span> now ' .
-                                    'throws the following errors on <span class="mill-changelog_method" ' .
+                                    'returns the following errors on <span class="mill-changelog_method" ' .
                                     'data-mill-resource-namespace="Movies" data-mill-method="GET" ' .
                                     'data-mill-uri="/movies/{id}">GET</span> requests:',
                                 [
@@ -85,7 +85,7 @@ class JsonTest extends TestCase
                             [
                                 '<span class="mill-changelog_uri" data-mill-resource-namespace="Movies" ' .
                                     'data-mill-method="PATCH" data-mill-uri="/movies/{id}">/movies/{id}</span> now ' .
-                                    'throws the following errors on <span class="mill-changelog_method" ' .
+                                    'returns the following errors on <span class="mill-changelog_method" ' .
                                     'data-mill-resource-namespace="Movies" data-mill-method="PATCH" ' .
                                     'data-mill-uri="/movies/{id}">PATCH</span> requests:',
                                 [

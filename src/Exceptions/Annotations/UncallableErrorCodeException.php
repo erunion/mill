@@ -10,7 +10,7 @@ class UncallableErrorCodeException extends BaseException
     public static function create(string $docblock, string $class, string $method): UncallableErrorCodeException
     {
         $message = sprintf(
-            'The `@api-throws %s` in %s::%s has an uncallable error code.',
+            'The `@api-error %s` in %s::%s has an uncallable error code.',
             $docblock,
             $class,
             $method
