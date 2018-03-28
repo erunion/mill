@@ -95,8 +95,8 @@ Required attributes for the `<class>` element are:
 /**
  * …
  *
- * @api-error:public {403} \ErrorRepresentation (\AppError::USER_NOT_ALLOWED) If
- *     the user isn't allowed to do something.
+ * @api-error:public 403 (\ErrorRepresentation<7701>) - If the user isn't
+ *     allowed to do something.
  */
 public function PATCH()
 {

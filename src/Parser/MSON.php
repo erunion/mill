@@ -2,7 +2,9 @@
 namespace Mill\Parser;
 
 use Mill\Container;
+use Mill\Exceptions\Annotations\UnknownErrorRepresentationException;
 use Mill\Exceptions\Annotations\UnsupportedTypeException;
+use Mill\Exceptions\Config\UnconfiguredErrorRepresentationException;
 use Mill\Exceptions\Config\UnconfiguredRepresentationException;
 use Mill\Exceptions\MSON\MissingOptionsException;
 
@@ -121,6 +123,13 @@ class MSON
     protected $values = [];
 
     /**
+     * Allow all kind of subtypes. Used for `@api-error` annotations to allow error codes.
+     *
+     * @var bool
+     */
+    protected $allow_all_subtypes = false;
+
+    /**
      * Supported MSON field types.
      *
      * @var array
@@ -211,10 +220,18 @@ class MSON
 
             if (!in_array(strtolower($this->type), $this->supported_types)) {
                 try {
-                    // If this isn't a valid representation, then it's an invalid type.
-                    $config->doesRepresentationExist($this->type);
+                    // If we're allowing all subtypes, then we're dealing with error states and the `@api-error`
+                    // annotation, so we should look at error representations instead here.
+                    if ($this->allow_all_subtypes) {
+                        $config->doesErrorRepresentationExist($this->type);
+                    } else {
+                        // If this isn't a valid representation, then it's an invalid type.
+                        $config->doesRepresentationExist($this->type);
+                    }
                 } catch (UnconfiguredRepresentationException $e) {
                     throw UnsupportedTypeException::create($content, $this->class, $this->method);
+                } catch (UnconfiguredErrorRepresentationException $e) {
+                    throw UnknownErrorRepresentationException::create($content, $this->class, $this->method);
                 }
             }
 
@@ -232,6 +249,10 @@ class MSON
                         break;
 
                     default:
+                        if ($this->allow_all_subtypes) {
+                            break;
+                        }
+
                         throw UnsupportedTypeException::create($content, $this->class, $this->method);
                 }
             }
@@ -371,6 +392,17 @@ class MSON
     public function getValues(): array
     {
         return $this->values;
+    }
+
+    /**
+     * Allow all kind of subtypes. Used for `@api-error` annotations to allow error codes.
+     *
+     * @return MSON
+     */
+    public function allowAllSubtypes(): self
+    {
+        $this->allow_all_subtypes = true;
+        return $this;
     }
 
     /**

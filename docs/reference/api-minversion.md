@@ -34,7 +34,7 @@ This allows you to denote the minimum API version required for a resource action
  *
  * @api-minversion 3.2
  *
- * @api-error:private {403} \Some\ErrorErrorRepresentation If the user isn't
+ * @api-error:private 403 (\Some\ErrorErrorRepresentation) - If the user isn't
  *    allowed to do something.
  */
 public function PATCH()

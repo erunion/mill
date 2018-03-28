@@ -31,7 +31,7 @@ You might have instances where you need to deprecate a resource action request p
  *
  * @api-return:public {object} \MyApplication\Representations\Movie
  *
- * @api-error:public {404} \MyApplicationRepresentations\Error If the movie
+ * @api-error:public 404 (\MyApplicationRepresentations\Error) - If the movie
  *     could not be found.
  */
 public function GET()

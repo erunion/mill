@@ -3,12 +3,12 @@ namespace Mill\Parser\Annotations;
 
 use Mill\Container;
 use Mill\Exceptions\Annotations\MissingRepresentationErrorCodeException;
-use Mill\Exceptions\Annotations\UncallableErrorCodeException;
 use Mill\Exceptions\Annotations\UnknownErrorRepresentationException;
 use Mill\Exceptions\Annotations\UnknownReturnCodeException;
 use Mill\Exceptions\Config\UnconfiguredErrorRepresentationException;
 use Mill\Parser\Annotation;
 use Mill\Parser\Annotations\Traits\HasHttpCodeResponseTrait;
+use Mill\Parser\MSON;
 use Mill\Parser\Version;
 
 /**
@@ -57,7 +57,6 @@ class ErrorAnnotation extends Annotation
     /**
      * {@inheritdoc}
      * @throws UnknownReturnCodeException If a supplied HTTP code is invalid.
-     * @throws UncallableErrorCodeException If a supplied error code is uncallable.
      * @throws UnknownErrorRepresentationException If a supplied representation has not been configured as allowing
      *      errors.
      * @throws MissingRepresentationErrorCodeException If a supplied representation has been configured as requiring
@@ -66,91 +65,54 @@ class ErrorAnnotation extends Annotation
     protected function parser(): array
     {
         $config = Container::getConfig();
+        $content = trim($this->docblock);
 
         /** @var string $method */
         $method = $this->method;
+        $mson = (new MSON($this->class, $method))->allowAllSubtypes()->parse($content);
+        $parsed = [
+            'http_code' => $mson->getField(),
+            'representation' => $mson->getType(),
+            'error_code' => $mson->getSubtype(),
+            'capability' => $mson->getCapability(),
+            'description' => $mson->getDescription()
+        ];
 
-        $parsed = [];
-        $content = trim($this->docblock);
-
-        // HTTP code is surrounded by +plusses+.
-        if (preg_match(self::REGEX_ERROR_HTTP_CODE, $content, $matches)) {
-            $parsed['http_code'] = $matches[1];
-
+        if (!empty($parsed['http_code'])) {
             if (!$this->isValidHttpCode($parsed['http_code'])) {
                 throw UnknownReturnCodeException::create('error', $this->docblock, $this->class, $method);
             }
 
             $parsed['http_code'] .= ' ' . $this->getHttpCodeMessage($parsed['http_code']);
-            $content = trim(preg_replace(self::REGEX_ERROR_HTTP_CODE, '', $content));
-        }
-
-        $parts = explode(' ', $content);
-        $parsed['representation'] = array_shift($parts);
-
-        // Representation is by itself, so put the pieces back together so we can do some more regex.
-        $content = implode(' ', $parts);
-
-        if (!empty($parsed['representation'])) {
-            $representation = $parsed['representation'];
-
-            // Verify that the supplied representation class exists. If it's being excluded, we can just go ahead and
-            // set it here anyways, as we'll be looking further up the stack to determine if we should actually parse it
-            // for documentation.
-            //
-            // If the class doesn't exist, this method call will throw an exception back out.
-            try {
-                $config->doesErrorRepresentationExist($representation);
-            } catch (UnconfiguredErrorRepresentationException $e) {
-                throw UnknownErrorRepresentationException::create($representation, $this->class, $method);
-            }
-        }
-
-        // Error codes are marked with `(\SomeError\Class::CASE)` or `(1337)` parens.
-        if (preg_match(self::REGEX_ERROR_CODE, $content, $matches)) {
-            $error_code = substr($matches[1], 1, -1);
-            if (is_numeric($error_code)) {
-                $parsed['error_code'] = $error_code;
-            } else {
-                if (!defined($error_code)) {
-                    throw UncallableErrorCodeException::create($this->docblock, $this->class, $method);
-                }
-
-                $parsed['error_code'] = constant($error_code);
-            }
-
-            $content = trim(preg_replace(self::REGEX_ERROR_CODE, '', $content));
         }
 
         // Capability is surrounded by +plusses+.
-        if (preg_match(self::REGEX_CAPABILITY, $content, $matches)) {
-            $capability = substr($matches[1], 1, -1);
-            $parsed['capability'] = (new CapabilityAnnotation($capability, $this->class, $method))->process();
-
-            $content = trim(preg_replace(self::REGEX_CAPABILITY, '', $content));
+        if (!empty($parsed['capability'])) {
+            $parsed['capability'] = (new CapabilityAnnotation(
+                $parsed['capability'],
+                $this->class,
+                $method
+            ))->process();
         }
 
-        $description = trim($content);
-        if (!empty($description)) {
-            if (preg_match(self::REGEX_ERROR_SUB_TYPE, $description, $matches)) {
-                $description = sprintf('If %s was not found in the %s.', $matches[1], $matches[2]);
-            } elseif (preg_match(self::REGEX_ERROR_TYPE, $description, $matches)) {
-                $description = sprintf('If %s was not found.', $matches[1]);
+        if (!empty($parsed['description'])) {
+            if (preg_match(self::REGEX_ERROR_SUB_TYPE, $parsed['description'], $matches)) {
+                $parsed['description'] = sprintf('If %s was not found in the %s.', $matches[1], $matches[2]);
+            } elseif (preg_match(self::REGEX_ERROR_TYPE, $parsed['description'], $matches)) {
+                $parsed['description'] = sprintf('If %s was not found.', $matches[1]);
             }
-
-            $parsed['description'] = $description;
         }
 
         // Now that we've parsed out both the representation and error code, make sure that a representation that
         // requires an error code, actually has one.
         if (!empty($parsed['representation'])) {
-            $representation = $parsed['representation'];
-
             // If this representation requires an error code (as defined in the config file), but we don't have one,
             // throw an error.
-            if ($config->doesErrorRepresentationNeedAnErrorCode($representation) && !isset($parsed['error_code'])) {
+            if ($config->doesErrorRepresentationNeedAnErrorCode($parsed['representation']) &&
+                empty($parsed['error_code'])
+            ) {
                 throw MissingRepresentationErrorCodeException::create(
-                    $representation,
+                    $parsed['representation'],
                     $this->class,
                     $method
                 );

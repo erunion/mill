@@ -872,9 +872,8 @@ DESCRIPTION;
                   * @api-contentType application/json
                   * @api-scope public
                   * @api-return:private {collection} \Mill\Examples\Showtimes\Representations\Representation
-                  * @api-error:public {403} \Mill\Examples\Showtimes\Representations\CodedError
-                  *      (Mill\Examples\Showtimes\Representations\CodedError::DISALLOWED) If the user isn\'t allowed to
-                  *      do something.
+                  * @api-error:public 403 (\Mill\Examples\Showtimes\Representations\CodedError<666>) - If the user
+                  *     isn\'t allowed to do something.
                   */',
                 'expected.exception' => '\Mill\Exceptions\Resource\PublicDecoratorOnPrivateActionException',
                 'expected.exception.asserts' => [
@@ -891,9 +890,8 @@ DESCRIPTION;
                   * @api-contentType application/json
                   * @api-scope public
                   * @api-return:private {collection} \Mill\Examples\Showtimes\Representations\Representation
-                  * @api-error:public {403} \Mill\Examples\Showtimes\Representations\CodedError
-                  *      (Mill\Examples\Showtimes\Representations\CodedError::DISALLOWED) If the user isn\'t allowed to
-                  *      do something.
+                  * @api-error:public 403 (\Mill\Examples\Showtimes\Representations\CodedError<666>) - If the user
+                  *     isn\'t allowed to do something.
                   */',
                 'expected.exception' => '\Mill\Exceptions\Resource\TooManyAliasedUrisException',
                 'expected.exception.asserts' => []
