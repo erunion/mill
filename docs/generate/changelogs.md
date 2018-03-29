@@ -7,8 +7,9 @@ permalink: /generate/changelogs
 # Generate changelogs
 ---
 
-Mill includes a `mill` command line application for doing various tasks on your API, including compiling your
-documentation into a Markdown-representation changelog.
+Mill includes a `mill` command line application for doing various tasks on your
+API, including compiling your documentation into a Markdown-representation
+changelog.
 
 ```bash
 $ ./bin/mill changelog --help
@@ -83,8 +84,8 @@ $changelog = $generator->generateJson();
 var_dump($changelog);
 ```
 
-Mill wraps important pieces of content in the JSON-encoded changelog that can then be styled according to however you
-want to render it:
+Mill wraps important pieces of content in the JSON-encoded changelog that can
+then be styled according to however you want to render it:
 
 | Changeset | HTML class | data-* attribute |
 | :--- | :--- | :--- |

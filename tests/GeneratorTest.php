@@ -49,21 +49,21 @@ class GeneratorTest extends TestCase
      * @dataProvider providerGeneratorWithVersion
      * @param string $version
      * @param bool $private_objects
-     * @param array|null $capabilities
+     * @param array|null $vendor_tags
      * @param array $expected_representations
      * @param array $expected_resources
      */
     public function testGeneratorWithVersion(
         string $version,
         bool $private_objects,
-        ?array $capabilities,
+        ?array $vendor_tags,
         array $expected_representations,
         array $expected_resources
     ): void {
         $version_obj = new Version($version, __CLASS__, __METHOD__);
         $generator = new Generator($this->getConfig(), $version_obj);
         $generator->setLoadPrivateDocs($private_objects);
-        $generator->setLoadCapabilityDocs($capabilities);
+        $generator->setLoadVendorTagDocs($vendor_tags);
         $generator->generate();
 
         // Verify resources
@@ -190,7 +190,7 @@ class GeneratorTest extends TestCase
                         'field' => 'id',
                         'type' => 'integer',
                         'uri' => '/movie/+id',
-                        'values' => false
+                        'values' => []
                     ]
                 ],
                 'uri.visible' => false,
@@ -250,7 +250,7 @@ class GeneratorTest extends TestCase
                         'field' => 'id',
                         'type' => 'integer',
                         'uri' => '/movies/+id',
-                        'values' => false
+                        'values' => []
                     ]
                 ],
                 'uri.visible' => true,
@@ -271,7 +271,7 @@ class GeneratorTest extends TestCase
                         'field' => 'id',
                         'type' => 'integer',
                         'uri' => '/movies/+id',
-                        'values' => false
+                        'values' => []
                     ]
                 ],
                 'uri.visible' => true,
@@ -306,19 +306,19 @@ class GeneratorTest extends TestCase
                         'field' => 'id',
                         'type' => 'integer',
                         'uri' => '/movies/+id',
-                        'values' => false
+                        'values' => []
                     ]
                 ],
                 'uri.visible' => false,
                 'params.keys' => [],
                 'annotations.sum' => [
-                    'capability' => 1,
                     'error' => 1,
                     'minVersion' => 1,
                     'return' => 1,
                     'scope' => 1,
                     'uri' => 1,
-                    'uriSegment' => 1
+                    'uriSegment' => 1,
+                    'vendorTag' => 1
                 ]
             ],
             '/theaters::GET' => [
@@ -363,7 +363,7 @@ class GeneratorTest extends TestCase
                         'field' => 'id',
                         'type' => 'integer',
                         'uri' => '/theaters/+id',
-                        'values' => false
+                        'values' => []
                     ]
                 ],
                 'uri.visible' => true,
@@ -384,7 +384,7 @@ class GeneratorTest extends TestCase
                         'field' => 'id',
                         'type' => 'integer',
                         'uri' => '/theaters/+id',
-                        'values' => false
+                        'values' => []
                     ]
                 ],
                 'uri.visible' => true,
@@ -411,7 +411,7 @@ class GeneratorTest extends TestCase
                         'field' => 'id',
                         'type' => 'integer',
                         'uri' => '/theaters/+id',
-                        'values' => false
+                        'values' => []
                     ]
                 ],
                 'uri.visible' => false,
@@ -495,7 +495,7 @@ class GeneratorTest extends TestCase
             'version-1.0' => [
                 'version' => '1.0',
                 'private_objects' => true,
-                'capabilities' => null,
+                'vendor_tags' => null,
                 'expected.representations' => array_merge($error_representations, [
                     '\Mill\Examples\Showtimes\Representations\Movie' => $representations['Movie'],
                     '\Mill\Examples\Showtimes\Representations\Person' => $representations['Person'],
@@ -544,15 +544,15 @@ class GeneratorTest extends TestCase
                 ]
             ],
 
-            // API v1.0 with public-only docs and all capabilities
-            'version-1.0-public-docs-with-all-capabilities' => [
+            // API v1.0 with public-only docs and all vendor tags.
+            'version-1.0-public-docs-with-all-vendor-tags' => [
                 'version' => '1.0',
                 'private_objects' => false,
-                'capabilities' => [
-                    'BUY_TICKETS',
-                    'DELETE_CONTENT',
-                    'FEATURE_FLAG',
-                    'MOVIE_RATINGS'
+                'vendor_tags' => [
+                    'tag:BUY_TICKETS',
+                    'tag:DELETE_CONTENT',
+                    'tag:FEATURE_FLAG',
+                    'tag:MOVIE_RATINGS'
                 ],
                 'expected.representations' => array_merge($error_representations, [
                     '\Mill\Examples\Showtimes\Representations\Movie' => $representations['Movie'],
@@ -604,7 +604,7 @@ class GeneratorTest extends TestCase
             'version-1.1' => [
                 'version' => '1.1',
                 'private_objects' => true,
-                'capabilities' => null,
+                'vendor_tags' => null,
                 'expected.representations' => array_merge($error_representations, [
                     '\Mill\Examples\Showtimes\Representations\Movie' => call_user_func(
                         function () use ($representations): array {
@@ -675,13 +675,13 @@ class GeneratorTest extends TestCase
                 ]
             ],
 
-            // API v1.1 with public-only docs and unmatched capabilities
-            'version-1.1-public-docs-with-unmatched-capabilities' => [
+            // API v1.1 with public-only docs and unmatched vendor tags.
+            'version-1.1-public-docs-with-unmatched-vendor-tags' => [
                 'version' => '1.1',
                 'private_objects' => false,
-                'capabilities' => [
-                    'BUY_TICKETS',
-                    'FEATURE_FLAG'
+                'vendor_tags' => [
+                    'tag:BUY_TICKETS',
+                    'tag:FEATURE_FLAG'
                 ],
                 'expected.representations' => array_merge($error_representations, [
                     '\Mill\Examples\Showtimes\Representations\Movie' => call_user_func(
@@ -750,12 +750,12 @@ class GeneratorTest extends TestCase
                 ]
             ],
 
-            // API v1.1 with public-only docs and matched capabilities
-            'version-1.1-public-docs-with-matched-capabilities' => [
+            // API v1.1 with public-only docs and matched vendor tags.
+            'version-1.1-public-docs-with-matched-vendor-tags' => [
                 'version' => '1.1',
                 'private_objects' => false,
-                'capabilities' => [
-                    'DELETE_CONTENT'
+                'vendor_tags' => [
+                    'tag:DELETE_CONTENT'
                 ],
                 'expected.representations' => array_merge($error_representations, [
                     '\Mill\Examples\Showtimes\Representations\Movie' => call_user_func(
@@ -828,7 +828,7 @@ class GeneratorTest extends TestCase
             'version-1.1.1' => [
                 'version' => '1.1.1',
                 'private_objects' => true,
-                'capabilities' => null,
+                'vendor_tags' => null,
                 'expected.representations' => array_merge($error_representations, [
                     '\Mill\Examples\Showtimes\Representations\Movie' => call_user_func(
                         function () use ($representations): array {
@@ -912,7 +912,7 @@ class GeneratorTest extends TestCase
             'version-1.1.1-public-only-documentation' => [
                 'version' => '1.1.1',
                 'private_objects' => true,
-                'capabilities' => [],
+                'vendor_tags' => [],
                 'expected.representations' => array_merge($error_representations, [
                     '\Mill\Examples\Showtimes\Representations\Movie' => call_user_func(
                         function () use ($representations): array {

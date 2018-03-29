@@ -7,8 +7,7 @@ permalink: /generate/documentation
 # Generate documentation
 ---
 
-Mill includes a `mill` command line application for doing various tasks on your API, including compiling it down into
-versioned [API Blueprint](https://apiblueprint.org/) files.
+Mill includes a `mill` command line application for doing various tasks on your API, including compiling it down into versioned [API Blueprint](https://apiblueprint.org/) files.
 
 ```bash
 $ ./vendor/bin/mill generate --help
@@ -55,8 +54,7 @@ Done!
 
 This will compile the configured documentation for my API (versions 1.0 through 1.1.1) into the `blueprints/` directory.
 
-If we look at one of the versioned directories that it created, `blueprints/1.1`, we can see that we've got API
-Blueprint files!
+If we look at one of the versioned directories that it created, `blueprints/1.1`, we can see that we've got API Blueprint files!
 
 ```bash
 $ ls blueprints/1.1
@@ -84,8 +82,7 @@ Information on a specific movie.
 …
 ```
 
-Mill also generates individual parts of your documentation for you. This is helpful if you have people working on API
-design work, but just want to work on the API Blueprint files (and have someone else do the backend work).
+Mill also generates individual parts of your documentation for you. This is helpful if you have people working on API design work, but just want to work on the API Blueprint files (and have someone else do the backend work).
 
 ```bash
 $ cat blueprints/1.1/resources/Movies.apib

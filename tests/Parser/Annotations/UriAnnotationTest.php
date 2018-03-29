@@ -46,14 +46,15 @@ class UriAnnotationTest extends AnnotationTest
 
     private function assertAnnotation(UriAnnotation $annotation, array $expected): void
     {
-        $this->assertTrue($annotation->requiresVisibilityDecorator());
-        $this->assertFalse($annotation->supportsVersioning());
-        $this->assertTrue($annotation->supportsDeprecation());
         $this->assertTrue($annotation->supportsAliasing());
+        $this->assertTrue($annotation->supportsDeprecation());
+        $this->assertFalse($annotation->supportsVersioning());
+        $this->assertFalse($annotation->supportsVendorTags());
+        $this->assertTrue($annotation->requiresVisibilityDecorator());
 
         $this->assertSame($expected['array'], $annotation->toArray());
         $this->assertSame($expected['clean.path'], $annotation->getCleanPath());
-        $this->assertFalse($annotation->getCapability());
+        $this->assertEmpty($annotation->getVendorTags());
         $this->assertFalse($annotation->getVersion());
         $this->assertEmpty($annotation->getAliases());
     }

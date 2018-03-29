@@ -15,6 +15,7 @@ class DataAnnotation extends Annotation
 {
     const SUPPORTS_MSON = true;
     const SUPPORTS_SCOPES = true;
+    const SUPPORTS_VENDOR_TAGS = true;
     const SUPPORTS_VERSIONING = true;
 
     /**
@@ -72,7 +73,6 @@ class DataAnnotation extends Annotation
      * @var array
      */
     protected $arrayable = [
-        'capability',
         'description',
         'identifier',
         'nullable',
@@ -100,18 +100,23 @@ class DataAnnotation extends Annotation
             'type' => $mson->getType(),
             'subtype' => $mson->getSubtype(),
             'nullable' => $mson->isNullable(),
-            'capability' => $mson->getCapability(),
+            'vendor_tags' => $mson->getVendorTags(),
             'description' => $mson->getDescription(),
             'values' => $mson->getValues()
         ];
 
-        // Create a capability annotation if one was supplied.
-        if (!empty($parsed['capability'])) {
-            $parsed['capability'] = (new CapabilityAnnotation(
-                $parsed['capability'],
-                $this->class,
-                $this->method
-            ))->process();
+        if (!empty($parsed['vendor_tags'])) {
+            $parsed['vendor_tags'] = array_map(
+                /** @return Annotation */
+                function (string $tag) use ($method) {
+                    return (new VendorTagAnnotation(
+                        $tag,
+                        $this->class,
+                        $method
+                    ))->process();
+                },
+                $parsed['vendor_tags']
+            );
         }
 
         if (!empty($parsed['identifier'])) {
@@ -140,7 +145,7 @@ class DataAnnotation extends Annotation
         $this->description = $this->required('description');
 
         $this->values = $this->optional('values');
-        $this->capability = $this->optional('capability');
+        $this->vendor_tags = $this->optional('vendor_tags');
         $this->nullable = $this->optional('nullable');
     }
 

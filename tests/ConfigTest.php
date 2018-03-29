@@ -50,11 +50,11 @@ class ConfigTest extends TestCase
         ], $config->getBlueprintNamespaceExcludes());
 
         $this->assertSame([
-            'BUY_TICKETS',
-            'DELETE_CONTENT',
-            'FEATURE_FLAG',
-            'MOVIE_RATINGS'
-        ], $config->getCapabilities());
+            'tag:BUY_TICKETS',
+            'tag:DELETE_CONTENT',
+            'tag:FEATURE_FLAG',
+            'tag:MOVIE_RATINGS'
+        ], $config->getVendorTags());
 
         $this->assertSame([
             'create',

@@ -123,7 +123,7 @@ class Movie extends Representation
             'trailer' => $this->movie->trailer,
 
             /**
-             * @api-data tickets (string, BUY_TICKETS) - Tickets URL
+             * @api-data tickets (string, tag:BUY_TICKETS) - Tickets URL
              * @api-version <1.1.3
              */
             'tickets' => $this->movie->tickets_url

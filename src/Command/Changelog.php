@@ -32,10 +32,10 @@ class Changelog extends Application
                 true
             )
             ->addOption(
-                'capability',
+                'vendor_tag',
                 null,
                 InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
-                'The name of a capability if you want to generate a changelog that includes capability-locked ' .
+                'The name of a vendor tag if you want to generate a changelog that includes vendor tag-bound ' .
                     'documentation.'
             )
             ->addArgument(
@@ -55,11 +55,11 @@ class Changelog extends Application
         parent::execute($input, $output);
 
         $private_docs = $input->getOption('private');
-        $capabilities = $input->getOption('capability');
+        $vendor_tags = $input->getOption('vendor_tag');
         $output_dir = realpath($input->getArgument('output'));
 
         $private_docs = ($private_docs === true || strtolower($private_docs) == 'true') ? true : false;
-        $capabilities = (!empty($capabilities)) ? $capabilities : null;
+        $vendor_tags = (!empty($vendor_tags)) ? $vendor_tags : null;
 
         /** @var Config $config */
         $config = $this->container['config'];
@@ -71,7 +71,7 @@ class Changelog extends Application
 
         $changelog = new Generator\Changelog($config);
         $changelog->setLoadPrivateDocs($private_docs);
-        $changelog->setLoadCapabilityDocs($capabilities);
+        $changelog->setLoadVendorTagDocs($vendor_tags);
         $markdown = $changelog->generateMarkdown();
 
         $filesystem->put(

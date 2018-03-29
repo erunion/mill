@@ -1,11 +1,11 @@
 <?php
 namespace Mill\Tests\Parser\Annotations;
 
-use Mill\Exceptions\Annotations\InvalidCapabilitySuppliedException;
+use Mill\Exceptions\Annotations\InvalidVendorTagSuppliedException;
 use Mill\Exceptions\Annotations\MissingRequiredFieldException;
-use Mill\Parser\Annotations\CapabilityAnnotation;
+use Mill\Parser\Annotations\VendorTagAnnotation;
 
-class CapabilityAnnotationTest extends AnnotationTest
+class VendorTagAnnotationTest extends AnnotationTest
 {
     /**
      * @dataProvider providerAnnotation
@@ -14,7 +14,7 @@ class CapabilityAnnotationTest extends AnnotationTest
      */
     public function testAnnotation(string $content, array $expected): void
     {
-        $annotation = new CapabilityAnnotation($content, __CLASS__, __METHOD__);
+        $annotation = new VendorTagAnnotation($content, __CLASS__, __METHOD__);
         $annotation->process();
 
         $this->assertAnnotation($annotation, $expected);
@@ -27,7 +27,7 @@ class CapabilityAnnotationTest extends AnnotationTest
      */
     public function testHydrate(string $content, array $expected): void
     {
-        $annotation = CapabilityAnnotation::hydrate(array_merge(
+        $annotation = VendorTagAnnotation::hydrate(array_merge(
             $expected,
             [
                 'class' => __CLASS__,
@@ -38,15 +38,16 @@ class CapabilityAnnotationTest extends AnnotationTest
         $this->assertAnnotation($annotation, $expected);
     }
 
-    private function assertAnnotation(CapabilityAnnotation $annotation, array $expected): void
+    private function assertAnnotation(VendorTagAnnotation $annotation, array $expected): void
     {
-        $this->assertFalse($annotation->requiresVisibilityDecorator());
-        $this->assertFalse($annotation->supportsVersioning());
-        $this->assertFalse($annotation->supportsDeprecation());
         $this->assertFalse($annotation->supportsAliasing());
+        $this->assertFalse($annotation->supportsDeprecation());
+        $this->assertFalse($annotation->supportsVersioning());
+        $this->assertFalse($annotation->supportsVendorTags());
+        $this->assertFalse($annotation->requiresVisibilityDecorator());
 
         $this->assertSame($expected, $annotation->toArray());
-        $this->assertSame($expected['capability'], $annotation->getCapability());
+        $this->assertSame($expected['vendor_tag'], $annotation->getVendorTag());
         $this->assertFalse($annotation->getVersion());
         $this->assertEmpty($annotation->getAliases());
     }
@@ -55,9 +56,9 @@ class CapabilityAnnotationTest extends AnnotationTest
     {
         return [
             '_complete' => [
-                'content' => 'BUY_TICKETS',
+                'content' => 'tag:BUY_TICKETS',
                 'expected' => [
-                    'capability' => 'BUY_TICKETS'
+                    'vendor_tag' => 'tag:BUY_TICKETS'
                 ]
             ]
         ];
@@ -66,23 +67,23 @@ class CapabilityAnnotationTest extends AnnotationTest
     public function providerAnnotationFailsOnInvalidContent(): array
     {
         return [
-            'missing-capability' => [
-                'annotation' => CapabilityAnnotation::class,
+            'missing-tag' => [
+                'annotation' => VendorTagAnnotation::class,
                 'content' => '',
                 'expected.exception' => MissingRequiredFieldException::class,
                 'expected.exception.asserts' => [
-                    'getRequiredField' => 'capability',
-                    'getAnnotation' => 'capability',
+                    'getRequiredField' => 'vendor_tag',
+                    'getAnnotation' => 'vendortag',
                     'getDocblock' => '',
                     'getValues' => []
                 ]
             ],
-            'capability-was-not-configured' => [
-                'annotation' => CapabilityAnnotation::class,
-                'content' => 'UnconfiguredCapability',
-                'expected.exception' => InvalidCapabilitySuppliedException::class,
+            'tag-was-not-configured' => [
+                'annotation' => VendorTagAnnotation::class,
+                'content' => 'tag:notConfigured',
+                'expected.exception' => InvalidVendorTagSuppliedException::class,
                 'expected.exception.asserts' => [
-                    'getCapability' => 'UnconfiguredCapability'
+                    'getVendorTag' => 'tag:notConfigured'
                 ]
             ]
         ];

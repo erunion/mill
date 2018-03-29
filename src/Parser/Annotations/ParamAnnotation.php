@@ -16,6 +16,7 @@ class ParamAnnotation extends Annotation
     const REQUIRES_VISIBILITY_DECORATOR = true;
     const SUPPORTS_DEPRECATION = true;
     const SUPPORTS_MSON = true;
+    const SUPPORTS_VENDOR_TAGS = true;
     const SUPPORTS_VERSIONING = true;
 
     /**
@@ -73,7 +74,6 @@ class ParamAnnotation extends Annotation
      * @var array
      */
     protected $arrayable = [
-        'capability',
         'description',
         'field',
         'nullable',
@@ -107,18 +107,23 @@ class ParamAnnotation extends Annotation
             'type' => $mson->getType(),
             'required' => $mson->isRequired(),
             'nullable' => $mson->isNullable(),
-            'capability' => $mson->getCapability(),
+            'vendor_tags' => $mson->getVendorTags(),
             'description' => $mson->getDescription(),
             'values' => $mson->getValues()
         ];
 
-        // Create a capability annotation if one was supplied.
-        if (!empty($parsed['capability'])) {
-            $parsed['capability'] = (new CapabilityAnnotation(
-                $parsed['capability'],
-                $this->class,
-                $this->method
-            ))->process();
+        if (!empty($parsed['vendor_tags'])) {
+            $parsed['vendor_tags'] = array_map(
+                /** @return Annotation */
+                function (string $tag) use ($method) {
+                    return (new VendorTagAnnotation(
+                        $tag,
+                        $this->class,
+                        $method
+                    ))->process();
+                },
+                $parsed['vendor_tags']
+            );
         }
 
         return $parsed;
@@ -136,7 +141,7 @@ class ParamAnnotation extends Annotation
         $this->required = $this->boolean('required');
 
         $this->values = $this->optional('values');
-        $this->capability = $this->optional('capability');
+        $this->vendor_tags = $this->optional('vendor_tags');
         $this->nullable = $this->optional('nullable');
     }
 

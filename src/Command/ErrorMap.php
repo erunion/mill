@@ -56,10 +56,10 @@ class ErrorMap extends Application
                 true
             )
             ->addOption(
-                'capability',
+                'vendor_tag',
                 null,
                 InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
-                'The name of a capability if you want to generate an error map that includes capability-locked error' .
+                'The name of a vendor tag if you want to generate an error map that includes vendor tag-bound error' .
                     'documentation.'
             )
             ->addArgument(
@@ -79,13 +79,13 @@ class ErrorMap extends Application
         parent::execute($input, $output);
 
         $private_docs = $input->getOption('private');
-        $capabilities = $input->getOption('capability');
+        $vendor_tags = $input->getOption('vendor_tag');
         $output_dir = realpath($input->getArgument('output'));
         $version = $input->getOption('constraint');
         $dry_run = $input->getOption('dry-run');
 
         $private_docs = ($private_docs === true || strtolower($private_docs) == 'true') ? true : false;
-        $capabilities = (!empty($capabilities)) ? $capabilities : null;
+        $vendor_tags = (!empty($vendor_tags)) ? $vendor_tags : null;
 
         // Generate!
         if ($dry_run) {
@@ -116,7 +116,7 @@ class ErrorMap extends Application
 
         $error_map = new Generator\ErrorMap($config, $version);
         $error_map->setLoadPrivateDocs($private_docs);
-        $error_map->setLoadCapabilityDocs($capabilities);
+        $error_map->setLoadVendorTagDocs($vendor_tags);
         $markdown = $error_map->generateMarkdown();
 
         foreach ($markdown as $version => $content) {

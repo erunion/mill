@@ -39,13 +39,14 @@ class LabelAnnotationTest extends AnnotationTest
 
     private function assertAnnotation(LabelAnnotation $annotation, array $expected): void
     {
-        $this->assertFalse($annotation->requiresVisibilityDecorator());
-        $this->assertFalse($annotation->supportsVersioning());
-        $this->assertFalse($annotation->supportsDeprecation());
         $this->assertFalse($annotation->supportsAliasing());
+        $this->assertFalse($annotation->supportsDeprecation());
+        $this->assertFalse($annotation->supportsVersioning());
+        $this->assertFalse($annotation->supportsVendorTags());
+        $this->assertFalse($annotation->requiresVisibilityDecorator());
 
         $this->assertSame($expected, $annotation->toArray());
-        $this->assertFalse($annotation->getCapability());
+        $this->assertEmpty($annotation->getVendorTags());
         $this->assertFalse($annotation->getVersion());
         $this->assertEmpty($annotation->getAliases());
     }

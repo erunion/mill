@@ -8,16 +8,18 @@ permalink: /reference/api-return
 ---
 
 Like a standard [PHPDoc](https://phpdoc.org/)
-[`@return`](https://phpdoc.org/docs/latest/references/phpdoc/tags/return.html) annotation, this defines the response,
-and representation that a resource action returns. The difference here, however, is that this is made up of two parts:
+[`@return`](https://phpdoc.org/docs/latest/references/phpdoc/tags/return.html)
+annotation, this defines the response, and representation that a resource action
+returns. The difference here, however, is that this is made up of two parts:
 
 * `{return type}`
 * `\Representation`
 
-The `{return type}` should be indicative of the HTTP code that will be delivered (ex. "collection", "object", "created",
-etc.), and the `\Representation` should be representative of the type of response and data that this action deals with.
-Say if this is a user data action, it might return a `\UserRepresentation`, or however that is set up in your
-application.
+The `{return type}` should be indicative of the HTTP code that will be delivered
+(ex. "collection", "object", "created", etc.), and the `\Representation` should
+be representative of the type of response and data that this action deals with.
+Say if this is a user data action, it might return a `\UserRepresentation`, or
+however that is set up in your application.
 
 ## Syntax
 ```php
@@ -55,8 +57,9 @@ application.
 | | updated |
 | 304 Not Modified | notmodified |
 
-> **Note:** `@api-return` does not support returning 400 or 500 error codes. If you need those, use
-> [`@api-error`]({{ site.github.url }}/reference/api-error) instead.
+> **Note:** `@api-return` does not support returning 400 or 500 error codes. If
+> you need those, use [`@api-error`]({{ site.github.url }}/reference/api-error)
+> instead.
 
 ## Examples
 ```php
@@ -75,7 +78,8 @@ public function PATCH()
 /**
  * …
  *
- * @api-public {notmodified} If no content has changed since the last modified date.
+ * @api-public {notmodified} If no content has changed since the last modified
+ *      date.
  */
 public function GET()
 {

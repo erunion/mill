@@ -11,7 +11,7 @@ A request parameter that can be supplied to a resource action.
 
 ## Syntax
 ```php
-@api-param:visibility fieldName `sampleData` (type, required|optional, nullable, capabilityName) - Description
+@api-param:visibility fieldName `sampleData` (type, required|optional, nullable, vendor:tagName) - Description
     + Members
         - `option` - Option description
 ```
@@ -32,7 +32,7 @@ A request parameter that can be supplied to a resource action.
 | `type` | × | This can be a reference to the type of variable that is being passed in (string, boolean, array, etc.), or can be one of the [tokens](#tokens) that are configured for your API. |
 | `required|optional` | ✓ | A flag that indicates that the parameter is, well, optional. If nothing is supplied, it defaults to being `optional`. |
 | `nullable` | ✓ | A flag that indicates that the parameter is nullable. If nothing is supplied, it defaults to being non-nullable. |
-| `capabilityName` | ✓ | Defined capability that the developers application should possess. |
+| `vendor:tagName` | ✓ | Defined vendor tag. See the [`@api-vendortag`]({{ site.github.url }}/reference/api-vendortag) documentation for more information. There is no limit to the amount of vendor tags you can specify on a parameter. |
 | `Description` | × | Description for what the parameter is for. |
 | Members | ✓ | If this parameter has acceptable values (like in the case of an `enum` type), you can document those values here along with a description for what the value is, or means. |
 
@@ -54,8 +54,7 @@ A request parameter that can be supplied to a resource action.
 | uri | string |
 
 ## <a name="tokens"></a>Tokens
-Because writing out the same parameter for a large number of endpoints can get tiring, we have a system in place that
-allows you to configure tokens, which act as kind of a short-code for a parameter:
+Because writing out the same parameter for a large number of endpoints can get tiring, we have a system in place that allows you to configure tokens, which act as kind of a short-code for a parameter:
 
 In your [`mill.xml`]({{ site.github.url }}/configuration) file:
 
@@ -98,10 +97,10 @@ Using a token with available values:
         `playable`
 ```
 
-With a capability:
+With a vendor tag:
 
 ```php
-@api-param:public locked_down (string, AnotherRequiredCapability) - This is a cool thing.
+@api-param:public locked_down (string, needs:SomeApplicationFeature) - This is a cool thing.
 ```
 
 Normal usage with acceptable values:

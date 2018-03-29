@@ -7,11 +7,12 @@ permalink: /reference/api-data
 # @api-data
 ---
 
-This describes a piece of data within a representation that a resource action can return.
+This describes a piece of data within a representation that a resource action
+can return.
 
 ## Syntax
 ```php
-@api-data fieldName `sampleData` (type, required|optional, nullable, capabilityName) - Description
+@api-data fieldName `sampleData` (type, required|optional, nullable, vendor:tagName) - Description
     + Members
         - `option` - Option description
 ```
@@ -31,7 +32,7 @@ This describes a piece of data within a representation that a resource action ca
 | `type` | × | This describes the type of data that a representation data field contains. |
 | `required|optional` | ✓ | A flag that indicates that the data is, well, optional. If nothing is supplied, it defaults to being `optional`. |
 | `nullable` | ✓ | A flag that indicates that the data is nullable. If nothing is supplied, it defaults to being non-nullable. |
-| `capabilityName` | ✓ | Defined capability that the developers application should possess. |
+| `vendor:tagName` | ✓ | Defined vendor tag. See the [`@api-vendortag`]({{ site.github.url }}/reference/api-vendortag) documentation for more information. There is no limit to the amount of vendor tags you can specify on a parameter. |
 | `Description` | × | A description for that this data is. |
 | Members | ✓ | If this data has acceptable values (like in the case of an `enum` type), you can document those values here along with a description for what the value is, or means. |
 
@@ -53,8 +54,8 @@ This describes a piece of data within a representation that a resource action ca
 | uri | string |
 
 #### Representations
-If your dataset is a Mill representation, you can document that by setting the type to the FQN of the representation in
-question.
+If your dataset is a Mill representation, you can document that by setting the
+type to the FQN of the representation in question.
 
 ```php
 /**
@@ -64,12 +65,13 @@ question.
 ```
 
 #### Subtypes
-Mill allows you, if necessary, to define a single subtype for a dataset. For example, if you have an array that contains
-objects, you can set the `type` as `array<object>`. Alternatively, if you have an array of representations, you can do
-the same with `array<\RepresentationFQN>`.
+Mill allows you, if necessary, to define a single subtype for a dataset. For
+example, if you have an array that contains objects, you can set the `type` as
+`array<object>`. Alternatively, if you have an array of representations, you
+can do the same with `array<\RepresentationFQN>`.
 
-Currently, only `array` types are allowed to contain subtypes. To define subtypes of objects, use a `@api-data`
-annotation for each property.
+Currently, only `array` types are allowed to contain subtypes. To define
+subtypes of objects, use a `@api-data` annotation for each property.
 
 ## Examples
 Common uses:

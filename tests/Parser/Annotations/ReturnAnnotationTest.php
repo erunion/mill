@@ -47,17 +47,18 @@ class ReturnAnnotationTest extends AnnotationTest
 
     private function assertAnnotation(ReturnAnnotation $annotation, array $expected): void
     {
-        $this->assertTrue($annotation->requiresVisibilityDecorator());
-        $this->assertTrue($annotation->supportsVersioning());
-        $this->assertFalse($annotation->supportsDeprecation());
         $this->assertFalse($annotation->supportsAliasing());
+        $this->assertFalse($annotation->supportsDeprecation());
+        $this->assertTrue($annotation->supportsVersioning());
+        $this->assertFalse($annotation->supportsVendorTags());
+        $this->assertTrue($annotation->requiresVisibilityDecorator());
 
         $this->assertSame($expected, $annotation->toArray());
         $this->assertSame($expected['description'], $annotation->getDescription());
         $this->assertSame($expected['http_code'], $annotation->getHttpCode());
         $this->assertSame($expected['representation'], $annotation->getRepresentation());
         $this->assertSame($expected['type'], $annotation->getType());
-        $this->assertFalse($annotation->getCapability());
+        $this->assertEmpty($annotation->getVendorTags());
 
         if ($expected['version']) {
             $this->assertInstanceOf(Version::class, $annotation->getVersion());

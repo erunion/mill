@@ -18,7 +18,7 @@ class RepresentationWithVersioningAcrossMultipleAnnotations
          */
 
         /**
-         * @api-data connections.things (object, FEATURE_FLAG) - Information about this thing.
+         * @api-data connections.things (object, tag:FEATURE_FLAG) - Information about this thing.
          * @api-scope public
          * @api-see self::someMethod connections.things
          */
@@ -32,7 +32,7 @@ class RepresentationWithVersioningAcrossMultipleAnnotations
          */
 
         /**
-         * @api-data name (string, MOVIE_RATINGS) - Name of a thing.
+         * @api-data name (string, tag:MOVIE_RATINGS) - Name of a thing.
          */
     }
 }

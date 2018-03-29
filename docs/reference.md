@@ -20,7 +20,6 @@ title: "Reference"
 
 | @annotation | Description |
 | :--- | :--- |
-| [`@api-capability`]({{ site.github.url }}/reference/api-capability) | Denotes a required API capability for the action. |
 | [`@api-contenttype`]({{ site.github.url }}/reference/api-contenttype) | Denotes the `Content-Type` returned. |
 | [`@api-error`]({{ site.github.url }}/reference/api-error) | An exception or error that may be thrown in the action. |
 | [`@api-label`]({{ site.github.url }}/reference/api-label) | Short description of what the resource action handles. |
@@ -30,6 +29,7 @@ title: "Reference"
 | [`@api-scope`]({{ site.github.url }}/reference/api-scope) | Required authentication token scope necessary for the action. |
 | [`@api-uri`]({{ site.github.url }}/reference/api-uri) | Denotes a URI that this action services. |
 | [`@api-urisegment`]({{ site.github.url }}/reference/api-urisegment) | Describes parameters for the URI. |
+| [`@api-vendortag`]({{ site.github.url }}/reference/api-vendortag) | Denotes a documented vendor tag for the action. |
 
 ## Representations
 

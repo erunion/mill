@@ -9,14 +9,14 @@ class ChangelogTest extends TestCase
     /**
      * @dataProvider providerTestGeneration
      * @param bool $private_objects
-     * @param array|null $capabilities
+     * @param array|null $vendor_tags
      * @param array $expected
      */
-    public function testGeneration(bool $private_objects, ?array $capabilities, array $expected): void
+    public function testGeneration(bool $private_objects, ?array $vendor_tags, array $expected): void
     {
         $generator = new Changelog($this->getConfig());
         $generator->setLoadPrivateDocs($private_objects);
-        $generator->setLoadCapabilityDocs($capabilities);
+        $generator->setLoadVendorTagDocs($vendor_tags);
         $changelog = $generator->generate();
 
         $this->assertSame(array_keys($expected), array_keys($changelog));
@@ -364,7 +364,7 @@ class ChangelogTest extends TestCase
             // Complete changelog. All documentation parsed.
             'complete-changelog' => [
                 'private_objects' => true,
-                'capabilities' => null,
+                'vendor_tags' => null,
                 'expected' => [
                     '1.1.3' => [
                         '_details' => [
@@ -387,7 +387,7 @@ class ChangelogTest extends TestCase
                                                     $actions = $actions['1.1.3']['/movies/{id}']['error']['162944fa14'];
 
                                                     // Add in the "If something cool happened." exception. It's the
-                                                    // only private/capability-free exception we're testing, and it
+                                                    // only private/vendor tag-free exception we're testing, and it
                                                     // should be available on the complete changelog.
                                                     $actions[2] = $actions[1];
                                                     $actions[1] = [
@@ -542,14 +542,14 @@ class ChangelogTest extends TestCase
                 ]
             ],
 
-            // Changelog with public-only parsed docs and all capabilities.
-            'changelog-public-docs-with-all-capabilities' => [
+            // Changelog with public-only parsed docs and all vendor tags.
+            'changelog-public-docs-with-all-vendor-tags' => [
                 'private_objects' => false,
-                'capabilities' => [
-                    'BUY_TICKETS',
-                    'DELETE_CONTENT',
-                    'FEATURE_FLAG',
-                    'MOVIE_RATINGS'
+                'vendor_tags' => [
+                    'tag:BUY_TICKETS',
+                    'tag:DELETE_CONTENT',
+                    'tag:FEATURE_FLAG',
+                    'tag:MOVIE_RATINGS'
                 ],
                 'expected' => [
                     '1.1.3' => [
@@ -699,12 +699,12 @@ class ChangelogTest extends TestCase
                 ]
             ],
 
-            // Changelog with public-only parsed docs with matched
-            'changelog-public-docs-with-matched-capabilities' => [
+            // Changelog with public-only parsed docs with matched.
+            'changelog-public-docs-with-matched-vendor-tags' => [
                 'private_objects' => false,
-                'capabilities' => [
-                    'BUY_TICKETS',
-                    'FEATURE_FLAG'
+                'vendor_tags' => [
+                    'tag:BUY_TICKETS',
+                    'tag:FEATURE_FLAG'
                 ],
                 'expected' => [
                     '1.1.3' => [
@@ -865,10 +865,10 @@ class ChangelogTest extends TestCase
                 ],
             ],
 
-            // Changelog with public-only parsed docs
+            // Changelog with public-only parsed docs.
             'changelog-public-docs' => [
                 'private_objects' => false,
-                'capabilities' => [],
+                'vendor_tags' => [],
                 'expected' => [
                     '1.1.3' => [
                         '_details' => [

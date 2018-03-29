@@ -7,7 +7,8 @@ permalink: /reference/api-minversion
 # @api-minversion
 ---
 
-This allows you to denote the minimum API version required for a resource action.
+This allows you to denote the minimum API version required for a resource
+action.
 
 ## Syntax
 ```php

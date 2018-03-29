@@ -42,14 +42,15 @@ class ContentTypeAnnotationTest extends AnnotationTest
 
     private function assertAnnotation(ContentTypeAnnotation $annotation, array $expected): void
     {
-        $this->assertFalse($annotation->requiresVisibilityDecorator());
-        $this->assertTrue($annotation->supportsVersioning());
-        $this->assertFalse($annotation->supportsDeprecation());
         $this->assertFalse($annotation->supportsAliasing());
+        $this->assertFalse($annotation->supportsDeprecation());
+        $this->assertTrue($annotation->supportsVersioning());
+        $this->assertFalse($annotation->supportsVendorTags());
+        $this->assertFalse($annotation->requiresVisibilityDecorator());
 
         $this->assertSame($expected, $annotation->toArray());
         $this->assertSame($expected['content_type'], $annotation->getContentType());
-        $this->assertFalse($annotation->getCapability());
+        $this->assertEmpty($annotation->getVendorTags());
 
         if ($expected['version']) {
             $this->assertInstanceOf(Version::class, $annotation->getVersion());

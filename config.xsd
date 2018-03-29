@@ -20,10 +20,10 @@
             <xs:element name="controllers" type="component.controllers" minOccurs="1" maxOccurs="1" />
             <xs:element name="representations" type="component.representations" minOccurs="1" maxOccurs="1" />
 
-            <xs:element name="capabilities" type="component.capabilities" minOccurs="0" maxOccurs="1" />
             <xs:element name="scopes" type="component.scopes" minOccurs="0" maxOccurs="1" />
             <xs:element name="parameterTokens" type="component.parametertokens" minOccurs="0" maxOccurs="1" />
             <xs:element name="uriSegments" type="component.urisegments" minOccurs="0" maxOccurs="1" />
+            <xs:element name="vendorTags" type="component.vendorTags" minOccurs="0" maxOccurs="1" />
         </xs:all>
     </xs:group>
 
@@ -127,16 +127,6 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="component.capabilities">
-        <xs:choice>
-            <xs:element name="capability" minOccurs="1" maxOccurs="unbounded">
-                <xs:complexType>
-                    <xs:attribute name="name" type="xs:string" use="required" />
-                </xs:complexType>
-            </xs:element>
-        </xs:choice>
-    </xs:complexType>
-
     <xs:complexType name="component.scopes">
         <xs:choice>
             <xs:element name="scope" minOccurs="1" maxOccurs="unbounded">
@@ -176,6 +166,16 @@
                 </xs:complexType>
             </xs:element>
         </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="component.vendorTags">
+        <xs:choice>
+            <xs:element name="vendorTag" minOccurs="1" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:attribute name="name" type="xs:string" use="required" />
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
     </xs:complexType>
 
     <xs:complexType name="common.excludes">

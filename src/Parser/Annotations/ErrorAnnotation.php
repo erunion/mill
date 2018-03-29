@@ -5,7 +5,6 @@ use Mill\Container;
 use Mill\Exceptions\Annotations\MissingRepresentationErrorCodeException;
 use Mill\Exceptions\Annotations\UnknownErrorRepresentationException;
 use Mill\Exceptions\Annotations\UnknownReturnCodeException;
-use Mill\Exceptions\Config\UnconfiguredErrorRepresentationException;
 use Mill\Parser\Annotation;
 use Mill\Parser\Annotations\Traits\HasHttpCodeResponseTrait;
 use Mill\Parser\MSON;
@@ -20,6 +19,7 @@ class ErrorAnnotation extends Annotation
     use HasHttpCodeResponseTrait;
 
     const REQUIRES_VISIBILITY_DECORATOR = true;
+    const SUPPORTS_VENDOR_TAGS = true;
     const SUPPORTS_VERSIONING = true;
 
     const REGEX_ERROR_CODE = '/^(\(.*\))/';
@@ -47,7 +47,6 @@ class ErrorAnnotation extends Annotation
      * @var array
      */
     protected $arrayable = [
-        'capability',
         'description',
         'error_code',
         'http_code',
@@ -74,7 +73,7 @@ class ErrorAnnotation extends Annotation
             'http_code' => $mson->getField(),
             'representation' => $mson->getType(),
             'error_code' => $mson->getSubtype(),
-            'capability' => $mson->getCapability(),
+            'vendor_tags' => $mson->getVendorTags(),
             'description' => $mson->getDescription()
         ];
 
@@ -86,13 +85,18 @@ class ErrorAnnotation extends Annotation
             $parsed['http_code'] .= ' ' . $this->getHttpCodeMessage($parsed['http_code']);
         }
 
-        // Capability is surrounded by +plusses+.
-        if (!empty($parsed['capability'])) {
-            $parsed['capability'] = (new CapabilityAnnotation(
-                $parsed['capability'],
-                $this->class,
-                $method
-            ))->process();
+        if (!empty($parsed['vendor_tags'])) {
+            $parsed['vendor_tags'] = array_map(
+                /** @return Annotation */
+                function (string $tag) use ($method) {
+                    return (new VendorTagAnnotation(
+                        $tag,
+                        $this->class,
+                        $method
+                    ))->process();
+                },
+                $parsed['vendor_tags']
+            );
         }
 
         if (!empty($parsed['description'])) {
@@ -135,7 +139,7 @@ class ErrorAnnotation extends Annotation
             $this->error_code = (string)$this->error_code;
         }
 
-        $this->capability = $this->optional('capability');
+        $this->vendor_tags = $this->optional('vendor_tags');
         $this->description = $this->required('description');
     }
 
