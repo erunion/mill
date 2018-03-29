@@ -64,7 +64,7 @@ class DocumentationTest extends TestCase
             );
         }
 
-        $this->assertCount($expected['capabilities.total'], $parser->getCapabilities());
+        $this->assertCount($expected['vendor_tags.total'], $parser->getVendorTags());
 
         /** @var \Mill\Parser\Annotations\MinVersionAnnotation $min_version */
         $min_version = $parser->getMinimumVersion();
@@ -195,7 +195,7 @@ DESCRIPTION;
                 'expected' => [
                     'label' => 'Get a single movie.',
                     'description' => $get_description,
-                    'capabilities.total' => 0,
+                    'vendor_tags.total' => 0,
                     'content_types.latest-version' => '1.1.2',
                     'content_types' => [
                         [
@@ -212,30 +212,49 @@ DESCRIPTION;
                     'annotations' => [
                         'error' => [
                             [
-                                'capability' => false,
                                 'description' => 'If the movie could not be found.',
                                 'error_code' => false,
                                 'http_code' => '404 Not Found',
                                 'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                                'vendor_tags' => [],
                                 'version' => false,
                                 'visible' => true
                             ],
                             [
-                                'capability' => false,
                                 'description' => 'For no reason.',
                                 'error_code' => false,
                                 'http_code' => '404 Not Found',
                                 'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                                'vendor_tags' => [],
                                 'version' => '>=1.1.3',
                                 'visible' => true
                             ],
                             [
-                                'capability' => false,
                                 'description' => 'For some other reason.',
                                 'error_code' => false,
                                 'http_code' => '404 Not Found',
                                 'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                                'vendor_tags' => [],
                                 'version' => '>=1.1.3',
+                                'visible' => true
+                            ]
+                        ],
+                        'return' => [
+                            [
+                                'description' => false,
+                                'http_code' => '200 OK',
+                                'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
+                                'type' => 'object',
+                                'version' => false,
+                                'visible' => true
+                            ],
+                            [
+                                'description' => 'If no content has been modified since the supplied Last-Modified ' .
+                                    'header.',
+                                'http_code' => '304 Not Modified',
+                                'representation' => false,
+                                'type' => 'notmodified',
+                                'version' => false,
                                 'visible' => true
                             ]
                         ],
@@ -272,33 +291,14 @@ DESCRIPTION;
                                 'field' => 'id',
                                 'type' => 'integer',
                                 'uri' => '/movie/+id',
-                                'values' => false
+                                'values' => []
                             ],
                             [
                                 'description' => 'Movie ID',
                                 'field' => 'id',
                                 'type' => 'integer',
                                 'uri' => '/movies/+id',
-                                'values' => false
-                            ]
-                        ],
-                        'return' => [
-                            [
-                                'description' => false,
-                                'http_code' => '200 OK',
-                                'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
-                                'type' => 'object',
-                                'version' => false,
-                                'visible' => true
-                            ],
-                            [
-                                'description' => 'If no content has been modified since the supplied Last-Modified ' .
-                                    'header.',
-                                'http_code' => '304 Not Modified',
-                                'representation' => false,
-                                'type' => 'notmodified',
-                                'version' => false,
-                                'visible' => true
+                                'values' => []
                             ]
                         ]
                     ]
@@ -309,7 +309,7 @@ DESCRIPTION;
                 'expected' => [
                     'label' => 'Update a movie.',
                     'description' => 'Update a movies data.',
-                    'capabilities.total' => 0,
+                    'vendor_tags.total' => 0,
                     'content_types.latest-version' => '1.1.2',
                     'content_types' => [
                         [
@@ -327,77 +327,58 @@ DESCRIPTION;
                     'annotations' => [
                         'error' => [
                             [
-                                'capability' => false,
                                 'description' => 'If there is a problem with the request.',
                                 'error_code' => false,
                                 'http_code' => '400 Bad Request',
                                 'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                                'vendor_tags' => [],
                                 'version' => false,
                                 'visible' => true
                             ],
                             [
-                                'capability' => false,
                                 'description' => 'If the IMDB URL could not be validated.',
                                 'error_code' => false,
                                 'http_code' => '400 Bad Request',
                                 'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                                'vendor_tags' => [],
                                 'version' => false,
                                 'visible' => true
                             ],
                             [
-                                'capability' => false,
                                 'description' => 'If the movie could not be found.',
                                 'error_code' => false,
                                 'http_code' => '404 Not Found',
                                 'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                                'vendor_tags' => [],
                                 'version' => false,
                                 'visible' => true
                             ],
                             [
-                                'capability' => false,
                                 'description' => 'If the trailer URL could not be validated.',
                                 'error_code' => false,
                                 'http_code' => '404 Not Found',
                                 'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                                'vendor_tags' => [],
                                 'version' => '>=1.1.3',
                                 'visible' => true
                             ],
                             [
-                                'capability' => false,
                                 'description' => 'If something cool happened.',
                                 'error_code' => '1337',
                                 'http_code' => '403 Forbidden',
                                 'representation' => '\Mill\Examples\Showtimes\Representations\CodedError',
+                                'vendor_tags' => [],
                                 'version' => '>=1.1.3',
                                 'visible' => false
                             ],
                             [
-                                'capability' => false,
                                 'description' => 'If the user is not allowed to edit that movie.',
                                 'error_code' => '666',
                                 'http_code' => '403 Forbidden',
                                 'representation' => '\Mill\Examples\Showtimes\Representations\CodedError',
+                                'vendor_tags' => [],
                                 'version' => '>=1.1.3',
                                 'visible' => true
-                            ]
-                        ],
-                        'uri' => [
-                            [
-                                'aliased' => false,
-                                'aliases' => [],
-                                'deprecated' => false,
-                                'namespace' => 'Movies',
-                                'path' => '/movies/+id',
-                                'visible' => true
-                            ]
-                        ],
-                        'uriSegment' => [
-                            [
-                                'description' => 'Movie ID',
-                                'field' => 'id',
-                                'type' => 'integer',
-                                'uri' => '/movies/+id',
-                                'values' => false
                             ]
                         ],
                         'minVersion' => [
@@ -407,7 +388,6 @@ DESCRIPTION;
                         ],
                         'param' => [
                             'cast' => [
-                                'capability' => false,
                                 'deprecated' => false,
                                 'description' => 'Array of names of the cast.',
                                 'field' => 'cast',
@@ -415,12 +395,12 @@ DESCRIPTION;
                                 'required' => false,
                                 'sample_data' => false,
                                 'type' => 'array',
-                                'values' => false,
+                                'values' => [],
+                                'vendor_tags' => [],
                                 'version' => false,
                                 'visible' => true
                             ],
                             'content_rating' => [
-                                'capability' => false,
                                 'deprecated' => false,
                                 'description' => 'MPAA rating',
                                 'field' => 'content_rating',
@@ -438,11 +418,11 @@ DESCRIPTION;
                                     'UR' => '',
                                     'X' => ''
                                 ],
+                                'vendor_tags' => [],
                                 'version' => false,
                                 'visible' => true
                             ],
                             'description' => [
-                                'capability' => false,
                                 'deprecated' => false,
                                 'description' => 'Description, or tagline, for the movie.',
                                 'field' => 'description',
@@ -450,12 +430,12 @@ DESCRIPTION;
                                 'required' => true,
                                 'sample_data' => false,
                                 'type' => 'string',
-                                'values' => false,
+                                'values' => [],
+                                'vendor_tags' => [],
                                 'version' => false,
                                 'visible' => true
                             ],
                             'director' => [
-                                'capability' => false,
                                 'deprecated' => false,
                                 'description' => 'Name of the director.',
                                 'field' => 'director',
@@ -463,12 +443,12 @@ DESCRIPTION;
                                 'required' => false,
                                 'sample_data' => false,
                                 'type' => 'string',
-                                'values' => false,
+                                'values' => [],
+                                'vendor_tags' => [],
                                 'version' => false,
                                 'visible' => true
                             ],
                             'is_kid_friendly' => [
-                                'capability' => false,
                                 'deprecated' => false,
                                 'description' => 'Is this movie kid friendly?',
                                 'field' => 'is_kid_friendly',
@@ -476,12 +456,12 @@ DESCRIPTION;
                                 'required' => false,
                                 'sample_data' => false,
                                 'type' => 'boolean',
-                                'values' => false,
+                                'values' => [],
+                                'vendor_tags' => [],
                                 'version' => false,
                                 'visible' => true
                             ],
                             'name' => [
-                                'capability' => false,
                                 'deprecated' => false,
                                 'description' => 'Name of the movie.',
                                 'field' => 'name',
@@ -489,12 +469,12 @@ DESCRIPTION;
                                 'required' => true,
                                 'sample_data' => false,
                                 'type' => 'string',
-                                'values' => false,
+                                'values' => [],
+                                'vendor_tags' => [],
                                 'version' => false,
                                 'visible' => true
                             ],
                             'genres' => [
-                                'capability' => false,
                                 'deprecated' => false,
                                 'description' => 'Array of movie genres.',
                                 'field' => 'genres',
@@ -502,12 +482,12 @@ DESCRIPTION;
                                 'required' => false,
                                 'sample_data' => false,
                                 'type' => 'array',
-                                'values' => false,
+                                'values' => [],
+                                'vendor_tags' => [],
                                 'version' => false,
                                 'visible' => true
                             ],
                             'imdb' => [
-                                'capability' => false,
                                 'deprecated' => false,
                                 'description' => 'IMDB URL',
                                 'field' => 'imdb',
@@ -515,12 +495,12 @@ DESCRIPTION;
                                 'required' => false,
                                 'sample_data' => false,
                                 'type' => 'string',
-                                'values' => false,
+                                'values' => [],
+                                'vendor_tags' => [],
                                 'version' => '>=1.1.1',
                                 'visible' => true
                             ],
                             'rotten_tomatoes_score' => [
-                                'capability' => false,
                                 'deprecated' => false,
                                 'description' => 'Rotten Tomatoes score',
                                 'field' => 'rotten_tomatoes_score',
@@ -528,12 +508,12 @@ DESCRIPTION;
                                 'required' => false,
                                 'sample_data' => false,
                                 'type' => 'integer',
-                                'values' => false,
+                                'values' => [],
+                                'vendor_tags' => [],
                                 'version' => false,
                                 'visible' => true
                             ],
                             'runtime' => [
-                                'capability' => false,
                                 'deprecated' => false,
                                 'description' => 'Movie runtime, in `HHhr MMmin` format.',
                                 'field' => 'runtime',
@@ -541,12 +521,12 @@ DESCRIPTION;
                                 'required' => false,
                                 'sample_data' => false,
                                 'type' => 'string',
-                                'values' => false,
+                                'values' => [],
+                                'vendor_tags' => [],
                                 'version' => false,
                                 'visible' => true
                             ],
                             'trailer' => [
-                                'capability' => false,
                                 'deprecated' => false,
                                 'description' => 'Trailer URL',
                                 'field' => 'trailer',
@@ -554,7 +534,8 @@ DESCRIPTION;
                                 'required' => false,
                                 'sample_data' => false,
                                 'type' => 'string',
-                                'values' => false,
+                                'values' => [],
+                                'vendor_tags' => [],
                                 'version' => false,
                                 'visible' => true
                             ]
@@ -582,6 +563,25 @@ DESCRIPTION;
                                 'description' => false,
                                 'scope' => 'edit'
                             ]
+                        ],
+                        'uri' => [
+                            [
+                                'aliased' => false,
+                                'aliases' => [],
+                                'deprecated' => false,
+                                'namespace' => 'Movies',
+                                'path' => '/movies/+id',
+                                'visible' => true
+                            ]
+                        ],
+                        'uriSegment' => [
+                            [
+                                'description' => 'Movie ID',
+                                'field' => 'id',
+                                'type' => 'integer',
+                                'uri' => '/movies/+id',
+                                'values' => []
+                            ]
                         ]
                     ]
                 ]
@@ -591,7 +591,7 @@ DESCRIPTION;
                 'expected' => [
                     'label' => 'Delete a movie.',
                     'description' => 'Delete a movie.',
-                    'capabilities.total' => 1,
+                    'vendor_tags.total' => 1,
                     'content_types.latest-version' => null,
                     'content_types' => [
                         [
@@ -603,44 +603,20 @@ DESCRIPTION;
                     'responses.length' => 2,
                     'uri.aliases' => [],
                     'annotations' => [
-                        'capability' => [
-                            [
-                                'capability' => 'DELETE_CONTENT'
-                            ]
-                        ],
                         'error' => [
                             [
-                                'capability' => false,
                                 'description' => 'If the movie could not be found.',
                                 'error_code' => false,
                                 'http_code' => '404 Not Found',
                                 'representation' => '\Mill\Examples\Showtimes\Representations\Error',
+                                'vendor_tags' => [],
                                 'version' => false,
-                                'visible' => false
-                            ]
-                        ],
-                        'uri' => [
-                            [
-                                'aliased' => false,
-                                'aliases' => [],
-                                'deprecated' => false,
-                                'namespace' => 'Movies',
-                                'path' => '/movies/+id',
                                 'visible' => false
                             ]
                         ],
                         'minVersion' => [
                             [
                                 'minimum_version' => '1.1'
-                            ]
-                        ],
-                        'uriSegment' => [
-                            [
-                                'description' => 'Movie ID',
-                                'field' => 'id',
-                                'type' => 'integer',
-                                'uri' => '/movies/+id',
-                                'values' => false
                             ]
                         ],
                         'return' => [
@@ -657,6 +633,30 @@ DESCRIPTION;
                             [
                                 'description' => false,
                                 'scope' => 'delete'
+                            ]
+                        ],
+                        'uri' => [
+                            [
+                                'aliased' => false,
+                                'aliases' => [],
+                                'deprecated' => false,
+                                'namespace' => 'Movies',
+                                'path' => '/movies/+id',
+                                'visible' => false
+                            ]
+                        ],
+                        'uriSegment' => [
+                            [
+                                'description' => 'Movie ID',
+                                'field' => 'id',
+                                'type' => 'integer',
+                                'uri' => '/movies/+id',
+                                'values' => []
+                            ]
+                        ],
+                        'vendorTag' => [
+                            [
+                                'vendor_tag' => 'tag:DELETE_CONTENT'
                             ]
                         ]
                     ]
@@ -759,17 +759,17 @@ DESCRIPTION;
                   *
                   * @api-contentType application/json
                   * @api-scope delete
-                  * @api-capability DELETE_CONTENT
+                  * @api-vendorTag tag:DELETE_CONTENT
                   *
                   * @api-return:private {deleted}
                   */',
                 'asserts' => [
-                    'getCapabilities' => [
+                    'getVendorTags' => [
                         'total' => 1,
-                        'annotation.name' => 'capability',
+                        'annotation.name' => 'vendorTag',
                         'data' => [
                             [
-                                'capability' => 'DELETE_CONTENT'
+                                'vendor_tag' => 'tag:DELETE_CONTENT'
                             ]
                         ]
                     ]

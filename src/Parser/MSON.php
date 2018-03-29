@@ -7,6 +7,7 @@ use Mill\Exceptions\Annotations\UnsupportedTypeException;
 use Mill\Exceptions\Config\UnconfiguredErrorRepresentationException;
 use Mill\Exceptions\Config\UnconfiguredRepresentationException;
 use Mill\Exceptions\MSON\MissingOptionsException;
+use Mill\Parser\Annotations\VendorTagAnnotation;
 
 class MSON
 {
@@ -102,11 +103,11 @@ class MSON
     protected $is_nullable = false;
 
     /**
-     * Application-specific capability that was parsed out of the MSON content.
+     * Application-specific vendor tags that were parsed out of the MSON content.
      *
-     * @var false|string
+     * @var array
      */
-    protected $capability = false;
+    protected $vendor_tags = [];
 
     /**
      * Parsed description from the MSON content.
@@ -177,9 +178,10 @@ class MSON
          *  - content_rating (string) - MPAA rating
          *  - content_rating `G` (string, required) - MPAA rating
          *  - content_rating `G` (string, required, nullable) - MPAA rating
-         *  - content_rating `G` (string, optional, MOVIE_RATINGS) - MPAA rating
-         *  - content_rating `G` (string, optional, nullable, MOVIE_RATINGS) - MPAA rating
-         *  - content_rating `G` (string, MOVIE_RATINGS) - MPAA rating
+         *  - content_rating `G` (string, optional, tag:MOVIE_RATINGS) - MPAA rating
+         *  - content_rating `G` (string, optional, nullable, tag:MOVIE_RATINGS) - MPAA rating
+         *  - content_rating `G` (string, tag:MOVIE_RATINGS) - MPAA rating
+         *  - content_rating `G` (string, tag:MOVIE_RATINGS, needs:validUser) - MPAA rating
          *  - websites.description (string) - The websites' description
          *  - websites (array<object>) - The users' list of websites.
          *  - cast (array<\Mill\Examples\Showtimes\Representations\Person>) - Cast
@@ -189,17 +191,31 @@ class MSON
          */
         $regex_mson = '/((?P<field>[\w.\*]+) (`(?P<sample_data>.+)` )?' .
             '\((?P<type>[\w\\\]+)(<(?P<subtype>[\w\\\]+)>)?(, (?P<required>required|optional))?(, ' .
-            '(?P<nullable>nullable))?(, (?P<capability>\w+))?\)(\n|\s)+-(\n|\s)+(?P<description>.+))/uis';
+            '(?P<nullable>nullable))?(?P<vendor_tag>(, ([\w]+:[\w]+))*?)\)(\n|\s)+-(\n|\s)+(?P<description>.+))/uis';
 
         preg_match($regex_mson, $content, $matches);
 
-        foreach (['field', 'type', 'description', 'sample_data', 'subtype', 'capability'] as $name) {
+        foreach (['field', 'type', 'description', 'sample_data', 'subtype'] as $name) {
             if (isset($matches[$name])) {
                 // Sample data can be input as "0", so we need some special casing to account for that.
                 if (!empty($matches[$name]) || $name === 'sample_data') {
                     $this->{$name} = $matches[$name];
                 }
             }
+        }
+
+        if (isset($matches['vendor_tag'])) {
+            $vendor_tags = explode(',', $matches['vendor_tag']);
+            $vendor_tags = array_filter($vendor_tags);
+            $vendor_tags = array_values($vendor_tags);
+            $vendor_tags = array_map(
+                function (string $tag): string {
+                    return trim($tag);
+                },
+                $vendor_tags
+            );
+
+            $this->vendor_tags = $vendor_tags;
         }
 
         if (isset($matches['required'])) {
@@ -365,13 +381,13 @@ class MSON
     }
 
     /**
-     * Application-specific capability that was parsed out of the MSON content.
+     * Application-specific vendor tags that were parsed from the MSON content.
      *
-     * @return false|string
+     * @return array
      */
-    public function getCapability()
+    public function getVendorTags(): array
     {
-        return $this->capability;
+        return $this->vendor_tags;
     }
 
     /**
@@ -413,7 +429,6 @@ class MSON
     public function toArray(): array
     {
         return [
-            'capability' => $this->getCapability(),
             'description' => $this->getDescription(),
             'field' => $this->getField(),
             'nullable' => $this->isNullable(),
@@ -421,7 +436,8 @@ class MSON
             'sample_data' => $this->getSampleData(),
             'subtype' => $this->getSubtype(),
             'type' => $this->getType(),
-            'values' => $this->getValues()
+            'values' => $this->getValues(),
+            'vendor_tags' => $this->getVendorTags(),
         ];
     }
 }

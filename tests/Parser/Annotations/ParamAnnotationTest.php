@@ -1,10 +1,9 @@
 <?php
 namespace Mill\Tests\Parser\Annotations;
 
-use Mill\Exceptions\Annotations\InvalidMSONSyntaxException;
 use Mill\Exceptions\Annotations\UnsupportedTypeException;
-use Mill\Parser\Annotations\CapabilityAnnotation;
 use Mill\Parser\Annotations\ParamAnnotation;
+use Mill\Parser\Annotations\VendorTagAnnotation;
 use Mill\Parser\Version;
 
 class ParamAnnotationTest extends AnnotationTest
@@ -60,10 +59,11 @@ class ParamAnnotationTest extends AnnotationTest
 
     private function assertAnnotation(ParamAnnotation $annotation, array $expected): void
     {
-        $this->assertTrue($annotation->requiresVisibilityDecorator());
-        $this->assertTrue($annotation->supportsVersioning());
-        $this->assertTrue($annotation->supportsDeprecation());
         $this->assertFalse($annotation->supportsAliasing());
+        $this->assertTrue($annotation->supportsDeprecation());
+        $this->assertTrue($annotation->supportsVersioning());
+        $this->assertTrue($annotation->supportsVendorTags());
+        $this->assertTrue($annotation->requiresVisibilityDecorator());
 
         $this->assertSame($expected, $annotation->toArray());
         $this->assertSame($expected['field'], $annotation->getField());
@@ -72,11 +72,15 @@ class ParamAnnotationTest extends AnnotationTest
         $this->assertSame($expected['required'], $annotation->isRequired());
         $this->assertSame($expected['values'], $annotation->getValues());
 
-        if (is_string($expected['capability'])) {
-            $this->assertInstanceOf(CapabilityAnnotation::class, $annotation->getCapability());
-        } else {
-            $this->assertFalse($annotation->getCapability());
-        }
+        $this->assertSame(
+            $expected['vendor_tags'],
+            array_map(
+                function (VendorTagAnnotation $tag): string {
+                    return $tag->getVendorTag();
+                },
+                $annotation->getVendorTags()
+            )
+        );
 
         if ($expected['version']) {
             $this->assertInstanceOf(Version::class, $annotation->getVersion());
@@ -91,7 +95,7 @@ class ParamAnnotationTest extends AnnotationTest
     {
         return [
             '_complete' => [
-                'content' => 'content_rating `G` (string, optional, nullable, MOVIE_RATINGS) - MPAA rating
+                'content' => 'content_rating `G` (string, optional, nullable, tag:MOVIE_RATINGS) - MPAA rating
                     + Members
                         - `G` - G rated
                         - `PG` - PG rated
@@ -100,7 +104,6 @@ class ParamAnnotationTest extends AnnotationTest
                 'visible' => true,
                 'deprecated' => false,
                 'expected' => [
-                    'capability' => 'MOVIE_RATINGS',
                     'deprecated' => false,
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
@@ -113,12 +116,15 @@ class ParamAnnotationTest extends AnnotationTest
                         'PG' => 'PG rated',
                         'PG-13' => 'PG-13 rated'
                     ],
+                    'vendor_tags' => [
+                        'tag:MOVIE_RATINGS'
+                    ],
                     'version' => false,
                     'visible' => true
                 ]
             ],
             '_complete-with-markdown-description' => [
-                'content' => 'content_rating `G` (string, optional, nullable, MOVIE_RATINGS) - This denotes the 
+                'content' => 'content_rating `G` (string, optional, nullable, tag:MOVIE_RATINGS) - This denotes the
                     [MPAA rating](http://www.mpaa.org/film-ratings/) for the movie.
                     + Members
                         - `G` - G rated
@@ -128,7 +134,6 @@ class ParamAnnotationTest extends AnnotationTest
                 'visible' => true,
                 'deprecated' => false,
                 'expected' => [
-                    'capability' => 'MOVIE_RATINGS',
                     'deprecated' => false,
                     'description' => 'This denotes the [MPAA rating](http://www.mpaa.org/film-ratings/) for the movie.',
                     'field' => 'content_rating',
@@ -141,25 +146,9 @@ class ParamAnnotationTest extends AnnotationTest
                         'PG' => 'PG rated',
                         'PG-13' => 'PG-13 rated'
                     ],
-                    'version' => false,
-                    'visible' => true
-                ]
-            ],
-            'capability' => [
-                'content' => 'content_rating `G` (string, REQUIRED, MOVIE_RATINGS) - MPAA rating',
-                'version' => null,
-                'visible' => true,
-                'deprecated' => false,
-                'expected' => [
-                    'capability' => 'MOVIE_RATINGS',
-                    'deprecated' => false,
-                    'description' => 'MPAA rating',
-                    'field' => 'content_rating',
-                    'nullable' => false,
-                    'required' => true,
-                    'sample_data' => 'G',
-                    'type' => 'string',
-                    'values' => false,
+                    'vendor_tags' => [
+                        'tag:MOVIE_RATINGS'
+                    ],
                     'version' => false,
                     'visible' => true
                 ]
@@ -170,7 +159,6 @@ class ParamAnnotationTest extends AnnotationTest
                 'visible' => true,
                 'deprecated' => true,
                 'expected' => [
-                    'capability' => false,
                     'deprecated' => true,
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
@@ -178,7 +166,8 @@ class ParamAnnotationTest extends AnnotationTest
                     'required' => true,
                     'sample_data' => 'G',
                     'type' => 'string',
-                    'values' => false,
+                    'values' => [],
+                    'vendor_tags' => [],
                     'version' => false,
                     'visible' => true
                 ]
@@ -192,7 +181,6 @@ class ParamAnnotationTest extends AnnotationTest
                 'visible' => true,
                 'deprecated' => false,
                 'expected' => [
-                    'capability' => false,
                     'deprecated' => false,
                     'description' => 'Is this movie kid friendly?',
                     'field' => 'is_kid_friendly',
@@ -204,6 +192,7 @@ class ParamAnnotationTest extends AnnotationTest
                         'no' => '',
                         'yes' => ''
                     ],
+                    'vendor_tags' => [],
                     'version' => false,
                     'visible' => true
                 ]
@@ -223,7 +212,6 @@ class ParamAnnotationTest extends AnnotationTest
                 'visible' => true,
                 'deprecated' => false,
                 'expected' => [
-                    'capability' => false,
                     'deprecated' => false,
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
@@ -241,6 +229,7 @@ class ParamAnnotationTest extends AnnotationTest
                         'UR' => 'Unrated',
                         'X' => 'X-rated'
                     ],
+                    'vendor_tags' => [],
                     'version' => false,
                     'visible' => true
                 ]
@@ -251,7 +240,6 @@ class ParamAnnotationTest extends AnnotationTest
                 'visible' => true,
                 'deprecated' => false,
                 'expected' => [
-                    'capability' => false,
                     'deprecated' => false,
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
@@ -259,7 +247,8 @@ class ParamAnnotationTest extends AnnotationTest
                     'required' => true,
                     'sample_data' => 'G',
                     'type' => 'string',
-                    'values' => false,
+                    'values' => [],
+                    'vendor_tags' => [],
                     'version' => false,
                     'visible' => true
                 ]
@@ -270,7 +259,6 @@ class ParamAnnotationTest extends AnnotationTest
                 'visible' => false,
                 'deprecated' => false,
                 'expected' => [
-                    'capability' => false,
                     'deprecated' => false,
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
@@ -278,7 +266,8 @@ class ParamAnnotationTest extends AnnotationTest
                     'required' => true,
                     'sample_data' => 'G',
                     'type' => 'string',
-                    'values' => false,
+                    'values' => [],
+                    'vendor_tags' => [],
                     'version' => false,
                     'visible' => false
                 ]
@@ -289,7 +278,6 @@ class ParamAnnotationTest extends AnnotationTest
                 'visible' => true,
                 'deprecated' => false,
                 'expected' => [
-                    'capability' => false,
                     'deprecated' => false,
                     'description' => 'The page number to show.',
                     'field' => 'page',
@@ -297,7 +285,8 @@ class ParamAnnotationTest extends AnnotationTest
                     'required' => false,
                     'sample_data' => false,
                     'type' => 'integer',
-                    'values' => false,
+                    'values' => [],
+                    'vendor_tags' => [],
                     'version' => false,
                     'visible' => true
                 ]
@@ -311,7 +300,6 @@ class ParamAnnotationTest extends AnnotationTest
                 'visible' => true,
                 'deprecated' => false,
                 'expected' => [
-                    'capability' => false,
                     'deprecated' => false,
                     'description' => 'Filter to apply to the results.',
                     'field' => 'filter',
@@ -323,6 +311,28 @@ class ParamAnnotationTest extends AnnotationTest
                         'embeddable' => 'Embeddable',
                         'playable' => 'Playable'
                     ],
+                    'vendor_tags' => [],
+                    'version' => false,
+                    'visible' => true
+                ]
+            ],
+            'vendor-tag' => [
+                'content' => 'content_rating `G` (string, REQUIRED, tag:MOVIE_RATINGS) - MPAA rating',
+                'version' => null,
+                'visible' => true,
+                'deprecated' => false,
+                'expected' => [
+                    'deprecated' => false,
+                    'description' => 'MPAA rating',
+                    'field' => 'content_rating',
+                    'nullable' => false,
+                    'required' => true,
+                    'sample_data' => 'G',
+                    'type' => 'string',
+                    'values' => [],
+                    'vendor_tags' => [
+                        'tag:MOVIE_RATINGS'
+                    ],
                     'version' => false,
                     'visible' => true
                 ]
@@ -333,7 +343,6 @@ class ParamAnnotationTest extends AnnotationTest
                 'visible' => true,
                 'deprecated' => false,
                 'expected' => [
-                    'capability' => false,
                     'deprecated' => false,
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
@@ -341,20 +350,20 @@ class ParamAnnotationTest extends AnnotationTest
                     'required' => false,
                     'sample_data' => 'G',
                     'type' => 'string',
-                    'values' => false,
+                    'values' => [],
+                    'vendor_tags' => [],
                     'version' => '1.1 - 1.2',
                     'visible' => true
                 ]
             ],
             'with-a-long-description' => [
-                'content' => 'content_rating `G` (string, required) - Voluptate culpa ex, eiusmod rump sint id. Venison 
-                    non ribeye landjaeger laboris, enim jowl culpa meatloaf dolore mollit anim. Bacon shankle eiusmod 
+                'content' => 'content_rating `G` (string, required) - Voluptate culpa ex, eiusmod rump sint id. Venison
+                    non ribeye landjaeger laboris, enim jowl culpa meatloaf dolore mollit anim. Bacon shankle eiusmod
                     hamburger enim. Laboris lorem pastrami t-bone tempor ullamco swine commodo tri-tip in sirloin.',
                 'version' => null,
                 'visible' => false,
                 'deprecated' => false,
                 'expected' => [
-                    'capability' => false,
                     'deprecated' => false,
                     'description' => 'Voluptate culpa ex, eiusmod rump sint id. Venison non ribeye landjaeger ' .
                         'laboris, enim jowl culpa meatloaf dolore mollit anim. Bacon shankle eiusmod hamburger enim. ' .
@@ -364,7 +373,8 @@ class ParamAnnotationTest extends AnnotationTest
                     'required' => true,
                     'sample_data' => 'G',
                     'type' => 'string',
-                    'values' => false,
+                    'values' => [],
+                    'vendor_tags' => [],
                     'version' => false,
                     'visible' => false
                 ]
@@ -375,7 +385,6 @@ class ParamAnnotationTest extends AnnotationTest
                 'visible' => true,
                 'deprecated' => false,
                 'expected' => [
-                    'capability' => false,
                     'deprecated' => false,
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
@@ -383,18 +392,18 @@ class ParamAnnotationTest extends AnnotationTest
                     'required' => false,
                     'sample_data' => 'G',
                     'type' => 'string',
-                    'values' => false,
+                    'values' => [],
+                    'vendor_tags' => [],
                     'version' => false,
                     'visible' => true
                 ]
             ],
-            'without-defined-requirement-but-capability' => [
-                'content' => 'content_rating `G` (string, MOVIE_RATINGS) - MPAA rating',
+            'without-defined-requirement-but-vendor-tag' => [
+                'content' => 'content_rating `G` (string, tag:MOVIE_RATINGS) - MPAA rating',
                 'version' => null,
                 'visible' => true,
                 'deprecated' => false,
                 'expected' => [
-                    'capability' => 'MOVIE_RATINGS',
                     'deprecated' => false,
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
@@ -402,7 +411,10 @@ class ParamAnnotationTest extends AnnotationTest
                     'required' => false,
                     'sample_data' => 'G',
                     'type' => 'string',
-                    'values' => false,
+                    'values' => [],
+                    'vendor_tags' => [
+                        'tag:MOVIE_RATINGS'
+                    ],
                     'version' => false,
                     'visible' => true
                 ]
@@ -413,7 +425,6 @@ class ParamAnnotationTest extends AnnotationTest
                 'visible' => true,
                 'deprecated' => false,
                 'expected' => [
-                    'capability' => false,
                     'deprecated' => false,
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
@@ -421,7 +432,8 @@ class ParamAnnotationTest extends AnnotationTest
                     'required' => false,
                     'sample_data' => false,
                     'type' => 'string',
-                    'values' => false,
+                    'values' => [],
+                    'vendor_tags' => [],
                     'version' => false,
                     'visible' => true
                 ]

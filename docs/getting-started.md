@@ -13,8 +13,8 @@ permalink: /getting-started
 
 ## Documenting your API
 ### Resources
-Resources are a collection of actions (endpoints). These can generally be referred to as a "controller" in a standard
-MVC application structure.
+Resources are a collection of actions (endpoints). These can generally be
+referred to as a "controller" in a standard MVC application structure.
 
 Documenting a resource is easy:
 
@@ -32,11 +32,13 @@ class UsersController extends \MyApplication\Controller
 
 ```
 
-Here, you can see that we're using the [`@api-label`]({{ site.github.url }}/reference/api-label) annotation to denote
+Here, you can see that we're using the
+[`@api-label`]({{ site.github.url }}/reference/api-label) annotation to denote
 that this controller primarily handles "Search" actions.
 
-If you'd also like to include a full Markdown representation (or anything else, really) description along with this
-resource for your compiled documentation, you can do so by adding that content into the docblock:
+If you'd also like to include a full Markdown representation (or anything else,
+really) description along with this resource for your compiled documentation,
+you can do so by adding that content into the docblock:
 
 ```php
 <?php
@@ -63,8 +65,9 @@ class UsersController extends \MyApplication\Controller
 ### Resource Actions
 A resource action (endpoint) is something that you can execute from your API.
 
-Mill is currently a bit opinionated in how it expects the names of your action methods to be; it looks for methods in
-resources that have RESTful names: GET, POST, PUT, PATCH, and DELETE
+Mill is currently a bit opinionated in how it expects the names of your action
+methods to be; it looks for methods in resources that have RESTful names: GET,
+POST, PUT, PATCH, and DELETE
 
 Documenting a resource action is easy, however:
 
@@ -84,8 +87,8 @@ class UsersController extends \MyApplication\Controller
      * @api-contentType application/json
      *
      * @api-param:public page (integer) - The page number to show.
-     * @api-param:public per_page (integer) - Number of items to show
-     *     on each page. Max 100.
+     * @api-param:public per_page (integer) - Number of items to show on each
+     *     page. Max 100.
      * @api-param:public query (string, required) - Search query.
      *
      * @api-return:public {collection} \MyApplication\Representation\User
@@ -110,8 +113,9 @@ Here we're denoting that the action:
 * Can throw a `503 Service Unavailable` error if search is disabled.
 
 ### Representations
-A representation is an object of data that can be returned in a resource action. Since these cover a lot more data than
-a standard resource action, documenting them is a bit more work.
+A representation is an object of data that can be returned in a resource action.
+Since these cover a lot more data than a standard resource action, documenting
+them is a bit more work.
 
 ```php
 <?php
@@ -180,5 +184,5 @@ Here you can see that a User representation can contain:
 * `name`
 * `metadata[connections][albums]`
 
-There are all sorts of different ways to document your representations, so see the
-[reference]({{ site.github.url }}/reference) page for more examples.
+There are all sorts of different ways to document your representations, so see
+the [reference]({{ site.github.url }}/reference) page for more examples.

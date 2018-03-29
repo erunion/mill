@@ -1,8 +1,8 @@
 <?php
 namespace Mill;
 
-use Mill\Parser\Annotations\CapabilityAnnotation;
 use Mill\Parser\Annotations\UriAnnotation;
+use Mill\Parser\Annotations\VendorTagAnnotation;
 use Mill\Parser\Representation;
 use Mill\Parser\Resource;
 use Mill\Parser\Version;
@@ -46,13 +46,13 @@ class Generator
     protected $load_private_docs = true;
 
     /**
-     * Capabilities to generate documentation against. If this array contains capabilities, only public and
-     * documentation that have that capability will be generated. If this is null, this will be disregarded, and
-     * everything will be generated.
+     * Vendor tags to generate documentation against. If this array contains vendor tags, only public and documentation
+     * that have a matched tag will be generated. If this is null, this will be disregarded and everything will be
+     * generated.
      *
      * @var array|null
      */
-    protected $load_capability_docs = null;
+    protected $load_vendor_tag_docs = null;
 
     /**
      * @param Config $config
@@ -141,7 +141,7 @@ class Generator
                     $action = clone $method;
                     $action->setUri($uri);
                     $action->setUriSegments($segments);
-                    $action->filterAnnotationsForVisibility($this->load_private_docs, $this->load_capability_docs);
+                    $action->filterAnnotationsForVisibility($this->load_private_docs, $this->load_vendor_tag_docs);
 
                     // Hash the action so we don't happen to double up and end up with dupes.
                     $identifier = $action->getUri()->getPath() . '::' . $action->getMethod();
@@ -242,7 +242,7 @@ class Generator
             }
 
             $parsed = (new Representation\Documentation($class, $representation['method']))->parse();
-            $parsed->filterAnnotationsForVisibility($this->load_capability_docs);
+            $parsed->filterAnnotationsForVisibility($this->load_vendor_tag_docs);
 
             $representations[$class] = $parsed;
         }
@@ -330,17 +330,17 @@ class Generator
     }
 
     /**
-     * Set an array of capabilities that we'll be generating documentation against.
+     * Set an array of vendor tags that we'll be generating documentation against.
      *
-     * If you want all documentation, even that that is behind a capability, supply `null`. If you want documentation
-     * that either has no capability, or specific ones, supply an array with those capability names.
+     * If you want all documentation, even that which has a vendor tag, supply `null`. If you want documentation that
+     * either has no vendor tag, or specific ones, supply an array with those vendor tag names.
      *
-     * @param array|null $capabilities
-     * @return self
+     * @param array|null $vendor_tags
+     * @return Generator
      */
-    public function setLoadCapabilityDocs(array $capabilities = null): self
+    public function setLoadVendorTagDocs(?array $vendor_tags): self
     {
-        $this->load_capability_docs = $capabilities;
+        $this->load_vendor_tag_docs = $vendor_tags;
         return $this;
     }
 
@@ -354,25 +354,25 @@ class Generator
     private function shouldParseUri(Resource\Action\Documentation $method, UriAnnotation $uri): bool
     {
         $uri_data = $uri->toArray();
-        $capabilities = $method->getCapabilities();
+        $vendor_tags = $method->getVendorTags();
 
-        // Should we generate documentation that is locked behind a capability?
-        if (!empty($capabilities) && !is_null($this->load_capability_docs)) {
-            // We don't have any configured capabilities to pull documentation for, so this URI shouldn't be parsed.
-            if (empty($this->load_capability_docs)) {
+        // Should we generate documentation that has a vendor tag?
+        if (!empty($vendor_tags) && !is_null($this->load_vendor_tag_docs)) {
+            // We don't have any configured vendor tags to pull documentation for, so this URI shouldn't be parsed.
+            if (empty($this->load_vendor_tag_docs)) {
                 return false;
             }
 
             $all_found = true;
 
-            /** @var CapabilityAnnotation $capability */
-            foreach ($capabilities as $capability) {
-                if (!in_array($capability->getCapability(), $this->load_capability_docs)) {
+            /** @var VendorTagAnnotation $vendor_tag */
+            foreach ($vendor_tags as $vendor_tag) {
+                if (!in_array($vendor_tag->getVendorTag(), $this->load_vendor_tag_docs)) {
                     $all_found = false;
                 }
             }
 
-            // This URI should only be parsed if it has every capability we're looking for.
+            // This URI should only be parsed if it has every vendor tag we're looking for.
             if ($all_found) {
                 return true;
             }

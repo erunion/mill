@@ -175,10 +175,6 @@ These actions will allow you to pull information on a specific movie.', $annotat
             'DELETE' => [
                 'method' => 'DELETE',
                 'expected' => [
-                    'capability' => [
-                        'class' => Parser\Annotations\CapabilityAnnotation::class,
-                        'count' => 1
-                    ],
                     'contentType' => [
                         'class' => Parser\Annotations\ContentTypeAnnotation::class,
                         'count' => 1
@@ -213,6 +209,10 @@ These actions will allow you to pull information on a specific movie.', $annotat
                     ],
                     'uriSegment' => [
                         'class' => Parser\Annotations\UriSegmentAnnotation::class,
+                        'count' => 1
+                    ],
+                    'vendorTag' => [
+                        'class' => Parser\Annotations\VendorTagAnnotation::class,
                         'count' => 1
                     ]
                 ]

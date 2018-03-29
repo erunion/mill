@@ -7,7 +7,8 @@ permalink: /reference/api-see
 # @api-see
 ---
 
-This is a reference pointer that allows you to pull in related documentation into a representation.
+This is a reference pointer that allows you to pull in related documentation
+into a representation.
 
 ## Syntax
 ```php
@@ -54,4 +55,5 @@ private function getPrivacy($object, $request)
 }
 ```
 
-From here, `download` will be imported into the representation documentation as `privacy.download`.
+From here, `download` will be imported into the representation documentation as
+`privacy.download`.

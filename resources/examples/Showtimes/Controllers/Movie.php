@@ -120,7 +120,7 @@ class Movie
      * @api-uriSegment {/movies/+id} id (integer) - Movie ID
      *
      * @api-contentType application/json
-     * @api-capability DELETE_CONTENT
+     * @api-vendorTag tag:DELETE_CONTENT
      * @api-scope delete
      * @api-minVersion 1.1
      *

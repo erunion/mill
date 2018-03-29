@@ -4,7 +4,7 @@
 [![Packagist](https://img.shields.io/packagist/v/vimeo/mill.svg)](https://packagist.org/packages/vimeo/mill)
 [![Travis CI](http://img.shields.io/travis/vimeo/mill.svg?style=flat)](https://travis-ci.org/vimeo/mill)
 
-Mill is a PHP library for documenting a REST API with a small annotation DSL.
+Mill is an annotation-based DSL for documenting a REST API.
 
 It was built for automatically generating the [Vimeo API](https://developer.vimeo.com/api/endpoints) documentation
 microsite, and can be compiled down into [API Blueprint](https://apiblueprint.org/) files.

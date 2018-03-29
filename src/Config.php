@@ -63,11 +63,11 @@ class Config
     protected $api_versions = [];
 
     /**
-     * Allowable list of valid application capabilities.
+     * Allowable list of valid application vendor tags.
      *
      * @var array
      */
-    protected $capabilities = [];
+    protected $vendor_tags = [];
 
     /**
      * Allowable list of valid application authentication scopes.
@@ -185,9 +185,9 @@ class Config
             require_once $config->base_dir . $xml['bootstrap'];
         }
 
-        if (isset($xml->capabilities)) {
-            $config->capabilities = [];
-            $config->loadCapabilities($xml->capabilities->capability);
+        if (isset($xml->vendorTags)) {
+            $config->vendor_tags = [];
+            $config->loadVendorTags($xml->vendorTags->vendorTag);
         }
 
         if (isset($xml->scopes)) {
@@ -225,29 +225,29 @@ class Config
     }
 
     /**
-     * Load an array of application capabilities into the configuration system.
+     * Load an array of application vendor tags into the configuration system.
      *
-     * @param SimpleXMLElement $capabilities
+     * @param SimpleXMLElement $vendor_tags
      */
-    protected function loadCapabilities(SimpleXMLElement $capabilities): void
+    protected function loadVendorTags(SimpleXMLElement $vendor_tags): void
     {
-        /** @var SimpleXMLElement $capability */
-        foreach ($capabilities as $capability) {
-            $this->addCapability((string) $capability['name']);
+        /** @var SimpleXMLElement $vendor_tag */
+        foreach ($vendor_tags as $vendor_tag) {
+            $this->addVendorTag((string) $vendor_tag['name']);
         }
 
         // Keep things tidy.
-        $this->capabilities = array_unique($this->capabilities);
+        $this->vendor_tags = array_unique($this->vendor_tags);
     }
 
     /**
-     * Add a new application capability into the instance config.
+     * Add a new application vendor tag into the instance config.
      *
-     * @param string $capability
+     * @param string $vendor_tag
      */
-    public function addCapability(string $capability): void
+    public function addVendorTag(string $vendor_tag): void
     {
-        $this->capabilities[] = $capability;
+        $this->vendor_tags[] = $vendor_tag;
     }
 
     /**
@@ -744,13 +744,13 @@ class Config
     }
 
     /**
-     * Get the array of configured application capabilities.
+     * Get the array of configured application vendor tags.
      *
      * @return array
      */
-    public function getCapabilities(): array
+    public function getVendorTags(): array
     {
-        return $this->capabilities;
+        return $this->vendor_tags;
     }
 
     /**

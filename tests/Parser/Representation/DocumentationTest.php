@@ -70,7 +70,6 @@ class DocumentationTest extends TestCase
                     'description.length' => 41,
                     'content' => [
                         'cast' => [
-                            'capability' => false,
                             'description' => 'Cast',
                             'identifier' => 'cast',
                             'nullable' => false,
@@ -83,11 +82,11 @@ class DocumentationTest extends TestCase
                             ],
                             'subtype' => '\Mill\Examples\Showtimes\Representations\Person',
                             'type' => 'array',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => false
                         ],
                         'content_rating' => [
-                            'capability' => false,
                             'description' => 'MPAA rating',
                             'identifier' => 'content_rating',
                             'nullable' => false,
@@ -105,10 +104,10 @@ class DocumentationTest extends TestCase
                                 'UR' => '',
                                 'X' => ''
                             ],
+                            'vendor_tags' => [],
                             'version' => false
                         ],
                         'description' => [
-                            'capability' => false,
                             'description' => 'Description',
                             'identifier' => 'description',
                             'nullable' => false,
@@ -116,11 +115,11 @@ class DocumentationTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'string',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => false
                         ],
                         'director' => [
-                            'capability' => false,
                             'description' => 'Director',
                             'identifier' => 'director',
                             'nullable' => false,
@@ -133,11 +132,11 @@ class DocumentationTest extends TestCase
                             ],
                             'subtype' => false,
                             'type' => '\Mill\Examples\Showtimes\Representations\Person',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => false
                         ],
                         'external_urls' => [
-                            'capability' => false,
                             'description' => 'External URLs',
                             'identifier' => 'external_urls',
                             'nullable' => false,
@@ -145,11 +144,11 @@ class DocumentationTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'object',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => '>=1.1'
                         ],
                         'external_urls.imdb' => [
-                            'capability' => false,
                             'description' => 'IMDB URL',
                             'identifier' => 'external_urls.imdb',
                             'nullable' => false,
@@ -157,11 +156,11 @@ class DocumentationTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'string',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => '>=1.1'
                         ],
                         'external_urls.tickets' => [
-                            'capability' => 'BUY_TICKETS',
                             'description' => 'Tickets URL',
                             'identifier' => 'external_urls.tickets',
                             'nullable' => false,
@@ -169,11 +168,13 @@ class DocumentationTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'string',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [
+                                'tag:BUY_TICKETS'
+                            ],
                             'version' => '>=1.1 <1.1.3'
                         ],
                         'external_urls.trailer' => [
-                            'capability' => false,
                             'description' => 'Trailer URL',
                             'identifier' => 'external_urls.trailer',
                             'nullable' => false,
@@ -181,11 +182,11 @@ class DocumentationTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'string',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => '>=1.1'
                         ],
                         'genres' => [
-                            'capability' => false,
                             'description' => 'Genres',
                             'identifier' => 'genres',
                             'nullable' => false,
@@ -193,11 +194,11 @@ class DocumentationTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'array',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => false
                         ],
                         'id' => [
-                            'capability' => false,
                             'description' => 'Unique ID',
                             'identifier' => 'id',
                             'nullable' => false,
@@ -205,11 +206,11 @@ class DocumentationTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'number',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => false
                         ],
                         'kid_friendly' => [
-                            'capability' => false,
                             'description' => 'Kid friendly?',
                             'identifier' => 'kid_friendly',
                             'nullable' => false,
@@ -217,11 +218,11 @@ class DocumentationTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'boolean',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => false
                         ],
                         'name' => [
-                            'capability' => false,
                             'description' => 'Name',
                             'identifier' => 'name',
                             'nullable' => false,
@@ -229,11 +230,11 @@ class DocumentationTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'string',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => false
                         ],
                         'purchase.url' => [
-                            'capability' => false,
                             'description' => 'URL to purchase the film.',
                             'identifier' => 'purchase.url',
                             'nullable' => false,
@@ -241,11 +242,11 @@ class DocumentationTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'string',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => false
                         ],
                         'rotten_tomatoes_score' => [
-                            'capability' => false,
                             'description' => 'Rotten Tomatoes score',
                             'identifier' => 'rotten_tomatoes_score',
                             'nullable' => false,
@@ -253,11 +254,11 @@ class DocumentationTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'number',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => false
                         ],
                         'runtime' => [
-                            'capability' => false,
                             'description' => 'Runtime',
                             'identifier' => 'runtime',
                             'nullable' => false,
@@ -265,11 +266,11 @@ class DocumentationTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'string',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => false
                         ],
                         'showtimes' => [
-                            'capability' => false,
                             'description' => 'Non-theater specific showtimes',
                             'identifier' => 'showtimes',
                             'nullable' => false,
@@ -277,11 +278,11 @@ class DocumentationTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'array',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => false
                         ],
                         'theaters' => [
-                            'capability' => false,
                             'description' => 'Theaters the movie is currently showing in',
                             'identifier' => 'theaters',
                             'nullable' => false,
@@ -289,11 +290,11 @@ class DocumentationTest extends TestCase
                             'scopes' => [],
                             'subtype' => '\Mill\Examples\Showtimes\Representations\Theater',
                             'type' => 'array',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => false
                         ],
                         'uri' => [
-                            'capability' => false,
                             'description' => 'Movie URI',
                             'identifier' => 'uri',
                             'nullable' => false,
@@ -301,14 +302,14 @@ class DocumentationTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'uri',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => false
                         ]
                     ],
                     'content.exploded' => [
                         'cast' => [
                             '__FIELD_DATA__' => [
-                                'capability' => false,
                                 'description' => 'Cast',
                                 'identifier' => 'cast',
                                 'nullable' => false,
@@ -321,13 +322,13 @@ class DocumentationTest extends TestCase
                                 ],
                                 'subtype' => '\Mill\Examples\Showtimes\Representations\Person',
                                 'type' => 'array',
-                                'values' => false,
+                                'values' => [],
+                                'vendor_tags' => [],
                                 'version' => false
                             ]
                         ],
                         'content_rating' => [
                             '__FIELD_DATA__' => [
-                                'capability' => false,
                                 'description' => 'MPAA rating',
                                 'identifier' => 'content_rating',
                                 'nullable' => false,
@@ -345,12 +346,12 @@ class DocumentationTest extends TestCase
                                     'UR' => '',
                                     'X' => ''
                                 ],
+                                'vendor_tags' => [],
                                 'version' => false
                             ]
                         ],
                         'description' => [
                             '__FIELD_DATA__' => [
-                                'capability' => false,
                                 'description' => 'Description',
                                 'identifier' => 'description',
                                 'nullable' => false,
@@ -358,13 +359,13 @@ class DocumentationTest extends TestCase
                                 'scopes' => [],
                                 'subtype' => false,
                                 'type' => 'string',
-                                'values' => false,
+                                'values' => [],
+                                'vendor_tags' => [],
                                 'version' => false
                             ]
                         ],
                         'director' => [
                             '__FIELD_DATA__' => [
-                                'capability' => false,
                                 'description' => 'Director',
                                 'identifier' => 'director',
                                 'nullable' => false,
@@ -377,13 +378,13 @@ class DocumentationTest extends TestCase
                                 ],
                                 'subtype' => false,
                                 'type' => '\Mill\Examples\Showtimes\Representations\Person',
-                                'values' => false,
+                                'values' => [],
+                                'vendor_tags' => [],
                                 'version' => false
                             ]
                         ],
                         'external_urls' => [
                             '__FIELD_DATA__' => [
-                                'capability' => false,
                                 'description' => 'External URLs',
                                 'identifier' => 'external_urls',
                                 'nullable' => false,
@@ -391,12 +392,12 @@ class DocumentationTest extends TestCase
                                 'scopes' => [],
                                 'subtype' => false,
                                 'type' => 'object',
-                                'values' => false,
+                                'values' => [],
+                                'vendor_tags' => [],
                                 'version' => '>=1.1'
                             ],
                             'imdb' => [
                                 '__FIELD_DATA__' => [
-                                    'capability' => false,
                                     'description' => 'IMDB URL',
                                     'identifier' => 'external_urls.imdb',
                                     'nullable' => false,
@@ -404,13 +405,13 @@ class DocumentationTest extends TestCase
                                     'scopes' => [],
                                     'subtype' => false,
                                     'type' => 'string',
-                                    'values' => false,
+                                    'values' => [],
+                                    'vendor_tags' => [],
                                     'version' => '>=1.1'
                                 ]
                             ],
                             'tickets' => [
                                 '__FIELD_DATA__' => [
-                                    'capability' => 'BUY_TICKETS',
                                     'description' => 'Tickets URL',
                                     'identifier' => 'external_urls.tickets',
                                     'nullable' => false,
@@ -418,13 +419,15 @@ class DocumentationTest extends TestCase
                                     'scopes' => [],
                                     'subtype' => false,
                                     'type' => 'string',
-                                    'values' => false,
+                                    'values' => [],
+                                    'vendor_tags' => [
+                                        'tag:BUY_TICKETS'
+                                    ],
                                     'version' => '>=1.1 <1.1.3'
                                 ]
                             ],
                             'trailer' => [
                                 '__FIELD_DATA__' => [
-                                    'capability' => false,
                                     'description' => 'Trailer URL',
                                     'identifier' => 'external_urls.trailer',
                                     'nullable' => false,
@@ -432,14 +435,14 @@ class DocumentationTest extends TestCase
                                     'scopes' => [],
                                     'subtype' => false,
                                     'type' => 'string',
-                                    'values' => false,
+                                    'values' => [],
+                                    'vendor_tags' => [],
                                     'version' => '>=1.1'
                                 ]
                             ]
                         ],
                         'genres' => [
                             '__FIELD_DATA__' => [
-                                'capability' => false,
                                 'description' => 'Genres',
                                 'identifier' => 'genres',
                                 'nullable' => false,
@@ -447,13 +450,13 @@ class DocumentationTest extends TestCase
                                 'scopes' => [],
                                 'subtype' => false,
                                 'type' => 'array',
-                                'values' => false,
+                                'values' => [],
+                                'vendor_tags' => [],
                                 'version' => false
                             ]
                         ],
                         'id' => [
                             '__FIELD_DATA__' => [
-                                'capability' => false,
                                 'description' => 'Unique ID',
                                 'identifier' => 'id',
                                 'nullable' => false,
@@ -461,13 +464,13 @@ class DocumentationTest extends TestCase
                                 'scopes' => [],
                                 'subtype' => false,
                                 'type' => 'number',
-                                'values' => false,
+                                'values' => [],
+                                'vendor_tags' => [],
                                 'version' => false
                             ]
                         ],
                         'kid_friendly' => [
                             '__FIELD_DATA__' => [
-                                'capability' => false,
                                 'description' => 'Kid friendly?',
                                 'identifier' => 'kid_friendly',
                                 'nullable' => false,
@@ -475,13 +478,13 @@ class DocumentationTest extends TestCase
                                 'scopes' => [],
                                 'subtype' => false,
                                 'type' => 'boolean',
-                                'values' => false,
+                                'values' => [],
+                                'vendor_tags' => [],
                                 'version' => false
                             ]
                         ],
                         'name' => [
                             '__FIELD_DATA__' => [
-                                'capability' => false,
                                 'description' => 'Name',
                                 'identifier' => 'name',
                                 'nullable' => false,
@@ -489,14 +492,14 @@ class DocumentationTest extends TestCase
                                 'scopes' => [],
                                 'subtype' => false,
                                 'type' => 'string',
-                                'values' => false,
+                                'values' => [],
+                                'vendor_tags' => [],
                                 'version' => false
                             ]
                         ],
                         'purchase' => [
                             'url' => [
                                 '__FIELD_DATA__' => [
-                                    'capability' => false,
                                     'description' => 'URL to purchase the film.',
                                     'identifier' => 'purchase.url',
                                     'nullable' => false,
@@ -504,14 +507,14 @@ class DocumentationTest extends TestCase
                                     'scopes' => [],
                                     'subtype' => false,
                                     'type' => 'string',
-                                    'values' => false,
+                                    'values' => [],
+                                    'vendor_tags' => [],
                                     'version' => false
                                 ]
                             ]
                         ],
                         'rotten_tomatoes_score' => [
                             '__FIELD_DATA__' => [
-                                'capability' => false,
                                 'description' => 'Rotten Tomatoes score',
                                 'identifier' => 'rotten_tomatoes_score',
                                 'nullable' => false,
@@ -519,13 +522,13 @@ class DocumentationTest extends TestCase
                                 'scopes' => [],
                                 'subtype' => false,
                                 'type' => 'number',
-                                'values' => false,
+                                'values' => [],
+                                'vendor_tags' => [],
                                 'version' => false
                             ]
                         ],
                         'runtime' => [
                             '__FIELD_DATA__' => [
-                                'capability' => false,
                                 'description' => 'Runtime',
                                 'identifier' => 'runtime',
                                 'nullable' => false,
@@ -533,13 +536,13 @@ class DocumentationTest extends TestCase
                                 'scopes' => [],
                                 'subtype' => false,
                                 'type' => 'string',
-                                'values' => false,
+                                'values' => [],
+                                'vendor_tags' => [],
                                 'version' => false
                             ]
                         ],
                         'showtimes' => [
                             '__FIELD_DATA__' => [
-                                'capability' => false,
                                 'description' => 'Non-theater specific showtimes',
                                 'identifier' => 'showtimes',
                                 'nullable' => false,
@@ -547,13 +550,13 @@ class DocumentationTest extends TestCase
                                 'scopes' => [],
                                 'subtype' => false,
                                 'type' => 'array',
-                                'values' => false,
+                                'values' => [],
+                                'vendor_tags' => [],
                                 'version' => false
                             ]
                         ],
                         'theaters' => [
                             '__FIELD_DATA__' => [
-                                'capability' => false,
                                 'description' => 'Theaters the movie is currently showing in',
                                 'identifier' => 'theaters',
                                 'nullable' => false,
@@ -561,13 +564,13 @@ class DocumentationTest extends TestCase
                                 'scopes' => [],
                                 'subtype' => '\Mill\Examples\Showtimes\Representations\Theater',
                                 'type' => 'array',
-                                'values' => false,
+                                'values' => [],
+                                'vendor_tags' => [],
                                 'version' => false
                             ]
                         ],
                         'uri' => [
                             '__FIELD_DATA__' => [
-                                'capability' => false,
                                 'description' => 'Movie URI',
                                 'identifier' => 'uri',
                                 'nullable' => false,
@@ -575,7 +578,8 @@ class DocumentationTest extends TestCase
                                 'scopes' => [],
                                 'subtype' => false,
                                 'type' => 'uri',
-                                'values' => false,
+                                'values' => [],
+                                'vendor_tags' => [],
                                 'version' => false
                             ]
                         ]

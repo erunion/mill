@@ -7,12 +7,13 @@ permalink: /reference/deprecation
 # Deprecation
 ---
 
-> **Note:** Deprecated status is not currently being used when generating documentation, however, there are plans to
-> hook it up to the internal generator system to make it available in your compiled API Blueprints and manual Mill API
-> usages.
+> **Note:** Deprecated status is not currently being used when generating
+> documentation, however, there are plans to hook it up to the internal
+> generator system to make it available in your compiled API Blueprints and
+> manual Mill API usages.
 
-You might have instances where you need to deprecate a resource action request parameter or URI, you can use the
-`:deprecated` "decorator".
+You might have instances where you need to deprecate a resource action request
+parameter or URI, you can use the `:deprecated` "decorator".
 
 ```php
 /**
@@ -40,5 +41,6 @@ public function GET()
 }
 ```
 
-Deprecated decorators are only available on [`@api-param`]({{ site.github.url }}/reference/api-param) and
+Deprecated decorators are only available on
+[`@api-param`]({{ site.github.url }}/reference/api-param) and
 [`@api-uri`]({{ site.github.url }}/reference/api-uri).

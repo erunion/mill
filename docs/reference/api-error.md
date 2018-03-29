@@ -11,7 +11,7 @@ This represents an exception that may be thrown inside of a resource action.
 
 ## Syntax
 ```php
-@api-error:visibility httpCode (\Representation<error code>, capability) - description
+@api-error:visibility httpCode (\Representation<error code>, vendor:tagName) - description
 ```
 
 ## Requirements
@@ -28,18 +28,21 @@ This represents an exception that may be thrown inside of a resource action.
 | `httpCode` | × | The HTTP code that will be returned. Example: `404`, `403`, etc. |
 | `\Representation` | × | The fully qualified class name for a representation that will be returned. |
 | `error code` | ✓ | An optional error code, if your application supports unique error codes, that this error returns. This can either be a numerical code (ex. `(1234)`), or a fully qualified static accessor (ex. (`\Some\Exception::NOT_ALLOWED`). |
+| `vendor:tagName` | ✓ | Defined vendor tag. See the [`@api-vendortag`]({{ site.github.url }}/reference/api-vendortag) documentation for more information. There is no limit to the amount of vendor tags you can specify on a parameter. |
 | `description` | ✓ | A short description describing why, or what, this error is. |
 
 ## Types and subtypes
-In addition to supporting straight descriptions, the [`@api-error`]({{ site.github.url }}/reference/api-error) annotation also supports
-the concept of "types" and "subtypes". For example:
+In addition to supporting straight descriptions, the
+[`@api-error`]({{ site.github.url }}/reference/api-error) annotation also
+supports the concept of "types" and "subtypes". For example:
 
 ```php
 @api-error:public 404 (\ErrorRepresentation) - {user}
 ```
 
-In this case, this exception will be thrown when the `{user}` passed into the route (usually via the URI) is not found.
-The generated error message for this becomes: "If the user cannot be found."
+In this case, this exception will be thrown when the `{user}` passed into the
+route (usually via the URI) is not found. The generated error message for this
+becomes: "If the user cannot be found."
 
 There also exist the concept of a subtype, represented as:
 
@@ -47,17 +50,18 @@ There also exist the concept of a subtype, represented as:
 @api-error:public 404 (\ErrorRepresentation) - {user,group}
 ```
 
-This means that if the supplied group could not be found for the supplied user, an exception will be thrown. The
-generated error message for this is: "If the user cannot be found in the group."
+This means that if the supplied group could not be found for the supplied user,
+an exception will be thrown. The generated error message for this is: "If the
+user cannot be found in the group."
 
 ## Examples
-Usage with a capability and description type:
+Usage with a vendor tag and description type:
 
 ```php
 /**
  * …
  *
- * @api-error:public 404 (\ErrorRepresentation, SomeCapability) - {user}
+ * @api-error:public 404 (\ErrorRepresentation, needs:SomeApplicationFeature) - {user}
  */
 public function PATCH()
 {

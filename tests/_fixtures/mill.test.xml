@@ -60,12 +60,12 @@
         <scope name="public" />
     </scopes>
 
-    <capabilities>
-        <capability name="BUY_TICKETS" />
-        <capability name="DELETE_CONTENT" />
-        <capability name="FEATURE_FLAG" />
-        <capability name="MOVIE_RATINGS" />
-    </capabilities>
+    <vendorTags>
+        <vendorTag name="tag:BUY_TICKETS" />
+        <vendorTag name="tag:DELETE_CONTENT" />
+        <vendorTag name="tag:FEATURE_FLAG" />
+        <vendorTag name="tag:MOVIE_RATINGS" />
+    </vendorTags>
 
     <parameterTokens>
         <token name="page">page (integer, optional) - The page number to show.</token>

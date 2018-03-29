@@ -298,6 +298,10 @@ class Parser
                 $annotation = 'UriSegment';
                 break;
 
+            case 'vendortag':
+                $annotation = 'VendorTag';
+                break;
+
             default:
                 $annotation = ucfirst($annotation);
         }

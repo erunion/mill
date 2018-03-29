@@ -3,9 +3,9 @@ namespace Mill\Parser;
 
 use Mill\Exceptions\Annotations\InvalidMSONSyntaxException;
 use Mill\Exceptions\Annotations\MissingRequiredFieldException;
-use Mill\Parser\Annotations\CapabilityAnnotation;
 use Mill\Parser\Annotations\ScopeAnnotation;
 use Mill\Parser\Annotations\UriAnnotation;
+use Mill\Parser\Annotations\VendorTagAnnotation;
 
 /**
  * Base class for supported annotations.
@@ -13,9 +13,6 @@ use Mill\Parser\Annotations\UriAnnotation;
  */
 abstract class Annotation
 {
-    /** @var string */
-    const REGEX_CAPABILITY = '/(\+[^\+]*\+)/';
-
     /**
      * Does this annotation require a visibility decorator?
      *
@@ -26,35 +23,42 @@ abstract class Annotation
     /**
      * Does this annotation support aliasing?
      *
-     * @return bool
+     * @var bool
      */
     const SUPPORTS_ALIASING = false;
 
     /**
      * Does this annotation support being deprecated?
      *
-     * @return bool
+     * @var bool
      */
     const SUPPORTS_DEPRECATION = false;
 
     /**
      * Is this annotation written using MSON?
      *
-     * @return bool
+     * @var bool
      */
     const SUPPORTS_MSON = false;
 
     /**
      * Does this annotation support auth token scopes?
      *
-     * @return bool
+     * @var bool
      */
     const SUPPORTS_SCOPES = false;
 
     /**
+     * Does this annotation support vendor tags?
+     *
+     * @var bool
+     */
+    const SUPPORTS_VENDOR_TAGS = false;
+
+    /**
      * Does this annotation support versioning?
      *
-     * @return bool
+     * @var bool
      */
     const SUPPORTS_VERSIONING = false;
 
@@ -80,11 +84,11 @@ abstract class Annotation
     protected $method = null;
 
     /**
-     * Capability that this annotation requires.
+     * Vendor tags that this annotation possesses.
      *
-     * @var false|string
+     * @var array
      */
-    protected $capability = false;
+    protected $vendor_tags = [];
 
     /**
      * Flag designating if this annotation is visible or not.
@@ -224,6 +228,10 @@ abstract class Annotation
         if ($allow_zero && $this->parsed_data[$field] === '0') {
             return $this->parsed_data[$field];
         } elseif (empty($this->parsed_data[$field])) {
+            if (is_array($this->parsed_data[$field])) {
+                return [];
+            }
+
             return false;
         }
 
@@ -273,23 +281,6 @@ abstract class Annotation
         /** @var Annotation $annotation */
         $annotation = new $class('', $data['class'], $data['method'], $version);
 
-        if (array_key_exists('capability', $data) && !empty($data['capability'])) {
-            // Since capability annotations have a `capability` value, let's avoid created a CapabilityAnnotation within
-            // another CapabilityAnnotation.
-            if ($annotation instanceof CapabilityAnnotation) {
-                $capability = $data['capability'];
-            } else {
-                $capability = (new CapabilityAnnotation(
-                    $data['capability'],
-                    $data['class'],
-                    $data['method'],
-                    $version
-                ))->process();
-            }
-
-            $annotation->setCapability($capability);
-        }
-
         if ($annotation->requiresVisibilityDecorator()) {
             $annotation->setVisibility($data['visible']);
         }
@@ -325,6 +316,22 @@ abstract class Annotation
             }
 
             $annotation->setScopes($scopes);
+        }
+
+        if ($annotation->supportsVendorTags() &&
+            (array_key_exists('vendor_tags', $data) && !empty($data['vendor_tags']))
+        ) {
+            $vendor_tags = [];
+            foreach ($data['vendor_tags'] as $vendor_tag) {
+                $vendor_tags[] = (new VendorTagAnnotation(
+                    $vendor_tag,
+                    $data['class'],
+                    $data['method'],
+                    $version
+                ))->process();
+            }
+
+            $annotation->setVendorTags($vendor_tags);
         }
 
         if ($annotation->supportsVersioning() && $version) {
@@ -375,6 +382,16 @@ abstract class Annotation
     }
 
     /**
+     * Does this annotation support vendor tags?
+     *
+     * @return bool
+     */
+    public function supportsVendorTags(): bool
+    {
+        return static::SUPPORTS_VENDOR_TAGS;
+    }
+
+    /**
      * Does this annotation support versioning?
      *
      * @return bool
@@ -416,12 +433,10 @@ abstract class Annotation
             }
         }
 
-        // If this annotation supports deprecation, then we should include its designation.
         if ($this->supportsDeprecation()) {
             $arr['deprecated'] = $this->isDeprecated();
         }
 
-        // If this annotation supports authentication scopes, then we should include those scopes.
         if ($this->supportsScopes()) {
             $arr['scopes'] = [];
 
@@ -431,7 +446,15 @@ abstract class Annotation
             }
         }
 
-        // If this annotation supports versioning, then we should include its version
+        if ($this->supportsVendorTags()) {
+            $arr['vendor_tags'] = [];
+
+            /** @var Annotation $scope */
+            foreach ($this->getVendorTags() as $vendor_tag) {
+                $arr['vendor_tags'][] = $vendor_tag->getVendorTag();
+            }
+        }
+
         if ($this->supportsVersioning()) {
             $arr['version'] = false;
 
@@ -582,25 +605,23 @@ abstract class Annotation
     }
 
     /**
-     * Return the capability, if any, that has been set.
-     *
-     * @return false|string|CapabilityAnnotation
+     * Return an array of vendor tags that this annotation possesses.
+     * @return array
      */
-    public function getCapability()
+    public function getVendorTags(): array
     {
-        return $this->capability;
+        return $this->vendor_tags;
     }
 
     /**
-     * Set a capability that this annotation requires. This is specifically used in tandem with representation depth
-     * parsing.
+     * Set vendor tags that this annotation possesses.
      *
-     * @param false|string $capability
+     * @param array $vendor_tags
      * @return self
      */
-    public function setCapability($capability): self
+    public function setVendorTags(array $vendor_tags = []): self
     {
-        $this->capability = $capability;
+        $this->vendor_tags = $vendor_tags;
         return $this;
     }
 

@@ -156,11 +156,11 @@ class RepresentationParserTest extends TestCase
             return $annotation->toArray();
         }, $annotations);
 
-        $this->assertEmpty($annotations['connections']['capability']);
-        $this->assertSame('FEATURE_FLAG', $annotations['connections.things']['capability']);
-        $this->assertSame('MOVIE_RATINGS', $annotations['connections.things.name']['capability']);
-        $this->assertSame('FEATURE_FLAG', $annotations['connections.things.uri']['capability']);
-        $this->assertEmpty($annotations['unrelated']['capability']);
+        $this->assertEmpty($annotations['connections']['vendor_tags']);
+        $this->assertSame(['tag:FEATURE_FLAG'], $annotations['connections.things']['vendor_tags']);
+        $this->assertSame(['tag:MOVIE_RATINGS'], $annotations['connections.things.name']['vendor_tags']);
+        $this->assertSame(['tag:FEATURE_FLAG'], $annotations['connections.things.uri']['vendor_tags']);
+        $this->assertEmpty($annotations['unrelated']['vendor_tags']);
 
         $this->assertSame('>=3.3', $annotations['connections']['version']);
         $this->assertSame('>=3.3', $annotations['connections.things']['version']);
@@ -184,7 +184,6 @@ class RepresentationParserTest extends TestCase
                 'expected' => [
                     'annotations' => [
                         'cast' => [
-                            'capability' => false,
                             'description' => 'Cast',
                             'identifier' => 'cast',
                             'nullable' => false,
@@ -197,11 +196,11 @@ class RepresentationParserTest extends TestCase
                             ],
                             'subtype' => '\Mill\Examples\Showtimes\Representations\Person',
                             'type' => 'array',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => false
                         ],
                         'content_rating' => [
-                            'capability' => false,
                             'description' => 'MPAA rating',
                             'identifier' => 'content_rating',
                             'nullable' => false,
@@ -219,10 +218,10 @@ class RepresentationParserTest extends TestCase
                                 'UR' => '',
                                 'X' => ''
                             ],
+                            'vendor_tags' => [],
                             'version' => false
                         ],
                         'description' => [
-                            'capability' => false,
                             'description' => 'Description',
                             'identifier' => 'description',
                             'nullable' => false,
@@ -230,11 +229,11 @@ class RepresentationParserTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'string',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => false
                         ],
                         'director' => [
-                            'capability' => false,
                             'description' => 'Director',
                             'identifier' => 'director',
                             'nullable' => false,
@@ -247,11 +246,11 @@ class RepresentationParserTest extends TestCase
                             ],
                             'subtype' => false,
                             'type' => '\Mill\Examples\Showtimes\Representations\Person',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => false
                         ],
                         'external_urls' => [
-                            'capability' => false,
                             'description' => 'External URLs',
                             'identifier' => 'external_urls',
                             'nullable' => false,
@@ -259,11 +258,11 @@ class RepresentationParserTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'object',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => '>=1.1'
                         ],
                         'external_urls.imdb' => [
-                            'capability' => false,
                             'description' => 'IMDB URL',
                             'identifier' => 'external_urls.imdb',
                             'nullable' => false,
@@ -271,11 +270,11 @@ class RepresentationParserTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'string',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => '>=1.1'
                         ],
                         'external_urls.tickets' => [
-                            'capability' => 'BUY_TICKETS',
                             'description' => 'Tickets URL',
                             'identifier' => 'external_urls.tickets',
                             'nullable' => false,
@@ -283,11 +282,13 @@ class RepresentationParserTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'string',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [
+                                'tag:BUY_TICKETS'
+                            ],
                             'version' => '>=1.1 <1.1.3'
                         ],
                         'external_urls.trailer' => [
-                            'capability' => false,
                             'description' => 'Trailer URL',
                             'identifier' => 'external_urls.trailer',
                             'nullable' => false,
@@ -295,11 +296,11 @@ class RepresentationParserTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'string',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => '>=1.1'
                         ],
                         'genres' => [
-                            'capability' => false,
                             'description' => 'Genres',
                             'identifier' => 'genres',
                             'nullable' => false,
@@ -307,11 +308,11 @@ class RepresentationParserTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'array',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => false
                         ],
                         'id' => [
-                            'capability' => false,
                             'description' => 'Unique ID',
                             'identifier' => 'id',
                             'nullable' => false,
@@ -319,11 +320,11 @@ class RepresentationParserTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'number',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => false
                         ],
                         'kid_friendly' => [
-                            'capability' => false,
                             'description' => 'Kid friendly?',
                             'identifier' => 'kid_friendly',
                             'nullable' => false,
@@ -331,11 +332,11 @@ class RepresentationParserTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'boolean',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => false
                         ],
                         'name' => [
-                            'capability' => false,
                             'description' => 'Name',
                             'identifier' => 'name',
                             'nullable' => false,
@@ -343,11 +344,11 @@ class RepresentationParserTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'string',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => false
                         ],
                         'purchase.url' => [
-                            'capability' => false,
                             'description' => 'URL to purchase the film.',
                             'identifier' => 'purchase.url',
                             'nullable' => false,
@@ -355,11 +356,11 @@ class RepresentationParserTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'string',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => false
                         ],
                         'rotten_tomatoes_score' => [
-                            'capability' => false,
                             'description' => 'Rotten Tomatoes score',
                             'identifier' => 'rotten_tomatoes_score',
                             'nullable' => false,
@@ -367,11 +368,11 @@ class RepresentationParserTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'number',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => false
                         ],
                         'runtime' => [
-                            'capability' => false,
                             'description' => 'Runtime',
                             'identifier' => 'runtime',
                             'nullable' => false,
@@ -379,11 +380,11 @@ class RepresentationParserTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'string',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => false
                         ],
                         'showtimes' => [
-                            'capability' => false,
                             'description' => 'Non-theater specific showtimes',
                             'identifier' => 'showtimes',
                             'nullable' => false,
@@ -391,11 +392,11 @@ class RepresentationParserTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'array',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => false
                         ],
                         'theaters' => [
-                            'capability' => false,
                             'description' => 'Theaters the movie is currently showing in',
                             'identifier' => 'theaters',
                             'nullable' => false,
@@ -403,11 +404,11 @@ class RepresentationParserTest extends TestCase
                             'scopes' => [],
                             'subtype' => '\Mill\Examples\Showtimes\Representations\Theater',
                             'type' => 'array',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => false
                         ],
                         'uri' => [
-                            'capability' => false,
                             'description' => 'Movie URI',
                             'identifier' => 'uri',
                             'nullable' => false,
@@ -415,7 +416,8 @@ class RepresentationParserTest extends TestCase
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'uri',
-                            'values' => false,
+                            'values' => [],
+                            'vendor_tags' => [],
                             'version' => false
                         ]
                     ]

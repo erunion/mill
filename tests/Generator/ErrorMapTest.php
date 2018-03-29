@@ -9,14 +9,14 @@ class ErrorMapTestTest extends TestCase
     /**
      * @dataProvider providerTestGeneration
      * @param bool $private_objects
-     * @param array|null $capabilities
+     * @param array|null $vendor_tags
      * @param array $expected
      */
-    public function testGeneration(bool $private_objects, ?array $capabilities, array $expected): void
+    public function testGeneration(bool $private_objects, ?array $vendor_tags, array $expected): void
     {
         $generator = new ErrorMap($this->getConfig());
         $generator->setLoadPrivateDocs($private_objects);
-        $generator->setLoadCapabilityDocs($capabilities);
+        $generator->setLoadVendorTagDocs($vendor_tags);
         $error_map = $generator->generate();
 
         $this->assertSame(array_keys($expected), array_keys($error_map));
@@ -69,7 +69,7 @@ class ErrorMapTestTest extends TestCase
             // Complete error map. All documentation parsed.
             'complete-error-map' => [
                 'private_objects' => true,
-                'capabilities' => null,
+                'vendor_tags' => null,
                 'expected' => [
                     '1.0' => [
                         'Theaters' => [
@@ -105,14 +105,14 @@ class ErrorMapTestTest extends TestCase
                 ]
             ],
 
-            // Error map with public-only parsed docs and all capabilities.
-            'error-map-public-docs-with-all-capabilities' => [
+            // Error map with public-only parsed docs and all vendor tags.
+            'error-map-public-docs-with-all-vendor-tags' => [
                 'private_objects' => false,
-                'capabilities' => [
-                    'BUY_TICKETS',
-                    'DELETE_CONTENT',
-                    'FEATURE_FLAG',
-                    'MOVIE_RATINGS'
+                'vendor_tags' => [
+                    'tag:BUY_TICKETS',
+                    'tag:DELETE_CONTENT',
+                    'tag:FEATURE_FLAG',
+                    'tag:MOVIE_RATINGS'
                 ],
                 'expected' => [
                     '1.0' => [
@@ -146,12 +146,12 @@ class ErrorMapTestTest extends TestCase
                 ]
             ],
 
-            // Error map with public-only parsed docs and unmatched capabilities
-            'error-map-public-docs-with-unmatched-capabilities' => [
+            // Error map with public-only parsed docs and unmatched vendor tags.
+            'error-map-public-docs-with-unmatched-vendor-tags' => [
                 'private_objects' => false,
-                'capabilities' => [
-                    'BUY_TICKETS',
-                    'FEATURE_FLAG'
+                'vendor_tags' => [
+                    'tag:BUY_TICKETS',
+                    'tag:FEATURE_FLAG'
                 ],
                 'expected' => [
                     '1.0' => [
@@ -185,11 +185,11 @@ class ErrorMapTestTest extends TestCase
                 ],
             ],
 
-            // Error map with public-only parsed docs and matched capabilities
-            'error-map-public-docs-with-matched-capabilities' => [
+            // Error map with public-only parsed docs and matched vendor tags.
+            'error-map-public-docs-with-matched-vendor-tags' => [
                 'private_objects' => false,
-                'capabilities' => [
-                    'DELETE_CONTENT'
+                'vendor_tags' => [
+                    'tag:DELETE_CONTENT'
                 ],
                 'expected' => [
                     '1.0' => [
@@ -223,10 +223,10 @@ class ErrorMapTestTest extends TestCase
                 ]
             ],
 
-            // Error map with public-only parsed docs
+            // Error map with public-only parsed docs.
             'error-map-public-docs' => [
                 'private_objects' => false,
-                'capabilities' => [],
+                'vendor_tags' => [],
                 'expected' => [
                     '1.0' => [
                         'Theaters' => [

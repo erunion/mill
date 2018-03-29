@@ -132,46 +132,47 @@ class Documentation
     }
 
     /**
-     * Filter down, and return, all annotations on this representation that match a specific visibility.
+     * Filter down, and return, all annotations on this representation that match a specific vendor tag.
      *
      * @psalm-suppress RedundantCondition
-     * @param array|null $only_capabilities
+     * @param array|null $only_vendor_tags
      * @return array
      */
-    public function filterAnnotationsForVisibility(?array $only_capabilities): array
+    public function filterAnnotationsForVisibility(?array $only_vendor_tags): array
     {
-        if (is_null($only_capabilities)) {
+        if (is_null($only_vendor_tags)) {
             return $this->representation;
         }
 
         /** @var Parser\Annotation $annotation */
         foreach ($this->representation as $name => $annotation) {
-            // If this annotation has a capability, but that capability isn't in the set of capabilities we're
+            // If this annotation has vendor tags, but those vendor tags aren't in the set of vendor tags we're
             // generating documentation for, filter it out.
-            $capability = $annotation->getCapability();
-            if (!empty($capability)) {
-                if ($capability instanceof Parser\Annotations\CapabilityAnnotation) {
-                    /** @var Parser\Annotations\CapabilityAnnotation $capability */
-                    $capability = $capability->getCapability();
-                }
-
-                // If we don't even have capabilities to look for, then filter this annotation out completely.
-                if (!is_null($only_capabilities) && empty($only_capabilities)) {
+            $vendor_tags = $annotation->getVendorTags();
+            if (!empty($vendor_tags)) {
+                // If we don't even have vendor tags to look for, then filter this annotation out completely.
+                if (!is_null($only_vendor_tags) && empty($only_vendor_tags)) {
                     unset($this->representation[$name]);
                     continue;
                 }
 
-                if (!empty($capability) &&
-                    (
-                        !is_null($only_capabilities) &&
-                        !in_array($capability, $only_capabilities)
-                    )
-                ) {
+                $all_found = true;
+
+                /** @var Parser\Annotations\VendorTagAnnotation $vendor_tag */
+                foreach ($vendor_tags as $vendor_tag) {
+                    $vendor_tag = $vendor_tag->getVendorTag();
+
+                    if (!is_null($only_vendor_tags) && !in_array($vendor_tag, $only_vendor_tags)) {
+                        $all_found = false;
+                    }
+                }
+
+                if (!$all_found) {
                     unset($this->representation[$name]);
                     continue;
                 }
 
-                // Capabilities override individual annotation visibility.
+                // Vendor tags requirements override individual annotation visibility.
                 continue;
             }
         }

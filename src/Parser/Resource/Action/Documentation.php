@@ -74,14 +74,14 @@ class Documentation
      * @var array
      */
     protected static $ACCEPTED_ANNOTATIONS = [
-        'capability',
         'error',
         'param',
         'minVersion',
         'return',
         'scope',
         'uri',
-        'uriSegment'
+        'uriSegment',
+        'vendorTag'
     ];
 
     /**
@@ -433,13 +433,13 @@ class Documentation
     }
 
     /**
-     * Get back any application capabilities that this action has set as being required.
+     * Get back any application vendor tags that this action has set.
      *
      * @return array
      */
-    public function getCapabilities(): array
+    public function getVendorTags(): array
     {
-        return (isset($this->annotations['capability'])) ? $this->annotations['capability'] : [];
+        return (isset($this->annotations['vendorTag'])) ? $this->annotations['vendorTag'] : [];
     }
 
     /**
@@ -514,20 +514,20 @@ class Documentation
 
     /**
      * Filter down, and return, all annotations on this action that match a specific visibility. This can either be
-     * public, public+private, or capability-locked.
+     * public, public+private, or vendor tagged.
      *
      * @psalm-suppress RedundantCondition
      * @param bool $allow_private
-     * @param array|null $only_capabilities
+     * @param array|null $only_vendor_tags
      * @return array
      */
-    public function filterAnnotationsForVisibility(bool $allow_private, ?array $only_capabilities): array
+    public function filterAnnotationsForVisibility(bool $allow_private, ?array $only_vendor_tags): array
     {
-        if ($allow_private && empty($only_capabilities)) {
+        if ($allow_private && empty($only_vendor_tags)) {
             return $this->annotations;
         }
 
-        $method_capabilities = $this->getCapabilities();
+        $method_vendor_tags = $this->getVendorTags();
 
         foreach ($this->annotations as $name => $data) {
             /** @var Parser\Annotation $annotation */
@@ -551,38 +551,32 @@ class Documentation
                     continue;
                 }
 
-                // If this annotation has a capability, but that capability isn't in the set of capabilities we're
+                // If this annotation has vendor tags, but those vendor tags aren't in the set of vendor tags we're
                 // generating documentation for, filter it out.
-                $capability = $annotation->getCapability();
-                if (!empty($capability) || !empty($method_capabilities)) {
-                    // If we don't even have capabilities to look for, then filter this annotation out completely.
-                    if (!is_null($only_capabilities) && empty($only_capabilities)) {
+                $vendor_tags = $annotation->getVendorTags();
+                if (!empty($vendor_tags) || !empty($method_vendor_tags)) {
+                    // If we don't even have vendor tags to look for, then filter this annotation out completely.
+                    if (!is_null($only_vendor_tags) && empty($only_vendor_tags)) {
                         unset($this->annotations[$name][$k]);
                         continue;
                     }
 
                     $all_found = true;
 
-                    /** @var Parser\Annotations\CapabilityAnnotation $method_capability */
-                    foreach ($method_capabilities as $method_capability) {
-                        /** @var string $capability */
-                        $capability = $method_capability->getCapability();
-                        if (!is_null($only_capabilities) && !in_array($capability, $only_capabilities)) {
+                    /** @var Parser\Annotations\VendorTagAnnotation $method_vendor_tag */
+                    foreach ($method_vendor_tags as $method_vendor_tag) {
+                        $vendor_tag = $method_vendor_tag->getVendorTag();
+                        if (!is_null($only_vendor_tags) && !in_array($vendor_tag, $only_vendor_tags)) {
                             $all_found = false;
                         }
                     }
 
-                    if (!$all_found ||
-                        (
-                            !empty($capability) &&
-                            (!is_null($only_capabilities) && !in_array($capability, $only_capabilities))
-                        )
-                    ) {
+                    if (!$all_found) {
                         unset($this->annotations[$name][$k]);
                         continue;
                     }
 
-                    // Capabilities override individual annotation visibility.
+                    // Vendor tag requirements override individual annotation visibility.
                     continue;
                 }
 
