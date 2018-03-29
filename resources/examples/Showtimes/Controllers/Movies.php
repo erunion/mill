@@ -17,7 +17,7 @@ class Movies
      *
      * @api-return:public {collection} \Mill\Examples\Showtimes\Representations\Movie
      *
-     * @api-error:public {400} \Mill\Examples\Showtimes\Representations\Error If the location is invalid.
+     * @api-error:public 400 (\Mill\Examples\Showtimes\Representations\Error) - If the location is invalid.
      *
      * @api-version >=1.1.2
      * @api-contentType application/mill.example.movie
@@ -63,8 +63,8 @@ class Movies
      *
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Movie
      *
-     * @api-error:public {400} \Mill\Examples\Showtimes\Representations\Error If there is a problem with the request.
-     * @api-error:public {400} \Mill\Examples\Showtimes\Representations\Error If the IMDB URL could not be validated.
+     * @api-error:public 400 (\Mill\Examples\Showtimes\Representations\Error) - If there is a problem with the request.
+     * @api-error:public 400 (\Mill\Examples\Showtimes\Representations\Error) - If the IMDB URL could not be validated.
      *
      * @api-version >=1.1.2
      * @api-contentType application/mill.example.movie

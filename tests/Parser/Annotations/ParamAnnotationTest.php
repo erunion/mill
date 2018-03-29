@@ -432,16 +432,6 @@ class ParamAnnotationTest extends AnnotationTest
     public function providerAnnotationFailsOnInvalidContent(): array
     {
         return [
-            'invalid-mson' => [
-                'annotation' => ParamAnnotation::class,
-                'content' => '',
-                'expected.exception' => InvalidMSONSyntaxException::class,
-                'expected.exception.asserts' => [
-                    'getAnnotation' => 'param',
-                    'getDocblock' => '',
-                    'getValues' => []
-                ]
-            ],
             'unsupported-type' => [
                 'annotation' => ParamAnnotation::class,
                 'content' => 'content_rating `G` (str) - MPAA rating',
