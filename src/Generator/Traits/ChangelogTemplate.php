@@ -75,7 +75,7 @@ trait ChangelogTemplate
                 case 'method':
                 case 'parameter':
                 case 'representation':
-                case 'resource_namespace':
+                case 'resource_group':
                 case 'uri':
                     $searches[] = '{' . $key . '}';
                     if (is_array($value)) {

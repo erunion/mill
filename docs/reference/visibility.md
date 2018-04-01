@@ -21,10 +21,13 @@ with either `:public` or `:private`.
 
 ```php
 /**
- * @api-uri:public {Movies} /movies/+id
+ * @api-label Update a movie.
+ * @api-group Movies
+ *
+ * @api-uri:public /movies/+id
  * @api-urisegment {/movies/+id} id (integer) - Movie ID
  *
- * @api-uri:private {Films} /films/+id
+ * @api-uri:private /films/+id
  * @api-urisegment {/films/+id} id (integer) - Film ID
  *
  * @api-error:private 403 (\Some\ErrorErrorRepresentation) - If the user isn't

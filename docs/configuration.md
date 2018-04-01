@@ -186,8 +186,8 @@ from the `./bin/mill generate` command.
 
 #### API Blueprint
 ##### Excludes
-* Use `<exclude>` elements to specify a resource namespace that should be excluded from API Blueprint generation and compilation.
-    * Make sure to add a `namespace` attribute so Mill knows what namespace you're excluding.
+* Use `<exclude>` elements to specify a resource group that should be excluded from API Blueprint generation and compilation.
+    * Make sure to add a `group` attribute so Mill knows what group you're excluding.
 
 Example:
 
@@ -195,8 +195,8 @@ Example:
 <generators>
     <blueprint>
         <excludes>
-            <exclude namespace="/" />
-            <exclude namespace="OAuth" />
+            <exclude group="/" />
+            <exclude group="OAuth" />
         </excludes>
     </blueprint>
 </generators>

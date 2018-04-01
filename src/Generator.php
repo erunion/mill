@@ -75,8 +75,8 @@ class Generator
     {
         // Generate resources.
         $resources = $this->compileResources($this->parseResources());
-        foreach ($resources as $version => $namespaces) {
-            // Alphabetize the versioned resource namespaces!
+        foreach ($resources as $version => $groups) {
+            // Alphabetize the versioned resource groups!
             ksort($resources[$version]);
         }
 
@@ -108,10 +108,11 @@ class Generator
 
             /** @var \Mill\Parser\Resource\Action\Documentation $method */
             foreach ($docs->getMethods() as $method) {
+                $group = $method->getGroup();
+
                 /** @var \Mill\Parser\Annotations\UriAnnotation $uri */
                 foreach ($method->getUris() as $uri) {
                     $uri_data = $uri->toArray();
-                    $namespace = $uri_data['namespace'];
 
                     // Are we generating documentation for a private or protected resource?
                     if (!$this->shouldParseUri($method, $uri)) {
@@ -119,8 +120,8 @@ class Generator
                     }
 
                     $resource_label = $annotations['label'];
-                    if (!isset($resources[$namespace]['resources'][$resource_label])) {
-                        $resources[$namespace]['resources'][$resource_label] = [
+                    if (!isset($resources[$group]['resources'][$resource_label])) {
+                        $resources[$group]['resources'][$resource_label] = [
                             'label' => $annotations['label'],
                             'description' => $annotations['description'],
                             'actions' => []
@@ -137,7 +138,7 @@ class Generator
                         }
                     }
 
-                    // Set the lone URI that this action and namespace run under.
+                    // Set the lone URI that this action and group run under.
                     $action = clone $method;
                     $action->setUri($uri);
                     $action->setUriSegments($segments);
@@ -146,7 +147,7 @@ class Generator
                     // Hash the action so we don't happen to double up and end up with dupes.
                     $identifier = $action->getUri()->getPath() . '::' . $action->getMethod();
 
-                    $resources[$namespace]['resources'][$resource_label]['actions'][$identifier] = $action;
+                    $resources[$group]['resources'][$resource_label]['actions'][$identifier] = $action;
                 }
             }
         }
@@ -157,7 +158,7 @@ class Generator
     /**
      * Compile parsed resources into a versioned collection.
      *
-     * @psalm-suppress EmptyArrayAccess Psalm thinks that `$resources[$version][$namespace]['resources']` is an empty
+     * @psalm-suppress EmptyArrayAccess Psalm thinks that `$resources[$version][$group]['resources']` is an empty
      *      value array. It is not.
      * @param array $parsed
      * @return array
@@ -165,8 +166,8 @@ class Generator
     private function compileResources(array $parsed = []): array
     {
         $resources = [];
-        foreach ($parsed as $namespace => $namespace_data) {
-            foreach ($namespace_data['resources'] as $resource_label => $resource) {
+        foreach ($parsed as $group => $group_data) {
+            foreach ($group_data['resources'] as $resource_label => $resource) {
                 /** @var Resource\Action\Documentation $action */
                 foreach ($resource['actions'] as $identifier => $action) {
                     // Run through every supported API version and flatten out documentation for it.
@@ -187,8 +188,8 @@ class Generator
 
                         if (!isset($resources[$version])) {
                             $resources[$version] = [];
-                        } elseif (!isset($resources[$version][$namespace])) {
-                            $resources[$version][$namespace] = [
+                        } elseif (!isset($resources[$version][$group])) {
+                            $resources[$version][$group] = [
                                 'resources' => []
                             ];
                         }
@@ -198,8 +199,8 @@ class Generator
                         $cloned = clone $action;
                         $cloned->filterAnnotationsForVersion($version);
 
-                        if (!isset($resources[$version][$namespace]['resources'][$resource_label])) {
-                            $resources[$version][$namespace]['resources'][$resource_label] = [
+                        if (!isset($resources[$version][$group]['resources'][$resource_label])) {
+                            $resources[$version][$group]['resources'][$resource_label] = [
                                 'label' => $resource['label'],
                                 'description' => $resource['description'],
                                 'actions' => []
@@ -210,8 +211,7 @@ class Generator
                         // currently non-hash index from the action array.
                         $identifier = $cloned->getUri()->getPath() . '::' . $cloned->getMethod();
 
-                        $resources[$version][$namespace]['resources'][$resource_label]['actions'][$identifier] =
-                            $cloned;
+                        $resources[$version][$group]['resources'][$resource_label]['actions'][$identifier] = $cloned;
                     }
                 }
             }

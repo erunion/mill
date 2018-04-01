@@ -195,6 +195,7 @@ DESCRIPTION;
                 'expected' => [
                     'label' => 'Get a single movie.',
                     'description' => $get_description,
+                    'group' => 'Movies',
                     'vendor_tags.total' => 0,
                     'content_types.latest-version' => '1.1.2',
                     'content_types' => [
@@ -263,7 +264,6 @@ DESCRIPTION;
                                 'aliased' => true,
                                 'aliases' => [],
                                 'deprecated' => false,
-                                'namespace' => 'Movies',
                                 'path' => '/movie/+id',
                                 'visible' => false
                             ],
@@ -274,13 +274,11 @@ DESCRIPTION;
                                         'aliased' => true,
                                         'aliases' => [],
                                         'deprecated' => false,
-                                        'namespace' => 'Movies',
                                         'path' => '/movie/+id',
                                         'visible' => false
                                     ]
                                 ],
                                 'deprecated' => false,
-                                'namespace' => 'Movies',
                                 'path' => '/movies/+id',
                                 'visible' => true
                             ]
@@ -309,6 +307,7 @@ DESCRIPTION;
                 'expected' => [
                     'label' => 'Update a movie.',
                     'description' => 'Update a movies data.',
+                    'group' => 'Movies',
                     'vendor_tags.total' => 0,
                     'content_types.latest-version' => '1.1.2',
                     'content_types' => [
@@ -569,7 +568,6 @@ DESCRIPTION;
                                 'aliased' => false,
                                 'aliases' => [],
                                 'deprecated' => false,
-                                'namespace' => 'Movies',
                                 'path' => '/movies/+id',
                                 'visible' => true
                             ]
@@ -591,6 +589,7 @@ DESCRIPTION;
                 'expected' => [
                     'label' => 'Delete a movie.',
                     'description' => 'Delete a movie.',
+                    'group' => 'Movies',
                     'vendor_tags.total' => 1,
                     'content_types.latest-version' => null,
                     'content_types' => [
@@ -640,7 +639,6 @@ DESCRIPTION;
                                 'aliased' => false,
                                 'aliases' => [],
                                 'deprecated' => false,
-                                'namespace' => 'Movies',
                                 'path' => '/movies/+id',
                                 'visible' => false
                             ]
@@ -671,9 +669,10 @@ DESCRIPTION;
             'with-aliased-uris' => [
                 'docblock' => '/**
                   * @api-label Update a piece of content.
+                  * @api-group Foo\Bar
                   *
-                  * @api-uri:public {Foo\Bar} /foo
-                  * @api-uri:private:alias {Foo\Bar} /bar
+                  * @api-uri:public /foo
+                  * @api-uri:private:alias /bar
                   *
                   * @api-contentType application/json
                   * @api-scope public
@@ -692,13 +691,11 @@ DESCRIPTION;
                                         'aliased' => true,
                                         'aliases' => [],
                                         'deprecated' => false,
-                                        'namespace' => 'Foo\Bar',
                                         'path' => '/bar',
                                         'visible' => false
                                     ]
                                 ],
                                 'deprecated' => false,
-                                'namespace' => 'Foo\Bar',
                                 'path' => '/foo',
                                 'visible' => true
                             ],
@@ -706,7 +703,6 @@ DESCRIPTION;
                                 'aliased' => true,
                                 'aliases' => [],
                                 'deprecated' => false,
-                                'namespace' => 'Foo\Bar',
                                 'path' => '/bar',
                                 'visible' => false
                             ]
@@ -717,9 +713,10 @@ DESCRIPTION;
             'with-multiple-visibilities' => [
                 'docblock' => '/**
                   * @api-label Update a piece of content.
+                  * @api-group Foo\Bar
                   *
-                  * @api-uri:public {Foo\Bar} /foo
-                  * @api-uri:private {Foo\Bar} /bar
+                  * @api-uri:public /foo
+                  * @api-uri:private /bar
                   *
                   * @api-contentType application/json
                   * @api-scope public
@@ -735,7 +732,6 @@ DESCRIPTION;
                                 'aliased' => false,
                                 'aliases' => [],
                                 'deprecated' => false,
-                                'namespace' => 'Foo\Bar',
                                 'path' => '/foo',
                                 'visible' => true
                             ],
@@ -743,7 +739,6 @@ DESCRIPTION;
                                 'aliased' => false,
                                 'aliases' => [],
                                 'deprecated' => false,
-                                'namespace' => 'Foo\Bar',
                                 'path' => '/bar',
                                 'visible' => false
                             ]
@@ -754,8 +749,9 @@ DESCRIPTION;
             'with-capabilities' => [
                 'docblock' => '/**
                   * @api-label Delete a piece of content.
+                  * @api-group Foo\Bar
                   *
-                  * @api-uri:private {Foo\Bar} /foo
+                  * @api-uri:private /foo
                   *
                   * @api-contentType application/json
                   * @api-scope delete
@@ -790,7 +786,7 @@ DESCRIPTION;
                 'docblock' => '/**
                   * Test throwing an exception when a required `@api-label` annotation is missing.
                   *
-                  * @api-uri {Something} /some/page
+                  * @api-uri /some/page
                   */',
                 'expected.exception' => '\Mill\Exceptions\Annotations\RequiredAnnotationException',
                 'expected.exception.asserts' => [
@@ -814,7 +810,8 @@ DESCRIPTION;
                   * Test throwing an exception when a required `@api-contentType` annotation is missing.
                   *
                   * @api-label Test Method
-                  * @api-uri {Something} /some/page
+                  * @api-group Something
+                  * @api-uri /some/page
                   */',
                 'expected.exception' => '\Mill\Exceptions\Annotations\RequiredAnnotationException',
                 'expected.exception.asserts' => [
@@ -826,7 +823,8 @@ DESCRIPTION;
                   * Test throwing an exception when a required visibility decorator is missing on an annotation.
                   *
                   * @api-label Test method
-                  * @api-uri {Root} /
+                  * @api-group Root
+                  * @api-uri /
                   * @api-contentType application/json
                   * @api-return:public {collection} \Mill\Examples\Showtimes\Representations\Representation
                   */',
@@ -840,7 +838,8 @@ DESCRIPTION;
                   * Test throwing an exception when an unsupported decorator is found.
                   *
                   * @api-label Test method
-                  * @api-uri:special {Root} /
+                  * @api-group Root
+                  * @api-uri:special /
                   * @api-contentType application/json
                   * @api-return {collection} \Mill\Examples\Showtimes\Representations\Representation
                   */',
@@ -855,6 +854,7 @@ DESCRIPTION;
                   * Test throwing an exception when a required `@api-uri` annotation is missing.
                   *
                   * @api-label Test method
+                  * @api-group Something
                   * @api-contentType application/json
                   * @api-param:public {page}
                   */',
@@ -868,7 +868,8 @@ DESCRIPTION;
                   * Test throwing an exception when there are private annotations on a private action.
                   *
                   * @api-label Test method
-                  * @api-uri:private {Search} /search
+                  * @api-group Search
+                  * @api-uri:private /search
                   * @api-contentType application/json
                   * @api-scope public
                   * @api-return:private {collection} \Mill\Examples\Showtimes\Representations\Representation
@@ -882,11 +883,12 @@ DESCRIPTION;
             ],
             'too-many-aliases' => [
                 'docblock' => '/**
-                  * Test throwing an exception when there are private annotations on a private action.
+                  * Test throwing an exception when there is no canonical URI and only URI aliases.
                   *
                   * @api-label Test method
-                  * @api-uri:private:alias {Search} /search
-                  * @api-uri:private:alias {Search} /search2
+                  * @api-group Search
+                  * @api-uri:private:alias /search
+                  * @api-uri:private:alias /search2
                   * @api-contentType application/json
                   * @api-scope public
                   * @api-return:private {collection} \Mill\Examples\Showtimes\Representations\Representation

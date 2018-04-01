@@ -30,7 +30,10 @@ action.
 ## Examples
 ```php
 /**
- * @api-uri:public {Movies} /movies/+id
+ * @api-label Update a movie.
+ * @api-group Movies
+ *
+ * @api-uri:public /movies/+id
  * @api-urisegment {/movies/+id} id (integer) - Movie ID
  *
  * @api-minversion 3.2

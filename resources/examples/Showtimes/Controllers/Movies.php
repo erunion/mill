@@ -10,8 +10,9 @@ class Movies
      * Returns all movies for a specific location.
      *
      * @api-label Get movies.
+     * @api-group Movies
      *
-     * @api-uri:public {Movies} /movies
+     * @api-uri:public /movies
      *
      * @api-param:public location (string, required) - Location you want movies for.
      *
@@ -37,8 +38,9 @@ class Movies
      * Create a new movie.
      *
      * @api-label Create a movie.
+     * @api-group Movies
      *
-     * @api-uri:public {Movies} /movies
+     * @api-uri:public /movies
      *
      * @api-scope create
      *

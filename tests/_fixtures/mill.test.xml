@@ -17,8 +17,8 @@
         <blueprint>
             <excludes>
                 <!-- This is here just for code coverage purposes, and to verify that we're able to exclude resource
-                    namespaces when loading a config XML file. -->
-                <exclude namespace="FakeExcludeNamespace" />
+                    groups when loading a config XML file. -->
+                <exclude group="FakeExcludeGroup" />
             </excludes>
         </blueprint>
     </generators>

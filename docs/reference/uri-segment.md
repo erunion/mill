@@ -55,7 +55,7 @@ resource action URI.
 /**
  * …
  *
- * @api-uri:private:deprecated {Movies} /movies/+id
+ * @api-uri:private:deprecated /movies/+id
  * @api-urisegment {/movies/+id} id (integer) - Movie ID
  *
  * …

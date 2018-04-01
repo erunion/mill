@@ -50,7 +50,7 @@ class BlueprintTest extends TestCase
 
     public function testGenerationWithAnExcludedGroup(): void
     {
-        $this->getConfig()->addBlueprintNamespaceExclude('Movies');
+        $this->getConfig()->addBlueprintGroupExclude('Movies');
 
         $blueprint = new Blueprint($this->getConfig());
         $generated = $blueprint->generate();
@@ -68,6 +68,6 @@ class BlueprintTest extends TestCase
             $this->assertArrayHasKey('Theaters', $section['groups']);
         }
 
-        $this->getConfig()->removeBlueprintNamespaceExclude('Movies');
+        $this->getConfig()->removeBlueprintGroupExclude('Movies');
     }
 }

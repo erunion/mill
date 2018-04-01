@@ -81,8 +81,9 @@ class UsersController extends \MyApplication\Controller
      * Search for users.
      *
      * @api-label Search
+     * @api-group Users
      *
-     * @api-uri:public {Users} /users
+     * @api-uri:public /users
      *
      * @api-contentType application/json
      *

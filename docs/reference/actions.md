@@ -11,6 +11,7 @@ permalink: /reference/resource-actions
 | :--- | :--- |
 | [`@api-contenttype`]({{ site.github.url }}/reference/api-contenttype) | Denotes the `Content-Type` returned. |
 | [`@api-error`]({{ site.github.url }}/reference/api-error) | An exception or error that may be thrown in the action. |
+| [`@api-group`]({{ site.github.url }}/reference/api-group) | Name of the group that this action should be grouped under when generating documentation. |
 | [`@api-label`]({{ site.github.url }}/reference/api-label) | Short description of what the resource action handles. |
 | [`@api-minversion`]({{ site.github.url }}/reference/api-minversion) | Minimum version required for this action. |
 | [`@api-param`]({{ site.github.url }}/reference/api-param) | A request parameter for this action. |

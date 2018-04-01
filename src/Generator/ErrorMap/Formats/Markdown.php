@@ -42,7 +42,7 @@ class Markdown extends Generator
     {
         $markdown = [];
 
-        foreach ($this->error_map as $version => $namespaces) {
+        foreach ($this->error_map as $version => $groups) {
             $content = '';
 
             $api_name = $this->config->getName();
@@ -54,8 +54,8 @@ class Markdown extends Generator
                 $content .= $this->line(2);
             }
 
-            foreach ($namespaces as $namespace => $actions) {
-                $content .= sprintf('## %s', $namespace);
+            foreach ($groups as $group => $actions) {
+                $content .= sprintf('## %s', $group);
                 $content .= $this->line(1);
 
                 $content .= '| Error Code | URI | Method | HTTP Code | Description |';
