@@ -10,17 +10,12 @@ use Mill\Parser\Version;
  */
 class DescriptionAnnotation extends Annotation
 {
-    /** @var string */
-    protected $description;
-
-    /**
-     * An array of items that should be included in an array representation of this annotation.
-     *
-     * @var array
-     */
-    protected $arrayable = [
+    const ARRAYABLE = [
         'description'
     ];
+
+    /** @var string */
+    protected $description;
 
     /**
      * {@inheritdoc}

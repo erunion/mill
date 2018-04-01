@@ -15,6 +15,14 @@ class UriSegmentAnnotation extends Annotation
 
     const REGEX_URI = '/^({[^}]*})/';
 
+    const ARRAYABLE = [
+        'description',
+        'field',
+        'type',
+        'uri',
+        'values'
+    ];
+
     /**
      * URI that this segment is for.
      *
@@ -49,19 +57,6 @@ class UriSegmentAnnotation extends Annotation
      * @var array|false|null
      */
     protected $values = [];
-
-    /**
-     * An array of items that should be included in an array representation of this annotation.
-     *
-     * @var array
-     */
-    protected $arrayable = [
-        'description',
-        'field',
-        'type',
-        'uri',
-        'values'
-    ];
 
     /**
      * {@inheritdoc}

@@ -19,6 +19,17 @@ class ParamAnnotation extends Annotation
     const SUPPORTS_VENDOR_TAGS = true;
     const SUPPORTS_VERSIONING = true;
 
+    const ARRAYABLE = [
+        'description',
+        'field',
+        'nullable',
+        'required',
+        'sample_data',
+        'type',
+        'values',
+        'visible'
+    ];
+
     /**
      * Name of this parameter's field.
      *
@@ -67,22 +78,6 @@ class ParamAnnotation extends Annotation
      * @var array|null
      */
     protected $values = [];
-
-    /**
-     * An array of items that should be included in an array representation of this annotation.
-     *
-     * @var array
-     */
-    protected $arrayable = [
-        'description',
-        'field',
-        'nullable',
-        'required',
-        'sample_data',
-        'type',
-        'values',
-        'visible'
-    ];
 
     /**
      * {@inheritdoc}

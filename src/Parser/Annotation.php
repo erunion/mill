@@ -63,6 +63,13 @@ abstract class Annotation
     const SUPPORTS_VERSIONING = false;
 
     /**
+     * An array of items that should be included in an array representation of this annotation.
+     *
+     * @var array
+     */
+    const ARRAYABLE = [];
+
+    /**
      * The raw annotation from the docblock.
      *
      * @var string
@@ -138,13 +145,6 @@ abstract class Annotation
      * @var array
      */
     protected $parsed_data = [];
-
-    /**
-     * An array of items that should be included in an array representation of this annotation.
-     *
-     * @var array
-     */
-    protected $arrayable = [];
 
     /**
      * @param string $doc
@@ -409,7 +409,7 @@ abstract class Annotation
     public function toArray(): array
     {
         $arr = [];
-        foreach ($this->arrayable as $var) {
+        foreach (static::ARRAYABLE as $var) {
             if ($this->{$var} instanceof Annotation) {
                 $arr += $this->{$var}->toArray();
             } else {

@@ -27,6 +27,13 @@ class ErrorAnnotation extends Annotation
     const REGEX_ERROR_TYPE = '/{([\w\s]+)}/';
     const REGEX_ERROR_SUB_TYPE = '/{([\w\s]+),([\w\s]+)}/';
 
+    const ARRAYABLE = [
+        'description',
+        'error_code',
+        'http_code',
+        'representation'
+    ];
+
     /**
      * Optional unique error code for the error that this exception handles.
      *
@@ -40,18 +47,6 @@ class ErrorAnnotation extends Annotation
      * @var string
      */
     protected $description;
-
-    /**
-     * An array of items that should be included in an array representation of this annotation.
-     *
-     * @var array
-     */
-    protected $arrayable = [
-        'description',
-        'error_code',
-        'http_code',
-        'representation'
-    ];
 
     /**
      * {@inheritdoc}

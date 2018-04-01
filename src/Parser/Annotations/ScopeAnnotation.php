@@ -12,6 +12,11 @@ use Mill\Parser\Version;
  */
 class ScopeAnnotation extends Annotation
 {
+    const ARRAYABLE = [
+        'description',
+        'scope'
+    ];
+
     /** @var string */
     protected $scope;
 
@@ -21,16 +26,6 @@ class ScopeAnnotation extends Annotation
      * @var false|null|string
      */
     protected $description = null;
-
-    /**
-     * An array of items that should be included in an array representation of this annotation.
-     *
-     * @var array
-     */
-    protected $arrayable = [
-        'description',
-        'scope'
-    ];
 
     /**
      * {@inheritdoc}

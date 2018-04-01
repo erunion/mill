@@ -10,17 +10,12 @@ use Mill\Parser\Version;
  */
 class LabelAnnotation extends Annotation
 {
-    /** @var string */
-    protected $label;
-
-    /**
-     * An array of items that should be included in an array representation of this annotation.
-     *
-     * @var array
-     */
-    protected $arrayable = [
+    const ARRAYABLE = [
         'label'
     ];
+
+    /** @var string */
+    protected $label;
 
     /**
      * {@inheritdoc}

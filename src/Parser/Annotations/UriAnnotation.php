@@ -17,6 +17,11 @@ class UriAnnotation extends Annotation
 
     const NAMESPACE_REGEX = '/{([\w\/\\\ ]+)}/';
 
+    const ARRAYABLE = [
+        'namespace',
+        'path'
+    ];
+
     /**
      * Namespace that this URI belongs to.
      *
@@ -30,16 +35,6 @@ class UriAnnotation extends Annotation
      * @var string
      */
     protected $path;
-
-    /**
-     * An array of items that should be included in an array representation of this annotation.
-     *
-     * @var array
-     */
-    protected $arrayable = [
-        'namespace',
-        'path'
-    ];
 
     /**
      * {@inheritdoc}
