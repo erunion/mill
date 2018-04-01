@@ -106,12 +106,12 @@ class Json extends Generator
     private function parseResourceChangesets(string $definition, array $changesets = []): array
     {
         $entries = [];
-        foreach ($changesets as $namespace => $data) {
-            $namespace_entry = [
-                $this->renderText('The following {resource_namespace} resources have ' . $definition . ':', [
-                    'resource_namespace' => $namespace
+        foreach ($changesets as $group => $data) {
+            $group_entry = [
+                $this->renderText('The following {resource_group} resources have ' . $definition . ':', [
+                    'resource_group' => $group
                 ]),
-                [] // Namespace-related entries will be nested here.
+                [] // Group-related entries will be nested here.
             ];
 
             foreach ($data as $uri => $change_types) {
@@ -131,12 +131,12 @@ class Json extends Generator
                             $entry = array_shift($entry);
                         }
 
-                        $namespace_entry[1][] = $entry;
+                        $group_entry[1][] = $entry;
                     }
                 }
             }
 
-            $entries[] = $namespace_entry;
+            $entries[] = $group_entry;
         }
 
         return $entries;

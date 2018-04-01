@@ -63,7 +63,7 @@ class UriAnnotationTest extends AnnotationTest
     {
         $this->getConfig()->addUriSegmentTranslation('movie_id', 'id');
 
-        $annotation = new UriAnnotation('{Movies\Showtimes} /movies/+movie_id/showtimes', __CLASS__, __METHOD__);
+        $annotation = new UriAnnotation('/movies/+movie_id/showtimes', __CLASS__, __METHOD__);
         $annotation->process();
 
         $this->assertSame('/movies/{id}/showtimes', $annotation->getCleanPath());
@@ -74,7 +74,7 @@ class UriAnnotationTest extends AnnotationTest
     {
         return [
             'private' => [
-                'content' => '{Movies\Showtimes} /movies/+id/showtimes',
+                'content' => '/movies/+id/showtimes',
                 'visible' => false,
                 'deprecated' => false,
                 'expected' => [
@@ -83,30 +83,13 @@ class UriAnnotationTest extends AnnotationTest
                         'aliased' => false,
                         'aliases' => [],
                         'deprecated' => false,
-                        'namespace' => 'Movies\Showtimes',
                         'path' => '/movies/+id/showtimes',
                         'visible' => false
                     ]
                 ]
             ],
-            'private.namespace_with_no_depth' => [
-                'content' => '{Movies} /movies',
-                'visible' => false,
-                'deprecated' => false,
-                'expected' => [
-                    'clean.path' => '/movies',
-                    'array' => [
-                        'aliased' => false,
-                        'aliases' => [],
-                        'deprecated' => false,
-                        'namespace' => 'Movies',
-                        'path' => '/movies',
-                        'visible' => false
-                    ]
-                ]
-            ],
             'public' => [
-                'content' => '{Movies\Showtimes} /movies/+id/showtimes',
+                'content' => '/movies/+id/showtimes',
                 'visible' => true,
                 'deprecated' => false,
                 'expected' => [
@@ -115,14 +98,13 @@ class UriAnnotationTest extends AnnotationTest
                         'aliased' => false,
                         'aliases' => [],
                         'deprecated' => false,
-                        'namespace' => 'Movies\Showtimes',
                         'path' => '/movies/+id/showtimes',
                         'visible' => true
                     ]
                 ]
             ],
             'public.deprecated' => [
-                'content' => '{Movies\Showtimes} /movies/+id/showtimes',
+                'content' => '/movies/+id/showtimes',
                 'visible' => true,
                 'deprecated' => true,
                 'expected' => [
@@ -131,24 +113,7 @@ class UriAnnotationTest extends AnnotationTest
                         'aliased' => false,
                         'aliases' => [],
                         'deprecated' => true,
-                        'namespace' => 'Movies\Showtimes',
                         'path' => '/movies/+id/showtimes',
-                        'visible' => true
-                    ]
-                ]
-            ],
-            'public.non-alphanumeric_namespace' => [
-                'content' => '{/} /',
-                'visible' => true,
-                'deprecated' => false,
-                'expected' => [
-                    'clean.path' => '/',
-                    'array' => [
-                        'aliased' => false,
-                        'aliases' => [],
-                        'deprecated' => false,
-                        'namespace' => '/',
-                        'path' => '/',
                         'visible' => true
                     ]
                 ]
@@ -159,25 +124,14 @@ class UriAnnotationTest extends AnnotationTest
     public function providerAnnotationFailsOnInvalidContent(): array
     {
         return [
-            'missing-namespace' => [
+            'missing-path' => [
                 'annotation' => UriAnnotation::class,
                 'content' => '',
                 'expected.exception' => MissingRequiredFieldException::class,
                 'expected.exception.asserts' => [
-                    'getRequiredField' => 'namespace',
-                    'getAnnotation' => 'uri',
-                    'getDocblock' => '',
-                    'getValues' => []
-                ]
-            ],
-            'missing-path' => [
-                'annotation' => UriAnnotation::class,
-                'content' => '{Movies}',
-                'expected.exception' => MissingRequiredFieldException::class,
-                'expected.exception.asserts' => [
                     'getRequiredField' => 'path',
                     'getAnnotation' => 'uri',
-                    'getDocblock' => '{Movies}',
+                    'getDocblock' => '',
                     'getValues' => []
                 ]
             ]

@@ -14,8 +14,9 @@ class Theater
      * Return information on a specific movie theater.
      *
      * @api-label Get a single movie theater.
+     * @api-group Theaters
      *
-     * @api-uri:public {Theaters} /theaters/+id
+     * @api-uri:public /theaters/+id
      * @api-uriSegment {/theaters/+id} id (integer) - Theater ID
      *
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Theater
@@ -38,8 +39,9 @@ class Theater
      * Update a movie theaters' data.
      *
      * @api-label Update a movie theater.
+     * @api-group Theaters
      *
-     * @api-uri:public {Theaters} /theaters/+id
+     * @api-uri:public /theaters/+id
      * @api-uriSegment {/theaters/+id} id (integer) - Theater ID
      *
      * @api-scope create
@@ -69,8 +71,9 @@ class Theater
      * Delete a movie theater.
      *
      * @api-label Delete a movie theater.
+     * @api-group Theaters
      *
-     * @api-uri:private {Theaters} /theaters/+id
+     * @api-uri:private /theaters/+id
      * @api-uriSegment {/theaters/+id} id (integer) - Theater ID
      *
      * @api-contentType application/json

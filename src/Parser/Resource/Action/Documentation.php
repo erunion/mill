@@ -18,6 +18,31 @@ use Mill\Parser\Version;
 class Documentation
 {
     /**
+     * Array of required annotations.
+     *
+     * @var array
+     */
+    const REQUIRED_ANNOTATIONS = [
+        'uri'
+    ];
+
+    /**
+     * Array of accepted annotations (excluding those that must have a visibility decorator).
+     *
+     * @var array
+     */
+    const ACCEPTED_ANNOTATIONS = [
+        'error',
+        'param',
+        'minVersion',
+        'return',
+        'scope',
+        'uri',
+        'uriSegment',
+        'vendorTag'
+    ];
+
+    /**
      * Class we're parsing.
      *
      * @var string
@@ -46,6 +71,13 @@ class Documentation
     protected $description = null;
 
     /**
+     * Group that this action belongs to. Used for grouping generated documentation.
+     *
+     * @var string
+     */
+    protected $group;
+
+    /**
      * Content types that this action might return. Multiple may be returned because of versioning.
      *
      * @var array
@@ -58,31 +90,6 @@ class Documentation
      * @var array
      */
     protected $annotations = [];
-
-    /**
-     * Array of required annotations.
-     *
-     * @var array
-     */
-    protected static $REQUIRED_ANNOTATIONS = [
-        'uri'
-    ];
-
-    /**
-     * Array of accepted annotations (excluding those that must have a visibility decorator).
-     *
-     * @var array
-     */
-    protected static $ACCEPTED_ANNOTATIONS = [
-        'error',
-        'param',
-        'minVersion',
-        'return',
-        'scope',
-        'uri',
-        'uriSegment',
-        'vendorTag'
-    ];
 
     /**
      * @param string $class
@@ -143,6 +150,17 @@ class Documentation
             $this->description = $annotation->getDescription();
         }
 
+        // Parse out the `@api-group` annotation.
+        if (!isset($annotations['group'])) {
+            throw RequiredAnnotationException::create('group', $this->class, $this->method);
+        } elseif (count($annotations['group']) > 1) {
+            throw MultipleAnnotationsException::create('group', $this->class, $this->method);
+        } else {
+            /** @var \Mill\Parser\Annotations\GroupAnnotation $annotation */
+            $annotation = reset($annotations['group']);
+            $this->group = $annotation->getGroup();
+        }
+
         // Parse out the `@api-contentType` annotation.
         if (!isset($annotations['contentType'])) {
             throw RequiredAnnotationException::create('contentType', $this->class, $this->method);
@@ -152,7 +170,7 @@ class Documentation
 
         // Parse out any remaining annotations.
         foreach ($annotations as $key => $data) {
-            if (!in_array($key, self::$ACCEPTED_ANNOTATIONS)) {
+            if (!in_array($key, self::ACCEPTED_ANNOTATIONS)) {
                 continue;
             }
 
@@ -183,7 +201,7 @@ class Documentation
         }
 
         // Run through the parsed annotations and verify that we aren't missing any required annotations.
-        foreach (self::$REQUIRED_ANNOTATIONS as $required) {
+        foreach (self::REQUIRED_ANNOTATIONS as $required) {
             if (!isset($this->annotations[$required])) {
                 throw RequiredAnnotationException::create($required, $this->class, $this->method);
             }
@@ -252,16 +270,6 @@ class Documentation
     }
 
     /**
-     * Get the class method documented label.
-     *
-     * @return string
-     */
-    public function getLabel(): string
-    {
-        return $this->label;
-    }
-
-    /**
      * Get the HTTP method that we're parsing.
      *
      * @return string
@@ -279,6 +287,36 @@ class Documentation
     public function getAnnotations(): array
     {
         return $this->annotations;
+    }
+
+    /**
+     * Get the class method documented label.
+     *
+     * @return string
+     */
+    public function getLabel(): string
+    {
+        return $this->label;
+    }
+
+    /**
+     * Get the description of this action.
+     *
+     * @return null|string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Get the group that this action belongs to.
+     *
+     * @return string
+     */
+    public function getGroup(): string
+    {
+        return $this->group;
     }
 
     /**
@@ -330,16 +368,6 @@ class Documentation
     }
 
     /**
-     * Get the description of this action.
-     *
-     * @return null|string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
      * Get the raw URI annotations that are part of this action.
      *
      * @return array
@@ -361,11 +389,11 @@ class Documentation
     }
 
     /**
-     * Set the lone URI that this action runs under for a specific namespace.
+     * Set the lone URI that this action runs under for a specific group.
      *
-     * This is used in the Compiler system when grouping actions under namespaces. If an action runs on the `Me\Videos`
-     * and `Users\Videos` namespaces, we don't want the action in the `Me\Videos` namespace to have actions with
-     * `Users\Videos` URIs.
+     * This is used in the Compiler system when grouping actions under groups. If an action runs on the `Me\Videos`
+     * and `Users\Videos` groups, we don't want the action in the `Me\Videos` group to have actions with `Users\Videos`
+     * URIs.
      *
      * @param UriAnnotation $uri
      */
@@ -421,9 +449,9 @@ class Documentation
     /**
      * Set the URI segments that this action has.
      *
-     * This is used in the Compiler system when grouping actions under namespaces. If an action broadcasts on
-     * `/me/videos` and `/users/:id/videos`, we don't want the URI segments for `/users/:id/videos` to be a part of the
-     * compiled `/me/videos` action.
+     * This is used in the Compiler system when grouping actions under groups. If an action broadcasts on `/me/videos`
+     * and `/users/:id/videos`, we don't want the URI segments for `/users/:id/videos` to be a part of the compiled
+     * `/me/videos` action.
      *
      * @param array $segments
      */
@@ -613,6 +641,8 @@ class Documentation
             );
         }
 
+        $annotations['group'][] = $parser->hydrateAnnotation('group', $data['class'], $data['method'], $data);
+
         foreach ($data['content_types'] as $content_type) {
             $annotations['contentType'][] = $parser->hydrateAnnotation(
                 'content_type',
@@ -647,6 +677,7 @@ class Documentation
             'class' => $this->class,
             'label' => $this->label,
             'description' => $this->description,
+            'group' => $this->group,
             'content_types' => [],
             'method' => $this->method,
             'annotations' => []

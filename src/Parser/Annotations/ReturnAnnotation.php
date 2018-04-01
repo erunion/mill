@@ -22,6 +22,14 @@ class ReturnAnnotation extends Annotation
 
     const REGEX_TYPE = '/^({[^}]*})/';
 
+    const ARRAYABLE = [
+        'description',
+        'http_code',
+        'representation',
+        'type',
+        'visible'
+    ];
+
     /**
      * Description for what this annotations' action return is.
      *
@@ -35,19 +43,6 @@ class ReturnAnnotation extends Annotation
      * @var string
      */
     protected $type;
-
-    /**
-     * An array of items that should be included in an array representation of this annotation.
-     *
-     * @var array
-     */
-    protected $arrayable = [
-        'description',
-        'http_code',
-        'representation',
-        'type',
-        'visible'
-    ];
 
     /**
      * {@inheritdoc}

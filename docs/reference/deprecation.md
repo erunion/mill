@@ -20,11 +20,12 @@ parameter or URI, you can use the `:deprecated` "decorator".
  * Return information on a specific movie.
  *
  * @api-label Get a single movie.
+ * @api-group Movies
  *
- * @api-uri:public {Movies} /movies/+id
+ * @api-uri:public /movies/+id
  * @api-urisegment {/movies/+id} id (integer) - Movie ID
  *
- * @api-uri:private:deprecated {Films} /films/+id
+ * @api-uri:private:deprecated /films/+id
  * @api-urisegment {/films/+id} id (integer) - Film ID
  *
  * @api-contenttype application/json

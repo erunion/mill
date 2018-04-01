@@ -59,7 +59,7 @@ class ActionError extends Changeset
                 $template = $templates['plural'][$definition];
                 $entries[] = [
                     $this->renderText($template, [
-                        'resource_namespace' => $change['resource_namespace'],
+                        'resource_group' => $change['resource_group'],
                         'method' => $method,
                         'uri' => $change['uri']
                     ]),

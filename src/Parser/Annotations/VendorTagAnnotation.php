@@ -12,21 +12,16 @@ use Mill\Parser\Version;
  */
 class VendorTagAnnotation extends Annotation
 {
+    const ARRAYABLE = [
+        'vendor_tag'
+    ];
+
     /**
      * Name of this vendor tag.
      *
      * @var string
      */
     protected $vendor_tag;
-
-    /**
-     * An array of items that should be included in an array representation of this annotation.
-     *
-     * @var array
-     */
-    protected $arrayable = [
-        'vendor_tag'
-    ];
 
     /**
      * {@inheritdoc}

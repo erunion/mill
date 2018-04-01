@@ -121,11 +121,11 @@ class Config
     protected $parameter_tokens = [];
 
     /**
-     * Array of API Blueprint generator resource namespace excludes.
+     * Array of API Blueprint generator resource group excludes.
      *
      * @var array
      */
-    protected $blueprint_namespace_excludes = [];
+    protected $blueprint_group_excludes = [];
 
     /**
      * Create a new configuration object from a given config file.
@@ -348,44 +348,44 @@ class Config
             if (isset($generators->blueprint->excludes)) {
                 /** @var SimpleXMLElement $exclude */
                 foreach ($generators->blueprint->excludes->exclude as $exclude) {
-                    $namespace = trim((string) $exclude['namespace']);
+                    $group = trim((string) $exclude['group']);
 
-                    $this->addBlueprintNamespaceExclude($namespace);
+                    $this->addBlueprintGroupExclude($group);
                 }
             }
         }
     }
 
     /**
-     * Add a new API Blueprint resource namespace generator exclusion.
+     * Add a new API Blueprint resource group generator exclusion.
      *
-     * @param string $namespace
-     * @throws DomainException If an invalid Blueprint generator namespace exclude was detected.
+     * @param string $group
+     * @throws DomainException If an invalid Blueprint generator group exclude was detected.
      */
-    public function addBlueprintNamespaceExclude(string $namespace): void
+    public function addBlueprintGroupExclude(string $group): void
     {
-        if (empty($namespace)) {
+        if (empty($group)) {
             throw new DomainException(
-                'An invalid Blueprint generator namespace exclude was supplied in the Mill `generators` section.'
+                'An invalid Blueprint generator group exclude was supplied in the Mill `generators` section.'
             );
         }
 
-        $this->blueprint_namespace_excludes[] = $namespace;
+        $this->blueprint_group_excludes[] = $group;
     }
 
     /**
-     * Remove a currently configured API Blueprint resource namespace generator exclusion.
+     * Remove a currently configured API Blueprint resource group generator exclusion.
      *
-     * @param string $namespace
+     * @param string $group
      */
-    public function removeBlueprintNamespaceExclude(string $namespace): void
+    public function removeBlueprintGroupExclude(string $group): void
     {
-        $excludes = array_flip($this->blueprint_namespace_excludes);
-        if (isset($excludes[$namespace])) {
-            unset($excludes[$namespace]);
+        $excludes = array_flip($this->blueprint_group_excludes);
+        if (isset($excludes[$group])) {
+            unset($excludes[$group]);
         }
 
-        $this->blueprint_namespace_excludes = array_flip($excludes);
+        $this->blueprint_group_excludes = array_flip($excludes);
     }
 
     /**
@@ -834,13 +834,13 @@ class Config
     }
 
     /**
-     * Get the array of configured API Blueprint resource namespace excludes.
+     * Get the array of configured API Blueprint resource group excludes.
      *
      * @return array
      */
-    public function getBlueprintNamespaceExcludes(): array
+    public function getBlueprintGroupExcludes(): array
     {
-        return $this->blueprint_namespace_excludes;
+        return $this->blueprint_group_excludes;
     }
 
     /**

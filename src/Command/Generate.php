@@ -114,18 +114,18 @@ class Generate extends Application
             // Process resource groups.
             if (isset($section['groups'])) {
                 $progress->setMessage('Processing resources…');
-                foreach ($section['groups'] as $namespace => $markdown) {
+                foreach ($section['groups'] as $group => $markdown) {
                     $progress->advance();
 
                     if ($dry_run) {
                         continue;
                     }
 
-                    // Convert any nested namespaces, like `Me\Videos`, into a proper directory structure: `Me/Videos`.
-                    $namespace = str_replace('\\', self::DS, $namespace);
+                    // Convert any nested groups, like `Me\Videos`, into a proper directory structure: `Me/Videos`.
+                    $group = str_replace('\\', self::DS, $group);
 
                     $filesystem->put(
-                        $version_dir . 'resources' . self::DS . $namespace . '.apib',
+                        $version_dir . 'resources' . self::DS . $group . '.apib',
                         trim($markdown)
                     );
                 }

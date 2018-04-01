@@ -17,17 +17,12 @@ use Mill\Parser\Version;
  */
 class MinVersionAnnotation extends Annotation
 {
-    /** @var string */
-    protected $minimum_version;
-
-    /**
-     * An array of items that should be included in an array representation of this annotation.
-     *
-     * @var array
-     */
-    protected $arrayable = [
+    const ARRAYABLE = [
         'minimum_version'
     ];
+
+    /** @var string */
+    protected $minimum_version;
 
     /**
      * {@inheritdoc}

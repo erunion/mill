@@ -58,9 +58,10 @@ These actions will allow you to pull information on a specific movie.', $annotat
     {
         $this->overrideReadersWithFakeDocblockReturn('/**
           * @api-label Update a piece of content.
+          * @api-group Foo\Bar
           *
-          * @api-uri:public {Foo\Bar} /foo
-          * @api-uri:private:deprecated {Foo\Bar} /bar
+          * @api-uri:public /foo
+          * @api-uri:private:deprecated /bar
           *
           * @api-contentType application/json
           * @api-scope public
@@ -105,6 +106,10 @@ These actions will allow you to pull information on a specific movie.', $annotat
                         'class' => Parser\Annotations\ErrorAnnotation::class,
                         'count' => 3
                     ],
+                    'group' => [
+                        'class' => Parser\Annotations\GroupAnnotation::class,
+                        'count' => 1
+                    ],
                     'label' => [
                         'class' => Parser\Annotations\LabelAnnotation::class,
                         'count' => 1
@@ -141,6 +146,10 @@ These actions will allow you to pull information on a specific movie.', $annotat
                     'error' => [
                         'class' => Parser\Annotations\ErrorAnnotation::class,
                         'count' => 6
+                    ],
+                    'group' => [
+                        'class' => Parser\Annotations\GroupAnnotation::class,
+                        'count' => 1
                     ],
                     'label' => [
                         'class' => Parser\Annotations\LabelAnnotation::class,
@@ -185,6 +194,10 @@ These actions will allow you to pull information on a specific movie.', $annotat
                     ],
                     'error' => [
                         'class' => Parser\Annotations\ErrorAnnotation::class,
+                        'count' => 1
+                    ],
+                    'group' => [
+                        'class' => Parser\Annotations\GroupAnnotation::class,
                         'count' => 1
                     ],
                     'label' => [

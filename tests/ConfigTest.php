@@ -46,8 +46,8 @@ class ConfigTest extends TestCase
         ], $config->getApiVersions());
 
         $this->assertSame([
-            'FakeExcludeNamespace'
-        ], $config->getBlueprintNamespaceExcludes());
+            'FakeExcludeGroup'
+        ], $config->getBlueprintGroupExcludes());
 
         $this->assertSame([
             'tag:BUY_TICKETS',
@@ -284,13 +284,13 @@ XML
             'generators.blueprint.exclude.invalid' => [
                 'includes' => ['versions', 'controllers', 'representations'],
                 'exception' => [
-                    'regex' => '/invalid Blueprint generator namespace/'
+                    'regex' => '/invalid Blueprint generator group/'
                 ],
                 'xml' => <<<XML
 <generators>
     <blueprint>
         <excludes>
-            <exclude namespace="" />
+            <exclude group="" />
         </excludes>
     </blueprint>
 </generators>

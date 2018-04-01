@@ -96,4 +96,4 @@ then be styled according to however you want to render it:
 | Resource action method | `mill-changelog_method` | `data-mill-method` |
 | Resource action parameter| `mill-changelog_parameter` | `data-mill-parameter` |
 | Resource action URI | `mill-changelog_uri` | `data-mill-uri` |
-| Resource namespaces | `mill-changelog_resource_namespace` | `data-mill-resource-namespace` |
+| Resource groups | `mill-changelog_resource_group` | `data-mill-resource-group` |

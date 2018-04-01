@@ -12,17 +12,12 @@ class ContentTypeAnnotation extends Annotation
 {
     const SUPPORTS_VERSIONING = true;
 
-    /** @var string */
-    protected $content_type;
-
-    /**
-     * An array of items that should be included in an array representation of this annotation.
-     *
-     * @var array
-     */
-    protected $arrayable = [
+    const ARRAYABLE = [
         'content_type'
     ];
+
+    /** @var string */
+    protected $content_type;
 
     /**
      * {@inheritdoc}

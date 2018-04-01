@@ -15,14 +15,9 @@ class UriAnnotation extends Annotation
     const SUPPORTS_ALIASING = true;
     const SUPPORTS_DEPRECATION = true;
 
-    const NAMESPACE_REGEX = '/{([\w\/\\\ ]+)}/';
-
-    /**
-     * Namespace that this URI belongs to.
-     *
-     * @var string
-     */
-    protected $namespace;
+    const ARRAYABLE = [
+        'path'
+    ];
 
     /**
      * URI path that this annotation represents.
@@ -32,32 +27,13 @@ class UriAnnotation extends Annotation
     protected $path;
 
     /**
-     * An array of items that should be included in an array representation of this annotation.
-     *
-     * @var array
-     */
-    protected $arrayable = [
-        'namespace',
-        'path'
-    ];
-
-    /**
      * {@inheritdoc}
      */
     protected function parser(): array
     {
-        $parsed = [];
-        $content = $this->docblock;
-
-        // Namespace is surrounded by `{curly braces}`.
-        if (preg_match(self::NAMESPACE_REGEX, $content, $matches)) {
-            $parsed['namespace'] = $matches[1];
-            $content = trim(preg_replace(self::NAMESPACE_REGEX, '', $content));
-        }
-
-        $parsed['path'] = trim($content);
-
-        return $parsed;
+        return [
+            'path' => trim($this->docblock)
+        ];
     }
 
     /**
@@ -65,7 +41,6 @@ class UriAnnotation extends Annotation
      */
     protected function interpreter(): void
     {
-        $this->namespace = $this->required('namespace');
         $this->path = $this->required('path');
     }
 
@@ -76,28 +51,9 @@ class UriAnnotation extends Annotation
     {
         /** @var UriAnnotation $annotation */
         $annotation = parent::hydrate($data, $version);
-        $annotation->setNamespace($data['namespace']);
         $annotation->setPath($data['path']);
 
         return $annotation;
-    }
-
-    /**
-     * @return string
-     */
-    public function getNamespace(): string
-    {
-        return $this->namespace;
-    }
-
-    /**
-     * @param string $namespace
-     * @return self
-     */
-    public function setNamespace(string $namespace): self
-    {
-        $this->namespace = $namespace;
-        return $this;
     }
 
     /**

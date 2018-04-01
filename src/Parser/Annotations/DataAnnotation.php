@@ -18,6 +18,16 @@ class DataAnnotation extends Annotation
     const SUPPORTS_VENDOR_TAGS = true;
     const SUPPORTS_VERSIONING = true;
 
+    const ARRAYABLE = [
+        'description',
+        'identifier',
+        'nullable',
+        'sample_data',
+        'subtype',
+        'type',
+        'values'
+    ];
+
     /**
      * Identifier for this data.
      *
@@ -66,21 +76,6 @@ class DataAnnotation extends Annotation
      * @var string
      */
     protected $description;
-
-    /**
-     * An array of items that should be included in an array representation of this annotation.
-     *
-     * @var array
-     */
-    protected $arrayable = [
-        'description',
-        'identifier',
-        'nullable',
-        'sample_data',
-        'subtype',
-        'type',
-        'values'
-    ];
 
     /**
      * {@inheritdoc}

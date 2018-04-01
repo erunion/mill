@@ -5,17 +5,17 @@ use Mill\Parser\Annotation;
 use Mill\Parser\Version;
 
 /**
- * Handler for descriptions.
+ * Handler for the `@api-group` annotation.
  *
  */
-class DescriptionAnnotation extends Annotation
+class GroupAnnotation extends Annotation
 {
     const ARRAYABLE = [
-        'description'
+        'group'
     ];
 
     /** @var string */
-    protected $description;
+    protected $group;
 
     /**
      * {@inheritdoc}
@@ -23,7 +23,7 @@ class DescriptionAnnotation extends Annotation
     protected function parser(): array
     {
         return [
-            'description' => $this->docblock
+            'group' => $this->docblock
         ];
     }
 
@@ -32,7 +32,7 @@ class DescriptionAnnotation extends Annotation
      */
     protected function interpreter(): void
     {
-        $this->description = $this->required('description');
+        $this->group = $this->required('group');
     }
 
     /**
@@ -40,9 +40,9 @@ class DescriptionAnnotation extends Annotation
      */
     public static function hydrate(array $data = [], Version $version = null): self
     {
-        /** @var DescriptionAnnotation $annotation */
+        /** @var GroupAnnotation $annotation */
         $annotation = parent::hydrate($data, $version);
-        $annotation->setDescription($data['description']);
+        $annotation->setGroup($data['group']);
 
         return $annotation;
     }
@@ -50,18 +50,18 @@ class DescriptionAnnotation extends Annotation
     /**
      * @return string
      */
-    public function getDescription(): string
+    public function getGroup(): string
     {
-        return $this->description;
+        return $this->group;
     }
 
     /**
-     * @param string $description
+     * @param string $group
      * @return self
      */
-    public function setDescription(string $description): self
+    public function setGroup(string $group): self
     {
-        $this->description = $description;
+        $this->group = $group;
         return $this;
     }
 }
