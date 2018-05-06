@@ -1,10 +1,6 @@
 ---
-layout: default
+id: api-param
 title: "@api-param"
-permalink: /reference/api-param
----
-
-# @api-param
 ---
 
 A request parameter that can be supplied to a resource action.
@@ -26,14 +22,14 @@ A request parameter that can be supplied to a resource action.
 
 | Tag | Optional | Description |
 | :--- | :--- | :--- |
-| `:visibility` | ✓ | [Visibility decorator]({{ site.github.url }}/reference/visibility) |
-| `fieldName` | × | This is the name of the variable that the developer should pass in the request. |
-| `sampleData` | ✓ | This is a sample of what the contents of the parameter should be. For example, if you're passing in a number, this can be "50". |
-| `type` | × | This can be a reference to the type of variable that is being passed in (string, boolean, array, etc.), or can be one of the [tokens](#tokens) that are configured for your API. |
-| `required|optional` | ✓ | A flag that indicates that the parameter is, well, optional. If nothing is supplied, it defaults to being `optional`. |
-| `nullable` | ✓ | A flag that indicates that the parameter is nullable. If nothing is supplied, it defaults to being non-nullable. |
-| `capabilityName` | ✓ | Defined capability that the developers application should possess. |
-| `Description` | × | Description for what the parameter is for. |
+| :visibility | ✓ | [Visibility decorator](reference-visibility.md) |
+| fieldName | × | This is the name of the variable that the developer should pass in the request. |
+| sampleData | ✓ | This is a sample of what the contents of the parameter should be. For example, if you're passing in a number, this can be "50". |
+| type | × | This can be a reference to the type of variable that is being passed in (string, boolean, array, etc.), or can be one of the [tokens](#tokens) that are configured for your API. |
+| required&vert;optional | ✓ | A flag that indicates that the parameter is, well, optional. If nothing is supplied, it defaults to being `optional`. |
+| nullable | ✓ | A flag that indicates that the parameter is nullable. If nothing is supplied, it defaults to being non-nullable. |
+| capabilityName | ✓ | Defined capability that the developers application should possess. |
+| Description | × | Description for what the parameter is for. |
 | Members | ✓ | If this parameter has acceptable values (like in the case of an `enum` type), you can document those values here along with a description for what the value is, or means. |
 
 ### Supported Types
@@ -53,11 +49,10 @@ A request parameter that can be supplied to a resource action.
 | timestamp | string |
 | uri | string |
 
-## <a name="tokens"></a>Tokens
-Because writing out the same parameter for a large number of endpoints can get tiring, we have a system in place that
-allows you to configure tokens, which act as kind of a short-code for a parameter:
+## Tokens
+Because writing out the same parameter for a large number of endpoints can get tiring, we have a system in place that allows you to configure tokens, which act as kind of a short-code for a parameter:
 
-In your [`mill.xml`]({{ site.github.url }}/configuration) file:
+In your [configuration](configuration.md) file:
 
 ```xml
 <parameterTokens>
@@ -67,7 +62,7 @@ In your [`mill.xml`]({{ site.github.url }}/configuration) file:
 </parameterTokens>
 ```
 
-And then you can just reference the token as part of [`@api-param`]({{ site.github.url }}/reference/api-param):
+And then you can just reference the token as part of [`@api-param`](reference-api-param.md):
 
 ```php
 @api-param:public {page}
@@ -101,13 +96,14 @@ Using a token with available values:
 With a capability:
 
 ```php
-@api-param:public locked_down (string, AnotherRequiredCapability) - This is a cool thing.
+@api-param:public locked_down (string, AnotherRequiredCapability) - This is a
+    cool thing.
 ```
 
 Normal usage with acceptable values:
 
 ```php
-@api-param:public __testing (string) - This does a thing.
+@api-param:private __testing (string) - This does a thing.
     + Members
         - `true`
         - `false`

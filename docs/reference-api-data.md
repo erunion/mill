@@ -1,10 +1,6 @@
 ---
-layout: default
+id: api-data
 title: "@api-data"
-permalink: /reference/api-data
----
-
-# @api-data
 ---
 
 This describes a piece of data within a representation that a resource action can return.
@@ -24,15 +20,15 @@ This describes a piece of data within a representation that a resource action ca
 
 ## Breakdown
 
-| Tag | Description | Optional |
+| Tag | Optional | Description |
 | :--- | :--- | :--- |
-| `fieldName` | × | The data in a representation that you're documenting. So if your representation has a `link`, `field_name` would be `link`. If you're documenting nested objects, you should use dot-notation to map out the field name. So say you have a `metadata[connections][albums]` array in your representation, the `field_name` would then be `metadata.connections.albums`. |
-| `sampleData` | ✓ | This is a sample of what the contents of the representation data can contain. For example, this returns a number, this can be "50". |
-| `type` | × | This describes the type of data that a representation data field contains. |
-| `required|optional` | ✓ | A flag that indicates that the data is, well, optional. If nothing is supplied, it defaults to being `optional`. |
-| `nullable` | ✓ | A flag that indicates that the data is nullable. If nothing is supplied, it defaults to being non-nullable. |
-| `capabilityName` | ✓ | Defined capability that the developers application should possess. |
-| `Description` | × | A description for that this data is. |
+| fieldName | × | The data in a representation that you're documenting. So if your representation has a `link`, `field_name` would be `link`. If you're documenting nested objects, you should use dot-notation to map out the field name. So say you have a `metadata[connections][albums]` array in your representation, the `field_name` would then be `metadata.connections.albums`. |
+| sampleData | ✓ | This is a sample of what the contents of the representation data can contain. For example, if this returns a number, this can be "50". |
+| type | × | This describes the type of data that a representation data field contains. |
+| required&vert;optional | ✓ | A flag that indicates that the data is, well, optional. If nothing is supplied, it defaults to being `optional`. |
+| nullable | ✓ | A flag that indicates that the data is nullable. If nothing is supplied, it defaults to being non-nullable. |
+| capabilityName | ✓ | Defined capability that the developers application should possess. |
+| Description | × | A description for that this data is. |
 | Members | ✓ | If this data has acceptable values (like in the case of an `enum` type), you can document those values here along with a description for what the value is, or means. |
 
 ### Supported Types
@@ -53,8 +49,7 @@ This describes a piece of data within a representation that a resource action ca
 | uri | string |
 
 #### Representations
-If your dataset is a Mill representation, you can document that by setting the type to the FQN of the representation in
-question.
+If your dataset is a Mill representation, you can document that by setting the type to the FQN of the representation in question.
 
 ```php
 /**
@@ -64,12 +59,9 @@ question.
 ```
 
 #### Subtypes
-Mill allows you, if necessary, to define a single subtype for a dataset. For example, if you have an array that contains
-objects, you can set the `type` as `array<object>`. Alternatively, if you have an array of representations, you can do
-the same with `array<\RepresentationFQN>`.
+Mill allows you, if necessary, to define a single subtype for a dataset. For example, if you have an array that contains objects, you can set the `type` as `array<object>`. Alternatively, if you have an array of representations, you can do the same with `array<\RepresentationFQN>`.
 
-Currently, only `array` types are allowed to contain subtypes. To define subtypes of objects, use a `@api-data`
-annotation for each property.
+Currently, only `array` types are allowed to contain subtypes. To define subtypes of objects, use a `@api-data` annotation for each property.
 
 ## Examples
 Common uses:

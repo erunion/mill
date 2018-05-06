@@ -1,16 +1,11 @@
 ---
-layout: default
-title: "Generating documentation"
-permalink: /generate/documentation
+id: generate-documentation
+title: Generating documentation
 ---
 
-# Generate documentation
----
+Mill includes a `mill` command line application for doing various tasks on your API, including compiling it down into versioned [API Blueprint](https://apiblueprint.org/) specifications.
 
-Mill includes a `mill` command line application for doing various tasks on your API, including compiling it down into
-versioned [API Blueprint](https://apiblueprint.org/) files.
-
-```bash
+```shell
 $ ./vendor/bin/mill generate --help
 Usage:
   generate [options] [--] <output>
@@ -39,7 +34,7 @@ Help:
 
 Example usage:
 
-```bash
+```shell
 $ ./vendor/bin/mill generate blueprints/
 Compiling controllers and representations…
 Generating API Blueprint files…
@@ -55,15 +50,14 @@ Done!
 
 This will compile the configured documentation for my API (versions 1.0 through 1.1.1) into the `blueprints/` directory.
 
-If we look at one of the versioned directories that it created, `blueprints/1.1`, we can see that we've got API
-Blueprint files!
+If we look at one of the versioned directories that it created, `blueprints/1.1`, we can see that we've got API Blueprint specs!
 
-```bash
+```shell
 $ ls blueprints/1.1
 api.apib        representations resources
 ```
 
-```bash
+```shell
 $ cat blueprints/1.1/api.apib
 FORMAT: 1A
 
@@ -84,10 +78,9 @@ Information on a specific movie.
 …
 ```
 
-Mill also generates individual parts of your documentation for you. This is helpful if you have people working on API
-design work, but just want to work on the API Blueprint files (and have someone else do the backend work).
+Mill also generates individual parts of your documentation for you.
 
-```bash
+```shell
 $ cat blueprints/1.1/resources/Movies.apib
 # Group Movies
 ## Movies [/movies/{id}]
@@ -116,7 +109,7 @@ This action requires a bearer token with `edit` scope.
 …
 ```
 
-```bash
+```shell
 $ cat blueprints/1.1/representations/Movie.apib
 ## Movie
 - `cast` (array[Person]) - Cast
@@ -136,4 +129,3 @@ $ cat blueprints/1.1/representations/Movie.apib
     - `imdb` (string) - IMDB URL
 …
 ```
-

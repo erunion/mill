@@ -1,14 +1,10 @@
 ---
-layout: default
+id: configuration
 title: Configuration
-permalink: /configuration
----
-
-# Configuration
 ---
 
 In order to instruct Mill on where to look for documentation, and any constraints you may have, Mill requires the use
-of an XML configuration file (`mill.xml`).
+of an XML configuration file: `mill.xml`
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -48,19 +44,20 @@ of an XML configuration file (`mill.xml`).
 ```
 
 ## Options
-
 | Option | Optional |Description |
 | :--- | :--- | :--- |
-| `name` | ✓ | This is the canonical name of your API. When you generate API Blueprint files, this will be the header declaration. |
-| `bootstrap` | × | Relative path to a PHP bootstrap file that will get loaded before Mill does any work. This is usually a [Composer](https://getcomposer.org/) `vendor/autoload.php` file. This is necessary so Mill can access, and parse your API classes for documentation. |
+| name | ✓ | This is the canonical name of your API. When you generate API Blueprint files, this will be the header declaration. |
+| bootstrap | × | Relative path to a PHP bootstrap file that will get loaded before Mill does any work. This is usually a [Composer](https://getcomposer.org/) `vendor/autoload.php` file. This is necessary so Mill can access, and parse your API classes for documentation. |
 
 ## Settings
-### Versions
-The `<versions>` setting lets you inform Mill on the various version of your API that exist. From here, Mill will then
-know what versions to compile documentation for.
+> All directory paths should be relative to the location of your `mill.xml` configuration file.
 
-To set a "default" API version, use the `default="true"` attribute. You **must** have a default version set, and there
-can only be one.
+> If you specify a controller, representation, capability, or scope in your documentation that hasn't been configured here, documentation generation will fail with errors.
+
+### Versions
+The `<versions>` setting lets you inform Mill on the various version of your API that exist. From here, Mill will then know what versions to compile documentation for.
+
+To set a "default" API version, use the `default="true"` attribute. You **must** have a default version set, and there can only be one.
 
 ### Controllers
 The `<controllers>` setting lets you inform Mill on where your API controllers live.
@@ -70,8 +67,7 @@ The `<controllers>` setting lets you inform Mill on where your API controllers l
 * Add in an `<excludes>` block, with `<class>` elements for excluding specific controllers from being parsed.
 
 ### Representations
-The `<representations`> setting lets you inform Mill on where your API data representations (the content that your
-controllers return), live.
+The `<representations`> setting lets you inform Mill on where your API data representations (the content that your controllers return), live.
 
 * Use `<directory>` elements to specify a directory name (and `suffix`).
   * Add in a `method` attribute so Mill knows the method to pull representation documentation from.
@@ -80,16 +76,12 @@ controllers return), live.
 * Add in an `<excludes>` block, with `<name>` elements for excluding specific controllers from being parsed.
 
 #### Errors
-The representation `<errors>` setting lets you tell Mill where your error representations are (the content that is
-returned from [`@api-throws`]({{ site.github.url }}/reference/api-throws) annotations. Here you can specify a `<class>`
-with a fully-qualified class name.
+The representation `<errors>` setting lets you tell Mill where your error representations are (the content that is returned from [`@api-throws`](reference-api-throws.md) annotations. Here you can specify a `<class>` with a fully-qualified class name.
 
 Required attributes for the `<class>` element are:
 
-* `method`: Same in the way that representations in your `<representations>` declaration have method attributes to
-    tell Mill where your documentation lives, error representations require the same.
-* `needsErrorCode`: Informs Mill if your error representation handles, and returns, a unique error code. The way that
-    looks in your documentation is:
+* `method`: Same in the way that representations in your `<representations>` declaration have method attributes to tell Mill where your documentation lives, error representations require the same.
+* `needsErrorCode`: Informs Mill if your error representation handles, and returns, a unique error code. The way that looks in your documentation is:
 
 ```php
 /**
@@ -106,9 +98,8 @@ public function PATCH()
 
 Here, `\ErrorRepresentation` would have `needsErrorCode="true"`.
 
-### Ccapabilities
-If your API has a capability-backed permission system for granting certain endpoints, or data in representations, to
-specific users, you should use this to document that.
+### Capabilities
+If your API has a capability-backed permission system for granting certain endpoints, or data in representations, to specific users, you should use this to document that.
 
 ```xml
 <capabilities>
@@ -118,13 +109,10 @@ specific users, you should use this to document that.
 </capabilities>
 ```
 
-You can find usage details for capabilities in the [`@api-capability`]({{ site.github.url }}/reference/api-capability),
-[`@api-param`]({{ site.github.url }}/reference/api-param), [`@api-return`]({{ site.github.url }}/reference/api-return),
-and [`@api-throws`]({{ site.github.url }}/reference/api-throws) documentation.
+You can find usage details for capabilities in the [`@api-capability`](reference-api-capability.md), [`@api-param`](reference-api-param.md), [`@api-return`](reference-api-return.md), and [`@api-throws`](reference-api-throws.md) documentation.
 
 ### Scopes
-If your API has an authentication system that requires a specific scope(s) for using an API endpoint, use this to
-document those.
+If your API has an authentication system that requires a specific scope(s) for using an API endpoint, use this to document those.
 
 Example:
 
@@ -137,11 +125,10 @@ Example:
 </scopes>
 ```
 
-You can find usage details for scopes in the [`@api-scope`]({{ site.github.url }}/reference/api-scope) documentation.
+You can find usage details for scopes in the [`@api-scope`](reference-api-scope.md) documentation.
 
 ### Parameter Tokens
-Parameter tokens allow you to create a [`@api-param`]({{ site.github.url }}/reference/api-param) shortcode to save time
-for common elements in your API (like paging or sorting).
+Parameter tokens allow you to create a [`@api-param`](reference-api-param.md) shortcode to save time for common elements in your API (like paging or sorting).
 
 Example:
 
@@ -153,15 +140,11 @@ Example:
 </parameterTokens>
 ```
 
-You can find usage details for parameter tokens in the [`@api-param`]({{ site.github.url }}/reference/api-param#tokens)
-documentation.
+You can find usage details for parameter tokens in the [`@api-param`](reference-api-param.md#tokens) documentation.
 
-### `<uriSegments>`
-#### `<translations>`
-The URI segment translations section allows you to set up translation elements for
-[`@api-uriSegment`]({{ site.github.url }}/reference/api-urisegment) annotations. Say, in your code, the route for a
-video is at `/videos/+video_id`, but in your documentation, you want it to just say `/videos/+id`, this is the place to
-do that.
+### uriSegments
+#### translations
+The URI segment translations section allows you to set up translation elements for [`@api-uriSegment`](reference-api-urisegment.md) annotations. Say, in your code, the route for a video is at `/videos/+video_id`, but in your documentation, you want it to just say `/videos/+id`, this is the place to do that.
 
 Example:
 
@@ -178,8 +161,7 @@ These settings let you control the documentation generators that Mill supports f
 
 #### API Blueprint
 ##### Excludes
-* Use `<exclude>` elements to specify a resource namespace that should be excluded from API Blueprint generation and
-    compilation.
+* Use `<exclude>` elements to specify a resource namespace that should be excluded from API Blueprint generation and compilation.
     * Make sure to add a `namespace` attribute so Mill knows what namespace you're excluding..
 
 Example:
@@ -195,11 +177,5 @@ Example:
 </generators>
 ```
 
-## Notes
-* **All directory paths should be relative to the location of your `mill.xml` configuration file.**
-* If you specify a controller, representation, capability, or scope in your documentation that hasn't been configured
-    here, API documentation generation will fail with errors.
-
-## XSD
-If you wish to use it for a reference, Mill has an included
-[XML schema definition](https://github.com/vimeo/mill/blob/master/config.xsd).
+## XML Schema Definition
+If you wish to use it for a reference, Mill has an included [XML schema definition](https://github.com/vimeo/mill/blob/master/config.xsd).

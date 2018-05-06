@@ -1,14 +1,9 @@
 ---
-layout: default
+id: api-capability
 title: "@api-capability"
-permalink: /reference/api-capability
 ---
 
-# @api-capability
----
-
-This defines a required capability in your API that the developer's application needs to possess in order to execute
-the resource action, or get the representation field in the endpoint response.
+This defines a required capability in your API that the developer's application needs to possess in order to execute the resource action, or get the representation field in the endpoint response.
 
 ## Syntax
 ```php
@@ -25,7 +20,7 @@ the resource action, or get the representation field in the endpoint response.
 
 | Tag | Optional | Description |
 | :--- | :--- | :--- |
-| `capability` | × | Required capability that an API application must posses. |
+| capability | × | Required capability that an API application must posses. |
 
 ## Examples
 On a resource action:
@@ -49,11 +44,11 @@ $representation = [
     …
 
     /**
-     * @api-data download (boolean, SomeApplicationCapability) - Download permission setting
+     * @api-data download (boolean, SomeApplicationCapability) - Download
+     *     permission setting
      */
     'download' => true,
 
     …
 ];
 ```
-

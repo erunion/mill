@@ -1,13 +1,9 @@
 ---
-layout: default
+id: api-contenttype
 title: "@api-contenttype"
-permalink: /reference/api-contenttype
 ---
 
-# @api-contenttype
----
-
-This designates the HTTP Content-Type that a resource action returns.
+This designates the HTTP `Content-Type` that a resource action returns.
 
 ## Syntax
 ```php
@@ -24,7 +20,7 @@ This designates the HTTP Content-Type that a resource action returns.
 
 | Tag | Optional | Description |
 | :--- | :--- | :--- |
-| `content-type` | × | HTTP Content-Type that a resource action returns. |
+| content-type | × | HTTP Content-Type that a resource action returns. |
 
 ## Examples
 ```php

@@ -1,10 +1,6 @@
 ---
-layout: default
+id: api-minversion
 title: "@api-minversion"
-permalink: /reference/api-minversion
----
-
-# @api-minversion
 ---
 
 This allows you to denote the minimum API version required for a resource action.
@@ -24,7 +20,7 @@ This allows you to denote the minimum API version required for a resource action
 
 | Tag | Optional | Description |
 | :--- | :--- | :--- |
-| `version` | × | A specific, minimum API version required for a resource action. |
+| version | × | A specific, minimum API version required for a resource action. |
 
 ## Examples
 ```php
@@ -42,4 +38,3 @@ public function PATCH()
     …
 }
 ```
-

@@ -1,14 +1,9 @@
 ---
-layout: default
+id: api-scope
 title: "@api-scope"
-permalink: /reference/api-scope
 ---
 
-# @api-scope
----
-
-This corresponds to an available user authentication token scope (ex. "create", "edit", "interact`, etc.) that is
-required for a resource action, or a representation data point.
+This corresponds to an available user authentication token scope (ex. "create", "edit", "interact`, etc.) that is required for a resource action, or a representation data point.
 
 ## Syntax
 ```php
@@ -25,8 +20,8 @@ required for a resource action, or a representation data point.
 
 | Tag | Optional | Description |
 | :--- | :--- | :--- |
-| `scope` | × | Authentication scope required for the resource action. |
-| `description` | ✓ | Description for what the required scope is, or is used for. |
+| scope | × | Authentication scope required for the resource action. |
+| description | ✓ | Description for what the required scope is, or is used for. |
 
 ## Examples
 ```php

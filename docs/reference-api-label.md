@@ -1,10 +1,6 @@
 ---
-layout: default
-title: "@api-label"
-permalink: /reference/api-label
----
-
-# @api-label
+id: api-label
+title: @api-label
 ---
 
 A short description of what the resource, or resource action handles.
@@ -24,7 +20,7 @@ A short description of what the resource, or resource action handles.
 
 | Tag | Optional | Description |
 | :--- | :--- | :--- |
-| `description` | × | Description of what resource, or resource action handles. |
+| description | × | Description of what resource, or resource action handles. |
 
 ## Examples
 On a resource:

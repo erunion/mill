@@ -1,16 +1,11 @@
 ---
-layout: default
+id: generate-changelogs
 title: "Generating changelogs"
-permalink: /generate/changelogs
 ---
 
-# Generate changelogs
----
+Mill includes a `mill` command line application for doing various tasks on your API, including compiling your documentation into a Markdown-represented changelog.
 
-Mill includes a `mill` command line application for doing various tasks on your API, including compiling your
-documentation into a Markdown-representation changelog.
-
-```bash
+```shell
 $ ./bin/mill changelog --help
 Usage:
   changelog [options] [--] <output>
@@ -35,7 +30,7 @@ Help:
 
 Example usage:
 
-```bash
+```shell
 $ ./vendor/bin/mill changelog blueprints/
 Generating a changelog…
 
@@ -46,7 +41,7 @@ This will compile a `changelog.md` file into the `blueprints/` directory.
 
 Looking at that file, we can see that we have changelog!
 
-```bash
+```shell
 $ cat resources/examples/Showtimes/blueprints/changelog.md
 # Changelog: Mill unit test API, Showtimes
 
@@ -70,10 +65,10 @@ $ cat resources/examples/Showtimes/blueprints/changelog.md
 …
 ```
 
-### JSON
+## JSON
 If you wish to get a JSON-encoded version of the changelog instead, you can use the changelog API directly.
 
-```bash
+```php
 $container = new \Mill\Container([
     'config.path' => '/path/to/your/mill.xml'
 ]);
@@ -83,8 +78,8 @@ $changelog = $generator->generateJson();
 var_dump($changelog);
 ```
 
-Mill wraps important pieces of content in the JSON-encoded changelog that can then be styled according to however you
-want to render it:
+### Styling
+Mill wraps important pieces of content in the JSON-encoded changelog that can then be styled according to however you want to render it:
 
 | Changeset | HTML class | data-* attribute |
 | :--- | :--- | :--- |

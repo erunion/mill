@@ -1,10 +1,6 @@
 ---
-layout: default
+id: api-see
 title: "@api-see"
-permalink: /reference/api-see
----
-
-# @api-see
 ---
 
 This is a reference pointer that allows you to pull in related documentation into a representation.
@@ -24,8 +20,8 @@ This is a reference pointer that allows you to pull in related documentation int
 
 | Tag | Optional | Description |
 | :--- | :--- | :--- |
-| `\Class::method` | × | This is a fully qualified class name and method where the related representation that you want to import exists. |
-| `prefix` | ✓ | If you want to prefix the imported documentation with a [`@api-data`]({{ site.github.url }}/reference/api-data) name prefix, do so here. |
+| \Class::method | × | This is a fully qualified class name and method where the related representation that you want to import exists. |
+| prefix | ✓ | If you want to prefix the imported documentation with a [`@api-data`](reference-api-data.md) name prefix, do so here. |
 
 ## Examples
 ```php
