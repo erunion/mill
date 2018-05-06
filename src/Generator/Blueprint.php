@@ -26,6 +26,8 @@ class Blueprint extends Generator
      * Take compiled API documentation and generate API Blueprint representations.
      *
      * @psalm-suppress PossiblyFalseOperand
+     * @psalm-suppress InvalidScalarArgument
+     * @psalm-suppress PossiblyUndefinedVariable
      * @return array
      */
     public function generate(): array

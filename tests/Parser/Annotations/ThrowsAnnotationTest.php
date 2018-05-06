@@ -15,7 +15,7 @@ class ThrowsAnnotationTest extends AnnotationTest
     /**
      * @dataProvider providerAnnotation
      * @param string $content
-     * @param $version
+     * @param Version|null $version
      * @param bool $visible
      * @param array $expected
      */
@@ -31,7 +31,7 @@ class ThrowsAnnotationTest extends AnnotationTest
     /**
      * @dataProvider providerAnnotation
      * @param string $content
-     * @param $version
+     * @param Version|null $version
      * @param bool $visible
      * @param array $expected
      */

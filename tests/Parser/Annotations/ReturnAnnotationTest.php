@@ -29,7 +29,7 @@ class ReturnAnnotationTest extends AnnotationTest
      * @dataProvider providerAnnotation
      * @param string $content
      * @param bool $visible
-     * @param $version
+     * @param Version|null $version
      * @param array $expected
      */
     public function testHydrate(string $content, bool $visible, $version, array $expected): void
