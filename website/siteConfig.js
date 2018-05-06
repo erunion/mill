@@ -3,7 +3,7 @@ const siteConfig = {
   tagline: 'A small annotation DSL for documenting a REST API.',
 
   url: 'https://vimeo.github.io',
-  baseUrl: '/', // baseUrl: '/mill/',
+  baseUrl: '/mill/',
   editUrl: 'https://github.com/vimeo/mill/edit/master/docs/',
 
   projectName: 'mill',
