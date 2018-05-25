@@ -27,10 +27,10 @@ class Movie
      * @api-label Get a single movie.
      * @api-group Movies
      *
-     * @api-uri:private:alias /movie/+id
+     * @api-path:private:alias /movie/+id
      * @api-uriSegment {/movie/+id} id (integer) - Movie ID
      *
-     * @api-uri:public /movies/+id
+     * @api-path:public /movies/+id
      * @api-uriSegment {/movies/+id} id (integer) - Movie ID
      *
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Movie
@@ -59,7 +59,7 @@ class Movie
      * @api-label Update a movie.
      * @api-group Movies
      *
-     * @api-uri:public /movies/+id
+     * @api-path:public /movies/+id
      * @api-uriSegment {/movies/+id} id (integer) - Movie ID
      *
      * @api-scope edit
@@ -119,7 +119,7 @@ class Movie
      * @api-label Delete a movie.
      * @api-group Movies
      *
-     * @api-uri:private /movies/+id
+     * @api-path:private /movies/+id
      * @api-uriSegment {/movies/+id} id (integer) - Movie ID
      *
      * @api-contentType application/json

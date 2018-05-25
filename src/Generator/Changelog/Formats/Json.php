@@ -114,7 +114,7 @@ class Json extends Generator
                 [] // Group-related entries will be nested here.
             ];
 
-            foreach ($data as $uri => $change_types) {
+            foreach ($data as $path => $change_types) {
                 foreach ($change_types as $change_type => $hashes) {
                     foreach ($hashes as $hash => $changes) {
                         if (in_array($definition, [

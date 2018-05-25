@@ -13,10 +13,10 @@ class Action extends Changeset
     {
         return [
             'plural' => [
-                Changelog::DEFINITION_ADDED => '{uri} has been added with support for the following HTTP methods:'
+                Changelog::DEFINITION_ADDED => '{path} has been added with support for the following HTTP methods:'
             ],
             'singular' => [
-                Changelog::DEFINITION_ADDED => '{method} on {uri} was added.'
+                Changelog::DEFINITION_ADDED => '{method} on {path} was added.'
             ]
         ];
     }
@@ -42,10 +42,10 @@ class Action extends Changeset
         $template = $templates['plural'][$definition];
         return [
             [
-                // Changes are grouped by URIs so it's safe to just pull the first URI here.
+                // Changes are grouped by paths so it's safe to just pull the first path here.
                 $this->renderText($template, [
                     'resource_group' => $changes[0]['resource_group'],
-                    'uri' => $changes[0]['uri']
+                    'path' => $changes[0]['path']
                 ]),
                 $methods
             ]

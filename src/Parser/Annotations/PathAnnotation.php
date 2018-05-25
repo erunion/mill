@@ -6,10 +6,10 @@ use Mill\Parser\Annotation;
 use Mill\Parser\Version;
 
 /**
- * Handler for the `@api-uri` annotation.
+ * Handler for the `@api-path` annotation.
  *
  */
-class UriAnnotation extends Annotation
+class PathAnnotation extends Annotation
 {
     const REQUIRES_VISIBILITY_DECORATOR = true;
     const SUPPORTS_ALIASING = true;
@@ -49,7 +49,7 @@ class UriAnnotation extends Annotation
      */
     public static function hydrate(array $data = [], Version $version = null)
     {
-        /** @var UriAnnotation $annotation */
+        /** @var PathAnnotation $annotation */
         $annotation = parent::hydrate($data, $version);
         $annotation->setPath($data['path']);
 

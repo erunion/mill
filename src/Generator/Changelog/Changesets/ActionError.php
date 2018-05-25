@@ -13,13 +13,13 @@ class ActionError extends Changeset
     {
         return [
             'plural' => [
-                Changelog::DEFINITION_ADDED => '{uri} now returns the following errors on {method} requests:',
-                Changelog::DEFINITION_REMOVED => '{uri} no longer returns the following errors on {method} requests:'
+                Changelog::DEFINITION_ADDED => '{path} now returns the following errors on {method} requests:',
+                Changelog::DEFINITION_REMOVED => '{path} no longer returns the following errors on {method} requests:'
             ],
             'singular' => [
-                Changelog::DEFINITION_ADDED => 'On {method} requests to {uri}, a {http_code} with a {representation} ' .
-                    'representation is now returned: {description}',
-                Changelog::DEFINITION_REMOVED => '{method} requests to {uri} no longer returns a {http_code} with a ' .
+                Changelog::DEFINITION_ADDED => 'On {method} requests to {path}, a {http_code} with a ' .
+                    '{representation} representation is now returned: {description}',
+                Changelog::DEFINITION_REMOVED => '{method} requests to {path} no longer returns a {http_code} with a ' .
                     '{representation} representation: {description}'
             ]
         ];
@@ -61,7 +61,7 @@ class ActionError extends Changeset
                     $this->renderText($template, [
                         'resource_group' => $change['resource_group'],
                         'method' => $method,
-                        'uri' => $change['uri']
+                        'path' => $change['path']
                     ]),
                     array_unique($errors)
                 ];

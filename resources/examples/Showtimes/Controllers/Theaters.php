@@ -12,7 +12,7 @@ class Theaters
      * @api-label Get movie theaters.
      * @api-group Theaters
      *
-     * @api-uri:public /theaters
+     * @api-path:public /theaters
      *
      * @api-param:public location (string, required) - Location you want theaters in.
      *
@@ -37,7 +37,7 @@ class Theaters
      * @api-label Create a movie theater.
      * @api-group Theaters
      *
-     * @api-uri:public /theaters
+     * @api-path:public /theaters
      *
      * @api-scope create
      *

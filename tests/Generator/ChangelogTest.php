@@ -62,11 +62,11 @@ class ChangelogTest extends TestCase
             '1.1.3' => [
                 '/movie/{id}' => [
                     'error' => [
-                        '2e302f7f79' => [
+                        'cc15434d35' => [
                             [
                                 'resource_group' => 'Movies',
                                 'method' => 'GET',
-                                'uri' => '/movie/{id}',
+                                'path' => '/movie/{id}',
                                 'http_code' => '404 Not Found',
                                 'representation' => 'Error',
                                 'description' => 'For no reason.'
@@ -74,7 +74,7 @@ class ChangelogTest extends TestCase
                             [
                                 'resource_group' => 'Movies',
                                 'method' => 'GET',
-                                'uri' => '/movie/{id}',
+                                'path' => '/movie/{id}',
                                 'http_code' => '404 Not Found',
                                 'representation' => 'Error',
                                 'description' => 'For some other reason.'
@@ -84,11 +84,11 @@ class ChangelogTest extends TestCase
                 ],
                 '/movies' => [
                     'return' => [
-                        '3781891d58' => [
+                        '8bedc22ca1' => [
                             [
                                 'resource_group' => 'Movies',
                                 'method' => 'POST',
-                                'uri' => '/movies',
+                                'path' => '/movies',
                                 'http_code' => '201 Created',
                                 'representation' => false
                             ]
@@ -97,11 +97,11 @@ class ChangelogTest extends TestCase
                 ],
                 '/movies/{id}' => [
                     'error' => [
-                        'e7dc298139' => [
+                        'edcc6fcf49' => [
                             [
                                 'resource_group' => 'Movies',
                                 'method' => 'GET',
-                                'uri' => '/movies/{id}',
+                                'path' => '/movies/{id}',
                                 'http_code' => '404 Not Found',
                                 'representation' => 'Error',
                                 'description' => 'For no reason.'
@@ -109,17 +109,17 @@ class ChangelogTest extends TestCase
                             [
                                 'resource_group' => 'Movies',
                                 'method' => 'GET',
-                                'uri' => '/movies/{id}',
+                                'path' => '/movies/{id}',
                                 'http_code' => '404 Not Found',
                                 'representation' => 'Error',
                                 'description' => 'For some other reason.'
                             ]
                         ],
-                        '162944fa14' => [
+                        '0a4c5505a8' => [
                             [
                                 'resource_group' => 'Movies',
                                 'method' => 'PATCH',
-                                'uri' => '/movies/{id}',
+                                'path' => '/movies/{id}',
                                 'http_code' => '404 Not Found',
                                 'representation' => 'Error',
                                 'description' => 'If the trailer URL could not be validated.'
@@ -127,7 +127,7 @@ class ChangelogTest extends TestCase
                             [
                                 'resource_group' => 'Movies',
                                 'method' => 'PATCH',
-                                'uri' => '/movies/{id}',
+                                'path' => '/movies/{id}',
                                 'http_code' => '403 Forbidden',
                                 'representation' => 'Coded error',
                                 'description' => 'If the user is not allowed to edit that movie.'
@@ -135,11 +135,11 @@ class ChangelogTest extends TestCase
                         ]
                     ],
                     'return' => [
-                        '162944fa14' => [
+                        '0a4c5505a8' => [
                             [
                                 'resource_group' => 'Movies',
                                 'method' => 'PATCH',
-                                'uri' => '/movies/{id}',
+                                'path' => '/movies/{id}',
                                 'http_code' => '202 Accepted',
                                 'representation' => 'Movie'
                             ]
@@ -154,7 +154,7 @@ class ChangelogTest extends TestCase
                             [
                                 'resource_group' => 'Movies',
                                 'method' => 'GET',
-                                'uri' => '/movie/{id}',
+                                'path' => '/movie/{id}',
                                 'content_type' => 'application/mill.example.movie'
                             ]
                         ]
@@ -166,7 +166,7 @@ class ChangelogTest extends TestCase
                             [
                                 'resource_group' => 'Movies',
                                 'method' => 'GET',
-                                'uri' => '/movies',
+                                'path' => '/movies',
                                 'content_type' => 'application/mill.example.movie'
                             ]
                         ],
@@ -174,7 +174,7 @@ class ChangelogTest extends TestCase
                             [
                                 'resource_group' => 'Movies',
                                 'method' => 'POST',
-                                'uri' => '/movies',
+                                'path' => '/movies',
                                 'content_type' => 'application/mill.example.movie'
                             ]
                         ]
@@ -186,7 +186,7 @@ class ChangelogTest extends TestCase
                             [
                                 'resource_group' => 'Movies',
                                 'method' => 'GET',
-                                'uri' => '/movies/{id}',
+                                'path' => '/movies/{id}',
                                 'content_type' => 'application/mill.example.movie'
                             ]
                         ],
@@ -194,7 +194,7 @@ class ChangelogTest extends TestCase
                             [
                                 'resource_group' => 'Movies',
                                 'method' => 'PATCH',
-                                'uri' => '/movies/{id}',
+                                'path' => '/movies/{id}',
                                 'content_type' => 'application/mill.example.movie'
                             ]
                         ]
@@ -206,7 +206,7 @@ class ChangelogTest extends TestCase
                             [
                                 'resource_group' => 'Theaters',
                                 'method' => 'GET',
-                                'uri' => '/theaters',
+                                'path' => '/theaters',
                                 'content_type' => 'application/mill.example.theater'
                             ]
                         ],
@@ -214,19 +214,19 @@ class ChangelogTest extends TestCase
                             [
                                 'resource_group' => 'Theaters',
                                 'method' => 'POST',
-                                'uri' => '/theaters',
+                                'path' => '/theaters',
                                 'content_type' => 'application/mill.example.theater'
                             ]
                         ]
                     ]
                 ],
                 '/theaters/{id}' => [
-                    'action_error' => [
-                        'b3a16c4d74' => [
+                    'error' => [
+                        '6f3f64d865' => [
                             [
                                 'resource_group' => 'Theaters',
                                 'method' => 'PATCH',
-                                'uri' => '/theaters/{id}',
+                                'path' => '/theaters/{id}',
                                 'http_code' => '403 Forbidden',
                                 'representation' => 'Coded error',
                                 'description' => 'If something cool happened.'
@@ -238,7 +238,7 @@ class ChangelogTest extends TestCase
                             [
                                 'resource_group' => 'Theaters',
                                 'method' => 'GET',
-                                'uri' => '/theaters/{id}',
+                                'path' => '/theaters/{id}',
                                 'content_type' => 'application/mill.example.theater'
                             ]
                         ],
@@ -246,7 +246,7 @@ class ChangelogTest extends TestCase
                             [
                                 'resource_group' => 'Theaters',
                                 'method' => 'PATCH',
-                                'uri' => '/theaters/{id}',
+                                'path' => '/theaters/{id}',
                                 'content_type' => 'application/mill.example.theater'
                             ]
                         ]
@@ -256,11 +256,11 @@ class ChangelogTest extends TestCase
             '1.1.1' => [
                 '/movies/{id}' => [
                     'param' => [
-                        '162944fa14' => [
+                        '0a4c5505a8' => [
                             [
                                 'resource_group' => 'Movies',
                                 'method' => 'PATCH',
-                                'uri' => '/movies/{id}',
+                                'path' => '/movies/{id}',
                                 'parameter' => 'imdb',
                                 'description' => 'IMDB URL'
                             ]
@@ -271,27 +271,27 @@ class ChangelogTest extends TestCase
             '1.1' => [
                 '/movies' => [
                     'param' => [
-                        '776d02bb83' => [
+                        '6d082f8d4f' => [
                             [
                                 'resource_group' => 'Movies',
                                 'method' => 'GET',
-                                'uri' => '/movies',
+                                'path' => '/movies',
                                 'parameter' => 'page',
                                 'description' => 'Page of results to pull.'
                             ]
                         ],
-                        '3781891d58' => [
+                        '8bedc22ca1' => [
                             [
                                 'resource_group' => 'Movies',
                                 'method' => 'POST',
-                                'uri' => '/movies',
+                                'path' => '/movies',
                                 'parameter' => 'imdb',
                                 'description' => 'IMDB URL'
                             ],
                             [
                                 'resource_group' => 'Movies',
                                 'method' => 'POST',
-                                'uri' => '/movies',
+                                'path' => '/movies',
                                 'parameter' => 'trailer',
                                 'description' => 'Trailer URL'
                             ]
@@ -300,16 +300,16 @@ class ChangelogTest extends TestCase
                 ],
                 '/movies/{id}' => [
                     'action' => [
-                        'd81e7058dd' => [
+                        '0b3fdf5321' => [
                             [
                                 'resource_group' => 'Movies',
                                 'method' => 'PATCH',
-                                'uri' => '/movies/{id}'
+                                'path' => '/movies/{id}'
                             ],
                             [
                                 'resource_group' => 'Movies',
                                 'method' => 'DELETE',
-                                'uri' => '/movies/{id}'
+                                'path' => '/movies/{id}'
                             ]
                         ]
                     ]
@@ -376,15 +376,15 @@ class ChangelogTest extends TestCase
                                 'Movies' => [
                                     '/movie/{id}' => [
                                         Changelog::CHANGESET_TYPE_ACTION_ERROR => [
-                                            '2e302f7f79' => $actions['1.1.3']['/movie/{id}']['error']['2e302f7f79']
+                                            'cc15434d35' => $actions['1.1.3']['/movie/{id}']['error']['cc15434d35']
                                         ]
                                     ],
                                     '/movies/{id}' => [
                                         Changelog::CHANGESET_TYPE_ACTION_ERROR => [
-                                            'e7dc298139' => $actions['1.1.3']['/movies/{id}']['error']['e7dc298139'],
-                                            '162944fa14' => call_user_func(
+                                            'edcc6fcf49' => $actions['1.1.3']['/movies/{id}']['error']['edcc6fcf49'],
+                                            '0a4c5505a8' => call_user_func(
                                                 function () use ($actions): array {
-                                                    $actions = $actions['1.1.3']['/movies/{id}']['error']['162944fa14'];
+                                                    $actions = $actions['1.1.3']['/movies/{id}']['error']['0a4c5505a8'];
 
                                                     // Add in the "If something cool happened." exception. It's the
                                                     // only private/vendor tag-free exception we're testing, and it
@@ -393,7 +393,7 @@ class ChangelogTest extends TestCase
                                                     $actions[1] = [
                                                         'resource_group' => 'Movies',
                                                         'method' => 'PATCH',
-                                                        'uri' => '/movies/{id}',
+                                                        'path' => '/movies/{id}',
                                                         'http_code' => '403 Forbidden',
                                                         'representation' => 'Coded error',
                                                         'description' => 'If something cool happened.'
@@ -404,12 +404,12 @@ class ChangelogTest extends TestCase
                                             )
                                         ],
                                         Changelog::CHANGESET_TYPE_ACTION_RETURN => [
-                                            '162944fa14' => $actions['1.1.3']['/movies/{id}']['return']['162944fa14']
+                                            '0a4c5505a8' => $actions['1.1.3']['/movies/{id}']['return']['0a4c5505a8']
                                         ]
                                     ],
                                     '/movies' => [
                                         Changelog::CHANGESET_TYPE_ACTION_RETURN => [
-                                            '3781891d58' => $actions['1.1.3']['/movies']['return']['3781891d58']
+                                            '8bedc22ca1' => $actions['1.1.3']['/movies']['return']['8bedc22ca1']
                                         ]
                                     ]
                                 ]
@@ -476,9 +476,8 @@ class ChangelogTest extends TestCase
                             'resources' => [
                                 'Theaters' => [
                                     '/theaters/{id}' => [
-                                        Changelog::CHANGESET_TYPE_ACTION_ERROR => [
-                                            'b3a16c4d74' =>
-                                                $actions['1.1.2']['/theaters/{id}']['action_error']['b3a16c4d74']
+                                        Changelog::CHANGESET_TYPE_ACTION_ERROR  => [
+                                            '6f3f64d865' => $actions['1.1.2']['/theaters/{id}']['error']['6f3f64d865']
                                         ]
                                     ]
                                 ]
@@ -494,7 +493,7 @@ class ChangelogTest extends TestCase
                                 'Movies' => [
                                     '/movies/{id}' => [
                                         Changelog::CHANGESET_TYPE_ACTION_PARAM => [
-                                            '162944fa14' => $actions['1.1.1']['/movies/{id}']['param']['162944fa14']
+                                            '0a4c5505a8' => $actions['1.1.1']['/movies/{id}']['param']['0a4c5505a8']
                                         ]
                                     ]
                                 ]
@@ -517,13 +516,13 @@ class ChangelogTest extends TestCase
                                 'Movies' => [
                                     '/movies/{id}' => [
                                         Changelog::CHANGESET_TYPE_ACTION => [
-                                            'd81e7058dd' => $actions['1.1']['/movies/{id}']['action']['d81e7058dd']
+                                            '0b3fdf5321' => $actions['1.1']['/movies/{id}']['action']['0b3fdf5321']
                                         ]
                                     ],
                                     '/movies' => [
                                         Changelog::CHANGESET_TYPE_ACTION_PARAM => [
-                                            '776d02bb83' => $actions['1.1']['/movies']['param']['776d02bb83'],
-                                            '3781891d58' => $actions['1.1']['/movies']['param']['3781891d58']
+                                            '6d082f8d4f' => $actions['1.1']['/movies']['param']['6d082f8d4f'],
+                                            '8bedc22ca1' => $actions['1.1']['/movies']['param']['8bedc22ca1']
                                         ]
                                     ]
                                 ]
@@ -562,16 +561,16 @@ class ChangelogTest extends TestCase
                                 'Movies' => [
                                     '/movies/{id}' => [
                                         Changelog::CHANGESET_TYPE_ACTION_ERROR => [
-                                            'e7dc298139' => $actions['1.1.3']['/movies/{id}']['error']['e7dc298139'],
-                                            '162944fa14' => $actions['1.1.3']['/movies/{id}']['error']['162944fa14']
+                                            'edcc6fcf49' => $actions['1.1.3']['/movies/{id}']['error']['edcc6fcf49'],
+                                            '0a4c5505a8' => $actions['1.1.3']['/movies/{id}']['error']['0a4c5505a8']
                                         ],
                                         Changelog::CHANGESET_TYPE_ACTION_RETURN => [
-                                            '162944fa14' => $actions['1.1.3']['/movies/{id}']['return']['162944fa14']
+                                            '0a4c5505a8' => $actions['1.1.3']['/movies/{id}']['return']['0a4c5505a8']
                                         ]
                                     ],
                                     '/movies' => [
                                         Changelog::CHANGESET_TYPE_ACTION_RETURN => [
-                                            '3781891d58' => $actions['1.1.3']['/movies']['return']['3781891d58']
+                                            '8bedc22ca1' => $actions['1.1.3']['/movies']['return']['8bedc22ca1']
                                         ]
                                     ]
                                 ]
@@ -634,8 +633,7 @@ class ChangelogTest extends TestCase
                                 'Theaters' => [
                                     '/theaters/{id}' => [
                                         Changelog::CHANGESET_TYPE_ACTION_ERROR => [
-                                            'b3a16c4d74' =>
-                                                $actions['1.1.2']['/theaters/{id}']['action_error']['b3a16c4d74']
+                                            '6f3f64d865' => $actions['1.1.2']['/theaters/{id}']['error']['6f3f64d865']
                                         ]
                                     ]
                                 ]
@@ -651,7 +649,7 @@ class ChangelogTest extends TestCase
                                 'Movies' => [
                                     '/movies/{id}' => [
                                         Changelog::CHANGESET_TYPE_ACTION_PARAM => [
-                                            '162944fa14' => $actions['1.1.1']['/movies/{id}']['param']['162944fa14']
+                                            '0a4c5505a8' => $actions['1.1.1']['/movies/{id}']['param']['0a4c5505a8']
                                         ]
                                     ]
                                 ]
@@ -674,13 +672,13 @@ class ChangelogTest extends TestCase
                                 'Movies' => [
                                     '/movies/{id}' => [
                                         Changelog::CHANGESET_TYPE_ACTION => [
-                                            'd81e7058dd' => $actions['1.1']['/movies/{id}']['action']['d81e7058dd']
+                                            '0b3fdf5321' => $actions['1.1']['/movies/{id}']['action']['0b3fdf5321']
                                         ]
                                     ],
                                     '/movies' => [
                                         Changelog::CHANGESET_TYPE_ACTION_PARAM => [
-                                            '776d02bb83' => $actions['1.1']['/movies']['param']['776d02bb83'],
-                                            '3781891d58' => $actions['1.1']['/movies']['param']['3781891d58']
+                                            '6d082f8d4f' => $actions['1.1']['/movies']['param']['6d082f8d4f'],
+                                            '8bedc22ca1' => $actions['1.1']['/movies']['param']['8bedc22ca1']
                                         ]
                                     ]
                                 ]
@@ -717,16 +715,16 @@ class ChangelogTest extends TestCase
                                 'Movies' => [
                                     '/movies/{id}' => [
                                         Changelog::CHANGESET_TYPE_ACTION_ERROR => [
-                                            'e7dc298139' => $actions['1.1.3']['/movies/{id}']['error']['e7dc298139'],
-                                            '162944fa14' => $actions['1.1.3']['/movies/{id}']['error']['162944fa14']
+                                            'edcc6fcf49' => $actions['1.1.3']['/movies/{id}']['error']['edcc6fcf49'],
+                                            '0a4c5505a8' => $actions['1.1.3']['/movies/{id}']['error']['0a4c5505a8']
                                         ],
                                         Changelog::CHANGESET_TYPE_ACTION_RETURN => [
-                                            '162944fa14' => $actions['1.1.3']['/movies/{id}']['return']['162944fa14']
+                                            '0a4c5505a8' => $actions['1.1.3']['/movies/{id}']['return']['0a4c5505a8']
                                         ]
                                     ],
                                     '/movies' => [
                                         Changelog::CHANGESET_TYPE_ACTION_RETURN => [
-                                            '3781891d58' => $actions['1.1.3']['/movies']['return']['3781891d58']
+                                            '8bedc22ca1' => $actions['1.1.3']['/movies']['return']['8bedc22ca1']
                                         ]
                                     ]
                                 ]
@@ -791,8 +789,7 @@ class ChangelogTest extends TestCase
                                 'Theaters' => [
                                     '/theaters/{id}' => [
                                         Changelog::CHANGESET_TYPE_ACTION_ERROR => [
-                                            'b3a16c4d74' =>
-                                                $actions['1.1.2']['/theaters/{id}']['action_error']['b3a16c4d74']
+                                            '6f3f64d865' => $actions['1.1.2']['/theaters/{id}']['error']['6f3f64d865']
                                         ]
                                     ]
                                 ]
@@ -808,7 +805,7 @@ class ChangelogTest extends TestCase
                                 'Movies' => [
                                     '/movies/{id}' => [
                                         Changelog::CHANGESET_TYPE_ACTION_PARAM => [
-                                            '162944fa14' => $actions['1.1.1']['/movies/{id}']['param']['162944fa14']
+                                            '0a4c5505a8' => $actions['1.1.1']['/movies/{id}']['param']['0a4c5505a8']
                                         ]
                                     ]
                                 ]
@@ -831,9 +828,9 @@ class ChangelogTest extends TestCase
                                 'Movies' => [
                                     '/movies/{id}' => [
                                         Changelog::CHANGESET_TYPE_ACTION => [
-                                            'd81e7058dd' => call_user_func(
+                                            '0b3fdf5321' => call_user_func(
                                                 function () use ($actions): array {
-                                                    $actions = $actions['1.1']['/movies/{id}']['action']['d81e7058dd'];
+                                                    $actions = $actions['1.1']['/movies/{id}']['action']['0b3fdf5321'];
 
                                                     // Remove the `DELETE` method from `/movies/{id}`, since that
                                                     // shouldn't be available under these conditions.
@@ -845,8 +842,8 @@ class ChangelogTest extends TestCase
                                     ],
                                     '/movies' => [
                                         Changelog::CHANGESET_TYPE_ACTION_PARAM => [
-                                            '776d02bb83' => $actions['1.1']['/movies']['param']['776d02bb83'],
-                                            '3781891d58' => $actions['1.1']['/movies']['param']['3781891d58']
+                                            '6d082f8d4f' => $actions['1.1']['/movies']['param']['6d082f8d4f'],
+                                            '8bedc22ca1' => $actions['1.1']['/movies']['param']['8bedc22ca1']
                                         ]
                                     ]
                                 ]
@@ -880,16 +877,16 @@ class ChangelogTest extends TestCase
                                 'Movies' => [
                                     '/movies/{id}' => [
                                         Changelog::CHANGESET_TYPE_ACTION_ERROR => [
-                                            'e7dc298139' => $actions['1.1.3']['/movies/{id}']['error']['e7dc298139'],
-                                            '162944fa14' => $actions['1.1.3']['/movies/{id}']['error']['162944fa14']
+                                            'edcc6fcf49' => $actions['1.1.3']['/movies/{id}']['error']['edcc6fcf49'],
+                                            '0a4c5505a8' => $actions['1.1.3']['/movies/{id}']['error']['0a4c5505a8']
                                         ],
                                         Changelog::CHANGESET_TYPE_ACTION_RETURN => [
-                                            '162944fa14' => $actions['1.1.3']['/movies/{id}']['return']['162944fa14']
+                                            '0a4c5505a8' => $actions['1.1.3']['/movies/{id}']['return']['0a4c5505a8']
                                         ]
                                     ],
                                     '/movies' => [
                                         Changelog::CHANGESET_TYPE_ACTION_RETURN => [
-                                            '3781891d58' => $actions['1.1.3']['/movies']['return']['3781891d58']
+                                            '8bedc22ca1' => $actions['1.1.3']['/movies']['return']['8bedc22ca1']
                                         ]
                                     ]
                                 ]
@@ -943,8 +940,7 @@ class ChangelogTest extends TestCase
                                 'Theaters' => [
                                     '/theaters/{id}' => [
                                         Changelog::CHANGESET_TYPE_ACTION_ERROR => [
-                                            'b3a16c4d74' =>
-                                                $actions['1.1.2']['/theaters/{id}']['action_error']['b3a16c4d74']
+                                            '6f3f64d865' => $actions['1.1.2']['/theaters/{id}']['error']['6f3f64d865']
                                         ]
                                     ]
                                 ]
@@ -960,7 +956,7 @@ class ChangelogTest extends TestCase
                                 'Movies' => [
                                     '/movies/{id}' => [
                                         Changelog::CHANGESET_TYPE_ACTION_PARAM => [
-                                            '162944fa14' => $actions['1.1.1']['/movies/{id}']['param']['162944fa14']
+                                            '0a4c5505a8' => $actions['1.1.1']['/movies/{id}']['param']['0a4c5505a8']
                                         ]
                                     ]
                                 ]
@@ -993,10 +989,9 @@ class ChangelogTest extends TestCase
                                 'Movies' => [
                                     '/movies/{id}' => [
                                         Changelog::CHANGESET_TYPE_ACTION => [
-                                            'd81e7058dd' => call_user_func(
+                                            '0b3fdf5321' => call_user_func(
                                                 function () use ($actions): array {
-                                                    $hash = 'd81e7058ddfce86beb09ddb2a2461ea16d949637';
-                                                    $actions = $actions['1.1']['/movies/{id}']['action']['d81e7058dd'];
+                                                    $actions = $actions['1.1']['/movies/{id}']['action']['0b3fdf5321'];
 
                                                     // Remove the `DELETE` method from `/movies/{id}`, since that
                                                     // shouldn't be available under these conditions.
@@ -1008,8 +1003,8 @@ class ChangelogTest extends TestCase
                                     ],
                                     '/movies' => [
                                         Changelog::CHANGESET_TYPE_ACTION_PARAM => [
-                                            '776d02bb83' => $actions['1.1']['/movies']['param']['776d02bb83'],
-                                            '3781891d58' => $actions['1.1']['/movies']['param']['3781891d58']
+                                            '6d082f8d4f' => $actions['1.1']['/movies']['param']['6d082f8d4f'],
+                                            '8bedc22ca1' => $actions['1.1']['/movies']['param']['8bedc22ca1']
                                         ]
                                     ]
                                 ]

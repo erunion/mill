@@ -28,6 +28,7 @@ class Blueprint extends Generator
      * @psalm-suppress PossiblyFalseOperand
      * @psalm-suppress InvalidScalarArgument
      * @psalm-suppress PossiblyUndefinedVariable
+     * @psalm-suppress PossiblyUndefinedArrayOffset
      * @return array
      */
     public function generate(): array
@@ -63,7 +64,7 @@ class Blueprint extends Generator
                 foreach ($data['resources'] as $identifier => $resource) {
                     /** @var Action\Documentation $action */
                     foreach ($resource['actions'] as $action) {
-                        $resource_key = sprintf('%s [%s]', $identifier, $action->getUri()->getCleanPath());
+                        $resource_key = sprintf('%s [%s]', $identifier, $action->getPath()->getCleanPath());
                         if (!isset($resource_contents[$resource_key])) {
                             $resource_contents[$resource_key] = [
                                 'description' => $resource['description'],
@@ -570,10 +571,10 @@ class Blueprint extends Generator
                 return 'number';
                 break;
 
-            // API Blueprint doesn't have support for dates, timestamps, or URI's, but we still want to
-            // keep that metadata in our documentation (because they might be useful if you're using Mill as an API
-            // to display your documentation in some other format), so just convert these on the fly to strings so
-            // they're able pass blueprint validation.
+            // API Blueprint doesn't have support for dates, timestamps, or paths, but we still want to keep that
+            // metadata in our documentation (because they might be useful if you're using Mill as an API to display
+            // your documentation in some other format), so just convert these on the fly to strings so they're able
+            // pass blueprint validation.
             case 'date':
             case 'datetime':
             case 'timestamp':

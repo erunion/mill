@@ -43,21 +43,21 @@ class ErrorMapTestTest extends TestCase
         // Save us the effort of copy and pasting the same action data over and over.
         $errors = [
             '/movies/+id::PATCH:666' => [
-                'uri' => '/movies/{id}',
+                'path' => '/movies/{id}',
                 'method' => 'PATCH',
                 'http_code' => '403 Forbidden',
                 'error_code' => '666',
                 'description' => 'If the user is not allowed to edit that movie.'
             ],
             '/movies/+id::PATCH:1337' => [
-                'uri' => '/movies/{id}',
+                'path' => '/movies/{id}',
                 'method' => 'PATCH',
                 'http_code' => '403 Forbidden',
                 'error_code' => '1337',
                 'description' => 'If something cool happened.'
             ],
             '/theaters/+id::PATCH::1337' => [
-                'uri' => '/theaters/{id}',
+                'path' => '/theaters/{id}',
                 'method' => 'PATCH',
                 'http_code' => '403 Forbidden',
                 'error_code' => '1337',

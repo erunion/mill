@@ -12,7 +12,7 @@ class Movies
      * @api-label Get movies.
      * @api-group Movies
      *
-     * @api-uri:public /movies
+     * @api-path:public /movies
      *
      * @api-param:public location (string, required) - Location you want movies for.
      *
@@ -40,7 +40,7 @@ class Movies
      * @api-label Create a movie.
      * @api-group Movies
      *
-     * @api-uri:public /movies
+     * @api-path:public /movies
      *
      * @api-scope create
      *
