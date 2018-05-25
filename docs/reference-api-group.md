@@ -1,10 +1,6 @@
 ---
-layout: default
+id: "api-group"
 title: "@api-group"
-permalink: /reference/api-group
----
-
-# @api-group
 ---
 
 Name of the group that this action should be grouped under when generating documentation.
@@ -24,7 +20,7 @@ Name of the group that this action should be grouped under when generating docum
 
 | Tag | Optional | Description |
 | :--- | :--- | :--- |
-| `groupName` | × | Group name |
+| groupName | × | Group name |
 
 ## Examples
 On a resource action:

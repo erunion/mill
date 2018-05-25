@@ -27,7 +27,7 @@ This describes a piece of data within a representation that a resource action ca
 | type | × | This describes the type of data that a representation data field contains. |
 | required&vert;optional | ✓ | A flag that indicates that the data is, well, optional. If nothing is supplied, it defaults to being `optional`. |
 | nullable | ✓ | A flag that indicates that the data is nullable. If nothing is supplied, it defaults to being non-nullable. |
-| vendor:tagName | ✓ | Defined vendor tag. See the [`@api-vendortag`]({{ site.github.url }}/reference/api-vendortag) documentation for more information. There is no limit to the amount of vendor tags you can specify on a parameter. |
+| vendor:tagName | ✓ | Defined vendor tag. See the [`@api-vendortag`](reference/api-vendortag.md) documentation for more information. There is no limit to the amount of vendor tags you can specify on a parameter. |
 | Description | × | A description for that this data is. |
 | Members | ✓ | If this data has acceptable values (like in the case of an `enum` type), you can document those values here along with a description for what the value is, or means. |
 

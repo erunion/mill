@@ -16,18 +16,19 @@
       "representations"
     ],
     "API Reference": [
-      "api-capability",
       "api-contenttype",
       "api-data",
+      "api-error",
+      "api-group",
       "api-label",
       "api-minversion",
       "api-param",
       "api-return",
       "api-scope",
       "api-see",
-      "api-throws",
       "api-uri",
-      "api-urisegment"
+      "api-urisegment",
+      "api-vendortag"
     ]
   }
 }

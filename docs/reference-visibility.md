@@ -18,7 +18,7 @@ To choose what visibility your annotation should have, suffix your annotation wi
  * @api-uri:private {Films} /films/+id
  * @api-urisegment {/films/+id} id (integer) - Film ID
  *
- * @api-throws:private {403} \Some\ErrorErrorRepresentation If the user isn't
+ * @api-error:private 403 (\Some\ErrorErrorRepresentation) - If the user isn't
  *    allowed to do something.
  */
 public function PATCH()
@@ -27,4 +27,4 @@ public function PATCH()
 }
 ```
 
-Visibility decorators are required on [`@api-param`](reference-api-param.md), [`@api-return`](reference-api-return.md), [`@api-throws`](reference-api-throws.md), and [`@api-uri`](reference-api-uri.md).
+Visibility decorators are required on [`@api-param`](reference-api-param.md), [`@api-return`](reference-api-return.md), [`@api-error`](reference-api-error.md), and [`@api-uri`](reference-api-uri.md).

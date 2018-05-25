@@ -48,7 +48,7 @@ Say if this is a user data action, it might return a `\UserRepresentation`.
 | | updated |
 | 304 Not Modified | notmodified |
 
-> **Note:** `@api-return` does not support returning 400 or 500 error codes. If you need those, use [`@api-throws`](reference-api-throws.md) instead.
+> **Note:** `@api-return` does not support returning 400 or 500 error codes. If you need those, use [`@api-error`](reference-api-error.md) instead.
 
 ## Examples
 ```php

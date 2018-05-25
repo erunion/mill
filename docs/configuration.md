@@ -51,7 +51,7 @@ In order to instruct Mill on where to look for documentation, and any constraint
 ## Settings
 > All directory paths should be relative to the location of your `mill.xml` configuration file.
 
-> If you specify a controller, representation, capability, or scope in your documentation that hasn't been configured here, documentation generation will fail with errors.
+> If you specify a controller, representation, vendor tag, or scope in your documentation that hasn't been configured here, documentation generation will fail with errors.
 
 ### Versions
 The `<versions>` setting lets you inform Mill on the various version of your API that exist. From here, Mill will then know what versions to compile documentation for.
@@ -76,7 +76,7 @@ The `<representations`> setting lets you inform Mill on where your API data repr
 * Add in an `<excludes>` block, with `<name>` elements for excluding specific controllers from being parsed.
 
 #### Errors
-The representation `<errors>` setting lets you tell Mill where your error representations are (the content that is returned from [`@api-throws`](reference-api-throws.md) annotations. Here you can specify a `<class>` with a fully-qualified class name.
+The representation `<errors>` setting lets you tell Mill where your error representations are (the content that is returned from [`@api-error`](reference-api-error.md) annotations. Here you can specify a `<class>` with a fully-qualified class name.
 
 Required attributes for the `<class>` element are:
 
@@ -156,11 +156,7 @@ documentation against), you should use vendor tags to document those.
 </vendorTags>
 ```
 
-You can find usage details for vendor tags in the
-[`@api-vendortag`]({{ site.github.url }}/reference/api-vendortag),
-[`@api-param`]({{ site.github.url }}/reference/api-param),
-[`@api-return`]({{ site.github.url }}/reference/api-return), and
-[`@api-error`]({{ site.github.url }}/reference/api-error) documentation.
+You can find usage details for vendor tags in the [`@api-vendortag`](reference-api-vendortag.md), [`@api-param`](reference-api-param.md), [`@api-return`](reference-api-return.md), and [`@api-error`](reference-api-error.md) documentation.
 
 ### Generators
 These settings let you control the documentation generators that Mill supports
