@@ -29,7 +29,7 @@ This corresponds to an available user authentication token scope (ex. "create", 
  * @api-label Update a movie
  * @api-group Movies
  *
- * @api-uri:public /movies/+id
+ * @api-path:public /movies/+id
  * @api-urisegment {/movies/+id} id (integer) - Movie ID
  *
  * @api-scope edit

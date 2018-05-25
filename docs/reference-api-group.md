@@ -30,7 +30,7 @@ On a resource action:
  * @api-label Update data on a group of videos.
  * @api-group Users
  *
- * @api-uri:public /users
+ * @api-path:public /users
  *
  * …
  */

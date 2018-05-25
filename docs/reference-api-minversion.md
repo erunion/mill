@@ -3,8 +3,7 @@ id: api-minversion
 title: "@api-minversion"
 ---
 
-This allows you to denote the minimum API version required for a resource
-action.
+This allows you to denote the minimum API version required for a resource action.
 
 ## Syntax
 ```php
@@ -29,7 +28,7 @@ action.
  * @api-label Update a movie.
  * @api-group Movies
  *
- * @api-uri:public /movies/+id
+ * @api-path:public /movies/+id
  * @api-urisegment {/movies/+id} id (integer) - Movie ID
  *
  * @api-minversion 3.2

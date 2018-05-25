@@ -12,10 +12,12 @@ To choose what visibility your annotation should have, suffix your annotation wi
 
 ```php
 /**
- * @api-uri:public {Movies} /movies/+id
+ * @api-group Movies
+
+ * @api-path:public /movies/+id
  * @api-urisegment {/movies/+id} id (integer) - Movie ID
  *
- * @api-uri:private {Films} /films/+id
+ * @api-path:private /films/+id
  * @api-urisegment {/films/+id} id (integer) - Film ID
  *
  * @api-error:private 403 (\Some\ErrorErrorRepresentation) - If the user isn't
@@ -27,4 +29,4 @@ public function PATCH()
 }
 ```
 
-Visibility decorators are required on [`@api-param`](reference-api-param.md), [`@api-return`](reference-api-return.md), [`@api-error`](reference-api-error.md), and [`@api-uri`](reference-api-uri.md).
+Visibility decorators are required on [`@api-param`](reference-api-param.md), [`@api-return`](reference-api-return.md), [`@api-error`](reference-api-error.md), and [`@api-path`](reference-api-path.md).

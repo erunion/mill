@@ -16,10 +16,10 @@ You might have instances where you need to deprecate a resource action request p
  * @api-label Get a single movie.
  * @api-group Movies
  *
- * @api-uri:public /movies/+id
+ * @api-path:public /movies/+id
  * @api-urisegment {/movies/+id} id (integer) - Movie ID
  *
- * @api-uri:private:deprecated /films/+id
+ * @api-path:private:deprecated /films/+id
  * @api-urisegment {/films/+id} id (integer) - Film ID
  *
  * @api-contenttype application/json
@@ -36,4 +36,4 @@ public function GET()
 }
 ```
 
-Deprecated decorators are only available on [`@api-param`](reference-api-param.md) and [`@api-uri`](reference-api-uri.md).
+Deprecated decorators are only available on [`@api-param`](reference-api-param.md) and [`@api-path`](reference-api-path.md).

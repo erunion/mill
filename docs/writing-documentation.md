@@ -67,7 +67,7 @@ class UsersController extends \MyApplication\Controller
      * @api-label Search
      * @api-group Users
      *
-     * @api-uri:public /users
+     * @api-path:public /users
      *
      * @api-contentType application/json
      *
