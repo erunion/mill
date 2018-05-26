@@ -95,7 +95,7 @@ class ParamAnnotationTest extends AnnotationTest
     {
         return [
             '_complete' => [
-                'content' => 'content_rating `G` (string, optional, nullable, tag:MOVIE_RATINGS) - MPAA rating
+                'content' => 'content_rating `G` (enum, optional, nullable, tag:MOVIE_RATINGS) - MPAA rating
                     + Members
                         - `G` - G rated
                         - `PG` - PG rated
@@ -110,7 +110,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'nullable' => true,
                     'required' => false,
                     'sample_data' => 'G',
-                    'type' => 'string',
+                    'type' => 'enum',
                     'values' => [
                         'G' => 'G rated',
                         'PG' => 'PG rated',
@@ -124,7 +124,7 @@ class ParamAnnotationTest extends AnnotationTest
                 ]
             ],
             '_complete-with-markdown-description' => [
-                'content' => 'content_rating `G` (string, optional, nullable, tag:MOVIE_RATINGS) - This denotes the
+                'content' => 'content_rating `G` (enum, optional, nullable, tag:MOVIE_RATINGS) - This denotes the
                     [MPAA rating](http://www.mpaa.org/film-ratings/) for the movie.
                     + Members
                         - `G` - G rated
@@ -140,7 +140,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'nullable' => true,
                     'required' => false,
                     'sample_data' => 'G',
-                    'type' => 'string',
+                    'type' => 'enum',
                     'values' => [
                         'G' => 'G rated',
                         'PG' => 'PG rated',
@@ -173,7 +173,7 @@ class ParamAnnotationTest extends AnnotationTest
                 ]
             ],
             'enum-with-no-descriptions' => [
-                'content' => 'is_kid_friendly `yes` (string, optional) - Is this movie kid friendly?
+                'content' => 'is_kid_friendly `yes` (enum, optional) - Is this movie kid friendly?
                     + Members
                         - `yes`
                         - `no`',
@@ -187,7 +187,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'nullable' => false,
                     'required' => false,
                     'sample_data' => 'yes',
-                    'type' => 'string',
+                    'type' => 'enum',
                     'values' => [
                         'no' => '',
                         'yes' => ''
@@ -198,7 +198,7 @@ class ParamAnnotationTest extends AnnotationTest
                 ]
             ],
             'enum-with-no-set-default' => [
-                'content' => 'content_rating `G` (string, optional) - MPAA rating
+                'content' => 'content_rating `G` (enum, optional) - MPAA rating
                     + Members
                         - `G` - G rated
                         - `PG` - PG rated
@@ -218,7 +218,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'nullable' => false,
                     'required' => false,
                     'sample_data' => 'G',
-                    'type' => 'string',
+                    'type' => 'enum',
                     'values' => [
                         'G' => 'G rated',
                         'NC-17' => 'NC-17 rated',
@@ -306,7 +306,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'nullable' => false,
                     'required' => false,
                     'sample_data' => false,
-                    'type' => 'string',
+                    'type' => 'enum',
                     'values' => [
                         'embeddable' => 'Embeddable',
                         'playable' => 'Playable'

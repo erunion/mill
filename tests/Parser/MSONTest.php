@@ -25,6 +25,19 @@ class MSONTest extends TestCase
         (new MSON(__CLASS__, __METHOD__))->parse($content);
     }
 
+    public function testEnumFailsWhenWrittenAsAString(): void
+    {
+        $this->expectException('Mill\Exceptions\MSON\ImproperlyWrittenEnumException');
+
+        $content = 'content_rating `G` (string, optional) - MPAA rating
+            + Members
+                - `G` - G rated
+                - `PG` - PG rated
+                - `PG-13` - PG-13 rated';
+
+        (new MSON(__CLASS__, __METHOD__))->parse($content);
+    }
+
     /**
      * @dataProvider providerTestParseFailsOnInvalidTypes
      * @param string $content
@@ -39,7 +52,7 @@ class MSONTest extends TestCase
     {
         return [
             '_complete' => [
-                'content' => 'content_rating `G` (string, optional, tag:MOVIE_RATINGS, needs:validUser) - MPAA rating
+                'content' => 'content_rating `G` (enum, optional, tag:MOVIE_RATINGS, needs:validUser) - MPAA rating
                     + Members
                         - `G` - G rated
                         - `PG` - PG rated
@@ -51,7 +64,7 @@ class MSONTest extends TestCase
                     'required' => false,
                     'sample_data' => 'G',
                     'subtype' => false,
-                    'type' => 'string',
+                    'type' => 'enum',
                     'values' => [
                         'G' => 'G rated',
                         'PG' => 'PG rated',
@@ -98,7 +111,7 @@ class MSONTest extends TestCase
                 ]
             ],
             'description-markdown' => [
-                'content' => 'content_rating `G` (string, optional, nullable, tag:MOVIE_RATINGS) - This denotes the
+                'content' => 'content_rating `G` (enum, optional, nullable, tag:MOVIE_RATINGS) - This denotes the
                     [MPAA rating](http://www.mpaa.org/film-ratings/) for the movie.
                     + Members
                         - `G` - G rated
@@ -111,7 +124,7 @@ class MSONTest extends TestCase
                     'required' => false,
                     'sample_data' => 'G',
                     'subtype' => false,
-                    'type' => 'string',
+                    'type' => 'enum',
                     'values' => [
                         'G' => 'G rated',
                         'PG' => 'PG rated',
@@ -123,7 +136,7 @@ class MSONTest extends TestCase
                 ]
             ],
             'description-starts-on-new-line' => [
-                'content' => 'content_rating `G` (string)
+                'content' => 'content_rating `G` (enum)
                     - MPAA Rating
                     + Members
                         - `G` - G rated
@@ -136,7 +149,7 @@ class MSONTest extends TestCase
                     'required' => false,
                     'sample_data' => 'G',
                     'subtype' => false,
-                    'type' => 'string',
+                    'type' => 'enum',
                     'values' => [
                         'G' => 'G rated',
                         'PG' => 'PG rated',
@@ -146,7 +159,7 @@ class MSONTest extends TestCase
                 ]
             ],
             'enum-without-descriptions' => [
-                'content' => 'is_kid_friendly `yes` (string, optional) - Is this movie kid friendly?
+                'content' => 'is_kid_friendly `yes` (enum, optional) - Is this movie kid friendly?
                     + Members
                         - `yes`
                         - `no`',
@@ -157,7 +170,7 @@ class MSONTest extends TestCase
                     'required' => false,
                     'sample_data' => 'yes',
                     'subtype' => false,
-                    'type' => 'string',
+                    'type' => 'enum',
                     'values' => [
                         'no' => '',
                         'yes' => ''
@@ -166,7 +179,7 @@ class MSONTest extends TestCase
                 ]
             ],
             'enum-without-set-default' => [
-                'content' => 'content_rating `G` (string, optional) - MPAA rating
+                'content' => 'content_rating `G` (enum, optional) - MPAA rating
                     + Members
                         - `G` - G rated
                         - `PG` - PG rated
@@ -183,7 +196,7 @@ class MSONTest extends TestCase
                     'required' => false,
                     'sample_data' => 'G',
                     'subtype' => false,
-                    'type' => 'string',
+                    'type' => 'enum',
                     'values' => [
                         'G' => 'G rated',
                         'NC-17' => 'NC-17 rated',
