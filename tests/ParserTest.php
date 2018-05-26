@@ -204,6 +204,10 @@ These actions will allow you to pull information on a specific movie.', $annotat
                         'class' => Parser\Annotations\LabelAnnotation::class,
                         'count' => 1
                     ],
+                    'maxversion' => [
+                        'class' => Parser\Annotations\MaxVersionAnnotation::class,
+                        'count' => 1
+                    ],
                     'minversion' => [
                         'class' => Parser\Annotations\MinVersionAnnotation::class,
                         'count' => 1

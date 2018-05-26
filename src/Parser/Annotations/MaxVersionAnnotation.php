@@ -6,21 +6,21 @@ use Mill\Parser\Annotation;
 use Mill\Parser\Version;
 
 /**
- * Handler for the `@api-minversion` annotation.
+ * Handler for the `@api-maxversion` annotation.
  *
  */
-class MinVersionAnnotation extends Annotation
+class MaxVersionAnnotation extends Annotation
 {
     const ARRAYABLE = [
-        'minimum_version'
+        'maximum_version'
     ];
 
     /** @var string */
-    protected $minimum_version;
+    protected $maximum_version;
 
     /**
      * {@inheritdoc}
-     * @throws AbsoluteVersionException If an `@api-minversion` annotation version is not absolute.
+     * @throws AbsoluteVersionException If an `@api-maxversion` annotation version is not absolute.
      */
     protected function parser(): array
     {
@@ -29,11 +29,11 @@ class MinVersionAnnotation extends Annotation
 
         $parsed = new Version($this->docblock, $this->class, $method);
         if ($parsed->isRange()) {
-            throw AbsoluteVersionException::create('min', $this->docblock, $this->class, $method);
+            throw AbsoluteVersionException::create('max', $this->docblock, $this->class, $method);
         }
 
         return [
-            'minimum_version' => $parsed->getConstraint()
+            'maximum_version' => $parsed->getConstraint()
         ];
     }
 
@@ -44,7 +44,7 @@ class MinVersionAnnotation extends Annotation
     {
         // The Version class already does all of our validation, so if we're at this point, we have a good version and
         // don't need to run it through `$this->required()` again.
-        $this->minimum_version = $this->parsed_data['minimum_version'];
+        $this->maximum_version = $this->parsed_data['maximum_version'];
     }
 
     /**
@@ -52,9 +52,9 @@ class MinVersionAnnotation extends Annotation
      */
     public static function hydrate(array $data = [], Version $version = null): self
     {
-        /** @var MinVersionAnnotation $annotation */
+        /** @var MaxVersionAnnotation $annotation */
         $annotation = parent::hydrate($data, $version);
-        $annotation->setMinimumVersion($data['minimum_version']);
+        $annotation->setMaximumVersion($data['maximum_version']);
 
         return $annotation;
     }
@@ -62,18 +62,18 @@ class MinVersionAnnotation extends Annotation
     /**
      * @return string
      */
-    public function getMinimumVersion(): string
+    public function getMaximumVersion(): string
     {
-        return $this->minimum_version;
+        return $this->maximum_version;
     }
 
     /**
-     * @param string $minimum_version
+     * @param string $maximum_version
      * @return self
      */
-    public function setMinimumVersion(string $minimum_version): self
+    public function setMaximumVersion(string $maximum_version): self
     {
-        $this->minimum_version = $minimum_version;
+        $this->maximum_version = $maximum_version;
         return $this;
     }
 }

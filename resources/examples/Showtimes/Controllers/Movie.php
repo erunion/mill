@@ -124,6 +124,7 @@ class Movie
      * @api-vendortag tag:DELETE_CONTENT
      * @api-scope delete
      * @api-minVersion 1.1
+     * @api-maxVersion 1.1.2
      *
      * @api-return:private {deleted}
      *

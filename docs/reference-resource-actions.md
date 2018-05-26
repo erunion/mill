@@ -9,6 +9,7 @@ title: "Resource Actions"
 | [`@api-error`](reference-api-error.md) | An exception or error that may be returned on the action. |
 | [`@api-group`](reference-api-group.md) | Name of the group that the action should be grouped under when generating documentation. |
 | [`@api-label`](reference-api-label.md) | Short description of what the resource action handles. |
+| [`@api-maxversion`](reference-api-maxversion.md) | Maximum version required for this action. |
 | [`@api-minversion`](reference-api-minversion.md) | Minimum version required for this action. |
 | [`@api-param`](reference-api-param.md) | A request parameter for this action. |
 | [`@api-path`](reference-api-path.md) | Denotes a path that this action services. |
