@@ -160,6 +160,12 @@ class RepresentationParser extends Parser
                         }
                     }
 
+                    // If this `@api-see` is being used with `@api-scope` annotations, the scope should filter down
+                    // the pipe.
+                    if (!empty($scopes)) {
+                        $annotation->setScopes($scopes);
+                    }
+
                     // If this `@api-see` has a prefix to attach to found annotation identifiers, do so.
                     if (!empty($prefix)) {
                         $see_annotations[$prefix . '.' . $name] = $annotation->setIdentifierPrefix($prefix);

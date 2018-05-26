@@ -86,6 +86,7 @@ class Movie extends Representation
             'showtimes' => $this->getShowtimes(),
 
             /**
+             * @api-scope public
              * @api-data external_urls (object) - External URLs
              * @api-version >=1.1
              * @api-see self::getExternalUrls external_urls
