@@ -49,7 +49,10 @@ class ActionParam extends Changeset
                 // array_map call, but you can't pass `$this` into closures.
                 foreach ($params as $k => $param) {
                     $params[$k] = $this->renderText('{parameter}', [
-                        'parameter' => $param
+                        'parameter' => $param,
+                        'resource_group' => $changes[0]['resource_group'],
+                        'method' => $method,
+                        'path' => $changes[0]['path']
                     ]);
                 }
 

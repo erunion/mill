@@ -376,9 +376,12 @@ class JsonTest extends TestCase
                                     'data-mill-resource-group="Movies" data-mill-method="POST" ' .
                                     'data-mill-path="/movies">/movies</span>:',
                                 [
-                                    '<span class="mill-changelog_parameter" data-mill-parameter="imdb">imdb</span>',
-                                    '<span class="mill-changelog_parameter" data-mill-parameter="trailer">trailer' .
-                                        '</span>'
+                                    '<span class="mill-changelog_parameter" data-mill-parameter="imdb" ' .
+                                        'data-mill-resource-group="Movies" data-mill-method="POST" ' .
+                                        'data-mill-path="/movies">imdb</span>',
+                                    '<span class="mill-changelog_parameter" data-mill-parameter="trailer" ' .
+                                        'data-mill-resource-group="Movies" data-mill-method="POST" ' .
+                                        'data-mill-path="/movies">trailer</span>'
                                 ]
                             ]
                         ]
