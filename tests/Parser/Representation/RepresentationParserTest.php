@@ -255,7 +255,12 @@ class RepresentationParserTest extends TestCase
                             'identifier' => 'external_urls',
                             'nullable' => false,
                             'sample_data' => false,
-                            'scopes' => [],
+                            'scopes' => [
+                                [
+                                    'description' => false,
+                                    'scope' => 'public'
+                                ]
+                            ],
                             'subtype' => false,
                             'type' => 'object',
                             'values' => [],
@@ -267,7 +272,12 @@ class RepresentationParserTest extends TestCase
                             'identifier' => 'external_urls.imdb',
                             'nullable' => false,
                             'sample_data' => false,
-                            'scopes' => [],
+                            'scopes' => [
+                                [
+                                    'description' => false,
+                                    'scope' => 'public'
+                                ]
+                            ],
                             'subtype' => false,
                             'type' => 'string',
                             'values' => [],
@@ -279,7 +289,12 @@ class RepresentationParserTest extends TestCase
                             'identifier' => 'external_urls.tickets',
                             'nullable' => false,
                             'sample_data' => false,
-                            'scopes' => [],
+                            'scopes' => [
+                                [
+                                    'description' => false,
+                                    'scope' => 'public'
+                                ]
+                            ],
                             'subtype' => false,
                             'type' => 'string',
                             'values' => [],
@@ -293,7 +308,12 @@ class RepresentationParserTest extends TestCase
                             'identifier' => 'external_urls.trailer',
                             'nullable' => false,
                             'sample_data' => false,
-                            'scopes' => [],
+                            'scopes' => [
+                                [
+                                    'description' => false,
+                                    'scope' => 'public'
+                                ]
+                            ],
                             'subtype' => false,
                             'type' => 'string',
                             'values' => [],
