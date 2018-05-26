@@ -6,7 +6,7 @@ use Mill\Parser\MSON;
 use Mill\Parser\Version;
 
 /**
- * Handler for the `@api-pathParam` annotation.
+ * Handler for the `@api-pathparam` annotation.
  *
  */
 class PathParamAnnotation extends Annotation

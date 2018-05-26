@@ -339,6 +339,6 @@ class Parser
     protected function getAnnotationNameFromTag(UnknownTag $tag): string
     {
         $annotation = $tag->getTagName();
-        return substr($annotation, 4);
+        return strtolower(substr($annotation, 4));
     }
 }

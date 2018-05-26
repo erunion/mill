@@ -13,7 +13,7 @@ class AbsoluteMinimumVersionException extends BaseException
         string $method
     ): AbsoluteMinimumVersionException {
         $message = sprintf(
-            'The version on `@api-minVersion %s` in %s::%s is not an absolute version.',
+            'The version on `@api-minversion %s` in %s::%s is not an absolute version.',
             $annotation,
             $class,
             $method

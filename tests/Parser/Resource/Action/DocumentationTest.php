@@ -264,7 +264,7 @@ DESCRIPTION;
                                 'visible' => true
                             ]
                         ],
-                        'pathParam' => [
+                        'pathparam' => [
                             [
                                 'description' => 'Movie ID',
                                 'field' => 'id',
@@ -372,7 +372,7 @@ DESCRIPTION;
                                 'visible' => true
                             ]
                         ],
-                        'minVersion' => [
+                        'minversion' => [
                             [
                                 'minimum_version' => '1.1'
                             ]
@@ -540,7 +540,7 @@ DESCRIPTION;
                                 'visible' => true
                             ]
                         ],
-                        'pathParam' => [
+                        'pathparam' => [
                             [
                                 'description' => 'Movie ID',
                                 'field' => 'id',
@@ -604,7 +604,7 @@ DESCRIPTION;
                                 'visible' => false
                             ]
                         ],
-                        'minVersion' => [
+                        'minversion' => [
                             [
                                 'minimum_version' => '1.1'
                             ]
@@ -618,7 +618,7 @@ DESCRIPTION;
                                 'visible' => false
                             ]
                         ],
-                        'pathParam' => [
+                        'pathparam' => [
                             [
                                 'description' => 'Movie ID',
                                 'field' => 'id',
@@ -642,7 +642,7 @@ DESCRIPTION;
                                 'scope' => 'delete'
                             ]
                         ],
-                        'vendorTag' => [
+                        'vendortag' => [
                             [
                                 'vendor_tag' => 'tag:DELETE_CONTENT'
                             ]
@@ -664,7 +664,7 @@ DESCRIPTION;
                   * @api-path:public /foo
                   * @api-path:private:alias /bar
                   *
-                  * @api-contentType application/json
+                  * @api-contenttype application/json
                   * @api-scope public
                   *
                   * @api-return:public {ok}
@@ -708,7 +708,7 @@ DESCRIPTION;
                   * @api-path:public /foo
                   * @api-path:private /bar
                   *
-                  * @api-contentType application/json
+                  * @api-contenttype application/json
                   * @api-scope public
                   *
                   * @api-return:public {ok}
@@ -743,16 +743,16 @@ DESCRIPTION;
                   *
                   * @api-path:private /foo
                   *
-                  * @api-contentType application/json
+                  * @api-contenttype application/json
                   * @api-scope delete
-                  * @api-vendorTag tag:DELETE_CONTENT
+                  * @api-vendortag tag:DELETE_CONTENT
                   *
                   * @api-return:private {deleted}
                   */',
                 'asserts' => [
                     'getVendorTags' => [
                         'total' => 1,
-                        'annotation.name' => 'vendorTag',
+                        'annotation.name' => 'vendortag',
                         'data' => [
                             [
                                 'vendor_tag' => 'tag:DELETE_CONTENT'
@@ -797,7 +797,7 @@ DESCRIPTION;
             ],
             'missing-required-content-type-annotation' => [
                 'docblock' => '/**
-                  * Test throwing an exception when a required `@api-contentType` annotation is missing.
+                  * Test throwing an exception when a required `@api-contenttype` annotation is missing.
                   *
                   * @api-label Test Method
                   * @api-group Something
@@ -805,7 +805,7 @@ DESCRIPTION;
                   */',
                 'expected.exception' => '\Mill\Exceptions\Annotations\RequiredAnnotationException',
                 'expected.exception.asserts' => [
-                    'getAnnotation' => 'contentType'
+                    'getAnnotation' => 'contenttype'
                 ]
             ],
             'missing-required-visibility-decorator' => [
@@ -815,7 +815,7 @@ DESCRIPTION;
                   * @api-label Test method
                   * @api-group Root
                   * @api-path /
-                  * @api-contentType application/json
+                  * @api-contenttype application/json
                   * @api-return:public {collection} \Mill\Examples\Showtimes\Representations\Representation
                   */',
                 'expected.exception' => '\Mill\Exceptions\Resource\MissingVisibilityDecoratorException',
@@ -830,7 +830,7 @@ DESCRIPTION;
                   * @api-label Test method
                   * @api-group Root
                   * @api-path:special /
-                  * @api-contentType application/json
+                  * @api-contenttype application/json
                   * @api-return {collection} \Mill\Examples\Showtimes\Representations\Representation
                   */',
                 'expected.exception' => '\Mill\Exceptions\Resource\UnsupportedDecoratorException',
@@ -845,7 +845,7 @@ DESCRIPTION;
                   *
                   * @api-label Test method
                   * @api-group Something
-                  * @api-contentType application/json
+                  * @api-contenttype application/json
                   * @api-param:public {page}
                   */',
                 'expected.exception' => '\Mill\Exceptions\Annotations\RequiredAnnotationException',
@@ -860,7 +860,7 @@ DESCRIPTION;
                   * @api-label Test method
                   * @api-group Search
                   * @api-path:private /search
-                  * @api-contentType application/json
+                  * @api-contenttype application/json
                   * @api-scope public
                   * @api-return:private {collection} \Mill\Examples\Showtimes\Representations\Representation
                   * @api-error:public 403 (\Mill\Examples\Showtimes\Representations\CodedError<666>) - If the user
@@ -879,7 +879,7 @@ DESCRIPTION;
                   * @api-group Search
                   * @api-path:private:alias /search
                   * @api-path:private:alias /search2
-                  * @api-contentType application/json
+                  * @api-contenttype application/json
                   * @api-scope public
                   * @api-return:private {collection} \Mill\Examples\Showtimes\Representations\Representation
                   * @api-error:public 403 (\Mill\Examples\Showtimes\Representations\CodedError<666>) - If the user

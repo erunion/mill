@@ -29,7 +29,7 @@ class Movie
      *
      * @api-path:private:alias /movie/+id
      * @api-path:public /movies/+id
-     * @api-pathParam id (integer) - Movie ID
+     * @api-pathparam id (integer) - Movie ID
      *
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Movie
      * @api-return:public {notmodified} If no content has been modified since the supplied Last-Modified header.
@@ -37,10 +37,10 @@ class Movie
      * @api-error:public 404 (\Mill\Examples\Showtimes\Representations\Error) - If the movie could not be found.
      *
      * @api-version >=1.1.2
-     * @api-contentType application/mill.example.movie
+     * @api-contenttype application/mill.example.movie
      *
      * @api-version <1.1.2
-     * @api-contentType application/json
+     * @api-contenttype application/json
      *
      * @api-version >=1.1.3
      * @api-error:public 404 (\Mill\Examples\Showtimes\Representations\Error) - For no reason.
@@ -58,10 +58,10 @@ class Movie
      * @api-group Movies
      *
      * @api-path:public /movies/+id
-     * @api-pathParam id (integer) - Movie ID
+     * @api-pathparam id (integer) - Movie ID
      *
      * @api-scope edit
-     * @api-minVersion 1.1
+     * @api-minversion 1.1
      *
      * @api-param:public name (string, required) - Name of the movie.
      * @api-param:public description (string, required) - Description, or tagline, for the movie.
@@ -90,10 +90,10 @@ class Movie
      * @api-error:public 404 (\Mill\Examples\Showtimes\Representations\Error) - If the movie could not be found.
      *
      * @api-version >=1.1.2
-     * @api-contentType application/mill.example.movie
+     * @api-contenttype application/mill.example.movie
      *
      * @api-version <1.1.2
-     * @api-contentType application/json
+     * @api-contenttype application/json
      *
      * @api-version >=1.1.1
      * @api-param:public imdb (string, optional) - IMDB URL
@@ -118,10 +118,10 @@ class Movie
      * @api-group Movies
      *
      * @api-path:private /movies/+id
-     * @api-pathParam id (integer) - Movie ID
+     * @api-pathparam id (integer) - Movie ID
      *
-     * @api-contentType application/json
-     * @api-vendorTag tag:DELETE_CONTENT
+     * @api-contenttype application/json
+     * @api-vendortag tag:DELETE_CONTENT
      * @api-scope delete
      * @api-minVersion 1.1
      *

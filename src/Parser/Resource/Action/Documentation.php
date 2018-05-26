@@ -27,19 +27,19 @@ class Documentation
     ];
 
     /**
-     * Array of accepted annotations (excluding those that must have a visibility decorator).
+     * Array of accepted annotations (excluding those that must have a visibility decorator, or have special handling).
      *
      * @var array
      */
     const ACCEPTED_ANNOTATIONS = [
         'error',
         'param',
-        'minVersion',
+        'minversion',
         'return',
         'scope',
         'path',
-        'pathParam',
-        'vendorTag'
+        'pathparam',
+        'vendortag'
     ];
 
     /**
@@ -161,11 +161,11 @@ class Documentation
             $this->group = $annotation->getGroup();
         }
 
-        // Parse out the `@api-contentType` annotation.
-        if (!isset($annotations['contentType'])) {
-            throw RequiredAnnotationException::create('contentType', $this->class, $this->method);
+        // Parse out the `@api-contenttype` annotation.
+        if (!isset($annotations['contenttype'])) {
+            throw RequiredAnnotationException::create('contenttype', $this->class, $this->method);
         } else {
-            $this->content_types = $annotations['contentType'];
+            $this->content_types = $annotations['contenttype'];
         }
 
         // Parse out any remaining annotations.
@@ -443,7 +443,7 @@ class Documentation
      */
     public function getPathParams(): array
     {
-        return (isset($this->annotations['pathParam'])) ? $this->annotations['pathParam'] : [];
+        return (isset($this->annotations['pathparam'])) ? $this->annotations['pathparam'] : [];
     }
 
     /**
@@ -457,7 +457,7 @@ class Documentation
      */
     public function setPathParams(array $params = []): void
     {
-        $this->annotations['pathParam'] = $params;
+        $this->annotations['pathparam'] = $params;
     }
 
     /**
@@ -467,7 +467,7 @@ class Documentation
      */
     public function getVendorTags(): array
     {
-        return (isset($this->annotations['vendorTag'])) ? $this->annotations['vendorTag'] : [];
+        return (isset($this->annotations['vendortag'])) ? $this->annotations['vendortag'] : [];
     }
 
     /**
@@ -512,7 +512,7 @@ class Documentation
      */
     public function getMinimumVersion(): ?Parser\Annotations\MinVersionAnnotation
     {
-        return (isset($this->annotations['minVersion'])) ? $this->annotations['minVersion'][0] : null;
+        return (isset($this->annotations['minversion'])) ? $this->annotations['minversion'][0] : null;
     }
 
     /**
@@ -644,7 +644,7 @@ class Documentation
         $annotations['group'][] = $parser->hydrateAnnotation('group', $data['class'], $data['method'], $data);
 
         foreach ($data['content_types'] as $content_type) {
-            $annotations['contentType'][] = $parser->hydrateAnnotation(
+            $annotations['contenttype'][] = $parser->hydrateAnnotation(
                 'content_type',
                 $data['class'],
                 $data['method'],

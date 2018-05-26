@@ -193,7 +193,7 @@ class Json extends Generator
      */
     private function getChangedChangesetFactory(string $definition, string $change_type, array $changes)
     {
-        // Due to versioning restrictions in the Mill syntax (that will be fixed), only `@api-contentType` annotations
+        // Due to versioning restrictions in the Mill syntax (that will be fixed), only `@api-contenttype` annotations
         // will generate a "changed" entry in the changelog.
         switch ($change_type) {
             case Changelog::CHANGESET_TYPE_CONTENT_TYPE:
