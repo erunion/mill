@@ -306,7 +306,7 @@ class RepresentationParserTest extends TestCase
                             'nullable' => false,
                             'sample_data' => false,
                             'scopes' => [],
-                            'subtype' => false,
+                            'subtype' => 'uri',
                             'type' => 'array',
                             'values' => [],
                             'vendor_tags' => [],
