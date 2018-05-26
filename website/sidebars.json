@@ -21,6 +21,7 @@
       "api-error",
       "api-group",
       "api-label",
+      "api-maxversion",
       "api-minversion",
       "api-param",
       "api-path",
