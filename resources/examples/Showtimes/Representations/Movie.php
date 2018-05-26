@@ -53,7 +53,7 @@ class Movie extends Representation
             'rating' => $this->movie->rating,
 
             /**
-             * @api-data genres (array) - Genres
+             * @api-data genres (array<uri>) - Genres
              */
             'genres' => $this->movie->getGenres(),
 
