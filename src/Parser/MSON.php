@@ -6,8 +6,8 @@ use Mill\Exceptions\Annotations\UnknownErrorRepresentationException;
 use Mill\Exceptions\Annotations\UnsupportedTypeException;
 use Mill\Exceptions\Config\UnconfiguredErrorRepresentationException;
 use Mill\Exceptions\Config\UnconfiguredRepresentationException;
+use Mill\Exceptions\MSON\ImproperlyWrittenEnumException;
 use Mill\Exceptions\MSON\MissingOptionsException;
-use Mill\Parser\Annotations\VendorTagAnnotation;
 
 class MSON
 {
@@ -167,6 +167,7 @@ class MSON
      * @return self
      * @throws UnsupportedTypeException If an unsupported MSON field type has been supplied.
      * @throws MissingOptionsException If a supplied MSON type of `enum` missing corresponding acceptable values.
+     * @throws UnsupportedTypeException If a supplied MSON type of `string` should actually be written as `enum`.
      */
     public function parse(string $content): self
     {
@@ -292,6 +293,10 @@ class MSON
 
         if ($this->type === 'enum' && empty($this->values)) {
             throw MissingOptionsException::create($this->type, $this->class, $this->method);
+        }
+
+        if ($this->type !== 'enum' && !empty($this->values)) {
+            throw ImproperlyWrittenEnumException::create($content, $this->class, $this->method);
         }
 
         return $this;

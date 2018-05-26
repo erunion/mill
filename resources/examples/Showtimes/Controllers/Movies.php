@@ -47,7 +47,7 @@ class Movies
      * @api-param:public name (string, required) - Name of the movie.
      * @api-param:public description (string, required) - Description, or tagline, for the movie.
      * @api-param:public runtime (string, optional) - Movie runtime, in `HHhr MMmin` format.
-     * @api-param:public content_rating (string, optional) - MPAA rating
+     * @api-param:public content_rating (enum, optional) - MPAA rating
      *  + Members
      *      - `G`
      *      - `PG`
