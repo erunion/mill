@@ -60,10 +60,10 @@ These actions will allow you to pull information on a specific movie.', $annotat
           * @api-label Update a piece of content.
           * @api-group Foo\Bar
           *
-          * @api-uri:public /foo
-          * @api-uri:private:deprecated /bar
+          * @api-path:public /foo
+          * @api-path:private:deprecated /bar
           *
-          * @api-contentType application/json
+          * @api-contenttype application/json
           * @api-scope public
           *
           * @api-return:public {ok}
@@ -71,9 +71,9 @@ These actions will allow you to pull information on a specific movie.', $annotat
 
         $annotations = (new Parser(__CLASS__))->getAnnotations(__METHOD__);
 
-        $this->assertArrayHasKey('uri', $annotations);
-        $this->assertFalse($annotations['uri'][0]->isDeprecated());
-        $this->assertTrue($annotations['uri'][1]->isDeprecated());
+        $this->assertArrayHasKey('path', $annotations);
+        $this->assertFalse($annotations['path'][0]->isDeprecated());
+        $this->assertTrue($annotations['path'][1]->isDeprecated());
     }
 
     public function testParseAnnotationsOnClassMethodThatDoesntExist(): void
@@ -94,7 +94,7 @@ These actions will allow you to pull information on a specific movie.', $annotat
             'GET' => [
                 'method' => 'GET',
                 'expected' => [
-                    'contentType' => [
+                    'contenttype' => [
                         'class' => Parser\Annotations\ContentTypeAnnotation::class,
                         'count' => 2
                     ],
@@ -114,20 +114,20 @@ These actions will allow you to pull information on a specific movie.', $annotat
                         'class' => Parser\Annotations\LabelAnnotation::class,
                         'count' => 1
                     ],
-                    'minVersion' => [
+                    'minversion' => [
                         'class' => Parser\Annotations\MinVersionAnnotation::class,
+                        'count' => 1
+                    ],
+                    'path' => [
+                        'class' => Parser\Annotations\PathAnnotation::class,
+                        'count' => 2
+                    ],
+                    'pathparam' => [
+                        'class' => Parser\Annotations\PathParamAnnotation::class,
                         'count' => 1
                     ],
                     'return' => [
                         'class' => Parser\Annotations\ReturnAnnotation::class,
-                        'count' => 2
-                    ],
-                    'uri' => [
-                        'class' => Parser\Annotations\UriAnnotation::class,
-                        'count' => 2
-                    ],
-                    'uriSegment' => [
-                        'class' => Parser\Annotations\UriSegmentAnnotation::class,
                         'count' => 2
                     ]
                 ]
@@ -135,7 +135,7 @@ These actions will allow you to pull information on a specific movie.', $annotat
             'PATCH' => [
                 'method' => 'PATCH',
                 'expected' => [
-                    'contentType' => [
+                    'contenttype' => [
                         'class' => Parser\Annotations\ContentTypeAnnotation::class,
                         'count' => 2
                     ],
@@ -155,13 +155,21 @@ These actions will allow you to pull information on a specific movie.', $annotat
                         'class' => Parser\Annotations\LabelAnnotation::class,
                         'count' => 1
                     ],
-                    'minVersion' => [
+                    'minversion' => [
                         'class' => Parser\Annotations\MinVersionAnnotation::class,
                         'count' => 1
                     ],
                     'param' => [
                         'class' => Parser\Annotations\ParamAnnotation::class,
                         'count' => 11
+                    ],
+                    'path' => [
+                        'class' => Parser\Annotations\PathAnnotation::class,
+                        'count' => 1
+                    ],
+                    'pathparam' => [
+                        'class' => Parser\Annotations\PathParamAnnotation::class,
+                        'count' => 1
                     ],
                     'return' => [
                         'class' => Parser\Annotations\ReturnAnnotation::class,
@@ -170,21 +178,13 @@ These actions will allow you to pull information on a specific movie.', $annotat
                     'scope' => [
                         'class' => Parser\Annotations\ScopeAnnotation::class,
                         'count' => 1
-                    ],
-                    'uri' => [
-                        'class' => Parser\Annotations\UriAnnotation::class,
-                        'count' => 1
-                    ],
-                    'uriSegment' => [
-                        'class' => Parser\Annotations\UriSegmentAnnotation::class,
-                        'count' => 1
                     ]
                 ]
             ],
             'DELETE' => [
                 'method' => 'DELETE',
                 'expected' => [
-                    'contentType' => [
+                    'contenttype' => [
                         'class' => Parser\Annotations\ContentTypeAnnotation::class,
                         'count' => 1
                     ],
@@ -204,8 +204,16 @@ These actions will allow you to pull information on a specific movie.', $annotat
                         'class' => Parser\Annotations\LabelAnnotation::class,
                         'count' => 1
                     ],
-                    'minVersion' => [
+                    'minversion' => [
                         'class' => Parser\Annotations\MinVersionAnnotation::class,
+                        'count' => 1
+                    ],
+                    'pathparam' => [
+                        'class' => Parser\Annotations\PathParamAnnotation::class,
+                        'count' => 1
+                    ],
+                    'path' => [
+                        'class' => Parser\Annotations\PathAnnotation::class,
                         'count' => 1
                     ],
                     'return' => [
@@ -216,15 +224,7 @@ These actions will allow you to pull information on a specific movie.', $annotat
                         'class' => Parser\Annotations\ScopeAnnotation::class,
                         'count' => 1
                     ],
-                    'uri' => [
-                        'class' => Parser\Annotations\UriAnnotation::class,
-                        'count' => 1
-                    ],
-                    'uriSegment' => [
-                        'class' => Parser\Annotations\UriSegmentAnnotation::class,
-                        'count' => 1
-                    ],
-                    'vendorTag' => [
+                    'vendortag' => [
                         'class' => Parser\Annotations\VendorTagAnnotation::class,
                         'count' => 1
                     ]

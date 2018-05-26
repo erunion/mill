@@ -6,13 +6,7 @@ use Mill\Parser\Annotation;
 use Mill\Parser\Version;
 
 /**
- * Handler for the `@api-minVersion` annotation.
- *
- * This annotation, and class are named `minVersion` rather than the preferable `minimumVersion` due to a bizarre
- * issue with PHPUnit code coverage where if the full class name is `MinimumVersionAnnotation`, it shows up as having
- * 0% coverage. Change the file to `MinVersionAnnotation` or `MinAnnotation`, and it has 100%.
- *
- * ¯\_(ಠ_ಠ)_/¯
+ * Handler for the `@api-minversion` annotation.
  *
  */
 class MinVersionAnnotation extends Annotation
@@ -26,7 +20,7 @@ class MinVersionAnnotation extends Annotation
 
     /**
      * {@inheritdoc}
-     * @throws AbsoluteMinimumVersionException If an `@api-minVersion` annotation version is not absolute.
+     * @throws AbsoluteMinimumVersionException If an `@api-minversion` annotation version is not absolute.
      */
     protected function parser(): array
     {

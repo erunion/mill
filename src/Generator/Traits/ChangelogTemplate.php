@@ -76,7 +76,7 @@ trait ChangelogTemplate
                 case 'parameter':
                 case 'representation':
                 case 'resource_group':
-                case 'uri':
+                case 'path':
                     $searches[] = '{' . $key . '}';
                     if (is_array($value)) {
                         $replacements[] = $this->joinWords(
@@ -121,7 +121,7 @@ trait ChangelogTemplate
                 case 'method':
                 case 'parameter':
                 case 'representation':
-                case 'uri':
+                case 'path':
                     $searches[] = '{' . $key . '}';
                     if (is_array($value)) {
                         $replacements[] = $this->joinWords(

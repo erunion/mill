@@ -73,10 +73,10 @@
         <token name="filter">filter (string, optional) - Filter to apply to the results.</token>
     </parameterTokens>
 
-    <uriSegments>
+    <pathParams>
         <translations>
             <translation from="movie_id" to="id" />
             <translation from="theater_id" to="id" />
         </translations>
-    </uriSegments>
+    </pathParams>
 </mill>

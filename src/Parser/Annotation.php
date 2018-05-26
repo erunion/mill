@@ -3,8 +3,8 @@ namespace Mill\Parser;
 
 use Mill\Exceptions\Annotations\InvalidMSONSyntaxException;
 use Mill\Exceptions\Annotations\MissingRequiredFieldException;
+use Mill\Parser\Annotations\PathAnnotation;
 use Mill\Parser\Annotations\ScopeAnnotation;
-use Mill\Parser\Annotations\UriAnnotation;
 use Mill\Parser\Annotations\VendorTagAnnotation;
 
 /**
@@ -290,7 +290,7 @@ abstract class Annotation
 
             $aliases = [];
             foreach ($data['aliases'] as $alias) {
-                $aliases[] = UriAnnotation::hydrate(array_merge([
+                $aliases[] = PathAnnotation::hydrate(array_merge([
                     'class' => $data['class'],
                     'method' => $data['method']
                 ], $alias));

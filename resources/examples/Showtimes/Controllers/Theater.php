@@ -16,8 +16,8 @@ class Theater
      * @api-label Get a single movie theater.
      * @api-group Theaters
      *
-     * @api-uri:public /theaters/+id
-     * @api-uriSegment {/theaters/+id} id (integer) - Theater ID
+     * @api-path:public /theaters/+id
+     * @api-pathparam id (integer) - Theater ID
      *
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Theater
      * @api-return:public {notmodified} If no content has been modified since the supplied Last-Modified header.
@@ -25,10 +25,10 @@ class Theater
      * @api-error:public 404 (\Mill\Examples\Showtimes\Representations\Error) - If the movie theater could not be found.
      *
      * @api-version >=1.1.2
-     * @api-contentType application/mill.example.theater
+     * @api-contenttype application/mill.example.theater
      *
      * @api-version <1.1.2
-     * @api-contentType application/json
+     * @api-contenttype application/json
      */
     public function GET()
     {
@@ -41,8 +41,8 @@ class Theater
      * @api-label Update a movie theater.
      * @api-group Theaters
      *
-     * @api-uri:public /theaters/+id
-     * @api-uriSegment {/theaters/+id} id (integer) - Theater ID
+     * @api-path:public /theaters/+id
+     * @api-pathparam id (integer) - Theater ID
      *
      * @api-scope create
      *
@@ -56,10 +56,10 @@ class Theater
      * @api-error:public 404 (\Mill\Examples\Showtimes\Representations\Error) - If the movie movie could not be found.
      *
      * @api-version >=1.1.2
-     * @api-contentType application/mill.example.theater
+     * @api-contenttype application/mill.example.theater
      *
      * @api-version <1.1.2
-     * @api-contentType application/json
+     * @api-contenttype application/json
      * @api-error:public 403 (\Mill\Examples\Showtimes\Representations\CodedError<1337>) - If something cool happened.
      */
     public function PATCH()
@@ -73,10 +73,10 @@ class Theater
      * @api-label Delete a movie theater.
      * @api-group Theaters
      *
-     * @api-uri:private /theaters/+id
-     * @api-uriSegment {/theaters/+id} id (integer) - Theater ID
+     * @api-path:private /theaters/+id
+     * @api-pathparam id (integer) - Theater ID
      *
-     * @api-contentType application/json
+     * @api-contenttype application/json
      * @api-scope delete
      *
      * @api-return:private {deleted}

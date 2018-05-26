@@ -6,9 +6,9 @@ use Mill\Exceptions\Annotations\RequiredAnnotationException;
 use Mill\Exceptions\Resource\MissingVisibilityDecoratorException;
 use Mill\Exceptions\Resource\NoAnnotationsException;
 use Mill\Exceptions\Resource\PublicDecoratorOnPrivateActionException;
-use Mill\Exceptions\Resource\TooManyAliasedUrisException;
+use Mill\Exceptions\Resource\TooManyAliasedPathsException;
 use Mill\Parser;
-use Mill\Parser\Annotations\UriAnnotation;
+use Mill\Parser\Annotations\PathAnnotation;
 use Mill\Parser\Version;
 
 /**
@@ -23,23 +23,23 @@ class Documentation
      * @var array
      */
     const REQUIRED_ANNOTATIONS = [
-        'uri'
+        'path'
     ];
 
     /**
-     * Array of accepted annotations (excluding those that must have a visibility decorator).
+     * Array of accepted annotations (excluding those that must have a visibility decorator, or have special handling).
      *
      * @var array
      */
     const ACCEPTED_ANNOTATIONS = [
         'error',
         'param',
-        'minVersion',
+        'minversion',
         'return',
         'scope',
-        'uri',
-        'uriSegment',
-        'vendorTag'
+        'path',
+        'pathparam',
+        'vendortag'
     ];
 
     /**
@@ -128,7 +128,7 @@ class Documentation
      * @throws MultipleAnnotationsException
      * @throws PublicDecoratorOnPrivateActionException
      * @throws RequiredAnnotationException
-     * @throws TooManyAliasedUrisException
+     * @throws TooManyAliasedPathsException
      */
     public function parseAnnotations(array $annotations = []): self
     {
@@ -161,11 +161,11 @@ class Documentation
             $this->group = $annotation->getGroup();
         }
 
-        // Parse out the `@api-contentType` annotation.
-        if (!isset($annotations['contentType'])) {
-            throw RequiredAnnotationException::create('contentType', $this->class, $this->method);
+        // Parse out the `@api-contenttype` annotation.
+        if (!isset($annotations['contenttype'])) {
+            throw RequiredAnnotationException::create('contenttype', $this->class, $this->method);
         } else {
-            $this->content_types = $annotations['contentType'];
+            $this->content_types = $annotations['contenttype'];
         }
 
         // Parse out any remaining annotations.
@@ -207,28 +207,28 @@ class Documentation
             }
         }
 
-        // Process any URI aliases, and also verify that we don't have any public annotations on a private action.
+        // Process any path aliases, and also verify that we don't have any public annotations on a private action.
         $visibilities = [];
         $aliases = [];
 
-        /** @var \Mill\Parser\Annotations\UriAnnotation $uri */
-        foreach ($this->annotations['uri'] as $uri) {
-            $visibilities[] = ($uri->isVisible()) ? 'public' : 'private';
+        /** @var \Mill\Parser\Annotations\PathAnnotation $path */
+        foreach ($this->annotations['path'] as $path) {
+            $visibilities[] = ($path->isVisible()) ? 'public' : 'private';
 
-            if ($uri->isAliased()) {
-                $aliases[] = $uri;
+            if ($path->isAliased()) {
+                $aliases[] = $path;
             }
         }
 
         if (!empty($aliases)) {
-            if (count($aliases) >= count($this->annotations['uri'])) {
-                throw TooManyAliasedUrisException::create($this->class, $this->method);
+            if (count($aliases) >= count($this->annotations['path'])) {
+                throw TooManyAliasedPathsException::create($this->class, $this->method);
             }
 
-            /** @var \Mill\Parser\Annotations\UriAnnotation $uri */
-            foreach ($this->annotations['uri'] as $uri) {
-                if (!$uri->isAliased()) {
-                    $uri->setAliases($aliases);
+            /** @var \Mill\Parser\Annotations\PathAnnotation $path */
+            foreach ($this->annotations['path'] as $path) {
+                if (!$path->isAliased()) {
+                    $path->setAliases($aliases);
                 }
             }
         }
@@ -239,7 +239,7 @@ class Documentation
             return $this;
         } elseif (in_array('private', $visibilities)) {
             foreach ($this->annotations as $key => $data) {
-                if ($key === 'uri') {
+                if ($key === 'path') {
                     continue;
                 }
 
@@ -368,68 +368,68 @@ class Documentation
     }
 
     /**
-     * Get the raw URI annotations that are part of this action.
+     * Get the raw path annotations that are part of this action.
      *
      * @return array
      */
-    public function getUris(): array
+    public function getPaths(): array
     {
-        return $this->annotations['uri'];
+        return $this->annotations['path'];
     }
 
     /**
-     * Get the current URI for this action.
+     * Get the current path for this action.
      *
-     * @return UriAnnotation
+     * @return PathAnnotation
      */
-    public function getUri(): UriAnnotation
+    public function getPath(): PathAnnotation
     {
-        $uris = $this->getUris();
-        return array_shift($uris);
+        $paths = $this->getPaths();
+        return array_shift($paths);
     }
 
     /**
-     * Set the lone URI that this action runs under for a specific group.
+     * Set the lone path that this action runs under for a specific group.
      *
      * This is used in the Compiler system when grouping actions under groups. If an action runs on the `Me\Videos`
      * and `Users\Videos` groups, we don't want the action in the `Me\Videos` group to have actions with `Users\Videos`
      * URIs.
      *
-     * @param UriAnnotation $uri
+     * @param PathAnnotation $path
      */
-    public function setUri(UriAnnotation $uri): void
+    public function setPath(PathAnnotation $path): void
     {
-        $this->annotations['uri'] = [$uri];
+        $this->annotations['path'] = [$path];
     }
 
     /**
-     * Get a combined array of the resource action URI and any URI aliases that it might have.
+     * Get a combined array of the resource action path and any path aliases that it might have.
      *
      * @return array
      */
-    public function getUriAndAliases()
+    public function getPathAndAliases()
     {
-        $uri = $this->getUri();
-        $uris = array_merge([
-            $uri->getCleanPath() => $uri
-        ], $this->getUriAliases());
+        $path = $this->getPath();
+        $paths = array_merge([
+            $path->getCleanPath() => $path
+        ], $this->getPathAliases());
 
-        ksort($uris);
+        ksort($paths);
 
-        return $uris;
+        return $paths;
     }
 
     /**
-     * Get a path-keyed array of any URI aliases that this action might have.
+     * Get a path-keyed array of any path aliases that this action might have.
      *
      * @return array
      */
-    public function getUriAliases()
+    public function getPathAliases()
     {
         $aliases = [];
 
-        /** @var UriAnnotation $alias */
-        foreach ($this->getUri()->getAliases() as $alias) {
+        /** @var PathAnnotation $alias */
+        foreach ($this->getPath()->getAliases() as $alias) {
             $aliases[$alias->getCleanPath()] = $alias;
         }
 
@@ -437,27 +437,27 @@ class Documentation
     }
 
     /**
-     * Get the raw URI segment annotations that are part of this action.
+     * Get the raw path param annotations that are part of this action.
      *
      * @return array
      */
-    public function getUriSegments(): array
+    public function getPathParams(): array
     {
-        return (isset($this->annotations['uriSegment'])) ? $this->annotations['uriSegment'] : [];
+        return (isset($this->annotations['pathparam'])) ? $this->annotations['pathparam'] : [];
     }
 
     /**
-     * Set the URI segments that this action has.
+     * Set the path params that this action has.
      *
      * This is used in the Compiler system when grouping actions under groups. If an action broadcasts on `/me/videos`
-     * and `/users/:id/videos`, we don't want the URI segments for `/users/:id/videos` to be a part of the compiled
+     * and `/users/:id/videos`, we don't want the params for `/users/:id/videos` to be a part of the compiled
      * `/me/videos` action.
      *
-     * @param array $segments
+     * @param array $params
      */
-    public function setUriSegments(array $segments = []): void
+    public function setPathParams(array $params = []): void
     {
-        $this->annotations['uriSegment'] = $segments;
+        $this->annotations['pathparam'] = $params;
     }
 
     /**
@@ -467,7 +467,7 @@ class Documentation
      */
     public function getVendorTags(): array
     {
-        return (isset($this->annotations['vendorTag'])) ? $this->annotations['vendorTag'] : [];
+        return (isset($this->annotations['vendortag'])) ? $this->annotations['vendortag'] : [];
     }
 
     /**
@@ -512,7 +512,7 @@ class Documentation
      */
     public function getMinimumVersion(): ?Parser\Annotations\MinVersionAnnotation
     {
-        return (isset($this->annotations['minVersion'])) ? $this->annotations['minVersion'][0] : null;
+        return (isset($this->annotations['minversion'])) ? $this->annotations['minversion'][0] : null;
     }
 
     /**
@@ -562,10 +562,10 @@ class Documentation
             foreach ($data as $k => $annotation) {
                 // While URI annotations are already filtered within the generator, so we don't need to further filter
                 // them out, we do need to filter URI aliases as those can have their independent visibilities.
-                if ($annotation instanceof UriAnnotation) {
+                if ($annotation instanceof PathAnnotation) {
                     $aliases = $annotation->getAliases();
                     if (!empty($aliases)) {
-                        /** @var UriAnnotation $alias */
+                        /** @var PathAnnotation $alias */
                         foreach ($aliases as $k => $alias) {
                             // If this annotation isn't visible, and we don't want private documentation, filter it out.
                             if (!$allow_private && $alias->hasVisibility() && !$alias->isVisible()) {
@@ -644,7 +644,7 @@ class Documentation
         $annotations['group'][] = $parser->hydrateAnnotation('group', $data['class'], $data['method'], $data);
 
         foreach ($data['content_types'] as $content_type) {
-            $annotations['contentType'][] = $parser->hydrateAnnotation(
+            $annotations['contenttype'][] = $parser->hydrateAnnotation(
                 'content_type',
                 $data['class'],
                 $data['method'],

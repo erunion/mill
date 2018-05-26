@@ -1,7 +1,7 @@
 <?php
 namespace Mill;
 
-use Mill\Parser\Annotations\UriAnnotation;
+use Mill\Parser\Annotations\PathAnnotation;
 use Mill\Parser\Annotations\VendorTagAnnotation;
 use Mill\Parser\Representation;
 use Mill\Parser\Resource;
@@ -110,12 +110,10 @@ class Generator
             foreach ($docs->getMethods() as $method) {
                 $group = $method->getGroup();
 
-                /** @var \Mill\Parser\Annotations\UriAnnotation $uri */
-                foreach ($method->getUris() as $uri) {
-                    $uri_data = $uri->toArray();
-
+                /** @var \Mill\Parser\Annotations\PathAnnotation $path */
+                foreach ($method->getPaths() as $path) {
                     // Are we generating documentation for a private or protected resource?
-                    if (!$this->shouldParseUri($method, $uri)) {
+                    if (!$this->shouldParsePath($method, $path)) {
                         continue;
                     }
 
@@ -128,24 +126,24 @@ class Generator
                         ];
                     }
 
-                    // Set any segments that belong to this URI on onto this action.
-                    $segments = [];
+                    // Set any params that belong to this path on onto this action.
+                    $params = [];
 
-                    /** @var \Mill\Parser\Annotations\UriSegmentAnnotation $segment */
-                    foreach ($method->getUriSegments() as $segment) {
-                        if ($segment->getUri() === $uri_data['path']) {
-                            $segments[] = $segment;
+                    /** @var \Mill\Parser\Annotations\PathParamAnnotation $param */
+                    foreach ($method->getPathParams() as $param) {
+                        if ($path->doesPathHaveParam($param)) {
+                            $params[] = $param;
                         }
                     }
 
-                    // Set the lone URI that this action and group run under.
+                    // Set the lone path that this action and group run under.
                     $action = clone $method;
-                    $action->setUri($uri);
-                    $action->setUriSegments($segments);
+                    $action->setPath($path);
+                    $action->setPathParams($params);
                     $action->filterAnnotationsForVisibility($this->load_private_docs, $this->load_vendor_tag_docs);
 
                     // Hash the action so we don't happen to double up and end up with dupes.
-                    $identifier = $action->getUri()->getPath() . '::' . $action->getMethod();
+                    $identifier = $action->getPath()->getPath() . '::' . $action->getMethod();
 
                     $resources[$group]['resources'][$resource_label]['actions'][$identifier] = $action;
                 }
@@ -209,7 +207,7 @@ class Generator
 
                         // Hash the action so we don't happen to double up and end up with dupes, and then remove the
                         // currently non-hash index from the action array.
-                        $identifier = $cloned->getUri()->getPath() . '::' . $cloned->getMethod();
+                        $identifier = $cloned->getPath()->getPath() . '::' . $cloned->getMethod();
 
                         $resources[$version][$group]['resources'][$resource_label]['actions'][$identifier] = $cloned;
                     }
@@ -345,20 +343,20 @@ class Generator
     }
 
     /**
-     * With the rules set up on the Generator, should we parse a supplied URI?
+     * With the rules set up on the Generator, should we parse a supplied path?
      *
      * @param Resource\Action\Documentation $method
-     * @param UriAnnotation $uri
+     * @param PathAnnotation $path
      * @return bool
      */
-    private function shouldParseUri(Resource\Action\Documentation $method, UriAnnotation $uri): bool
+    private function shouldParsePath(Resource\Action\Documentation $method, PathAnnotation $path): bool
     {
-        $uri_data = $uri->toArray();
+        $path_data = $path->toArray();
         $vendor_tags = $method->getVendorTags();
 
         // Should we generate documentation that has a vendor tag?
         if (!empty($vendor_tags) && !is_null($this->load_vendor_tag_docs)) {
-            // We don't have any configured vendor tags to pull documentation for, so this URI shouldn't be parsed.
+            // We don't have any configured vendor tags to pull documentation for, so this path shouldn't be parsed.
             if (empty($this->load_vendor_tag_docs)) {
                 return false;
             }
@@ -372,7 +370,7 @@ class Generator
                 }
             }
 
-            // This URI should only be parsed if it has every vendor tag we're looking for.
+            // This path should only be parsed if it has every vendor tag we're looking for.
             if ($all_found) {
                 return true;
             }
@@ -380,8 +378,8 @@ class Generator
             return false;
         }
 
-        // If we aren't generating docs for private resource, but this URI is private, we shouldn't parse it.
-        if (!$this->load_private_docs && !$uri_data['visible']) {
+        // If we aren't generating docs for private resource, but this path is private, we shouldn't parse it.
+        if (!$this->load_private_docs && !$path_data['visible']) {
             return false;
         }
 

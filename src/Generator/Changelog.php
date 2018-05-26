@@ -178,7 +178,7 @@ class Changelog extends Generator
                             [
                                 'resource_group' => $group,
                                 'method' => $action->getMethod(),
-                                'uri' => $action->getUri()->getCleanPath()
+                                'path' => $action->getPath()->getCleanPath()
                             ]
                         );
                     }
@@ -196,7 +196,7 @@ class Changelog extends Generator
                                 [
                                     'resource_group' => $group,
                                     'method' => $action->getMethod(),
-                                    'uri' => $action->getUri()->getCleanPath(),
+                                    'path' => $action->getPath()->getCleanPath(),
                                     'content_type' => $content_type->getContentType()
                                 ]
                             );
@@ -220,7 +220,7 @@ class Changelog extends Generator
                             $data = [
                                 'resource_group' => $group,
                                 'method' => $action->getMethod(),
-                                'uri' => $action->getUri()->getCleanPath()
+                                'path' => $action->getPath()->getCleanPath()
                             ];
 
                             if ($annotation instanceof ParamAnnotation) {
@@ -301,7 +301,7 @@ class Changelog extends Generator
         if ($change_type === self::CHANGESET_TYPE_REPRESENTATION_DATA) {
             $this->changelog[$version][$definition]['representations'][$group][$change_type][$hash][] = $data;
         } else {
-            $this->changelog[$version][$definition]['resources'][$group][$data['uri']][$change_type][$hash][] = $data;
+            $this->changelog[$version][$definition]['resources'][$group][$data['path']][$change_type][$hash][] = $data;
         }
 
         return $this;
@@ -396,22 +396,22 @@ class Changelog extends Generator
         // wouldn't be able to do proper duplicate detection.
         switch ($change_type) {
             case self::CHANGESET_TYPE_ACTION:
-                $hash_data['uri'] = $data['uri'];
+                $hash_data['path'] = $data['path'];
                 break;
 
             case self::CHANGESET_TYPE_ACTION_PARAM:
                 $hash_data['method'] = $data['method'];
-                $hash_data['uri'] = $data['uri'];
+                $hash_data['path'] = $data['path'];
                 break;
 
             case self::CHANGESET_TYPE_ACTION_RETURN:
                 $hash_data['method'] = $data['method'];
-                $hash_data['uri'] = $data['uri'];
+                $hash_data['path'] = $data['path'];
                 break;
 
             case self::CHANGESET_TYPE_ACTION_ERROR:
                 $hash_data['method'] = $data['method'];
-                $hash_data['uri'] = $data['uri'];
+                $hash_data['path'] = $data['path'];
                 break;
 
             case self::CHANGESET_TYPE_CONTENT_TYPE:
@@ -424,7 +424,7 @@ class Changelog extends Generator
 
             default:
                 $hash_data = $data;
-                unset($hash_data['uri']);
+                unset($hash_data['path']);
         }
 
         return substr(sha1(serialize($hash_data)), 0, 10);

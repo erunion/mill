@@ -240,26 +240,7 @@ DESCRIPTION;
                                 'visible' => true
                             ]
                         ],
-                        'return' => [
-                            [
-                                'description' => false,
-                                'http_code' => '200 OK',
-                                'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
-                                'type' => 'object',
-                                'version' => false,
-                                'visible' => true
-                            ],
-                            [
-                                'description' => 'If no content has been modified since the supplied Last-Modified ' .
-                                    'header.',
-                                'http_code' => '304 Not Modified',
-                                'representation' => false,
-                                'type' => 'notmodified',
-                                'version' => false,
-                                'visible' => true
-                            ]
-                        ],
-                        'uri' => [
+                        'path' => [
                             [
                                 'aliased' => true,
                                 'aliases' => [],
@@ -283,20 +264,31 @@ DESCRIPTION;
                                 'visible' => true
                             ]
                         ],
-                        'uriSegment' => [
+                        'pathparam' => [
                             [
                                 'description' => 'Movie ID',
                                 'field' => 'id',
                                 'type' => 'integer',
-                                'uri' => '/movie/+id',
                                 'values' => []
+                            ]
+                        ],
+                        'return' => [
+                            [
+                                'description' => false,
+                                'http_code' => '200 OK',
+                                'representation' => '\Mill\Examples\Showtimes\Representations\Movie',
+                                'type' => 'object',
+                                'version' => false,
+                                'visible' => true
                             ],
                             [
-                                'description' => 'Movie ID',
-                                'field' => 'id',
-                                'type' => 'integer',
-                                'uri' => '/movies/+id',
-                                'values' => []
+                                'description' => 'If no content has been modified since the supplied Last-Modified ' .
+                                    'header.',
+                                'http_code' => '304 Not Modified',
+                                'representation' => false,
+                                'type' => 'notmodified',
+                                'version' => false,
+                                'visible' => true
                             ]
                         ]
                     ]
@@ -322,7 +314,7 @@ DESCRIPTION;
                     ],
                     'minimum_version' => '1.1',
                     'responses.length' => 8,
-                    'uri.aliases' => [],
+                    'path.aliases' => [],
                     'annotations' => [
                         'error' => [
                             [
@@ -380,7 +372,7 @@ DESCRIPTION;
                                 'visible' => true
                             ]
                         ],
-                        'minVersion' => [
+                        'minversion' => [
                             [
                                 'minimum_version' => '1.1'
                             ]
@@ -539,6 +531,23 @@ DESCRIPTION;
                                 'visible' => true
                             ]
                         ],
+                        'path' => [
+                            [
+                                'aliased' => false,
+                                'aliases' => [],
+                                'deprecated' => false,
+                                'path' => '/movies/+id',
+                                'visible' => true
+                            ]
+                        ],
+                        'pathparam' => [
+                            [
+                                'description' => 'Movie ID',
+                                'field' => 'id',
+                                'type' => 'integer',
+                                'values' => []
+                            ]
+                        ],
                         'return' => [
                             [
                                 'description' => false,
@@ -562,24 +571,6 @@ DESCRIPTION;
                                 'description' => false,
                                 'scope' => 'edit'
                             ]
-                        ],
-                        'uri' => [
-                            [
-                                'aliased' => false,
-                                'aliases' => [],
-                                'deprecated' => false,
-                                'path' => '/movies/+id',
-                                'visible' => true
-                            ]
-                        ],
-                        'uriSegment' => [
-                            [
-                                'description' => 'Movie ID',
-                                'field' => 'id',
-                                'type' => 'integer',
-                                'uri' => '/movies/+id',
-                                'values' => []
-                            ]
                         ]
                     ]
                 ]
@@ -600,7 +591,7 @@ DESCRIPTION;
                     ],
                     'minimum_version' => '1.1',
                     'responses.length' => 2,
-                    'uri.aliases' => [],
+                    'path.aliases' => [],
                     'annotations' => [
                         'error' => [
                             [
@@ -613,9 +604,26 @@ DESCRIPTION;
                                 'visible' => false
                             ]
                         ],
-                        'minVersion' => [
+                        'minversion' => [
                             [
                                 'minimum_version' => '1.1'
+                            ]
+                        ],
+                        'path' => [
+                            [
+                                'aliased' => false,
+                                'aliases' => [],
+                                'deprecated' => false,
+                                'path' => '/movies/+id',
+                                'visible' => false
+                            ]
+                        ],
+                        'pathparam' => [
+                            [
+                                'description' => 'Movie ID',
+                                'field' => 'id',
+                                'type' => 'integer',
+                                'values' => []
                             ]
                         ],
                         'return' => [
@@ -634,25 +642,7 @@ DESCRIPTION;
                                 'scope' => 'delete'
                             ]
                         ],
-                        'uri' => [
-                            [
-                                'aliased' => false,
-                                'aliases' => [],
-                                'deprecated' => false,
-                                'path' => '/movies/+id',
-                                'visible' => false
-                            ]
-                        ],
-                        'uriSegment' => [
-                            [
-                                'description' => 'Movie ID',
-                                'field' => 'id',
-                                'type' => 'integer',
-                                'uri' => '/movies/+id',
-                                'values' => []
-                            ]
-                        ],
-                        'vendorTag' => [
+                        'vendortag' => [
                             [
                                 'vendor_tag' => 'tag:DELETE_CONTENT'
                             ]
@@ -666,23 +656,23 @@ DESCRIPTION;
     public function providerParsingOfSpecificUseCases(): array
     {
         return [
-            'with-aliased-uris' => [
+            'with-aliased-paths' => [
                 'docblock' => '/**
                   * @api-label Update a piece of content.
                   * @api-group Foo\Bar
                   *
-                  * @api-uri:public /foo
-                  * @api-uri:private:alias /bar
+                  * @api-path:public /foo
+                  * @api-path:private:alias /bar
                   *
-                  * @api-contentType application/json
+                  * @api-contenttype application/json
                   * @api-scope public
                   *
                   * @api-return:public {ok}
                   */',
                 'asserts' => [
-                    'getUris' => [
+                    'getPaths' => [
                         'total' => 2,
-                        'annotation.name' => 'uri',
+                        'annotation.name' => 'path',
                         'data' => [
                             [
                                 'aliased' => false,
@@ -715,18 +705,18 @@ DESCRIPTION;
                   * @api-label Update a piece of content.
                   * @api-group Foo\Bar
                   *
-                  * @api-uri:public /foo
-                  * @api-uri:private /bar
+                  * @api-path:public /foo
+                  * @api-path:private /bar
                   *
-                  * @api-contentType application/json
+                  * @api-contenttype application/json
                   * @api-scope public
                   *
                   * @api-return:public {ok}
                   */',
                 'asserts' => [
-                    'getUris' => [
+                    'getPaths' => [
                         'total' => 2,
-                        'annotation.name' => 'uri',
+                        'annotation.name' => 'path',
                         'data' => [
                             [
                                 'aliased' => false,
@@ -751,18 +741,18 @@ DESCRIPTION;
                   * @api-label Delete a piece of content.
                   * @api-group Foo\Bar
                   *
-                  * @api-uri:private /foo
+                  * @api-path:private /foo
                   *
-                  * @api-contentType application/json
+                  * @api-contenttype application/json
                   * @api-scope delete
-                  * @api-vendorTag tag:DELETE_CONTENT
+                  * @api-vendortag tag:DELETE_CONTENT
                   *
                   * @api-return:private {deleted}
                   */',
                 'asserts' => [
                     'getVendorTags' => [
                         'total' => 1,
-                        'annotation.name' => 'vendorTag',
+                        'annotation.name' => 'vendortag',
                         'data' => [
                             [
                                 'vendor_tag' => 'tag:DELETE_CONTENT'
@@ -786,7 +776,7 @@ DESCRIPTION;
                 'docblock' => '/**
                   * Test throwing an exception when a required `@api-label` annotation is missing.
                   *
-                  * @api-uri /some/page
+                  * @api-path /some/page
                   */',
                 'expected.exception' => '\Mill\Exceptions\Annotations\RequiredAnnotationException',
                 'expected.exception.asserts' => [
@@ -807,15 +797,15 @@ DESCRIPTION;
             ],
             'missing-required-content-type-annotation' => [
                 'docblock' => '/**
-                  * Test throwing an exception when a required `@api-contentType` annotation is missing.
+                  * Test throwing an exception when a required `@api-contenttype` annotation is missing.
                   *
                   * @api-label Test Method
                   * @api-group Something
-                  * @api-uri /some/page
+                  * @api-path /some/page
                   */',
                 'expected.exception' => '\Mill\Exceptions\Annotations\RequiredAnnotationException',
                 'expected.exception.asserts' => [
-                    'getAnnotation' => 'contentType'
+                    'getAnnotation' => 'contenttype'
                 ]
             ],
             'missing-required-visibility-decorator' => [
@@ -824,13 +814,13 @@ DESCRIPTION;
                   *
                   * @api-label Test method
                   * @api-group Root
-                  * @api-uri /
-                  * @api-contentType application/json
+                  * @api-path /
+                  * @api-contenttype application/json
                   * @api-return:public {collection} \Mill\Examples\Showtimes\Representations\Representation
                   */',
                 'expected.exception' => '\Mill\Exceptions\Resource\MissingVisibilityDecoratorException',
                 'expected.exception.asserts' => [
-                    'getAnnotation' => 'uri'
+                    'getAnnotation' => 'path'
                 ]
             ],
             'unsupported-decorator' => [
@@ -839,28 +829,28 @@ DESCRIPTION;
                   *
                   * @api-label Test method
                   * @api-group Root
-                  * @api-uri:special /
-                  * @api-contentType application/json
+                  * @api-path:special /
+                  * @api-contenttype application/json
                   * @api-return {collection} \Mill\Examples\Showtimes\Representations\Representation
                   */',
                 'expected.exception' => '\Mill\Exceptions\Resource\UnsupportedDecoratorException',
                 'expected.exception.asserts' => [
                     'getDecorator' => 'special',
-                    'getAnnotation' => 'uri'
+                    'getAnnotation' => 'path'
                 ]
             ],
-            'required-uri-annotation-missing' => [
+            'required-path-annotation-missing' => [
                 'docblock' => '/**
-                  * Test throwing an exception when a required `@api-uri` annotation is missing.
+                  * Test throwing an exception when a required `@api-path` annotation is missing.
                   *
                   * @api-label Test method
                   * @api-group Something
-                  * @api-contentType application/json
+                  * @api-contenttype application/json
                   * @api-param:public {page}
                   */',
                 'expected.exception' => '\Mill\Exceptions\Annotations\RequiredAnnotationException',
                 'expected.exception.asserts' => [
-                    'getAnnotation' => 'uri'
+                    'getAnnotation' => 'path'
                 ]
             ],
             'public-annotations-on-a-private-action' => [
@@ -869,8 +859,8 @@ DESCRIPTION;
                   *
                   * @api-label Test method
                   * @api-group Search
-                  * @api-uri:private /search
-                  * @api-contentType application/json
+                  * @api-path:private /search
+                  * @api-contenttype application/json
                   * @api-scope public
                   * @api-return:private {collection} \Mill\Examples\Showtimes\Representations\Representation
                   * @api-error:public 403 (\Mill\Examples\Showtimes\Representations\CodedError<666>) - If the user
@@ -883,19 +873,19 @@ DESCRIPTION;
             ],
             'too-many-aliases' => [
                 'docblock' => '/**
-                  * Test throwing an exception when there is no canonical URI and only URI aliases.
+                  * Test throwing an exception when there is no canonical path and only path aliases.
                   *
                   * @api-label Test method
                   * @api-group Search
-                  * @api-uri:private:alias /search
-                  * @api-uri:private:alias /search2
-                  * @api-contentType application/json
+                  * @api-path:private:alias /search
+                  * @api-path:private:alias /search2
+                  * @api-contenttype application/json
                   * @api-scope public
                   * @api-return:private {collection} \Mill\Examples\Showtimes\Representations\Representation
                   * @api-error:public 403 (\Mill\Examples\Showtimes\Representations\CodedError<666>) - If the user
                   *     isn\'t allowed to do something.
                   */',
-                'expected.exception' => '\Mill\Exceptions\Resource\TooManyAliasedUrisException',
+                'expected.exception' => '\Mill\Exceptions\Resource\TooManyAliasedPathsException',
                 'expected.exception.asserts' => []
             ]
         ];

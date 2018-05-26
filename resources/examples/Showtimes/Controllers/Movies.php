@@ -12,7 +12,7 @@ class Movies
      * @api-label Get movies.
      * @api-group Movies
      *
-     * @api-uri:public /movies
+     * @api-path:public /movies
      *
      * @api-param:public location (string, required) - Location you want movies for.
      *
@@ -40,7 +40,7 @@ class Movies
      * @api-label Create a movie.
      * @api-group Movies
      *
-     * @api-uri:public /movies
+     * @api-path:public /movies
      *
      * @api-scope create
      *
@@ -69,10 +69,10 @@ class Movies
      * @api-error:public 400 (\Mill\Examples\Showtimes\Representations\Error) - If the IMDB URL could not be validated.
      *
      * @api-version >=1.1.2
-     * @api-contentType application/mill.example.movie
+     * @api-contenttype application/mill.example.movie
      *
      * @api-version <1.1.2
-     * @api-contentType application/json
+     * @api-contenttype application/json
      *
      * @api-version >=1.1
      * @api-param:public imdb (string, optional) - IMDB URL

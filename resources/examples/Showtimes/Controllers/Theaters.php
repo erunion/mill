@@ -12,7 +12,7 @@ class Theaters
      * @api-label Get movie theaters.
      * @api-group Theaters
      *
-     * @api-uri:public /theaters
+     * @api-path:public /theaters
      *
      * @api-param:public location (string, required) - Location you want theaters in.
      *
@@ -21,10 +21,10 @@ class Theaters
      * @api-error:public 400 (\Mill\Examples\Showtimes\Representations\Error) - If the location is invalid.
      *
      * @api-version >=1.1.2
-     * @api-contentType application/mill.example.theater
+     * @api-contenttype application/mill.example.theater
      *
      * @api-version <1.1.2
-     * @api-contentType application/json
+     * @api-contenttype application/json
      */
     public function GET()
     {
@@ -37,7 +37,7 @@ class Theaters
      * @api-label Create a movie theater.
      * @api-group Theaters
      *
-     * @api-uri:public /theaters
+     * @api-path:public /theaters
      *
      * @api-scope create
      *
@@ -50,10 +50,10 @@ class Theaters
      * @api-error:public 400 (\Mill\Examples\Showtimes\Representations\Error) - If there is a problem with the request.
      *
      * @api-version >=1.1.2
-     * @api-contentType application/mill.example.theater
+     * @api-contenttype application/mill.example.theater
      *
      * @api-version <1.1.2
-     * @api-contentType application/json
+     * @api-contenttype application/json
      */
     public function POST()
     {

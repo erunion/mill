@@ -6,10 +6,10 @@ use Mill\Parser\Annotation;
 use Mill\Parser\Version;
 
 /**
- * Handler for the `@api-uri` annotation.
+ * Handler for the `@api-path` annotation.
  *
  */
-class UriAnnotation extends Annotation
+class PathAnnotation extends Annotation
 {
     const REQUIRES_VISIBILITY_DECORATOR = true;
     const SUPPORTS_ALIASING = true;
@@ -49,7 +49,7 @@ class UriAnnotation extends Annotation
      */
     public static function hydrate(array $data = [], Version $version = null)
     {
-        /** @var UriAnnotation $annotation */
+        /** @var PathAnnotation $annotation */
         $annotation = parent::hydrate($data, $version);
         $annotation->setPath($data['path']);
 
@@ -81,12 +81,21 @@ class UriAnnotation extends Annotation
     {
         $path = preg_replace('/[@#+*!~]((\w|_)+)(\/|$)/', '{$1}$3', $this->getPath());
 
-        // If we have any URI segment translations configured, let's process them.
-        $translations = Container::getConfig()->getUriSegmentTranslations();
+        // If we have any path param translations configured, let's process them.
+        $translations = Container::getConfig()->getPathParamTranslations();
         foreach ($translations as $from => $to) {
             $path = str_replace('{' . $from . '}', '{' . $to . '}', $path);
         }
 
         return $path;
+    }
+
+    /**
+     * @param PathParamAnnotation $param
+     * @return bool
+     */
+    public function doesPathHaveParam(PathParamAnnotation $param): bool
+    {
+        return strpos($this->getCleanPath(), '{' . $param->getField() . '}') !== false;
     }
 }

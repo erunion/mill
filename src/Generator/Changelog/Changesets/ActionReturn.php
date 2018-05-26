@@ -13,19 +13,19 @@ class ActionReturn extends Changeset
     {
         return [
             'plural' => [
-                Changelog::DEFINITION_ADDED => 'The {method} on {uri} now returns the following responses:',
-                Changelog::DEFINITION_REMOVED => 'The {method} on {uri} no longer returns the following responses:'
+                Changelog::DEFINITION_ADDED => 'The {method} on {path} now returns the following responses:',
+                Changelog::DEFINITION_REMOVED => 'The {method} on {path} no longer returns the following responses:'
             ],
             'singular' => [
-                Changelog::DEFINITION_ADDED => 'On {uri}, {method} requests now return a {http_code} with a ' .
+                Changelog::DEFINITION_ADDED => 'On {path}, {method} requests now return a {http_code} with a ' .
                     '{representation} representation.',
-                Changelog::DEFINITION_REMOVED => 'On {uri}, {method} requests no longer return a {http_code} with a ' .
+                Changelog::DEFINITION_REMOVED => 'On {path}, {method} requests no longer return a {http_code} with a ' .
                     '{representation} representation.',
 
                 // Representations are optional on returns, so we need special strings for those cases.
                 'no_representation' => [
-                    Changelog::DEFINITION_ADDED => '{method} on {uri} now returns a {http_code}.',
-                    Changelog::DEFINITION_REMOVED => '{method} on {uri} no longer returns a {http_code}.'
+                    Changelog::DEFINITION_ADDED => '{method} on {path} now returns a {http_code}.',
+                    Changelog::DEFINITION_REMOVED => '{method} on {path} no longer returns a {http_code}.'
                 ]
             ]
         ];
@@ -74,7 +74,7 @@ class ActionReturn extends Changeset
                     $this->renderText($template, [
                         'resource_group' => $changes[0]['resource_group'],
                         'method' => $method,
-                        'uri' => $changes[0]['uri']
+                        'path' => $changes[0]['path']
                     ]),
                     $returns
                 ];

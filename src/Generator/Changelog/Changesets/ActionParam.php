@@ -13,13 +13,13 @@ class ActionParam extends Changeset
     {
         return [
             'plural' => [
-                Changelog::DEFINITION_ADDED => 'The following parameters have been added to {method} on {uri}:',
-                Changelog::DEFINITION_REMOVED => 'The following parameters have been removed from {method} on {uri}:'
+                Changelog::DEFINITION_ADDED => 'The following parameters have been added to {method} on {path}:',
+                Changelog::DEFINITION_REMOVED => 'The following parameters have been removed from {method} on {path}:'
             ],
             'singular' => [
-                Changelog::DEFINITION_ADDED => 'A {parameter} request parameter was added to {method} on {uri}.',
+                Changelog::DEFINITION_ADDED => 'A {parameter} request parameter was added to {method} on {path}.',
                 Changelog::DEFINITION_REMOVED => 'The {parameter} request parameter has been removed from {method} ' .
-                    'requests on {uri}.'
+                    'requests on {path}.'
             ]
         ];
     }
@@ -58,7 +58,7 @@ class ActionParam extends Changeset
                     $this->renderText($template, [
                         'resource_group' => $changes[0]['resource_group'],
                         'method' => $method,
-                        'uri' => $changes[0]['uri']
+                        'path' => $changes[0]['path']
                     ]),
                     $params
                 ];
@@ -71,7 +71,7 @@ class ActionParam extends Changeset
                 'resource_group' => $changes[0]['resource_group'],
                 'parameter' => array_shift($params),
                 'method' => $method,
-                'uri' => $changes[0]['uri']
+                'path' => $changes[0]['path']
             ]);
         }
 

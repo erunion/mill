@@ -16,7 +16,7 @@ class InvalidVendorTagSuppliedException extends BaseException
         string $method
     ): self {
         $message = sprintf(
-            'The vendor tag on `@api-vendorTag %s` in %s::%s is not present in your config.',
+            'The vendor tag on `@api-vendortag %s` in %s::%s is not present in your config.',
             $vendor_tag,
             $class,
             $method

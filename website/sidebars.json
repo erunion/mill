@@ -23,11 +23,11 @@
       "api-label",
       "api-minversion",
       "api-param",
+      "api-path",
+      "api-pathparam",
       "api-return",
       "api-scope",
       "api-see",
-      "api-uri",
-      "api-urisegment",
       "api-vendortag"
     ]
   }

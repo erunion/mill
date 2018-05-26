@@ -2,9 +2,9 @@
 namespace Mill\Tests\Parser\Annotations;
 
 use Mill\Exceptions\Annotations\MissingRequiredFieldException;
-use Mill\Parser\Annotations\UriAnnotation;
+use Mill\Parser\Annotations\PathAnnotation;
 
-class UriAnnotationTest extends AnnotationTest
+class PathAnnotationTest extends AnnotationTest
 {
     /**
      * @dataProvider providerAnnotation
@@ -15,7 +15,7 @@ class UriAnnotationTest extends AnnotationTest
      */
     public function testAnnotation(string $content, bool $visible, bool $deprecated, array $expected): void
     {
-        $annotation = new UriAnnotation($content, __CLASS__, __METHOD__);
+        $annotation = new PathAnnotation($content, __CLASS__, __METHOD__);
         $annotation->process();
         $annotation->setVisibility($visible);
         $annotation->setDeprecated($deprecated);
@@ -32,8 +32,8 @@ class UriAnnotationTest extends AnnotationTest
      */
     public function testHydrate(string $content, bool $visible, bool $deprecated, array $expected): void
     {
-        /** @var UriAnnotation $annotation */
-        $annotation = UriAnnotation::hydrate(array_merge(
+        /** @var PathAnnotation $annotation */
+        $annotation = PathAnnotation::hydrate(array_merge(
             $expected['array'],
             [
                 'class' => __CLASS__,
@@ -44,7 +44,7 @@ class UriAnnotationTest extends AnnotationTest
         $this->assertAnnotation($annotation, $expected);
     }
 
-    private function assertAnnotation(UriAnnotation $annotation, array $expected): void
+    private function assertAnnotation(PathAnnotation $annotation, array $expected): void
     {
         $this->assertTrue($annotation->supportsAliasing());
         $this->assertTrue($annotation->supportsDeprecation());
@@ -59,11 +59,11 @@ class UriAnnotationTest extends AnnotationTest
         $this->assertEmpty($annotation->getAliases());
     }
 
-    public function testConfiguredUriSegmentTranslations(): void
+    public function testConfiguredPathParamTranslations(): void
     {
-        $this->getConfig()->addUriSegmentTranslation('movie_id', 'id');
+        $this->getConfig()->addPathParamTranslation('movie_id', 'id');
 
-        $annotation = new UriAnnotation('/movies/+movie_id/showtimes', __CLASS__, __METHOD__);
+        $annotation = new PathAnnotation('/movies/+movie_id/showtimes', __CLASS__, __METHOD__);
         $annotation->process();
 
         $this->assertSame('/movies/{id}/showtimes', $annotation->getCleanPath());
@@ -125,12 +125,12 @@ class UriAnnotationTest extends AnnotationTest
     {
         return [
             'missing-path' => [
-                'annotation' => UriAnnotation::class,
+                'annotation' => PathAnnotation::class,
                 'content' => '',
                 'expected.exception' => MissingRequiredFieldException::class,
                 'expected.exception.asserts' => [
                     'getRequiredField' => 'path',
-                    'getAnnotation' => 'uri',
+                    'getAnnotation' => 'path',
                     'getDocblock' => '',
                     'getValues' => []
                 ]

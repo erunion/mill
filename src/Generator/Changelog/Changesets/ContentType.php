@@ -13,7 +13,7 @@ class ContentType extends Changeset
     {
         return [
             'singular' => [
-                Changelog::DEFINITION_CHANGED => 'On {uri}, {method} requests now return a {content_type} ' .
+                Changelog::DEFINITION_CHANGED => 'On {path}, {method} requests now return a {content_type} ' .
                     'Content-Type header.'
             ]
         ];
@@ -35,14 +35,14 @@ class ContentType extends Changeset
         $templates = $this->getTemplates();
 
         if (count($changes) > 1) {
-            $uris = array_map(function (array $change): string {
-                return $change['uri'];
+            $paths = array_map(function (array $change): string {
+                return $change['path'];
             }, $changes);
 
-            // Changes are hashed and grouped by their hashes (sans URI), so it's safe to just pass along this change
+            // Changes are hashed and grouped by their hashes (sans path), so it's safe to just pass along this change
             // into the template engine to build a string.
             $change = array_shift($changes);
-            $change['uri'] = $uris;
+            $change['path'] = $paths;
         } else {
             $change = array_shift($changes);
         }

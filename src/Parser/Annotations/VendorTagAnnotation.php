@@ -7,7 +7,7 @@ use Mill\Parser\Annotation;
 use Mill\Parser\Version;
 
 /**
- * Handler for the `@api-vendorTag` annotation.
+ * Handler for the `@api-vendortag` annotation.
  *
  */
 class VendorTagAnnotation extends Annotation

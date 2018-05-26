@@ -67,9 +67,9 @@ class UsersController extends \MyApplication\Controller
      * @api-label Search
      * @api-group Users
      *
-     * @api-uri:public /users
+     * @api-path:public /users
      *
-     * @api-contentType application/json
+     * @api-contenttype application/json
      *
      * @api-param:public page (integer) - The page number to show.
      * @api-param:public per_page (integer) - Number of items to show on each

@@ -58,7 +58,7 @@ class Markdown extends Generator
                 $content .= sprintf('## %s', $group);
                 $content .= $this->line(1);
 
-                $content .= '| Error Code | URI | Method | HTTP Code | Description |';
+                $content .= '| Error Code | Path | Method | HTTP Code | Description |';
                 $content .= $this->line(1);
                 $content .= '| :--- | :--- | :--- | :--- | :--- |';
                 $content .= $this->line(1);
@@ -68,7 +68,7 @@ class Markdown extends Generator
                         $content .= sprintf(
                             '| %s | %s | %s | %s | %s |',
                             $error['error_code'],
-                            $error['uri'],
+                            $error['path'],
                             $error['method'],
                             $error['http_code'],
                             $error['description']

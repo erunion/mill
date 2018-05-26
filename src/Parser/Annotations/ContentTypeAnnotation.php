@@ -5,7 +5,7 @@ use Mill\Parser\Annotation;
 use Mill\Parser\Version;
 
 /**
- * Handler for the `@api-contentType` annotation.
+ * Handler for the `@api-contenttype` annotation.
  *
  */
 class ContentTypeAnnotation extends Annotation
