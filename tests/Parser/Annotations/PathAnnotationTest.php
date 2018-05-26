@@ -59,9 +59,9 @@ class PathAnnotationTest extends AnnotationTest
         $this->assertEmpty($annotation->getAliases());
     }
 
-    public function testConfiguredUriSegmentTranslations(): void
+    public function testConfiguredPathParamTranslations(): void
     {
-        $this->getConfig()->addUriSegmentTranslation('movie_id', 'id');
+        $this->getConfig()->addPathParamTranslation('movie_id', 'id');
 
         $annotation = new PathAnnotation('/movies/+movie_id/showtimes', __CLASS__, __METHOD__);
         $annotation->process();

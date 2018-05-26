@@ -3,8 +3,8 @@ namespace Mill\Parser;
 
 use Mill\Exceptions\Annotations\InvalidMSONSyntaxException;
 use Mill\Exceptions\Annotations\MissingRequiredFieldException;
-use Mill\Parser\Annotations\ScopeAnnotation;
 use Mill\Parser\Annotations\PathAnnotation;
+use Mill\Parser\Annotations\ScopeAnnotation;
 use Mill\Parser\Annotations\VendorTagAnnotation;
 
 /**

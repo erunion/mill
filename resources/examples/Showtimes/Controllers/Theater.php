@@ -17,7 +17,7 @@ class Theater
      * @api-group Theaters
      *
      * @api-path:public /theaters/+id
-     * @api-uriSegment {/theaters/+id} id (integer) - Theater ID
+     * @api-pathParam id (integer) - Theater ID
      *
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Theater
      * @api-return:public {notmodified} If no content has been modified since the supplied Last-Modified header.
@@ -42,7 +42,7 @@ class Theater
      * @api-group Theaters
      *
      * @api-path:public /theaters/+id
-     * @api-uriSegment {/theaters/+id} id (integer) - Theater ID
+     * @api-pathParam id (integer) - Theater ID
      *
      * @api-scope create
      *
@@ -74,7 +74,7 @@ class Theater
      * @api-group Theaters
      *
      * @api-path:private /theaters/+id
-     * @api-uriSegment {/theaters/+id} id (integer) - Theater ID
+     * @api-pathParam id (integer) - Theater ID
      *
      * @api-contentType application/json
      * @api-scope delete

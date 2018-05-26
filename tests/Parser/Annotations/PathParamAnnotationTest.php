@@ -2,21 +2,19 @@
 namespace Mill\Tests\Parser\Annotations;
 
 use Mill\Exceptions\Annotations\InvalidMSONSyntaxException;
-use Mill\Exceptions\Annotations\MissingRequiredFieldException;
 use Mill\Exceptions\Annotations\UnsupportedTypeException;
-use Mill\Parser\Annotations\UriSegmentAnnotation;
+use Mill\Parser\Annotations\PathParamAnnotation;
 
-class UriSegmentAnnotationTest extends AnnotationTest
+class PathParamAnnotationTest extends AnnotationTest
 {
     /**
      * @dataProvider providerAnnotation
-     * @param string $uri
-     * @param string $segment
+     * @param string $param
      * @param array $expected
      */
-    public function testAnnotation(string $uri, string $segment, array $expected): void
+    public function testAnnotation(string $param, array $expected): void
     {
-        $annotation = new UriSegmentAnnotation($segment, __CLASS__, __METHOD__, null);
+        $annotation = new PathParamAnnotation($param, __CLASS__, __METHOD__, null);
         $annotation->process();
 
         $this->assertAnnotation($annotation, $expected);
@@ -24,14 +22,13 @@ class UriSegmentAnnotationTest extends AnnotationTest
 
     /**
      * @dataProvider providerAnnotation
-     * @param string $uri
-     * @param string $segment
+     * @param string $param
      * @param array $expected
      */
-    public function testHydrate(string $uri, string $segment, array $expected): void
+    public function testHydrate(string $param, array $expected): void
     {
-        /** @var UriSegmentAnnotation $annotation */
-        $annotation = UriSegmentAnnotation::hydrate(array_merge(
+        /** @var PathParamAnnotation $annotation */
+        $annotation = PathParamAnnotation::hydrate(array_merge(
             $expected,
             [
                 'class' => __CLASS__,
@@ -42,7 +39,7 @@ class UriSegmentAnnotationTest extends AnnotationTest
         $this->assertAnnotation($annotation, $expected);
     }
 
-    private function assertAnnotation(UriSegmentAnnotation $annotation, array $expected): void
+    private function assertAnnotation(PathParamAnnotation $annotation, array $expected): void
     {
         $this->assertFalse($annotation->supportsAliasing());
         $this->assertFalse($annotation->supportsDeprecation());
@@ -51,7 +48,6 @@ class UriSegmentAnnotationTest extends AnnotationTest
         $this->assertFalse($annotation->requiresVisibilityDecorator());
 
         $this->assertSame($expected, $annotation->toArray());
-        $this->assertSame($expected['uri'], $annotation->getUri());
         $this->assertSame($expected['field'], $annotation->getField());
         $this->assertSame($expected['type'], $annotation->getType());
         $this->assertSame($expected['description'], $annotation->getDescription());
@@ -64,27 +60,23 @@ class UriSegmentAnnotationTest extends AnnotationTest
     {
         return [
             'bare' => [
-                'uri' => '/movies/+id',
-                'segment' => '{/movies/+id} id (string) - Movie ID',
+                'param' => 'id (string) - Movie ID',
                 'expected' => [
                     'description' => 'Movie ID',
                     'field' => 'id',
                     'type' => 'string',
-                    'uri' => '/movies/+id',
                     'values' => []
                 ]
             ],
             '_complete' => [
-                'uri' => '/movies/+id/showtimes/*date',
-                'segment' => '{/movies/+id/showtimes/*date} date (string) - Date to look for movie showtimes.
+                'param' => 'date (enum) - Date to look for movie showtimes.
                     + Members
                         - `today`
                         - `tomorrow`',
                 'expected' => [
                     'description' => 'Date to look for movie showtimes.',
                     'field' => 'date',
-                    'type' => 'string',
-                    'uri' => '/movies/+id/showtimes/*date',
+                    'type' => 'enum',
                     'values' => [
                         'today' => '',
                         'tomorrow' => ''
@@ -98,29 +90,18 @@ class UriSegmentAnnotationTest extends AnnotationTest
     {
         return [
             'invalid-mson' => [
-                'annotation' => UriSegmentAnnotation::class,
-                'content' => '{/movies/+id}',
+                'annotation' => PathParamAnnotation::class,
+                'content' => 'date',
                 'expected.exception' => InvalidMSONSyntaxException::class,
                 'expected.exception.asserts' => [
-                    'getAnnotation' => 'urisegment',
-                    'getDocblock' => '{/movies/+id}',
-                    'getValues' => []
-                ]
-            ],
-            'missing-uri' => [
-                'annotation' => UriSegmentAnnotation::class,
-                'content' => '',
-                'expected.exception' => MissingRequiredFieldException::class,
-                'expected.exception.asserts' => [
-                    'getRequiredField' => 'uri',
-                    'getAnnotation' => 'urisegment',
-                    'getDocblock' => '',
+                    'getAnnotation' => 'pathparam',
+                    'getDocblock' => 'date',
                     'getValues' => []
                 ]
             ],
             'unsupported-type' => [
-                'annotation' => UriSegmentAnnotation::class,
-                'content' => '{/movies/+id} id (str) - Movie ID',
+                'annotation' => PathParamAnnotation::class,
+                'content' => 'id (str) - Movie ID',
                 'expected.exception' => UnsupportedTypeException::class,
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'id (str) - Movie ID',

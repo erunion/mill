@@ -81,12 +81,21 @@ class PathAnnotation extends Annotation
     {
         $path = preg_replace('/[@#+*!~]((\w|_)+)(\/|$)/', '{$1}$3', $this->getPath());
 
-        // If we have any URI segment translations configured, let's process them.
-        $translations = Container::getConfig()->getUriSegmentTranslations();
+        // If we have any path param translations configured, let's process them.
+        $translations = Container::getConfig()->getPathParamTranslations();
         foreach ($translations as $from => $to) {
             $path = str_replace('{' . $from . '}', '{' . $to . '}', $path);
         }
 
         return $path;
+    }
+
+    /**
+     * @param PathParamAnnotation $param
+     * @return bool
+     */
+    public function doesPathHaveParam(PathParamAnnotation $param): bool
+    {
+        return strpos($this->getCleanPath(), '{' . $param->getField() . '}') !== false;
     }
 }

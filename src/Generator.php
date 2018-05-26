@@ -112,8 +112,6 @@ class Generator
 
                 /** @var \Mill\Parser\Annotations\PathAnnotation $path */
                 foreach ($method->getPaths() as $path) {
-                    $path_data = $path->toArray();
-
                     // Are we generating documentation for a private or protected resource?
                     if (!$this->shouldParsePath($method, $path)) {
                         continue;
@@ -128,20 +126,20 @@ class Generator
                         ];
                     }
 
-                    // Set any segments that belong to this path on onto this action.
-                    $segments = [];
+                    // Set any params that belong to this path on onto this action.
+                    $params = [];
 
-                    /** @var \Mill\Parser\Annotations\UriSegmentAnnotation $segment */
-                    foreach ($method->getUriSegments() as $segment) {
-                        if ($segment->getUri() === $path_data['path']) {
-                            $segments[] = $segment;
+                    /** @var \Mill\Parser\Annotations\PathParamAnnotation $param */
+                    foreach ($method->getPathParams() as $param) {
+                        if ($path->doesPathHaveParam($param)) {
+                            $params[] = $param;
                         }
                     }
 
                     // Set the lone path that this action and group run under.
                     $action = clone $method;
                     $action->setPath($path);
-                    $action->setUriSegments($segments);
+                    $action->setPathParams($params);
                     $action->filterAnnotationsForVisibility($this->load_private_docs, $this->load_vendor_tag_docs);
 
                     // Hash the action so we don't happen to double up and end up with dupes.

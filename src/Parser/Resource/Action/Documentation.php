@@ -38,7 +38,7 @@ class Documentation
         'return',
         'scope',
         'path',
-        'uriSegment',
+        'pathParam',
         'vendorTag'
     ];
 
@@ -437,27 +437,27 @@ class Documentation
     }
 
     /**
-     * Get the raw URI segment annotations that are part of this action.
+     * Get the raw path param annotations that are part of this action.
      *
      * @return array
      */
-    public function getUriSegments(): array
+    public function getPathParams(): array
     {
-        return (isset($this->annotations['uriSegment'])) ? $this->annotations['uriSegment'] : [];
+        return (isset($this->annotations['pathParam'])) ? $this->annotations['pathParam'] : [];
     }
 
     /**
-     * Set the URI segments that this action has.
+     * Set the path params that this action has.
      *
      * This is used in the Compiler system when grouping actions under groups. If an action broadcasts on `/me/videos`
-     * and `/users/:id/videos`, we don't want the URI segments for `/users/:id/videos` to be a part of the compiled
+     * and `/users/:id/videos`, we don't want the params for `/users/:id/videos` to be a part of the compiled
      * `/me/videos` action.
      *
-     * @param array $segments
+     * @param array $params
      */
-    public function setUriSegments(array $segments = []): void
+    public function setPathParams(array $params = []): void
     {
-        $this->annotations['uriSegment'] = $segments;
+        $this->annotations['pathParam'] = $params;
     }
 
     /**

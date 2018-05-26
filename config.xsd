@@ -22,7 +22,7 @@
 
             <xs:element name="scopes" type="component.scopes" minOccurs="0" maxOccurs="1" />
             <xs:element name="parameterTokens" type="component.parametertokens" minOccurs="0" maxOccurs="1" />
-            <xs:element name="uriSegments" type="component.urisegments" minOccurs="0" maxOccurs="1" />
+            <xs:element name="pathParams" type="component.pathparams" minOccurs="0" maxOccurs="1" />
             <xs:element name="vendorTags" type="component.vendorTags" minOccurs="0" maxOccurs="1" />
         </xs:all>
     </xs:group>
@@ -151,7 +151,7 @@
         </xs:choice>
     </xs:complexType>
 
-    <xs:complexType name="component.urisegments">
+    <xs:complexType name="component.pathparams">
         <xs:sequence>
             <xs:element name="translations">
                 <xs:complexType>

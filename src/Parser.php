@@ -294,8 +294,8 @@ class Parser
                 $annotation = 'MinVersion';
                 break;
 
-            case 'urisegment':
-                $annotation = 'UriSegment';
+            case 'pathparam':
+                $annotation = 'PathParam';
                 break;
 
             case 'vendortag':

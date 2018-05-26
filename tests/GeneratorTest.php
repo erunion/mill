@@ -117,17 +117,14 @@ class GeneratorTest extends TestCase
                         $expected_action['path'] . '::' . $expected_action['method']
                     );
 
-                    if ($expected_action['uriSegment'] === false) {
+                    if ($expected_action['pathParam'] === false) {
                         $this->assertArrayNotHasKey(
-                            'uriSegment',
+                            'pathParam',
                             $annotations,
-                            $expected_action['path'] . ' has a segment'
+                            $expected_action['path'] . ' has a path param'
                         );
                     } else {
-                        $this->assertSame(
-                            $annotations['uriSegment'],
-                            $expected_action['uriSegment']
-                        );
+                        $this->assertSame($annotations['pathParam'], $expected_action['pathParam']);
                     }
 
                     $this->assertSame(
@@ -184,12 +181,11 @@ class GeneratorTest extends TestCase
             '/movie/+id::GET' => [
                 'path' => '/movie/+id',
                 'method' => 'GET',
-                'uriSegment' => [
+                'pathParam' => [
                     [
                         'description' => 'Movie ID',
                         'field' => 'id',
                         'type' => 'integer',
-                        'uri' => '/movie/+id',
                         'values' => []
                     ]
                 ],
@@ -198,14 +194,14 @@ class GeneratorTest extends TestCase
                 'annotations.sum' => [
                     'error' => 1,
                     'path' => 1,
-                    'return' => 2,
-                    'uriSegment' => 1
+                    'pathParam' => 1,
+                    'return' => 2
                 ]
             ],
             '/movies::GET' => [
                 'path' => '/movies',
                 'method' => 'GET',
-                'uriSegment' => false,
+                'pathParam' => false,
                 'path.visible' => true,
                 'params.keys' => [
                     'location'
@@ -220,7 +216,7 @@ class GeneratorTest extends TestCase
             '/movies::POST' => [
                 'path' => '/movies',
                 'method' => 'POST',
-                'uriSegment' => false,
+                'pathParam' => false,
                 'path.visible' => true,
                 'params.keys' => [
                     'cast',
@@ -244,12 +240,11 @@ class GeneratorTest extends TestCase
             '/movies/+id::GET' => [
                 'path' => '/movies/+id',
                 'method' => 'GET',
-                'uriSegment' => [
+                'pathParam' => [
                     [
                         'description' => 'Movie ID',
                         'field' => 'id',
                         'type' => 'integer',
-                        'uri' => '/movies/+id',
                         'values' => []
                     ]
                 ],
@@ -258,19 +253,18 @@ class GeneratorTest extends TestCase
                 'annotations.sum' => [
                     'error' => 1,
                     'path' => 1,
-                    'return' => 2,
-                    'uriSegment' => 1
+                    'pathParam' => 1,
+                    'return' => 2
                 ]
             ],
             '/movies/+id::PATCH' => [
                 'path' => '/movies/+id',
                 'method' => 'PATCH',
-                'uriSegment' => [
+                'pathParam' => [
                     [
                         'description' => 'Movie ID',
                         'field' => 'id',
                         'type' => 'integer',
-                        'uri' => '/movies/+id',
                         'values' => []
                     ]
                 ],
@@ -292,20 +286,19 @@ class GeneratorTest extends TestCase
                     'minVersion' => 1,
                     'param' => 10,
                     'path' => 1,
+                    'pathParam' => 1,
                     'return' => 1,
-                    'scope' => 1,
-                    'uriSegment' => 1
+                    'scope' => 1
                 ]
             ],
             '/movies/+id::DELETE' => [
                 'path' => '/movies/+id',
                 'method' => 'DELETE',
-                'uriSegment' => [
+                'pathParam' => [
                     [
                         'description' => 'Movie ID',
                         'field' => 'id',
                         'type' => 'integer',
-                        'uri' => '/movies/+id',
                         'values' => []
                     ]
                 ],
@@ -315,16 +308,16 @@ class GeneratorTest extends TestCase
                     'error' => 1,
                     'minVersion' => 1,
                     'path' => 1,
+                    'pathParam' => 1,
                     'return' => 1,
                     'scope' => 1,
-                    'uriSegment' => 1,
                     'vendorTag' => 1
                 ]
             ],
             '/theaters::GET' => [
                 'path' => '/theaters',
                 'method' => 'GET',
-                'uriSegment' => false,
+                'pathParam' => false,
                 'path.visible' => true,
                 'params.keys' => [
                     'location'
@@ -339,7 +332,7 @@ class GeneratorTest extends TestCase
             '/theaters::POST' => [
                 'path' => '/theaters',
                 'method' => 'POST',
-                'uriSegment' => false,
+                'pathParam' => false,
                 'path.visible' => true,
                 'params.keys' => [
                     'address',
@@ -357,12 +350,11 @@ class GeneratorTest extends TestCase
             '/theaters/+id::GET' => [
                 'path' => '/theaters/+id',
                 'method' => 'GET',
-                'uriSegment' => [
+                'pathParam' => [
                     [
                         'description' => 'Theater ID',
                         'field' => 'id',
                         'type' => 'integer',
-                        'uri' => '/theaters/+id',
                         'values' => []
                     ]
                 ],
@@ -371,19 +363,18 @@ class GeneratorTest extends TestCase
                 'annotations.sum' => [
                     'error' => 1,
                     'path' => 1,
-                    'return' => 2,
-                    'uriSegment' => 1
+                    'pathParam' => 1,
+                    'return' => 2
                 ]
             ],
             '/theaters/+id::PATCH' => [
                 'path' => '/theaters/+id',
                 'method' => 'PATCH',
-                'uriSegment' => [
+                'pathParam' => [
                     [
                         'description' => 'Theater ID',
                         'field' => 'id',
                         'type' => 'integer',
-                        'uri' => '/theaters/+id',
                         'values' => []
                     ]
                 ],
@@ -397,20 +388,19 @@ class GeneratorTest extends TestCase
                     'error' => 3,
                     'param' => 3,
                     'path' => 1,
+                    'pathParam' => 1,
                     'return' => 1,
-                    'scope' => 1,
-                    'uriSegment' => 1
+                    'scope' => 1
                 ]
             ],
             '/theaters/+id::DELETE' => [
                 'path' => '/theaters/+id',
                 'method' => 'DELETE',
-                'uriSegment' => [
+                'pathParam' => [
                     [
                         'description' => 'Theater ID',
                         'field' => 'id',
                         'type' => 'integer',
-                        'uri' => '/theaters/+id',
                         'values' => []
                     ]
                 ],
@@ -419,9 +409,9 @@ class GeneratorTest extends TestCase
                 'annotations.sum' => [
                     'error' => 1,
                     'path' => 1,
+                    'pathParam' => 1,
                     'return' => 1,
-                    'scope' => 1,
-                    'uriSegment' => 1
+                    'scope' => 1
                 ]
             ]
         ];

@@ -264,6 +264,14 @@ DESCRIPTION;
                                 'visible' => true
                             ]
                         ],
+                        'pathParam' => [
+                            [
+                                'description' => 'Movie ID',
+                                'field' => 'id',
+                                'type' => 'integer',
+                                'values' => []
+                            ]
+                        ],
                         'return' => [
                             [
                                 'description' => false,
@@ -281,22 +289,6 @@ DESCRIPTION;
                                 'type' => 'notmodified',
                                 'version' => false,
                                 'visible' => true
-                            ]
-                        ],
-                        'uriSegment' => [
-                            [
-                                'description' => 'Movie ID',
-                                'field' => 'id',
-                                'type' => 'integer',
-                                'uri' => '/movie/+id',
-                                'values' => []
-                            ],
-                            [
-                                'description' => 'Movie ID',
-                                'field' => 'id',
-                                'type' => 'integer',
-                                'uri' => '/movies/+id',
-                                'values' => []
                             ]
                         ]
                     ]
@@ -548,6 +540,14 @@ DESCRIPTION;
                                 'visible' => true
                             ]
                         ],
+                        'pathParam' => [
+                            [
+                                'description' => 'Movie ID',
+                                'field' => 'id',
+                                'type' => 'integer',
+                                'values' => []
+                            ]
+                        ],
                         'return' => [
                             [
                                 'description' => false,
@@ -570,15 +570,6 @@ DESCRIPTION;
                             [
                                 'description' => false,
                                 'scope' => 'edit'
-                            ]
-                        ],
-                        'uriSegment' => [
-                            [
-                                'description' => 'Movie ID',
-                                'field' => 'id',
-                                'type' => 'integer',
-                                'uri' => '/movies/+id',
-                                'values' => []
                             ]
                         ]
                     ]
@@ -627,6 +618,14 @@ DESCRIPTION;
                                 'visible' => false
                             ]
                         ],
+                        'pathParam' => [
+                            [
+                                'description' => 'Movie ID',
+                                'field' => 'id',
+                                'type' => 'integer',
+                                'values' => []
+                            ]
+                        ],
                         'return' => [
                             [
                                 'description' => false,
@@ -641,15 +640,6 @@ DESCRIPTION;
                             [
                                 'description' => false,
                                 'scope' => 'delete'
-                            ]
-                        ],
-                        'uriSegment' => [
-                            [
-                                'description' => 'Movie ID',
-                                'field' => 'id',
-                                'type' => 'integer',
-                                'uri' => '/movies/+id',
-                                'values' => []
                             ]
                         ],
                         'vendorTag' => [

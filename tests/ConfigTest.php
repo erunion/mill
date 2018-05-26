@@ -115,7 +115,7 @@ class ConfigTest extends TestCase
         $this->assertSame([
             'movie_id' => 'id',
             'theater_id' => 'id'
-        ], $config->getUriSegmentTranslations());
+        ], $config->getPathParamTranslations());
     }
 
     /**
@@ -461,20 +461,20 @@ XML
             ],
 
             /**
-             * <uriSegments>
+             * <pathParams>
              *
              */
-            'urisegments.invalid' => [
+            'pathparams.invalid' => [
                 'includes' => ['versions', 'controllers', 'representations'],
                 'exception' => [
                     'regex' => '/invalid translation text/'
                 ],
                 'xml' => <<<XML
-<uriSegments>
+<pathParams>
     <translations>
         <translation from="" to="" />
     </translations>
-</uriSegments>
+</pathParams>
 XML
             ]
         ];

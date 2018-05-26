@@ -5,9 +5,9 @@ use Mill\Exceptions\Resource\NoAnnotationsException;
 use Mill\Generator;
 use Mill\Parser\Annotations\ErrorAnnotation;
 use Mill\Parser\Annotations\ParamAnnotation;
+use Mill\Parser\Annotations\PathParamAnnotation;
 use Mill\Parser\Annotations\ReturnAnnotation;
 use Mill\Parser\Annotations\ScopeAnnotation;
-use Mill\Parser\Annotations\UriSegmentAnnotation;
 use Mill\Parser\Representation\Documentation;
 use Mill\Parser\Resource\Action;
 
@@ -199,33 +199,33 @@ class Blueprint extends Generator
      */
     protected function processParameters(Action\Documentation $action)
     {
-        $segments = $action->getUriSegments();
-        if (empty($segments)) {
+        $params = $action->getPathParams();
+        if (empty($params)) {
             return false;
         }
 
         $blueprint = '+ Parameters';
         $blueprint .= $this->line();
 
-        $translations = $this->config->getUriSegmentTranslations();
+        $translations = $this->config->getPathParamTranslations();
 
-        /** @var UriSegmentAnnotation $segment */
-        foreach ($segments as $segment) {
-            $field = $segment->getField();
+        /** @var PathParamAnnotation $param */
+        foreach ($params as $param) {
+            $field = $param->getField();
             foreach ($translations as $from => $to) {
                 $field = str_replace($from, $to, $field);
             }
 
             /** @var array $values */
-            $values = $segment->getValues();
-            $type = $this->convertTypeToCompatibleType($segment->getType());
+            $values = $param->getValues();
+            $type = $this->convertTypeToCompatibleType($param->getType());
 
             $blueprint .= $this->tab();
             $blueprint .= sprintf(
                 '- `%s` (%s, required) - %s',
                 $field,
                 $type,
-                $segment->getDescription()
+                $param->getDescription()
             );
 
             $blueprint .= $this->line();

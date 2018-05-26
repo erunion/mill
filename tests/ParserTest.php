@@ -122,12 +122,12 @@ These actions will allow you to pull information on a specific movie.', $annotat
                         'class' => Parser\Annotations\PathAnnotation::class,
                         'count' => 2
                     ],
+                    'pathParam' => [
+                        'class' => Parser\Annotations\PathParamAnnotation::class,
+                        'count' => 1
+                    ],
                     'return' => [
                         'class' => Parser\Annotations\ReturnAnnotation::class,
-                        'count' => 2
-                    ],
-                    'uriSegment' => [
-                        'class' => Parser\Annotations\UriSegmentAnnotation::class,
                         'count' => 2
                     ]
                 ]
@@ -167,16 +167,16 @@ These actions will allow you to pull information on a specific movie.', $annotat
                         'class' => Parser\Annotations\PathAnnotation::class,
                         'count' => 1
                     ],
+                    'pathParam' => [
+                        'class' => Parser\Annotations\PathParamAnnotation::class,
+                        'count' => 1
+                    ],
                     'return' => [
                         'class' => Parser\Annotations\ReturnAnnotation::class,
                         'count' => 2
                     ],
                     'scope' => [
                         'class' => Parser\Annotations\ScopeAnnotation::class,
-                        'count' => 1
-                    ],
-                    'uriSegment' => [
-                        'class' => Parser\Annotations\UriSegmentAnnotation::class,
                         'count' => 1
                     ]
                 ]
@@ -208,6 +208,10 @@ These actions will allow you to pull information on a specific movie.', $annotat
                         'class' => Parser\Annotations\MinVersionAnnotation::class,
                         'count' => 1
                     ],
+                    'pathParam' => [
+                        'class' => Parser\Annotations\PathParamAnnotation::class,
+                        'count' => 1
+                    ],
                     'path' => [
                         'class' => Parser\Annotations\PathAnnotation::class,
                         'count' => 1
@@ -218,10 +222,6 @@ These actions will allow you to pull information on a specific movie.', $annotat
                     ],
                     'scope' => [
                         'class' => Parser\Annotations\ScopeAnnotation::class,
-                        'count' => 1
-                    ],
-                    'uriSegment' => [
-                        'class' => Parser\Annotations\UriSegmentAnnotation::class,
                         'count' => 1
                     ],
                     'vendorTag' => [

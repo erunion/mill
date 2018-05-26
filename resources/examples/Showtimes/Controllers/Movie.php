@@ -28,10 +28,8 @@ class Movie
      * @api-group Movies
      *
      * @api-path:private:alias /movie/+id
-     * @api-uriSegment {/movie/+id} id (integer) - Movie ID
-     *
      * @api-path:public /movies/+id
-     * @api-uriSegment {/movies/+id} id (integer) - Movie ID
+     * @api-pathParam id (integer) - Movie ID
      *
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Movie
      * @api-return:public {notmodified} If no content has been modified since the supplied Last-Modified header.
@@ -60,7 +58,7 @@ class Movie
      * @api-group Movies
      *
      * @api-path:public /movies/+id
-     * @api-uriSegment {/movies/+id} id (integer) - Movie ID
+     * @api-pathParam id (integer) - Movie ID
      *
      * @api-scope edit
      * @api-minVersion 1.1
@@ -120,7 +118,7 @@ class Movie
      * @api-group Movies
      *
      * @api-path:private /movies/+id
-     * @api-uriSegment {/movies/+id} id (integer) - Movie ID
+     * @api-pathParam id (integer) - Movie ID
      *
      * @api-contentType application/json
      * @api-vendorTag tag:DELETE_CONTENT

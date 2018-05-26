@@ -107,11 +107,11 @@ class Config
     protected $excluded_representations = [];
 
     /**
-     * Array of URI segment translations. (Like translating `+clip_id` to `+video_id`.)
+     * Array of path param translations. (Like translating `+clip_id` to `+video_id`.)
      *
      * @var array
      */
-    protected $uri_segment_translations = [];
+    protected $path_param_translations = [];
 
     /**
      * Array of `@api-param` configured replacement tokens.
@@ -195,10 +195,10 @@ class Config
             $config->loadScopes($xml->scopes->scope);
         }
 
-        if (isset($xml->uriSegments) &&
-            isset($xml->uriSegments->translations)) {
-            $config->uri_segment_translations = [];
-            $config->loadUriSegmentTranslations($xml->uriSegments->translations->translation);
+        if (isset($xml->pathParams) &&
+            isset($xml->pathParams->translations)) {
+            $config->path_param_translations = [];
+            $config->loadPathParamTranslations($xml->pathParams->translations->translation);
         }
 
         if (isset($xml->parameterTokens)) {
@@ -267,37 +267,37 @@ class Config
     }
 
     /**
-     * Load an array of URI segment translations into the configuration system.
+     * Load an array of path param translations into the configuration system.
      *
      * @param SimpleXMLElement $translations
      */
-    protected function loadUriSegmentTranslations($translations): void
+    protected function loadPathParamTranslations($translations): void
     {
         /** @var SimpleXMLElement $translation */
         foreach ($translations as $translation) {
             $translate_from = trim((string) $translation['from']);
             $translate_to = trim((string) $translation['to']);
 
-            $this->addUriSegmentTranslation($translate_from, $translate_to);
+            $this->addPathParamTranslation($translate_from, $translate_to);
         }
     }
 
     /**
-     * Add a new URI segment translation into the instance config.
+     * Add a new path param translation into the instance config.
      *
      * @param string $from
      * @param string $to
-     * @throws DomainException If an invalid uriSegment translation text was found.
+     * @throws DomainException If an invalid pathParam translation text was found.
      */
-    public function addUriSegmentTranslation($from, $to): void
+    public function addPathParamTranslation($from, $to): void
     {
         if (empty($from) || empty($to)) {
             throw new DomainException(
-                'An invalid translation text was supplied in the Mill `uriSegmentTranslations` section.'
+                'An invalid translation text was supplied in the Mill `pathParams` `translations` section.'
             );
         }
 
-        $this->uri_segment_translations[$from] = $to;
+        $this->path_param_translations[$from] = $to;
     }
 
     /**
@@ -764,13 +764,13 @@ class Config
     }
 
     /**
-     * Get the array of configured URI segment translations.
+     * Get the array of configured path param translations.
      *
      * @return array
      */
-    public function getUriSegmentTranslations(): array
+    public function getPathParamTranslations(): array
     {
-        return $this->uri_segment_translations;
+        return $this->path_param_translations;
     }
 
     /**

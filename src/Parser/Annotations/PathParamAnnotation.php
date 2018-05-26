@@ -6,46 +6,36 @@ use Mill\Parser\MSON;
 use Mill\Parser\Version;
 
 /**
- * Handler for the `@api-uriSegment` annotation.
+ * Handler for the `@api-pathParam` annotation.
  *
  */
-class UriSegmentAnnotation extends Annotation
+class PathParamAnnotation extends Annotation
 {
     const SUPPORTS_MSON = true;
-
-    const REGEX_URI = '/^({[^}]*})/';
 
     const ARRAYABLE = [
         'description',
         'field',
         'type',
-        'uri',
         'values'
     ];
 
     /**
-     * URI that this segment is for.
-     *
-     * @var string
-     */
-    protected $uri;
-
-    /**
-     * Name of this segment's field.
+     * Name of this param's field.
      *
      * @var string
      */
     protected $field;
 
     /**
-     * Type of data that this segment supports.
+     * Type of data that this param supports.
      *
      * @var string
      */
     protected $type;
 
     /**
-     * Description of what this segment does.
+     * Description of what this param does.
      *
      * @var string
      */
@@ -66,12 +56,6 @@ class UriSegmentAnnotation extends Annotation
         $parsed = [];
         $content = trim($this->docblock);
 
-        // URI is surrounded by `{curly braces}`.
-        if (preg_match(self::REGEX_URI, $content, $matches)) {
-            $parsed['uri'] = substr($matches[1], 1, -1);
-            $content = trim(preg_replace(self::REGEX_URI, '', $content));
-        }
-
         /** @var string $method */
         $method = $this->method;
         $mson = (new MSON($this->class, $method))->parse($content);
@@ -90,8 +74,6 @@ class UriSegmentAnnotation extends Annotation
      */
     protected function interpreter(): void
     {
-        $this->uri = $this->required('uri', false);
-
         $this->field = $this->required('field');
         $this->type = $this->required('type');
         $this->description = $this->required('description');
@@ -104,33 +86,14 @@ class UriSegmentAnnotation extends Annotation
      */
     public static function hydrate(array $data = [], Version $version = null)
     {
-        /** @var UriSegmentAnnotation $annotation */
+        /** @var PathParamAnnotation $annotation */
         $annotation = parent::hydrate($data, $version);
         $annotation->setDescription($data['description']);
         $annotation->setField($data['field']);
         $annotation->setType($data['type']);
-        $annotation->setUri($data['uri']);
         $annotation->setValues($data['values']);
 
         return $annotation;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUri(): string
-    {
-        return $this->uri;
-    }
-
-    /**
-     * @param string $uri
-     * @return self
-     */
-    public function setUri(string $uri): self
-    {
-        $this->uri = $uri;
-        return $this;
     }
 
     /**
