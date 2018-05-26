@@ -1,6 +1,9 @@
 <?php
 namespace Mill\Tests\Parser;
 
+use Mill\Exceptions\Annotations\UnsupportedTypeException;
+use Mill\Exceptions\MSON\ImproperlyWrittenEnumException;
+use Mill\Exceptions\MSON\MissingOptionsException;
 use Mill\Parser\MSON;
 use Mill\Tests\TestCase;
 
@@ -19,7 +22,7 @@ class MSONTest extends TestCase
 
     public function testEnumFailsWithoutValues(): void
     {
-        $this->expectException('Mill\Exceptions\MSON\MissingOptionsException');
+        $this->expectException(MissingOptionsException::class);
 
         $content = 'content_rating (enum) - MPAA rating';
         (new MSON(__CLASS__, __METHOD__))->parse($content);
@@ -27,7 +30,7 @@ class MSONTest extends TestCase
 
     public function testEnumFailsWhenWrittenAsAString(): void
     {
-        $this->expectException('Mill\Exceptions\MSON\ImproperlyWrittenEnumException');
+        $this->expectException(ImproperlyWrittenEnumException::class);
 
         $content = 'content_rating `G` (string, optional) - MPAA rating
             + Members
@@ -44,7 +47,7 @@ class MSONTest extends TestCase
      */
     public function testParseFailsOnInvalidTypes(string $content): void
     {
-        $this->expectException('Mill\Exceptions\Annotations\UnsupportedTypeException');
+        $this->expectException(UnsupportedTypeException::class);
         (new MSON(__CLASS__, __METHOD__))->parse($content);
     }
 

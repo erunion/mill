@@ -2,6 +2,7 @@
 namespace Mill\Tests\Parser\Resource\Action;
 
 use Mill\Exceptions\BaseException;
+use Mill\Parser\Annotations\MaxVersionAnnotation;
 use Mill\Parser\Annotations\MinVersionAnnotation;
 use Mill\Parser\Resource\Action\Documentation;
 use Mill\Parser\Version;
@@ -73,6 +74,15 @@ class DocumentationTest extends TestCase
             $this->assertSame($expected['minimum_version'], $min_version->getMinimumVersion());
         } else {
             $this->assertNull($min_version);
+        }
+
+        /** @var \Mill\Parser\Annotations\MaxVersionAnnotation $max_version */
+        $max_version = $parser->getMaximumVersion();
+        if ($expected['maximum_version']) {
+            $this->assertInstanceOf(MaxVersionAnnotation::class, $max_version);
+            $this->assertSame($expected['maximum_version'], $max_version->getMaximumVersion());
+        } else {
+            $this->assertNull($max_version);
         }
 
         $this->assertCount(count($expected['annotations']), $parser->getAnnotations());
@@ -209,6 +219,7 @@ DESCRIPTION;
                         ]
                     ],
                     'minimum_version' => false,
+                    'maximum_version' => false,
                     'responses.length' => 5,
                     'annotations' => [
                         'error' => [
@@ -313,6 +324,7 @@ DESCRIPTION;
                         ]
                     ],
                     'minimum_version' => '1.1',
+                    'maximum_version' => false,
                     'responses.length' => 8,
                     'path.aliases' => [],
                     'annotations' => [
@@ -590,6 +602,7 @@ DESCRIPTION;
                         ]
                     ],
                     'minimum_version' => '1.1',
+                    'maximum_version' => '1.1.2',
                     'responses.length' => 2,
                     'path.aliases' => [],
                     'annotations' => [
@@ -602,6 +615,11 @@ DESCRIPTION;
                                 'vendor_tags' => [],
                                 'version' => false,
                                 'visible' => false
+                            ]
+                        ],
+                        'maxversion' => [
+                            [
+                                'maximum_version' => '1.1.2'
                             ]
                         ],
                         'minversion' => [

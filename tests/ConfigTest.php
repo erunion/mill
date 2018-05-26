@@ -177,7 +177,7 @@ XML;
         if (isset($exception_details['exception'])) {
             $this->expectException($exception_details['exception']);
         } else {
-            $this->expectException('\DomainException');
+            $this->expectException(\DomainException::class);
             $this->expectExceptionMessageRegExp($exception_details['regex']);
         }
 

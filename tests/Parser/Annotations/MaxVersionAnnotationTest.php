@@ -3,9 +3,9 @@ namespace Mill\Tests\Parser\Annotations;
 
 use Mill\Exceptions\Annotations\AbsoluteVersionException;
 use Mill\Exceptions\Version\UnrecognizedSchemaException;
-use Mill\Parser\Annotations\MinVersionAnnotation;
+use Mill\Parser\Annotations\MaxVersionAnnotation;
 
-class MinVersionAnnotationTest extends AnnotationTest
+class MaxVersionAnnotationTest extends AnnotationTest
 {
     /**
      * @dataProvider providerAnnotation
@@ -14,7 +14,7 @@ class MinVersionAnnotationTest extends AnnotationTest
      */
     public function testAnnotation(string $content, array $expected): void
     {
-        $annotation = new MinVersionAnnotation($content, __CLASS__, __METHOD__);
+        $annotation = new MaxVersionAnnotation($content, __CLASS__, __METHOD__);
         $annotation->process();
 
         $this->assertAnnotation($annotation, $expected);
@@ -27,7 +27,7 @@ class MinVersionAnnotationTest extends AnnotationTest
      */
     public function testHydrate(string $content, array $expected): void
     {
-        $annotation = MinVersionAnnotation::hydrate(array_merge(
+        $annotation = MaxVersionAnnotation::hydrate(array_merge(
             $expected,
             [
                 'class' => __CLASS__,
@@ -38,7 +38,7 @@ class MinVersionAnnotationTest extends AnnotationTest
         $this->assertAnnotation($annotation, $expected);
     }
 
-    private function assertAnnotation(MinVersionAnnotation $annotation, array $expected): void
+    private function assertAnnotation(MaxVersionAnnotation $annotation, array $expected): void
     {
         $this->assertFalse($annotation->supportsAliasing());
         $this->assertFalse($annotation->supportsDeprecation());
@@ -58,7 +58,7 @@ class MinVersionAnnotationTest extends AnnotationTest
             '_complete' => [
                 'content' => '1.2',
                 'expected' => [
-                    'minimum_version' => '1.2'
+                    'maximum_version' => '1.2'
                 ]
             ]
         ];
@@ -68,7 +68,7 @@ class MinVersionAnnotationTest extends AnnotationTest
     {
         return [
             'does-not-have-an-absolute-version' => [
-                'annotation' => MinVersionAnnotation::class,
+                'annotation' => MaxVersionAnnotation::class,
                 'content' => '~1.2',
                 'expected.exception' => AbsoluteVersionException::class,
                 'expected.exception.asserts' => [
@@ -78,8 +78,8 @@ class MinVersionAnnotationTest extends AnnotationTest
                     'getValues' => []
                 ]
             ],
-            'missing-minimum-version' => [
-                'annotation' => MinVersionAnnotation::class,
+            'missing-maximum-version' => [
+                'annotation' => MaxVersionAnnotation::class,
                 'content' => '',
                 'expected.exception' => UnrecognizedSchemaException::class,
                 'expected.exception.asserts' => [

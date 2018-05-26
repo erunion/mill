@@ -306,6 +306,7 @@ class GeneratorTest extends TestCase
                 'params.keys' => [],
                 'annotations.sum' => [
                     'error' => 1,
+                    'maxversion' => 1,
                     'minversion' => 1,
                     'path' => 1,
                     'pathparam' => 1,

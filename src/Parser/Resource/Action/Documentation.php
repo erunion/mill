@@ -34,6 +34,7 @@ class Documentation
     const ACCEPTED_ANNOTATIONS = [
         'error',
         'param',
+        'maxversion',
         'minversion',
         'return',
         'scope',
@@ -507,12 +508,21 @@ class Documentation
     /**
      * Get the (absolute) minimum version that this action is supported on.
      *
-    /**
      * @return null|Parser\Annotations\MinVersionAnnotation
      */
     public function getMinimumVersion(): ?Parser\Annotations\MinVersionAnnotation
     {
         return (isset($this->annotations['minversion'])) ? $this->annotations['minversion'][0] : null;
+    }
+
+    /**
+     * Get the (absolute) maximum version that this action is supported on.
+     *
+     * @return null|Parser\Annotations\MaxVersionAnnotation
+     */
+    public function getMaximumVersion(): ?Parser\Annotations\MaxVersionAnnotation
+    {
+        return (isset($this->annotations['maxversion'])) ? $this->annotations['maxversion'][0] : null;
     }
 
     /**

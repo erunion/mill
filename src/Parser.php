@@ -290,6 +290,10 @@ class Parser
                 $annotation = 'ContentType';
                 break;
 
+            case 'maxversion':
+                $annotation = 'MaxVersion';
+                break;
+
             case 'minversion':
                 $annotation = 'MinVersion';
                 break;

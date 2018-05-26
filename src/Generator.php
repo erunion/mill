@@ -178,9 +178,13 @@ class Generator
                             continue;
                         }
 
-                        // If this method has a minimum version specified, and we aren't generating for that, skip it.
+                        // If this method has either a minimum or maximum version specified, and we aren't generating
+                        // an acceptable version, skip it.
                         $min_version = $action->getMinimumVersion();
-                        if ($min_version && $min_version->getMinimumVersion() > $version) {
+                        $max_version = $action->getMaximumVersion();
+                        if (($min_version && $min_version->getMinimumVersion() > $version) ||
+                            ($max_version && $max_version->getMaximumVersion() < $version)
+                        ) {
                             continue;
                         }
 
