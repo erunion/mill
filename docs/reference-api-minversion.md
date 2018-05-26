@@ -29,7 +29,7 @@ This allows you to denote the minimum API version required for a resource action
  * @api-group Movies
  *
  * @api-path:public /movies/+id
- * @api-urisegment {/movies/+id} id (integer) - Movie ID
+ * @api-pathparam id (integer) - Movie ID
  *
  * @api-minversion 3.2
  *

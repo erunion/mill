@@ -30,7 +30,7 @@ This corresponds to an available user authentication token scope (ex. "create", 
  * @api-group Movies
  *
  * @api-path:public /movies/+id
- * @api-urisegment {/movies/+id} id (integer) - Movie ID
+ * @api-pathparam id (integer) - Movie ID
  *
  * @api-scope edit
  *

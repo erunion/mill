@@ -6,8 +6,7 @@ title: "Deprecation"
 > **Note:** Deprecated status is not currently being used when generating documentation, however there are [plans](https://github.com/vimeo/mill/milestones) to hook it up to the internal generator system to make it available in your compiled API Blueprints and manual Mill API usages.
 
 ## Usage
-You might have instances where you need to deprecate a resource action request parameter or URI, you can use the
-`:deprecated` "decorator".
+You might have instances where you need to deprecate a resource action request parameter or path, you can use the `:deprecated` "decorator".
 
 ```php
 /**
@@ -17,10 +16,8 @@ You might have instances where you need to deprecate a resource action request p
  * @api-group Movies
  *
  * @api-path:public /movies/+id
- * @api-urisegment {/movies/+id} id (integer) - Movie ID
- *
  * @api-path:private:deprecated /films/+id
- * @api-urisegment {/films/+id} id (integer) - Film ID
+ * @api-pathparam id (integer) - Movie ID
  *
  * @api-contenttype application/json
  * @api-scope public

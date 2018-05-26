@@ -12,7 +12,7 @@ title: "Resource Actions"
 | [`@api-minversion`](reference-api-minversion.md) | Minimum version required for this action. |
 | [`@api-param`](reference-api-param.md) | A request parameter for this action. |
 | [`@api-path`](reference-api-path.md) | Denotes a path that this action services. |
+| [`@api-pathparam`](reference-api-pathparam.md) | Describes parameters for the path. |
 | [`@api-return`](reference-api-return.md) | A representation that is returned in a request. |
 | [`@api-scope`](reference-api-scope.md) | Required authentication token scope necessary for the action. |
-| [`@api-urisegment`](reference-api-urisegment.md) | Describes parameters for the URI. |
 | [`@api-vendortag`](reference-api-vendortag.md) | Vendor tag for specifying additional metadata on the action. |

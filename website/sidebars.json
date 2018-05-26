@@ -24,10 +24,10 @@
       "api-minversion",
       "api-param",
       "api-path",
+      "api-pathparam",
       "api-return",
       "api-scope",
       "api-see",
-      "api-urisegment",
       "api-vendortag"
     ]
   }

@@ -59,8 +59,7 @@ The `<versions>` setting lets you inform Mill on the various version of your API
 To set a "default" API version, use the `default="true"` attribute. You **must** have a default version set, and there can only be one.
 
 ### Controllers
-The `<controllers>` setting lets you inform Mill on where your API controllers
-live.
+The `<controllers>` setting lets you inform Mill on where your API controllers live.
 
 * Use `<directory>` elements to specify a directory name (and `suffix`).
 * Specify a `<class>` element for a specific, fully-qualified class name.
@@ -99,8 +98,7 @@ public function PATCH()
 Here, `\ErrorRepresentation` would have `needsErrorCode="true"`.
 
 ### Scopes
-If your API has an authentication system that requires a specific scope(s) for
-using an API endpoint, use this to document those.
+If your API has an authentication system that requires a specific scope(s) for using an API endpoint, use this to document those.
 
 Example:
 
@@ -130,23 +128,22 @@ Example:
 
 You can find usage details for parameter tokens in the [`@api-param`](reference-api-param.md#tokens) documentation.
 
-### URI Segments
+### Path Parameters
 #### Translations
-The URI segment translations section allows you to set up translation elements for [`@api-uriSegment`](reference-api-urisegment.md) annotations. Say, in your code, the route for a video is at `/videos/+video_id`, but in your documentation, you want it to just say `/videos/+id`, this is the place to do that.
+The path parameters translations section allows you to set up translation elements for [`@api-pathparam`](reference-api-pathparam.md) annotations. Say, in your code, the route for a video is at `/videos/+video_id`, but in your documentation, you want it to just say `/videos/+id`, this is the place to do that.
 
 Example:
 
 ```xml
-<uriSegments>
+<pathParams>
     <translations>
         <translation from="id" to="video_id" />
     </translations>
-</uriSegments>
+</pathParams>
 ```
 
 ### Vendor tags
-If you'd like to add additional metadata (that you can eventually filter your
-documentation against), you should use vendor tags to document those.
+If you'd like to add additional metadata (that you can eventually filter your documentation against), you should use vendor tags to document those.
 
 ```xml
 <vendorTags>
@@ -159,8 +156,7 @@ documentation against), you should use vendor tags to document those.
 You can find usage details for vendor tags in the [`@api-vendortag`](reference-api-vendortag.md), [`@api-param`](reference-api-param.md), [`@api-return`](reference-api-return.md), and [`@api-error`](reference-api-error.md) documentation.
 
 ### Generators
-These settings let you control the documentation generators that Mill supports
-from the `./bin/mill generate` command.
+These settings let you control the documentation generators that Mill supports from the `./bin/mill generate` command.
 
 #### API Blueprint
 ##### Excludes

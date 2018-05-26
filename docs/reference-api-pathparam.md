@@ -1,14 +1,13 @@
 ---
-id: api-urisegment
-title: "@api-urisegment"
+id: api-pathparam
+title: "@api-pathparam"
 ---
 
-This allows you to describe the segments, or parameters, of a particular
-resource action URI.
+This allows you to describe the parameters of a coupled resource action path.
 
 ## Syntax
 ```php
-@api-urisegment {uri} segmentName (type) - Description
+@api-pathparam paramName (type) - Description
     + Members
         - `option` - Value description
 ```
@@ -23,11 +22,10 @@ resource action URI.
 
 | Tag | Optional | Description |
 | :--- | :--- | :--- |
-| uri | × | This is the corresponding [`@api-uri`](reference-api-uri.md) URI that this segment/parameter exists on. |
-| segmentName | × | This is the name of the parameter that is used within the URI. |
-| type | × | This can be a reference to the type of variable that is being passed in (string, boolean, array, etc.), into the accompanying URI. |
+| paramName | × | This is the name of the parameter that is used within the path. |
+| type | × | This can be a reference to the type of variable that is being passed in (string, boolean, array, etc.), into the coupled path. |
 | description | × | Description of what the parameter is for. |
-| Members | ✓ | If this URI segment has acceptable values (like in the case of an `enum` type), you can document those values here along with a description for what the value is, or means. |
+| Members | ✓ | If this path parameter has acceptable values (like in the case of an `enum` type), you can document those values here along with a description for what the value is, or means. |
 
 ### Supported Types
 
@@ -52,7 +50,7 @@ resource action URI.
  * …
  *
  * @api-path:private:deprecated /movies/+id
- * @api-urisegment {/movies/+id} id (integer) - Movie ID
+ * @api-pathparam id (integer) - Movie ID
  *
  * …
  */

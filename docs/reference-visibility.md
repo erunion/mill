@@ -15,10 +15,8 @@ To choose what visibility your annotation should have, suffix your annotation wi
  * @api-group Movies
 
  * @api-path:public /movies/+id
- * @api-urisegment {/movies/+id} id (integer) - Movie ID
- *
  * @api-path:private /films/+id
- * @api-urisegment {/films/+id} id (integer) - Film ID
+ * @api-pathparam id (integer) - Movie ID
  *
  * @api-error:private 403 (\Some\ErrorErrorRepresentation) - If the user isn't
  *    allowed to do something.
