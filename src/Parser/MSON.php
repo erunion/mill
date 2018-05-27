@@ -14,6 +14,8 @@ class MSON
     /**
      * This is the regex to match Mill-flavored MSON enum members.
      *
+     * The regex here supports multi-line member value descriptions, but not multi-paragraph.
+     *
      * Examples:
      *
      *  - content_rating `G` (string, optional, MOVIE_RATINGS) - This denotes the
@@ -30,9 +32,9 @@ class MSON
      *          - `PG-13`
      *
      * @var string
-     * @todo Add a test for a member description that exists on multiple lines.
      */
-    const REGEX_MSON_ENUM = '/(?:\+ Members\n(?:\s*?))?(?:- `(?P<value>.*?)`( - (?P<description>.*?))?)(?:$|\n)/ui';
+    const REGEX_MSON_ENUM = '/(?:\+ Members\n(?:\s*?))?(?:- `(?P<value>.*?)`( - ' .
+        '(?P<description>(.*)((((\s+)([a-zA-Z. ,`]+)(\n)+))+)?))?)/uim';
 
     /**
      * Take a multi-line string or paragraph, remove any multi-lines, and contract sentences.
@@ -314,7 +316,7 @@ class MSON
         $enum = [];
         foreach ($values as $k => $value) {
             $value = trim($value);
-            $description = trim($descriptions[$k]);
+            $description = preg_replace(self::REGEX_CLEAN_MULTILINE, ' ', trim($descriptions[$k]));
 
             $enum[$value] = $description;
         }
