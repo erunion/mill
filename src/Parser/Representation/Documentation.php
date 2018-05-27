@@ -2,6 +2,7 @@
 namespace Mill\Parser\Representation;
 
 use Dflydev\DotAccessData\Data;
+use Mill\Application;
 use Mill\Exceptions\Annotations\MultipleAnnotationsException;
 use Mill\Exceptions\Annotations\RequiredAnnotationException;
 use Mill\Exceptions\Resource\NoAnnotationsException;
@@ -13,14 +14,6 @@ use Mill\Parser;
  */
 class Documentation
 {
-    /**
-     * When building out dot-notation annotation keys for generating API Blueprint files (or any other generator),
-     * we use this key to designate the content of an annotations' data.
-     *
-     * @var string
-     */
-    const DOT_NOTATION_ANNOTATION_DATA_KEY = '__FIELD_DATA__';
-
     /**
      * Name of the representation class that we're going to be parsing for documentation.
      *
@@ -242,7 +235,7 @@ class Documentation
         $arr = $this->toArray();
         foreach ($arr['content'] as $field => $data) {
             $content->set($field, [
-                self::DOT_NOTATION_ANNOTATION_DATA_KEY => $data
+                Application::DOT_NOTATION_ANNOTATION_DATA_KEY => $data
             ]);
         }
 

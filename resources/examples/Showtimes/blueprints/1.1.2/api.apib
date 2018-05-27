@@ -67,7 +67,10 @@ This action requires a bearer token with the `edit` scope.
     - `id` (number, required) - Movie ID
 + Request
     + Attributes
-        - `cast` (array) - Array of names of the cast.
+        - `cast` (array) - Array of cast members.
+             - (object)
+                - `name` (string) - Cast member name.
+                - `role` (string) - Cast member role.
         - `content_rating` (enum[string]) - MPAA rating
             + Members
                 + `G`
@@ -132,7 +135,10 @@ This action requires a bearer token with the `create` scope.
 
 + Request
     + Attributes
-        - `cast` (array) - Array of names of the cast.
+        - `cast` (array) - Array of cast members.
+             - (object)
+                - `name` (string) - Cast member name.
+                - `role` (string) - Cast member role.
         - `content_rating` (enum[string]) - MPAA rating
             + Members
                 + `G`
@@ -260,10 +266,11 @@ This action requires a bearer token with the `create` scope.
         + `X`
 - `description` (string) - Description
 - `director` (Person) - Director. This data requires a bearer token with the `public` scope.
-- `external_urls` (object) - External URLs. This data requires a bearer token with the `public` scope.
-    - `imdb` (string) - IMDB URL. This data requires a bearer token with the `public` scope.
-    - `tickets` (string) - Tickets URL. This data requires a bearer token with the `public` scope.
-    - `trailer` (string) - Trailer URL. This data requires a bearer token with the `public` scope.
+- `external_urls` (array) - External URLs. This data requires a bearer token with the `public` scope.
+     - (object)
+        - `imdb` (string) - IMDB URL. This data requires a bearer token with the `public` scope.
+        - `tickets` (string) - Tickets URL. This data requires a bearer token with the `public` scope.
+        - `trailer` (string) - Trailer URL. This data requires a bearer token with the `public` scope.
 - `genres` (array[string]) - Genres
 - `id` (number) - Unique ID
 - `kid_friendly`: `false` (boolean) - Kid friendly?

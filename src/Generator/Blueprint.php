@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Generator;
 
+use Mill\Application;
 use Mill\Exceptions\Resource\NoAnnotationsException;
 use Mill\Generator;
 use Mill\Parser\Annotations\ErrorAnnotation;
@@ -144,7 +145,7 @@ class Blueprint extends Generator
                     $contents = sprintf('## %s', $identifier);
                     $contents .= $this->line();
 
-                    $contents .= $this->processRepresentationFields($fields, 0);
+                    $contents .= $this->processMSON($fields, 0);
 
                     $contents = trim($contents);
                     $blueprints[$this->version]['structures'][$identifier] = $contents;
@@ -259,7 +260,7 @@ class Blueprint extends Generator
      */
     protected function processRequest(Action\Documentation $action): string
     {
-        $params = $action->getParameters();
+        $params = $action->getExplodedParameterDotNotation();
         if (empty($params)) {
             return '';
         }
@@ -267,47 +268,10 @@ class Blueprint extends Generator
         $blueprint = '+ Request';
         $blueprint .= $this->line();
 
-        // Build up request attributes.
         $blueprint .= $this->tab();
         $blueprint .= '+ Attributes';
         $blueprint .= $this->line();
-
-        /** @var ParamAnnotation $param */
-        foreach ($params as $param) {
-            $values = $param->getValues();
-            $type = $this->convertTypeToCompatibleType($param->getType());
-            $sample_data = $this->convertSampleDataToCompatibleDataType($param->getSampleData(), $type);
-
-            $blueprint .= $this->tab(2);
-            $blueprint .= sprintf(
-                '- `%s`%s (%s%s%s) - %s',
-                $param->getField(),
-                ($sample_data !== false) ? sprintf(': `%s`', $sample_data) : '',
-                (!empty($values) && $param->getType() !== 'enum') ? 'enum[' . $type . ']' : $type,
-                ($param->isRequired()) ? ', required' : null,
-                ($param->isNullable()) ? ', nullable' : null,
-                $param->getDescription()
-            );
-
-            $blueprint .= $this->line();
-
-            if (!empty($values)) {
-                $blueprint .= $this->tab(3);
-                $blueprint .= '+ Members';
-                $blueprint .= $this->line();
-
-                foreach ($values as $value => $value_description) {
-                    $blueprint .= $this->tab(4);
-                    $blueprint .= sprintf(
-                        '+ `%s`%s',
-                        $value,
-                        (!empty($value_description)) ? sprintf(' - %s', $value_description) : ''
-                    );
-
-                    $blueprint .= $this->line();
-                }
-            }
-        }
+        $blueprint .= $this->processMSON($params, 2);
 
         return $blueprint;
     }
@@ -395,7 +359,7 @@ class Blueprint extends Generator
      * @param int $indent
      * @return string
      */
-    private function processRepresentationFields(array $fields = [], int $indent = 2): string
+    private function processMSON(array $fields = [], int $indent = 2): string
     {
         $blueprint = '';
 
@@ -404,9 +368,9 @@ class Blueprint extends Generator
             $blueprint .= $this->tab($indent);
 
             $data = [];
-            if (isset($field[Documentation::DOT_NOTATION_ANNOTATION_DATA_KEY])) {
+            if (isset($field[Application::DOT_NOTATION_ANNOTATION_DATA_KEY])) {
                 /** @var array $data */
-                $data = $field[Documentation::DOT_NOTATION_ANNOTATION_DATA_KEY];
+                $data = $field[Application::DOT_NOTATION_ANNOTATION_DATA_KEY];
                 $type = $this->convertTypeToCompatibleType(
                     $data['type'],
                     (isset($data['subtype'])) ? $data['subtype'] : false
@@ -433,10 +397,11 @@ class Blueprint extends Generator
                 }
 
                 $blueprint .= sprintf(
-                    '- `%s`%s (%s%s) - %s',
+                    '- `%s`%s (%s%s%s) - %s',
                     $field_name,
                     ($sample_data !== false) ? sprintf(': `%s`', $sample_data) : '',
                     $type,
+                    (isset($data['required']) && $data['required']) ? ', required' : null,
                     ($data['nullable']) ? ', nullable' : null,
                     $description
                 );
@@ -468,7 +433,7 @@ class Blueprint extends Generator
             }
 
             // Process any exploded dot notation children of this field.
-            unset($field[Documentation::DOT_NOTATION_ANNOTATION_DATA_KEY]);
+            unset($field[Application::DOT_NOTATION_ANNOTATION_DATA_KEY]);
             if (!empty($field)) {
                 // If this is an array, and has a subtype of object, we should indent a bit so we can properly render
                 // out the array objects.
@@ -477,9 +442,9 @@ class Blueprint extends Generator
                     $blueprint .= ' - (object)';
                     $blueprint .= $this->line();
 
-                    $blueprint .= $this->processRepresentationFields($field, $indent + 2);
+                    $blueprint .= $this->processMSON($field, $indent + 2);
                 } else {
-                    $blueprint .= $this->processRepresentationFields($field, $indent + 1);
+                    $blueprint .= $this->processMSON($field, $indent + 1);
                 }
             }
         }

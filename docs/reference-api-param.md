@@ -49,6 +49,11 @@ A request parameter that can be supplied to a resource action.
 | timestamp | string |
 | uri | string |
 
+#### Subtypes
+Mill allows you, if necessary, to define a single subtype for a parameter. For example, if you have a parameter that is an array of objects, you can set the `type` as `array<object>`.
+
+Currently only `array` types are allowed to contain subtypes. To define subtypes of objects, use an `@api-param` annotation for each child parameter.
+
 ## Tokens
 Because writing out the same parameter for a large number of endpoints can get tiring, we have a system in place that allows you to configure tokens, which act as kind of a short-code for a parameter:
 

@@ -161,7 +161,7 @@ These actions will allow you to pull information on a specific movie.', $annotat
                     ],
                     'param' => [
                         'class' => Parser\Annotations\ParamAnnotation::class,
-                        'count' => 11
+                        'count' => 13
                     ],
                     'path' => [
                         'class' => Parser\Annotations\PathAnnotation::class,

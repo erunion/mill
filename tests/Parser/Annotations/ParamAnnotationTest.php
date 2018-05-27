@@ -2,6 +2,7 @@
 namespace Mill\Tests\Parser\Annotations;
 
 use Mill\Exceptions\Annotations\UnsupportedTypeException;
+use Mill\Exceptions\Representation\RestrictedFieldNameException;
 use Mill\Parser\Annotations\ParamAnnotation;
 use Mill\Parser\Annotations\VendorTagAnnotation;
 use Mill\Parser\Version;
@@ -110,6 +111,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'nullable' => true,
                     'required' => false,
                     'sample_data' => 'G',
+                    'subtype' => false,
                     'type' => 'enum',
                     'values' => [
                         'G' => 'G rated',
@@ -140,6 +142,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'nullable' => true,
                     'required' => false,
                     'sample_data' => 'G',
+                    'subtype' => false,
                     'type' => 'enum',
                     'values' => [
                         'G' => 'G rated',
@@ -165,6 +168,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'nullable' => false,
                     'required' => true,
                     'sample_data' => 'G',
+                    'subtype' => false,
                     'type' => 'string',
                     'values' => [],
                     'vendor_tags' => [],
@@ -187,6 +191,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'nullable' => false,
                     'required' => false,
                     'sample_data' => 'yes',
+                    'subtype' => false,
                     'type' => 'enum',
                     'values' => [
                         'no' => '',
@@ -218,6 +223,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'nullable' => false,
                     'required' => false,
                     'sample_data' => 'G',
+                    'subtype' => false,
                     'type' => 'enum',
                     'values' => [
                         'G' => 'G rated',
@@ -246,6 +252,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'nullable' => true,
                     'required' => true,
                     'sample_data' => 'G',
+                    'subtype' => false,
                     'type' => 'string',
                     'values' => [],
                     'vendor_tags' => [],
@@ -265,6 +272,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'nullable' => false,
                     'required' => true,
                     'sample_data' => 'G',
+                    'subtype' => false,
                     'type' => 'string',
                     'values' => [],
                     'vendor_tags' => [],
@@ -284,6 +292,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'nullable' => false,
                     'required' => false,
                     'sample_data' => false,
+                    'subtype' => false,
                     'type' => 'integer',
                     'values' => [],
                     'vendor_tags' => [],
@@ -306,6 +315,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'nullable' => false,
                     'required' => false,
                     'sample_data' => false,
+                    'subtype' => false,
                     'type' => 'enum',
                     'values' => [
                         'embeddable' => 'Embeddable',
@@ -328,6 +338,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'nullable' => false,
                     'required' => true,
                     'sample_data' => 'G',
+                    'subtype' => false,
                     'type' => 'string',
                     'values' => [],
                     'vendor_tags' => [
@@ -349,6 +360,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'nullable' => false,
                     'required' => false,
                     'sample_data' => 'G',
+                    'subtype' => false,
                     'type' => 'string',
                     'values' => [],
                     'vendor_tags' => [],
@@ -372,6 +384,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'nullable' => false,
                     'required' => true,
                     'sample_data' => 'G',
+                    'subtype' => false,
                     'type' => 'string',
                     'values' => [],
                     'vendor_tags' => [],
@@ -391,6 +404,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'nullable' => false,
                     'required' => false,
                     'sample_data' => 'G',
+                    'subtype' => false,
                     'type' => 'string',
                     'values' => [],
                     'vendor_tags' => [],
@@ -410,6 +424,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'nullable' => false,
                     'required' => false,
                     'sample_data' => 'G',
+                    'subtype' => false,
                     'type' => 'string',
                     'values' => [],
                     'vendor_tags' => [
@@ -431,6 +446,7 @@ class ParamAnnotationTest extends AnnotationTest
                     'nullable' => false,
                     'required' => false,
                     'sample_data' => false,
+                    'subtype' => false,
                     'type' => 'string',
                     'values' => [],
                     'vendor_tags' => [],
@@ -452,6 +468,12 @@ class ParamAnnotationTest extends AnnotationTest
                     'getAnnotation' => 'content_rating `G` (str) - MPAA rating',
                     'getDocblock' => null
                 ]
+            ],
+            'restricted-field-name-is-detected' => [
+                'annotation' => ParamAnnotation::class,
+                'content' => '__NESTED_DATA__ (string) - MPAA rating',
+                'expected.exception' => RestrictedFieldNameException::class,
+                'expected.exception.asserts' => []
             ]
         ];
     }

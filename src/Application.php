@@ -12,6 +12,14 @@ class Application extends Command
     const DS = DIRECTORY_SEPARATOR;
 
     /**
+     * When building out dot-notation annotation keys for generating API Blueprint files (or any other generator),
+     * we use this key to designate the content of an annotations' data.
+     *
+     * @var string
+     */
+    const DOT_NOTATION_ANNOTATION_DATA_KEY = '__NESTED_DATA__';
+
+    /**
      * @var \Pimple\Container
      */
     protected $container;

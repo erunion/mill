@@ -136,6 +136,12 @@ class DocumentationTest extends TestCase
                 );
             }
         }
+
+        // Verify exploded parameter dot notation.
+        $exploded_content = $parser->getExplodedParameterDotNotation();
+        foreach ($exploded_content as $annotation => $data) {
+            $this->assertSame($expected['params.exploded'][$annotation], $data, '`' . $annotation . '` mismatch');
+        }
     }
 
     /**
@@ -302,7 +308,8 @@ DESCRIPTION;
                                 'visible' => true
                             ]
                         ]
-                    ]
+                    ],
+                    'params.exploded' => []
                 ]
             ],
             'PATCH' => [
@@ -392,12 +399,41 @@ DESCRIPTION;
                         'param' => [
                             'cast' => [
                                 'deprecated' => false,
-                                'description' => 'Array of names of the cast.',
+                                'description' => 'Array of cast members.',
                                 'field' => 'cast',
                                 'nullable' => false,
                                 'required' => false,
                                 'sample_data' => false,
+                                'subtype' => 'object',
                                 'type' => 'array',
+                                'values' => [],
+                                'vendor_tags' => [],
+                                'version' => false,
+                                'visible' => true
+                            ],
+                            'cast.name' => [
+                                'deprecated' => false,
+                                'description' => 'Cast member name.',
+                                'field' => 'cast.name',
+                                'nullable' => false,
+                                'required' => false,
+                                'sample_data' => false,
+                                'subtype' => false,
+                                'type' => 'string',
+                                'values' => [],
+                                'vendor_tags' => [],
+                                'version' => false,
+                                'visible' => true
+                            ],
+                            'cast.role' => [
+                                'deprecated' => false,
+                                'description' => 'Cast member role.',
+                                'field' => 'cast.role',
+                                'nullable' => false,
+                                'required' => false,
+                                'sample_data' => false,
+                                'subtype' => false,
+                                'type' => 'string',
                                 'values' => [],
                                 'vendor_tags' => [],
                                 'version' => false,
@@ -410,6 +446,7 @@ DESCRIPTION;
                                 'nullable' => false,
                                 'required' => false,
                                 'sample_data' => false,
+                                'subtype' => false,
                                 'type' => 'enum',
                                 'values' => [
                                     'G' => '',
@@ -432,6 +469,7 @@ DESCRIPTION;
                                 'nullable' => false,
                                 'required' => true,
                                 'sample_data' => false,
+                                'subtype' => false,
                                 'type' => 'string',
                                 'values' => [],
                                 'vendor_tags' => [],
@@ -445,6 +483,7 @@ DESCRIPTION;
                                 'nullable' => false,
                                 'required' => false,
                                 'sample_data' => false,
+                                'subtype' => false,
                                 'type' => 'string',
                                 'values' => [],
                                 'vendor_tags' => [],
@@ -458,6 +497,7 @@ DESCRIPTION;
                                 'nullable' => false,
                                 'required' => false,
                                 'sample_data' => false,
+                                'subtype' => false,
                                 'type' => 'boolean',
                                 'values' => [],
                                 'vendor_tags' => [],
@@ -471,6 +511,7 @@ DESCRIPTION;
                                 'nullable' => false,
                                 'required' => true,
                                 'sample_data' => false,
+                                'subtype' => false,
                                 'type' => 'string',
                                 'values' => [],
                                 'vendor_tags' => [],
@@ -484,6 +525,7 @@ DESCRIPTION;
                                 'nullable' => false,
                                 'required' => false,
                                 'sample_data' => false,
+                                'subtype' => false,
                                 'type' => 'array',
                                 'values' => [],
                                 'vendor_tags' => [],
@@ -497,6 +539,7 @@ DESCRIPTION;
                                 'nullable' => false,
                                 'required' => false,
                                 'sample_data' => false,
+                                'subtype' => false,
                                 'type' => 'string',
                                 'values' => [],
                                 'vendor_tags' => [],
@@ -510,6 +553,7 @@ DESCRIPTION;
                                 'nullable' => false,
                                 'required' => false,
                                 'sample_data' => false,
+                                'subtype' => false,
                                 'type' => 'integer',
                                 'values' => [],
                                 'vendor_tags' => [],
@@ -523,6 +567,7 @@ DESCRIPTION;
                                 'nullable' => false,
                                 'required' => false,
                                 'sample_data' => false,
+                                'subtype' => false,
                                 'type' => 'string',
                                 'values' => [],
                                 'vendor_tags' => [],
@@ -536,6 +581,7 @@ DESCRIPTION;
                                 'nullable' => true,
                                 'required' => false,
                                 'sample_data' => false,
+                                'subtype' => false,
                                 'type' => 'string',
                                 'values' => [],
                                 'vendor_tags' => [],
@@ -584,7 +630,226 @@ DESCRIPTION;
                                 'scope' => 'edit'
                             ]
                         ]
-                    ]
+                    ],
+                    'params.exploded' => [
+                        'cast' => [
+                            '__NESTED_DATA__' => [
+                                'deprecated' => false,
+                                'description' => 'Array of cast members.',
+                                'field' => 'cast',
+                                'nullable' => false,
+                                'required' => false,
+                                'sample_data' => false,
+                                'subtype' => 'object',
+                                'type' => 'array',
+                                'values' => [],
+                                'vendor_tags' => [],
+                                'version' => false,
+                                'visible' => true
+                            ],
+                            'name' => [
+                                '__NESTED_DATA__' => [
+                                    'deprecated' => false,
+                                    'description' => 'Cast member name.',
+                                    'field' => 'cast.name',
+                                    'nullable' => false,
+                                    'required' => false,
+                                    'sample_data' => false,
+                                    'subtype' => false,
+                                    'type' => 'string',
+                                    'values' => [],
+                                    'vendor_tags' => [],
+                                    'version' => false,
+                                    'visible' => true
+                                ]
+                            ],
+                            'role' => [
+                                '__NESTED_DATA__' => [
+                                    'deprecated' => false,
+                                    'description' => 'Cast member role.',
+                                    'field' => 'cast.role',
+                                    'nullable' => false,
+                                    'required' => false,
+                                    'sample_data' => false,
+                                    'subtype' => false,
+                                    'type' => 'string',
+                                    'values' => [],
+                                    'vendor_tags' => [],
+                                    'version' => false,
+                                    'visible' => true
+                                ]
+                            ],
+                        ],
+                        'content_rating' => [
+                            '__NESTED_DATA__' => [
+                                'deprecated' => false,
+                                'description' => 'MPAA rating',
+                                'field' => 'content_rating',
+                                'nullable' => false,
+                                'required' => false,
+                                'sample_data' => false,
+                                'subtype' => false,
+                                'type' => 'enum',
+                                'values' => [
+                                    'G' => '',
+                                    'NC-17' => '',
+                                    'NR' => '',
+                                    'PG' => '',
+                                    'PG-13' => '',
+                                    'R' => '',
+                                    'UR' => '',
+                                    'X' => ''
+                                ],
+                                'vendor_tags' => [],
+                                'version' => false,
+                                'visible' => true
+                            ]
+                        ],
+                        'description' => [
+                            '__NESTED_DATA__' => [
+                                'deprecated' => false,
+                                'description' => 'Description, or tagline, for the movie.',
+                                'field' => 'description',
+                                'nullable' => false,
+                                'required' => true,
+                                'sample_data' => false,
+                                'subtype' => false,
+                                'type' => 'string',
+                                'values' => [],
+                                'vendor_tags' => [],
+                                'version' => false,
+                                'visible' => true
+                            ]
+                        ],
+                        'director' => [
+                            '__NESTED_DATA__' => [
+                                'deprecated' => false,
+                                'description' => 'Name of the director.',
+                                'field' => 'director',
+                                'nullable' => false,
+                                'required' => false,
+                                'sample_data' => false,
+                                'subtype' => false,
+                                'type' => 'string',
+                                'values' => [],
+                                'vendor_tags' => [],
+                                'version' => false,
+                                'visible' => true
+                            ]
+                        ],
+                        'is_kid_friendly' => [
+                            '__NESTED_DATA__' => [
+                                'deprecated' => false,
+                                'description' => 'Is this movie kid friendly?',
+                                'field' => 'is_kid_friendly',
+                                'nullable' => false,
+                                'required' => false,
+                                'sample_data' => false,
+                                'subtype' => false,
+                                'type' => 'boolean',
+                                'values' => [],
+                                'vendor_tags' => [],
+                                'version' => false,
+                                'visible' => true
+                            ]
+                        ],
+                        'name' => [
+                            '__NESTED_DATA__' => [
+                                'deprecated' => false,
+                                'description' => 'Name of the movie.',
+                                'field' => 'name',
+                                'nullable' => false,
+                                'required' => true,
+                                'sample_data' => false,
+                                'subtype' => false,
+                                'type' => 'string',
+                                'values' => [],
+                                'vendor_tags' => [],
+                                'version' => false,
+                                'visible' => true
+                            ]
+                        ],
+                        'genres' => [
+                            '__NESTED_DATA__' => [
+                                'deprecated' => false,
+                                'description' => 'Array of movie genres.',
+                                'field' => 'genres',
+                                'nullable' => false,
+                                'required' => false,
+                                'sample_data' => false,
+                                'subtype' => false,
+                                'type' => 'array',
+                                'values' => [],
+                                'vendor_tags' => [],
+                                'version' => false,
+                                'visible' => true
+                            ]
+                        ],
+                        'imdb' => [
+                            '__NESTED_DATA__' => [
+                                'deprecated' => false,
+                                'description' => 'IMDB URL',
+                                'field' => 'imdb',
+                                'nullable' => false,
+                                'required' => false,
+                                'sample_data' => false,
+                                'subtype' => false,
+                                'type' => 'string',
+                                'values' => [],
+                                'vendor_tags' => [],
+                                'version' => '>=1.1.1',
+                                'visible' => true
+                            ]
+                        ],
+                        'rotten_tomatoes_score' => [
+                            '__NESTED_DATA__' => [
+                                'deprecated' => false,
+                                'description' => 'Rotten Tomatoes score',
+                                'field' => 'rotten_tomatoes_score',
+                                'nullable' => false,
+                                'required' => false,
+                                'sample_data' => false,
+                                'subtype' => false,
+                                'type' => 'integer',
+                                'values' => [],
+                                'vendor_tags' => [],
+                                'version' => false,
+                                'visible' => true
+                            ]
+                        ],
+                        'runtime' => [
+                            '__NESTED_DATA__' => [
+                                'deprecated' => false,
+                                'description' => 'Movie runtime, in `HHhr MMmin` format.',
+                                'field' => 'runtime',
+                                'nullable' => false,
+                                'required' => false,
+                                'sample_data' => false,
+                                'subtype' => false,
+                                'type' => 'string',
+                                'values' => [],
+                                'vendor_tags' => [],
+                                'version' => false,
+                                'visible' => true
+                            ]
+                        ],
+                        'trailer' => [
+                            '__NESTED_DATA__' => [
+                                'deprecated' => false,
+                                'description' => 'Trailer URL',
+                                'field' => 'trailer',
+                                'nullable' => true,
+                                'required' => false,
+                                'sample_data' => false,
+                                'subtype' => false,
+                                'type' => 'string',
+                                'values' => [],
+                                'vendor_tags' => [],
+                                'version' => false,
+                                'visible' => true
+                            ]
+                        ]
+                    ],
                 ]
             ],
             'DELETE' => [
@@ -665,7 +930,8 @@ DESCRIPTION;
                                 'vendor_tag' => 'tag:DELETE_CONTENT'
                             ]
                         ]
-                    ]
+                    ],
+                    'params.exploded' => []
                 ]
             ]
         ];

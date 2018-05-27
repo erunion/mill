@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Parser\Annotations;
 
+use Mill\Application;
 use Mill\Exceptions\Representation\RestrictedFieldNameException;
 use Mill\Parser\Annotation;
 use Mill\Parser\MSON;
@@ -115,7 +116,7 @@ class DataAnnotation extends Annotation
         }
 
         if (!empty($parsed['identifier'])) {
-            if (strtoupper($parsed['identifier']) === Documentation::DOT_NOTATION_ANNOTATION_DATA_KEY) {
+            if (strtoupper($parsed['identifier']) === Application::DOT_NOTATION_ANNOTATION_DATA_KEY) {
                 throw RestrictedFieldNameException::create($this->class, $this->method);
             }
         }
@@ -155,8 +156,8 @@ class DataAnnotation extends Annotation
         $annotation->setIdentifier($data['identifier']);
         $annotation->setNullable($data['nullable']);
         $annotation->setSampleData($data['sample_data']);
-        $annotation->setSubtype($data['subtype']);
         $annotation->setType($data['type']);
+        $annotation->setSubtype($data['subtype']);
         $annotation->setValues($data['values']);
 
         return $annotation;
@@ -247,24 +248,6 @@ class DataAnnotation extends Annotation
     }
 
     /**
-     * @return false|string
-     */
-    public function getSubtype()
-    {
-        return $this->subtype;
-    }
-
-    /**
-     * @param false|string $subtype
-     * @return self
-     */
-    public function setSubtype($subtype): self
-    {
-        $this->subtype = $subtype;
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getType(): string
@@ -279,6 +262,24 @@ class DataAnnotation extends Annotation
     public function setType(string $type): self
     {
         $this->type = $type;
+        return $this;
+    }
+
+    /**
+     * @return false|string
+     */
+    public function getSubtype()
+    {
+        return $this->subtype;
+    }
+
+    /**
+     * @param false|string $subtype
+     * @return self
+     */
+    public function setSubtype($subtype): self
+    {
+        $this->subtype = $subtype;
         return $this;
     }
 

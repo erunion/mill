@@ -62,7 +62,10 @@ This action requires a bearer token with the `edit` scope.
     - `id` (number, required) - Movie ID
 + Request
     + Attributes
-        - `cast` (array) - Array of names of the cast.
+        - `cast` (array) - Array of cast members.
+             - (object)
+                - `name` (string) - Cast member name.
+                - `role` (string) - Cast member role.
         - `content_rating` (enum[string]) - MPAA rating
             + Members
                 + `G`
@@ -127,7 +130,10 @@ This action requires a bearer token with the `create` scope.
 
 + Request
     + Attributes
-        - `cast` (array) - Array of names of the cast.
+        - `cast` (array) - Array of cast members.
+             - (object)
+                - `name` (string) - Cast member name.
+                - `role` (string) - Cast member role.
         - `content_rating` (enum[string]) - MPAA rating
             + Members
                 + `G`
