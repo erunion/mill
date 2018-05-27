@@ -220,6 +220,8 @@ class GeneratorTest extends TestCase
                 'path.visible' => true,
                 'params.keys' => [
                     'cast',
+                    'cast.name',
+                    'cast.role',
                     'content_rating',
                     'description',
                     'director',
@@ -231,7 +233,7 @@ class GeneratorTest extends TestCase
                 ],
                 'annotations.sum' => [
                     'error' => 2,
-                    'param' => 9,
+                    'param' => 11,
                     'path' => 1,
                     'return' => 1,
                     'scope' => 1
@@ -271,6 +273,8 @@ class GeneratorTest extends TestCase
                 'path.visible' => true,
                 'params.keys' => [
                     'cast',
+                    'cast.name',
+                    'cast.role',
                     'content_rating',
                     'description',
                     'director',
@@ -284,7 +288,7 @@ class GeneratorTest extends TestCase
                 'annotations.sum' => [
                     'error' => 3,
                     'minversion' => 1,
-                    'param' => 10,
+                    'param' => 12,
                     'path' => 1,
                     'pathparam' => 1,
                     'return' => 1,

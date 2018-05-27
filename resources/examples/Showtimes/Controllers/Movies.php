@@ -59,7 +59,9 @@ class Movies
      *      - `UR`
      * @api-param:public genres (array, optional) - Array of movie genres.
      * @api-param:public director (string, optional) - Name of the director.
-     * @api-param:public cast (array, optional) - Array of names of the cast.
+     * @api-param:public cast (array<object>, optional) - Array of cast members.
+     * @api-param:public cast.name (string, optional) - Cast member name.
+     * @api-param:public cast.role (string, optional) - Cast member role.
      * @api-param:public is_kid_friendly (boolean, optional) - Is this movie kid friendly?
      * @api-param:public rotten_tomatoes_score (integer, optional) - Rotten Tomatoes score
      *

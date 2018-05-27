@@ -329,7 +329,7 @@ class DocumentationTest extends TestCase
                     ],
                     'content.exploded' => [
                         'cast' => [
-                            '__FIELD_DATA__' => [
+                            '__NESTED_DATA__' => [
                                 'description' => 'Cast',
                                 'identifier' => 'cast',
                                 'nullable' => false,
@@ -348,7 +348,7 @@ class DocumentationTest extends TestCase
                             ]
                         ],
                         'content_rating' => [
-                            '__FIELD_DATA__' => [
+                            '__NESTED_DATA__' => [
                                 'description' => 'MPAA rating',
                                 'identifier' => 'content_rating',
                                 'nullable' => false,
@@ -371,7 +371,7 @@ class DocumentationTest extends TestCase
                             ]
                         ],
                         'description' => [
-                            '__FIELD_DATA__' => [
+                            '__NESTED_DATA__' => [
                                 'description' => 'Description',
                                 'identifier' => 'description',
                                 'nullable' => false,
@@ -385,7 +385,7 @@ class DocumentationTest extends TestCase
                             ]
                         ],
                         'director' => [
-                            '__FIELD_DATA__' => [
+                            '__NESTED_DATA__' => [
                                 'description' => 'Director',
                                 'identifier' => 'director',
                                 'nullable' => false,
@@ -404,7 +404,7 @@ class DocumentationTest extends TestCase
                             ]
                         ],
                         'external_urls' => [
-                            '__FIELD_DATA__' => [
+                            '__NESTED_DATA__' => [
                                 'description' => 'External URLs',
                                 'identifier' => 'external_urls',
                                 'nullable' => false,
@@ -422,7 +422,7 @@ class DocumentationTest extends TestCase
                                 'version' => '>=1.1'
                             ],
                             'imdb' => [
-                                '__FIELD_DATA__' => [
+                                '__NESTED_DATA__' => [
                                     'description' => 'IMDB URL',
                                     'identifier' => 'external_urls.imdb',
                                     'nullable' => false,
@@ -441,7 +441,7 @@ class DocumentationTest extends TestCase
                                 ]
                             ],
                             'tickets' => [
-                                '__FIELD_DATA__' => [
+                                '__NESTED_DATA__' => [
                                     'description' => 'Tickets URL',
                                     'identifier' => 'external_urls.tickets',
                                     'nullable' => false,
@@ -462,7 +462,7 @@ class DocumentationTest extends TestCase
                                 ]
                             ],
                             'trailer' => [
-                                '__FIELD_DATA__' => [
+                                '__NESTED_DATA__' => [
                                     'description' => 'Trailer URL',
                                     'identifier' => 'external_urls.trailer',
                                     'nullable' => false,
@@ -482,7 +482,7 @@ class DocumentationTest extends TestCase
                             ]
                         ],
                         'genres' => [
-                            '__FIELD_DATA__' => [
+                            '__NESTED_DATA__' => [
                                 'description' => 'Genres',
                                 'identifier' => 'genres',
                                 'nullable' => false,
@@ -496,7 +496,7 @@ class DocumentationTest extends TestCase
                             ]
                         ],
                         'id' => [
-                            '__FIELD_DATA__' => [
+                            '__NESTED_DATA__' => [
                                 'description' => 'Unique ID',
                                 'identifier' => 'id',
                                 'nullable' => false,
@@ -510,7 +510,7 @@ class DocumentationTest extends TestCase
                             ]
                         ],
                         'kid_friendly' => [
-                            '__FIELD_DATA__' => [
+                            '__NESTED_DATA__' => [
                                 'description' => 'Kid friendly?',
                                 'identifier' => 'kid_friendly',
                                 'nullable' => false,
@@ -524,7 +524,7 @@ class DocumentationTest extends TestCase
                             ]
                         ],
                         'name' => [
-                            '__FIELD_DATA__' => [
+                            '__NESTED_DATA__' => [
                                 'description' => 'Name',
                                 'identifier' => 'name',
                                 'nullable' => false,
@@ -539,7 +539,7 @@ class DocumentationTest extends TestCase
                         ],
                         'purchase' => [
                             'url' => [
-                                '__FIELD_DATA__' => [
+                                '__NESTED_DATA__' => [
                                     'description' => 'URL to purchase the film.',
                                     'identifier' => 'purchase.url',
                                     'nullable' => false,
@@ -554,7 +554,7 @@ class DocumentationTest extends TestCase
                             ]
                         ],
                         'rotten_tomatoes_score' => [
-                            '__FIELD_DATA__' => [
+                            '__NESTED_DATA__' => [
                                 'description' => 'Rotten Tomatoes score',
                                 'identifier' => 'rotten_tomatoes_score',
                                 'nullable' => false,
@@ -568,7 +568,7 @@ class DocumentationTest extends TestCase
                             ]
                         ],
                         'runtime' => [
-                            '__FIELD_DATA__' => [
+                            '__NESTED_DATA__' => [
                                 'description' => 'Runtime',
                                 'identifier' => 'runtime',
                                 'nullable' => false,
@@ -582,7 +582,7 @@ class DocumentationTest extends TestCase
                             ]
                         ],
                         'showtimes' => [
-                            '__FIELD_DATA__' => [
+                            '__NESTED_DATA__' => [
                                 'description' => 'Non-theater specific showtimes',
                                 'identifier' => 'showtimes',
                                 'nullable' => false,
@@ -596,7 +596,7 @@ class DocumentationTest extends TestCase
                             ]
                         ],
                         'theaters' => [
-                            '__FIELD_DATA__' => [
+                            '__NESTED_DATA__' => [
                                 'description' => 'Theaters the movie is currently showing in',
                                 'identifier' => 'theaters',
                                 'nullable' => false,
@@ -610,7 +610,7 @@ class DocumentationTest extends TestCase
                             ]
                         ],
                         'uri' => [
-                            '__FIELD_DATA__' => [
+                            '__NESTED_DATA__' => [
                                 'description' => 'Movie URI',
                                 'identifier' => 'uri',
                                 'nullable' => false,

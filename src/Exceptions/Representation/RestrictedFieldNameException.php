@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Exceptions\Representation;
 
+use Mill\Application;
 use Mill\Exceptions\BaseException;
 use Mill\Parser\Representation\Documentation;
 
@@ -12,7 +13,7 @@ class RestrictedFieldNameException extends BaseException
     {
         $message = sprintf(
             '`%s` is a reserved `@api-field` name, and cannot be used in %s::%s.',
-            Documentation::DOT_NOTATION_ANNOTATION_DATA_KEY,
+            Application::DOT_NOTATION_ANNOTATION_DATA_KEY,
             $class,
             $method
         );

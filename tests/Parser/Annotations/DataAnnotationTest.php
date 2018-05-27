@@ -288,7 +288,7 @@ class DataAnnotationTest extends AnnotationTest
             'restricted-field-name-is-detected' => [
                 'annotation' => DataAnnotation::class,
                 'content' => '/**
-                    * @api-data __FIELD_DATA__ (string) - This is an restricted field name
+                    * @api-data __NESTED_DATA__ (string) - This is an restricted field name
                     */',
                 'expected.exception' => RestrictedFieldNameException::class,
                 'expected.exception.asserts' => []

@@ -1,6 +1,8 @@
 <?php
 namespace Mill\Parser\Resource\Action;
 
+use Dflydev\DotAccessData\Data;
+use Mill\Application;
 use Mill\Exceptions\Annotations\MultipleAnnotationsException;
 use Mill\Exceptions\Annotations\RequiredAnnotationException;
 use Mill\Exceptions\Resource\MissingVisibilityDecoratorException;
@@ -674,6 +676,30 @@ class Documentation
         }
 
         return $action->parseAnnotations($annotations);
+    }
+
+    /**
+     * Convert the parsed representation documentation content dot notation field names into an exploded array.
+     *
+     * @return array
+     */
+    public function getExplodedParameterDotNotation(): array
+    {
+        $content = new Data();
+
+        $parameters = $this->getParameters();
+        if (empty($parameters)) {
+            return [];
+        }
+
+        /** @var Parser\Annotations\ParamAnnotation $parameter */
+        foreach ($parameters as $name => $parameter) {
+            $content->set($name, [
+                Application::DOT_NOTATION_ANNOTATION_DATA_KEY => $parameter->toArray()
+            ]);
+        }
+
+        return $content->export();
     }
 
     /**

@@ -61,7 +61,7 @@ If your dataset is a Mill representation, you can document that by setting the t
 #### Subtypes
 Mill allows you, if necessary, to define a single subtype for a dataset. For example, if you have an array that contains objects, you can set the `type` as `array<object>`. Alternatively, if you have an array of representations, you can do the same with `array<\RepresentationFQN>`.
 
-Currently, only `array` types are allowed to contain subtypes. To define subtypes of objects, use a `@api-data` annotation for each property.
+Currently, only `array` types are allowed to contain subtypes. To define subtypes of objects, use an `@api-data` annotation for each property.
 
 ## Examples
 Common uses:

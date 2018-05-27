@@ -1,8 +1,10 @@
 <?php
 namespace Mill\Parser\Annotations;
 
+use Mill\Application;
 use Mill\Container;
 use Mill\Exceptions\Annotations\UnsupportedTypeException;
+use Mill\Exceptions\Representation\RestrictedFieldNameException;
 use Mill\Parser\Annotation;
 use Mill\Parser\MSON;
 use Mill\Parser\Version;
@@ -25,6 +27,7 @@ class ParamAnnotation extends Annotation
         'nullable',
         'required',
         'sample_data',
+        'subtype',
         'type',
         'values',
         'visible'
@@ -50,6 +53,13 @@ class ParamAnnotation extends Annotation
      * @var string
      */
     protected $type;
+
+    /**
+     * Subtype of the type of data that this represents.
+     *
+     * @var false|string
+     */
+    protected $subtype = false;
 
     /**
      * Flag designating if this parameter is required or not.
@@ -100,12 +110,19 @@ class ParamAnnotation extends Annotation
             'field' => $mson->getField(),
             'sample_data' => $mson->getSampleData(),
             'type' => $mson->getType(),
+            'subtype' => $mson->getSubtype(),
             'required' => $mson->isRequired(),
             'nullable' => $mson->isNullable(),
             'vendor_tags' => $mson->getVendorTags(),
             'description' => $mson->getDescription(),
             'values' => $mson->getValues()
         ];
+
+        if (!empty($parsed['field'])) {
+            if (strtoupper($parsed['field']) === Application::DOT_NOTATION_ANNOTATION_DATA_KEY) {
+                throw RestrictedFieldNameException::create($this->class, $this->method);
+            }
+        }
 
         if (!empty($parsed['vendor_tags'])) {
             $parsed['vendor_tags'] = array_map(
@@ -132,6 +149,7 @@ class ParamAnnotation extends Annotation
         $this->field = $this->required('field');
         $this->sample_data = $this->optional('sample_data');
         $this->type = $this->required('type');
+        $this->subtype = $this->optional('subtype');
         $this->description = $this->required('description');
         $this->required = $this->boolean('required');
 
@@ -153,6 +171,7 @@ class ParamAnnotation extends Annotation
         $annotation->setRequired($data['required']);
         $annotation->setSampleData($data['sample_data']);
         $annotation->setType($data['type']);
+        $annotation->setSubtype($data['subtype']);
         $annotation->setValues($data['values']);
 
         return $annotation;
@@ -209,6 +228,24 @@ class ParamAnnotation extends Annotation
     public function setType(string $type): self
     {
         $this->type = $type;
+        return $this;
+    }
+
+    /**
+     * @return false|string
+     */
+    public function getSubtype()
+    {
+        return $this->subtype;
+    }
+
+    /**
+     * @param false|string $subtype
+     * @return self
+     */
+    public function setSubtype($subtype): self
+    {
+        $this->subtype = $subtype;
         return $this;
     }
 
