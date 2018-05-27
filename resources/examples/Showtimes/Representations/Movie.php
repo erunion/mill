@@ -87,11 +87,16 @@ class Movie extends Representation
 
             /**
              * @api-scope public
-             * @api-data external_urls (object) - External URLs
+             * @api-data external_urls (array<object>) - External URLs
              * @api-version >=1.1
              * @api-see self::getExternalUrls external_urls
              */
             'external_urls' => $this->getExternalUrls(),
+
+            /**
+             * @api-data external_urls.imdb (string) - IMDB URL
+             */
+            'imdb' => $this->movie->imdb,
 
             /**
              * @api-data rotten_tomatoes_score (number) - Rotten Tomatoes score
@@ -113,11 +118,6 @@ class Movie extends Representation
     private function getExternalUrls()
     {
         return [
-            /**
-             * @api-data imdb (string) - IMDB URL
-             */
-            'imdb' => $this->movie->imdb,
-
             /**
              * @api-data trailer (string) - Trailer URL
              */

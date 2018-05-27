@@ -261,8 +261,8 @@ class RepresentationParserTest extends TestCase
                                     'scope' => 'public'
                                 ]
                             ],
-                            'subtype' => false,
-                            'type' => 'object',
+                            'subtype' => 'object',
+                            'type' => 'array',
                             'values' => [],
                             'vendor_tags' => [],
                             'version' => '>=1.1'
