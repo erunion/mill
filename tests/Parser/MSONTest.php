@@ -161,6 +161,32 @@ class MSONTest extends TestCase
                     'vendor_tags' => []
                 ]
             ],
+            'enum-with-extra-long-descriptions' => [
+                'content' => 'is_kid_friendly `yes` (enum, optional) - Is this movie kid friendly?
+                    + Members
+                        - `yes` - Justo Ligula Ullamcorper Commodo Consectetur
+                        - `no` - Aenean lacinia bibendum nulla sed consectetur. Nulla vitae elit libero, a pharetra 
+                            augue. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Nullam quis risus eget 
+                            urna mollis ornare vel eu leo. Nulla vitae elit libero, a pharetra augue.
+                        - `maybe` - Commodo Ligula',
+                'expected' => [
+                    'description' => 'Is this movie kid friendly?',
+                    'field' => 'is_kid_friendly',
+                    'nullable' => false,
+                    'required' => false,
+                    'sample_data' => 'yes',
+                    'subtype' => false,
+                    'type' => 'enum',
+                    'values' => [
+                        'maybe' => 'Commodo Ligula',
+                        'no' => 'Aenean lacinia bibendum nulla sed consectetur. Nulla vitae elit libero, a ' .
+                            'pharetra augue. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Nullam ' .
+                            'quis risus eget urna mollis ornare vel eu leo. Nulla vitae elit libero, a pharetra augue.',
+                        'yes' => 'Justo Ligula Ullamcorper Commodo Consectetur'
+                    ],
+                    'vendor_tags' => []
+                ]
+            ],
             'enum-without-descriptions' => [
                 'content' => 'is_kid_friendly `yes` (enum, optional) - Is this movie kid friendly?
                     + Members
