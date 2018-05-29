@@ -387,7 +387,25 @@ class Documentation
      */
     public function getPath(): PathAnnotation
     {
-        $paths = $this->getPaths();
+        $paths = [];
+
+        /** @var PathAnnotation $path */
+        foreach ($this->getPaths() as $k => $path) {
+            if (!$path->isAliased()) {
+                $paths[] = $path;
+            }
+        }
+
+        if (empty($paths)) {
+            throw new \Exception(
+                sprintf(
+                    'There were zero non-aliased paths detected in this %s::%s.',
+                    $this->getClass(),
+                    $this->getMethod()
+                )
+            );
+        }
+
         return array_shift($paths);
     }
 

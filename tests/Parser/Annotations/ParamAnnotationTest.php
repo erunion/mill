@@ -60,7 +60,6 @@ class ParamAnnotationTest extends AnnotationTest
 
     private function assertAnnotation(ParamAnnotation $annotation, array $expected): void
     {
-        $this->assertFalse($annotation->supportsAliasing());
         $this->assertTrue($annotation->supportsDeprecation());
         $this->assertTrue($annotation->supportsVersioning());
         $this->assertTrue($annotation->supportsVendorTags());

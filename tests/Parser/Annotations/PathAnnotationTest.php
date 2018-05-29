@@ -46,7 +46,6 @@ class PathAnnotationTest extends AnnotationTest
 
     private function assertAnnotation(PathAnnotation $annotation, array $expected): void
     {
-        $this->assertTrue($annotation->supportsAliasing());
         $this->assertTrue($annotation->supportsDeprecation());
         $this->assertFalse($annotation->supportsVersioning());
         $this->assertFalse($annotation->supportsVendorTags());

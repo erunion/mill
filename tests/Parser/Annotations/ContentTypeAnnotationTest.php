@@ -42,7 +42,6 @@ class ContentTypeAnnotationTest extends AnnotationTest
 
     private function assertAnnotation(ContentTypeAnnotation $annotation, array $expected): void
     {
-        $this->assertFalse($annotation->supportsAliasing());
         $this->assertFalse($annotation->supportsDeprecation());
         $this->assertTrue($annotation->supportsVersioning());
         $this->assertFalse($annotation->supportsVendorTags());
