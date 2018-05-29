@@ -302,6 +302,10 @@ class Parser
                 $annotation = 'PathParam';
                 break;
 
+            case 'queryparam':
+                $annotation = 'QueryParam';
+                break;
+
             case 'vendortag':
                 $annotation = 'VendorTag';
                 break;

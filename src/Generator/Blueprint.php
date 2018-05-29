@@ -260,7 +260,7 @@ class Blueprint extends Generator
      */
     protected function processRequest(Action\Documentation $action): string
     {
-        $params = $action->getExplodedParameterDotNotation();
+        $params = $action->getExplodedAllQueryParameterDotNotation();
         if (empty($params)) {
             return '';
         }

@@ -114,7 +114,7 @@ Example:
 You can find usage details for scopes in the [`@api-scope`](reference-api-scope.md) documentation.
 
 ### Parameter Tokens
-Parameter tokens allow you to create a [`@api-param`](reference-api-param.md) shortcode to save time for common elements in your API (like paging or sorting).
+Parameter tokens allow you to create an [`@api-param`](reference-api-param.md) or [`@api-queryparam`](reference-api-queryparam.md)  shortcode to save time for common elements in your API (like paging or sorting).
 
 Example:
 
@@ -126,7 +126,7 @@ Example:
 </parameterTokens>
 ```
 
-You can find usage details for parameter tokens in the [`@api-param`](reference-api-param.md#tokens) documentation.
+You can find usage details for parameter tokens in the [`@api-param`](reference-api-param.md#tokens) and [`@api-queryparam`](reference-api-queryparam.md#tokens) documentation.
 
 ### Path Parameters
 #### Translations
@@ -153,7 +153,7 @@ If you'd like to add additional metadata (that you can eventually filter your do
 </vendorTags>
 ```
 
-You can find usage details for vendor tags in the [`@api-vendortag`](reference-api-vendortag.md), [`@api-param`](reference-api-param.md), [`@api-return`](reference-api-return.md), and [`@api-error`](reference-api-error.md) documentation.
+You can find usage details for vendor tags in the [`@api-vendortag`](reference-api-vendortag.md), [`@api-param`](reference-api-param.md), [`@api-queryparam`](reference-api-queryparam.md), [`@api-return`](reference-api-return.md), and [`@api-error`](reference-api-error.md) documentation.
 
 ### Generators
 These settings let you control the documentation generators that Mill supports from the `./bin/mill generate` command.

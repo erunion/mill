@@ -3,7 +3,9 @@ id: api-param
 title: "@api-param"
 ---
 
-A request parameter that can be supplied to a resource action.
+A request parameter that can be supplied to a resource action via a body payload.
+
+> If you need to describe a parameter that can be used within a query string, use the [`@api-queryparam`](reference-api-queryparam.md) annotation.
 
 ## Syntax
 ```php

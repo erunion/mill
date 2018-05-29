@@ -180,6 +180,14 @@ class ParamAnnotation extends Annotation
     /**
      * @return string
      */
+    public function getPayloadFormat(): string
+    {
+        return 'body';
+    }
+
+    /**
+     * @return string
+     */
     public function getField(): string
     {
         return $this->field;

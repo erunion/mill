@@ -27,4 +27,4 @@ public function PATCH()
 }
 ```
 
-Visibility decorators are required on [`@api-param`](reference-api-param.md), [`@api-return`](reference-api-return.md), [`@api-error`](reference-api-error.md), and [`@api-path`](reference-api-path.md).
+Visibility decorators are required on [`@api-param`](reference-api-param.md), [`@api-queryparam`](reference-api-queryparam.md), [`@api-return`](reference-api-return.md), [`@api-error`](reference-api-error.md), and [`@api-path`](reference-api-path.md).

@@ -26,6 +26,7 @@
       "api-param",
       "api-path",
       "api-pathparam",
+      "api-queryparam",
       "api-return",
       "api-scope",
       "api-see",

@@ -14,7 +14,7 @@ class Theaters
      *
      * @api-path:public /theaters
      *
-     * @api-param:public location (string, required) - Location you want theaters in.
+     * @api-queryparam:public location (string, required) - Location you want theaters in.
      *
      * @api-return:public {collection} \Mill\Examples\Showtimes\Representations\Theater
      *

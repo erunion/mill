@@ -14,7 +14,7 @@ class Movies
      *
      * @api-path:public /movies
      *
-     * @api-param:public location (string, required) - Location you want movies for.
+     * @api-queryparam:public location (string, required) - Location you want movies for.
      *
      * @api-return:public {collection} \Mill\Examples\Showtimes\Representations\Movie
      *
@@ -27,7 +27,7 @@ class Movies
      * @api-contentType application/json
      *
      * @api-version >=1.1
-     * @api-param:public page (integer, optional) - Page of results to pull.
+     * @api-queryparam:public page (integer, optional) - Page of results to pull.
      */
     public function GET()
     {

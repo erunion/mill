@@ -9,6 +9,8 @@ use Mill\Parser\Version;
 
 class ParamAnnotationTest extends AnnotationTest
 {
+    const PAYLOAD_FORMAT = 'body';
+
     /**
      * @dataProvider providerAnnotation
      * @param string $content
@@ -58,12 +60,14 @@ class ParamAnnotationTest extends AnnotationTest
         $this->assertAnnotation($annotation, $expected);
     }
 
-    private function assertAnnotation(ParamAnnotation $annotation, array $expected): void
+    protected function assertAnnotation(ParamAnnotation $annotation, array $expected): void
     {
         $this->assertTrue($annotation->supportsDeprecation());
         $this->assertTrue($annotation->supportsVersioning());
         $this->assertTrue($annotation->supportsVendorTags());
         $this->assertTrue($annotation->requiresVisibilityDecorator());
+
+        $this->assertSame(static::PAYLOAD_FORMAT, $annotation->getPayloadFormat());
 
         $this->assertSame($expected, $annotation->toArray());
         $this->assertSame($expected['field'], $annotation->getField());
