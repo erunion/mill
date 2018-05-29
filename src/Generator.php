@@ -117,6 +117,11 @@ class Generator
                         continue;
                     }
 
+                    // We're always going to be generating documentation for this path, regardless if it's an alias or
+                    // not, so let's strip any awareness of that.
+                    $path->setAliased(false);
+                    $path->setAliases([]);
+
                     $resource_label = $annotations['label'];
                     if (!isset($resources[$group]['resources'][$resource_label])) {
                         $resources[$group]['resources'][$resource_label] = [

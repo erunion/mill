@@ -108,6 +108,7 @@ class DocumentationTest extends TestCase
         $this->assertSame($expected['description'], $docs['description']);
         $this->assertSame($method, $docs['method']);
         $this->assertSame($expected['content_types'], $docs['content_types']);
+        $this->assertSame($expected['path'], $parser->getPath()->getPath());
 
         if (empty($docs['annotations'])) {
             $this->fail('No parsed annotations for ' . $class);
@@ -224,6 +225,7 @@ DESCRIPTION;
                             'version' => '<1.1.2'
                         ]
                     ],
+                    'path' => '/movies/+id',
                     'minimum_version' => false,
                     'maximum_version' => false,
                     'responses.length' => 5,
@@ -330,6 +332,7 @@ DESCRIPTION;
                             'version' => '<1.1.2'
                         ]
                     ],
+                    'path' => '/movies/+id',
                     'minimum_version' => '1.1',
                     'maximum_version' => false,
                     'responses.length' => 8,
@@ -866,6 +869,7 @@ DESCRIPTION;
                             'version' => false
                         ]
                     ],
+                    'path' => '/movies/+id',
                     'minimum_version' => '1.1',
                     'maximum_version' => '1.1.2',
                     'responses.length' => 2,
