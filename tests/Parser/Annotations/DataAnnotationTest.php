@@ -42,7 +42,6 @@ class DataAnnotationTest extends AnnotationTest
 
     private function assertAnnotation(DataAnnotation $annotation, array $expected): void
     {
-        $this->assertFalse($annotation->supportsAliasing());
         $this->assertFalse($annotation->supportsDeprecation());
         $this->assertTrue($annotation->supportsVersioning());
         $this->assertTrue($annotation->supportsVendorTags());

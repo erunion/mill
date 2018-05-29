@@ -40,7 +40,6 @@ class MinVersionAnnotationTest extends AnnotationTest
 
     private function assertAnnotation(MinVersionAnnotation $annotation, array $expected): void
     {
-        $this->assertFalse($annotation->supportsAliasing());
         $this->assertFalse($annotation->supportsDeprecation());
         $this->assertFalse($annotation->supportsVersioning());
         $this->assertFalse($annotation->supportsVendorTags());

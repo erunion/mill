@@ -21,13 +21,6 @@ abstract class Annotation
     const REQUIRES_VISIBILITY_DECORATOR = false;
 
     /**
-     * Does this annotation support aliasing?
-     *
-     * @var bool
-     */
-    const SUPPORTS_ALIASING = false;
-
-    /**
      * Does this annotation support being deprecated?
      *
      * @var bool
@@ -285,20 +278,6 @@ abstract class Annotation
             $annotation->setVisibility($data['visible']);
         }
 
-        if ($annotation->supportsAliasing()) {
-            $annotation->setAliased($data['aliased']);
-
-            $aliases = [];
-            foreach ($data['aliases'] as $alias) {
-                $aliases[] = PathAnnotation::hydrate(array_merge([
-                    'class' => $data['class'],
-                    'method' => $data['method']
-                ], $alias));
-            }
-
-            $annotation->setAliases($aliases);
-        }
-
         if ($annotation->supportsDeprecation()) {
             $annotation->setDeprecated($data['deprecated']);
         }
@@ -349,16 +328,6 @@ abstract class Annotation
     public function requiresVisibilityDecorator(): bool
     {
         return static::REQUIRES_VISIBILITY_DECORATOR;
-    }
-
-    /**
-     * Does this annotation support aliasing?
-     *
-     * @return bool
-     */
-    public function supportsAliasing(): bool
-    {
-        return static::SUPPORTS_ALIASING;
     }
 
     /**
@@ -420,17 +389,6 @@ abstract class Annotation
         // If this annotation requires visibility decorators, then we should include that.
         if ($this->requiresVisibilityDecorator()) {
             $arr['visible'] = $this->isVisible();
-        }
-
-        // If this annotation supports aliasing, then we should include any aliasing data about it.
-        if ($this->supportsAliasing()) {
-            $arr['aliased'] = $this->isAliased();
-            $arr['aliases'] = [];
-
-            /** @var Annotation $alias */
-            foreach ($this->getAliases() as $alias) {
-                $arr['aliases'][] = $alias->toArray();
-            }
         }
 
         if ($this->supportsDeprecation()) {
