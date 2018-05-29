@@ -133,6 +133,12 @@ class GeneratorTest extends TestCase
                         $identifier . ' does not have the right parameters.'
                     );
 
+                    $this->assertSame(
+                        $expected_action['queryparams.keys'],
+                        array_keys($action->getQueryParameters()),
+                        $identifier . ' does not have the right query parameters.'
+                    );
+
                     // Verify that we've generated the right public/private/protected annotations for this action.
                     ksort($annotations);
                     $this->assertSame(
@@ -191,6 +197,7 @@ class GeneratorTest extends TestCase
                 ],
                 'path.visible' => false,
                 'params.keys' => [],
+                'queryparams.keys' => [],
                 'annotations.sum' => [
                     'error' => 1,
                     'path' => 1,
@@ -203,13 +210,14 @@ class GeneratorTest extends TestCase
                 'method' => 'GET',
                 'pathparam' => false,
                 'path.visible' => true,
-                'params.keys' => [
+                'params.keys' => [],
+                'queryparams.keys' => [
                     'location'
                 ],
                 'annotations.sum' => [
                     'error' => 1,
-                    'param' => 1,
                     'path' => 1,
+                    'queryparam' => 1,
                     'return' => 1
                 ]
             ],
@@ -231,6 +239,7 @@ class GeneratorTest extends TestCase
                     'rotten_tomatoes_score',
                     'runtime'
                 ],
+                'queryparams.keys' => [],
                 'annotations.sum' => [
                     'error' => 2,
                     'param' => 11,
@@ -252,6 +261,7 @@ class GeneratorTest extends TestCase
                 ],
                 'path.visible' => true,
                 'params.keys' => [],
+                'queryparams.keys' => [],
                 'annotations.sum' => [
                     'error' => 1,
                     'path' => 1,
@@ -285,6 +295,7 @@ class GeneratorTest extends TestCase
                     'runtime',
                     'trailer'
                 ],
+                'queryparams.keys' => [],
                 'annotations.sum' => [
                     'error' => 3,
                     'minversion' => 1,
@@ -308,6 +319,7 @@ class GeneratorTest extends TestCase
                 ],
                 'path.visible' => false,
                 'params.keys' => [],
+                'queryparams.keys' => [],
                 'annotations.sum' => [
                     'error' => 1,
                     'maxversion' => 1,
@@ -324,13 +336,14 @@ class GeneratorTest extends TestCase
                 'method' => 'GET',
                 'pathparam' => false,
                 'path.visible' => true,
-                'params.keys' => [
+                'params.keys' => [],
+                'queryparams.keys' => [
                     'location'
                 ],
                 'annotations.sum' => [
                     'error' => 1,
-                    'param' => 1,
                     'path' => 1,
+                    'queryparam' => 1,
                     'return' => 1
                 ]
             ],
@@ -344,6 +357,7 @@ class GeneratorTest extends TestCase
                     'name',
                     'phone_number'
                 ],
+                'queryparams.keys' => [],
                 'annotations.sum' => [
                     'error' => 1,
                     'param' => 3,
@@ -365,6 +379,7 @@ class GeneratorTest extends TestCase
                 ],
                 'path.visible' => true,
                 'params.keys' => [],
+                'queryparams.keys' => [],
                 'annotations.sum' => [
                     'error' => 1,
                     'path' => 1,
@@ -389,6 +404,7 @@ class GeneratorTest extends TestCase
                     'name',
                     'phone_number'
                 ],
+                'queryparams.keys' => [],
                 'annotations.sum' => [
                     'error' => 3,
                     'param' => 3,
@@ -411,6 +427,7 @@ class GeneratorTest extends TestCase
                 ],
                 'path.visible' => false,
                 'params.keys' => [],
+                'queryparams.keys' => [],
                 'annotations.sum' => [
                     'error' => 1,
                     'path' => 1,
@@ -631,8 +648,8 @@ class GeneratorTest extends TestCase
                                     '/movies/+id::DELETE' => $actions['/movies/+id::DELETE'],
                                     '/movies::GET' => call_user_func(function () use ($actions): array {
                                         $action = $actions['/movies::GET'];
-                                        $action['params.keys'][] = 'page';
-                                        $action['annotations.sum']['param']++;
+                                        $action['queryparams.keys'][] = 'page';
+                                        $action['annotations.sum']['queryparam']++;
 
                                         return $action;
                                     }),
@@ -707,8 +724,8 @@ class GeneratorTest extends TestCase
                                     '/movies/+id::PATCH' => $actions['/movies/+id::PATCH'],
                                     '/movies::GET' => call_user_func(function () use ($actions): array {
                                         $action = $actions['/movies::GET'];
-                                        $action['params.keys'][] = 'page';
-                                        $action['annotations.sum']['param']++;
+                                        $action['queryparams.keys'][] = 'page';
+                                        $action['annotations.sum']['queryparam']++;
 
                                         return $action;
                                     }),
@@ -781,8 +798,8 @@ class GeneratorTest extends TestCase
                                     '/movies/+id::DELETE' => $actions['/movies/+id::DELETE'],
                                     '/movies::GET' => call_user_func(function () use ($actions): array {
                                         $action = $actions['/movies::GET'];
-                                        $action['params.keys'][] = 'page';
-                                        $action['annotations.sum']['param']++;
+                                        $action['queryparams.keys'][] = 'page';
+                                        $action['annotations.sum']['queryparam']++;
 
                                         return $action;
                                     }),
@@ -864,8 +881,8 @@ class GeneratorTest extends TestCase
                                     '/movies/+id::DELETE' => $actions['/movies/+id::DELETE'],
                                     '/movies::GET' => call_user_func(function () use ($actions): array {
                                         $action = $actions['/movies::GET'];
-                                        $action['params.keys'][] = 'page';
-                                        $action['annotations.sum']['param']++;
+                                        $action['queryparams.keys'][] = 'page';
+                                        $action['annotations.sum']['queryparam']++;
 
                                         return $action;
                                     }),
@@ -946,8 +963,8 @@ class GeneratorTest extends TestCase
                                     }),
                                     '/movies::GET' => call_user_func(function () use ($actions): array {
                                         $action = $actions['/movies::GET'];
-                                        $action['params.keys'][] = 'page';
-                                        $action['annotations.sum']['param']++;
+                                        $action['queryparams.keys'][] = 'page';
+                                        $action['annotations.sum']['queryparam']++;
 
                                         return $action;
                                     }),

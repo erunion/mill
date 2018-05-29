@@ -11,9 +11,10 @@ title: "Resource Actions"
 | [`@api-label`](reference-api-label.md) | Short description of what the resource action handles. |
 | [`@api-maxversion`](reference-api-maxversion.md) | Maximum version required for this action. |
 | [`@api-minversion`](reference-api-minversion.md) | Minimum version required for this action. |
-| [`@api-param`](reference-api-param.md) | A request parameter for this action. |
+| [`@api-param`](reference-api-param.md) | A request parameter for this action that can be supplied in a body payload. |
 | [`@api-path`](reference-api-path.md) | Denotes a path that this action services. |
 | [`@api-pathparam`](reference-api-pathparam.md) | Describes parameters for the path. |
+| [`@api-queryparam`](reference-api-queryparam.md) | A request parameter for this action that can be supplied in a query string. |
 | [`@api-return`](reference-api-return.md) | A representation that is returned in a request. |
 | [`@api-scope`](reference-api-scope.md) | Required authentication token scope necessary for the action. |
 | [`@api-vendortag`](reference-api-vendortag.md) | Vendor tag for specifying additional metadata on the action. |

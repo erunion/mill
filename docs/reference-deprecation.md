@@ -33,4 +33,4 @@ public function GET()
 }
 ```
 
-Deprecated decorators are only available on [`@api-param`](reference-api-param.md) and [`@api-path`](reference-api-path.md).
+Deprecated decorators are only available on [`@api-param`](reference-api-param.md), [`@api-queryparam`](reference-api-queryparam.md) and [`@api-path`](reference-api-path.md).

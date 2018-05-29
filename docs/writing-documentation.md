@@ -71,10 +71,10 @@ class UsersController extends \MyApplication\Controller
      *
      * @api-contenttype application/json
      *
-     * @api-param:public page (integer) - The page number to show.
-     * @api-param:public per_page (integer) - Number of items to show on each
-     *     page. Max 100.
-     * @api-param:public query (string, required) - Search query.
+     * @api-queryparam:public page (integer) - The page number to show.
+     * @api-queryparam:public per_page (integer) - Number of items to show on
+     *     each page. Max 100.
+     * @api-queryparam:public query (string, required) - Search query.
      *
      * @api-return:public {collection} \MyApplication\Representation\User
      *

@@ -38,6 +38,7 @@ class Documentation
         'param',
         'maxversion',
         'minversion',
+        'queryparam',
         'return',
         'scope',
         'path',
@@ -189,8 +190,8 @@ class Documentation
 
                 // If we're dealing with parameter annotations, let's set us up the ability to later sort them in
                 // alphabetical order by keying their annotation array off the parameter field name.
-                if ($key === 'param') {
-                    /** @var Parser\Annotations\ParamAnnotation $annotation */
+                if (in_array($key, ['param', 'queryparam'])) {
+                    /** @var Parser\Annotations\ParamAnnotation|Parser\Annotations\QueryParamAnnotation $annotation */
                     $this->annotations[$key][$annotation->getField()] = $annotation;
                 } else {
                     $this->annotations[$key][] = $annotation;
@@ -201,6 +202,10 @@ class Documentation
         // Keep the parameter annotation array in alphabetical order, so they're easier to consume in the documentation.
         if (isset($this->annotations['param'])) {
             ksort($this->annotations['param']);
+        }
+
+        if (isset($this->annotations['queryparam'])) {
+            ksort($this->annotations['queryparam']);
         }
 
         // Run through the parsed annotations and verify that we aren't missing any required annotations.
@@ -512,6 +517,26 @@ class Documentation
     }
 
     /**
+     * Get back any query parameters that this action has available.
+     *
+     * @return array
+     */
+    public function getQueryParameters(): array
+    {
+        return (isset($this->annotations['queryparam'])) ? $this->annotations['queryparam'] : [];
+    }
+
+    /**
+     * Get back all parameters that this action has available.
+     *
+     * @return array
+     */
+    public function getAllParameters(): array
+    {
+        return array_merge($this->getParameters(), $this->getQueryParameters());
+    }
+
+    /**
      * Get back any responses that this action can throw. This will include both returns (`@api-return`) and exceptions
      * (`@api-error`).
      *
@@ -697,20 +722,52 @@ class Documentation
     }
 
     /**
-     * Convert the parsed representation documentation content dot notation field names into an exploded array.
+     * Convert the parsed parameter documentation content dot notation field names into an exploded array.
      *
      * @return array
      */
     public function getExplodedParameterDotNotation(): array
     {
-        $content = new Data();
+        return $this->buildExplodedDotNotation($this->getParameters());
+    }
 
-        $parameters = $this->getParameters();
+    /**
+     * Convert the parsed query parameter documentation content dot notation field names into an exploded array.
+     *
+     * @return array
+     */
+    public function getExplodedQueryParameterDotNotation(): array
+    {
+        return $this->buildExplodedDotNotation($this->getQueryParameters());
+    }
+
+    /**
+     * Convert all parsed parameter (query and normal parameter) documentation content dot notation field names into an
+     * exploded array.
+     *
+     * @return array
+     */
+    public function getExplodedAllQueryParameterDotNotation(): array
+    {
+        return $this->buildExplodedDotNotation(array_merge(
+            $this->getParameters(),
+            $this->getQueryParameters()
+        ));
+    }
+
+    /**
+     * @param array $parameters
+     * @return array
+     */
+    private function buildExplodedDotNotation($parameters = []): array
+    {
         if (empty($parameters)) {
             return [];
         }
 
-        /** @var Parser\Annotations\ParamAnnotation $parameter */
+        $content = new Data();
+
+        /** @var Parser\Annotations\ParamAnnotation|Parser\Annotations\QueryParamAnnotation $parameter */
         foreach ($parameters as $name => $parameter) {
             $content->set($name, [
                 Application::DOT_NOTATION_ANNOTATION_DATA_KEY => $parameter->toArray()

@@ -20,6 +20,14 @@ class Application extends Command
     const DOT_NOTATION_ANNOTATION_DATA_KEY = '__NESTED_DATA__';
 
     /**
+     * When building out dot-notation annotation keys for generating API Blueprint files (or any other generator),
+     * we use this key to designate the type of parameter that it is.
+     *
+     * @var string
+     */
+    const DOT_NOTATION_ANNOTATION_PARAMETER_TYPE_KEY = '__PARAMETER_TYPE__';
+
+    /**
      * @var \Pimple\Container
      */
     protected $container;

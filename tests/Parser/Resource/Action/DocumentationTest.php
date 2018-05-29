@@ -139,9 +139,12 @@ class DocumentationTest extends TestCase
         }
 
         // Verify exploded parameter dot notation.
-        $exploded_content = $parser->getExplodedParameterDotNotation();
-        foreach ($exploded_content as $annotation => $data) {
+        foreach ($parser->getExplodedParameterDotNotation() as $annotation => $data) {
             $this->assertSame($expected['params.exploded'][$annotation], $data, '`' . $annotation . '` mismatch');
+        }
+
+        foreach ($parser->getExplodedQueryParameterDotNotation() as $annotation => $data) {
+            $this->assertSame($expected['queryparams.exploded'][$annotation], $data, '`' . $annotation . '` mismatch');
         }
     }
 
@@ -311,7 +314,8 @@ DESCRIPTION;
                             ]
                         ]
                     ],
-                    'params.exploded' => []
+                    'params.exploded' => [],
+                    'queryparams.exploded' => []
                 ]
             ],
             'PATCH' => [
@@ -853,6 +857,7 @@ DESCRIPTION;
                             ]
                         ]
                     ],
+                    'queryparams.exploded' => []
                 ]
             ],
             'DELETE' => [
@@ -935,7 +940,8 @@ DESCRIPTION;
                             ]
                         ]
                     ],
-                    'params.exploded' => []
+                    'params.exploded' => [],
+                    'queryparams.exploded' => []
                 ]
             ]
         ];
