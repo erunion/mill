@@ -59,7 +59,6 @@ class Changelog extends Generator
         $this->buildRepresentationChangelog($this->parsed['representations']);
         $this->buildResourceChangelog($this->parsed['resources']);
 
-        // Keep things tidy
         foreach ($this->changelog as $version => $changes) {
             $version_data = $this->config->getApiVersion($version);
             $this->changelog[$version]['_details'] = [

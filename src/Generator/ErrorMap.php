@@ -9,8 +9,6 @@ use Mill\Parser\Resource\Action;
 
 class ErrorMap extends Generator
 {
-    const FORMAT_MARKDOWN = 'markdown';
-
     /**
      * Generated error map.
      *
@@ -64,7 +62,6 @@ class ErrorMap extends Generator
             }
         }
 
-        // Keep things tidy
         foreach ($this->error_map as $version => $groups) {
             foreach ($groups as $group => $resources) {
                 foreach ($resources as $identifier => $errors) {

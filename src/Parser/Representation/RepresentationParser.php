@@ -46,7 +46,6 @@ class RepresentationParser extends Parser
         $annotations = $this->parse($code);
 
         if (count($annotations) > 1) {
-            // Keep things tidy.
             ksort($annotations);
 
             // Run through all created annotations and cascade any versioning down into any present child annotations.

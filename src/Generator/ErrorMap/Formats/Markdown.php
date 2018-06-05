@@ -2,17 +2,11 @@
 namespace Mill\Generator\ErrorMap\Formats;
 
 use Mill\Generator;
-use Mill\Generator\ErrorMap;
 use Mill\Generator\Traits;
 
 class Markdown extends Generator
 {
     use Traits\Markdown;
-
-    /**
-     * @var string
-     */
-    protected $output_format = ErrorMap::FORMAT_MARKDOWN;
 
     /**
      * Generated error map.

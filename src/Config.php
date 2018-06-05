@@ -236,7 +236,6 @@ class Config
             $this->addVendorTag((string) $vendor_tag['name']);
         }
 
-        // Keep things tidy.
         $this->vendor_tags = array_unique($this->vendor_tags);
     }
 
@@ -262,7 +261,6 @@ class Config
             $this->scopes[] = (string) $scope['name'];
         }
 
-        // Keep things tidy.
         $this->scopes = array_unique($this->scopes);
     }
 
@@ -315,7 +313,6 @@ class Config
             $this->addParameterToken($parameter, $annotation);
         }
 
-        // Keep things tidy.
         $this->parameter_tokens = array_unique($this->parameter_tokens);
     }
 
@@ -424,7 +421,6 @@ class Config
             throw new DomainException('You must set a default API version.');
         }
 
-        // Keep things tidy.
         $sorted_numerical = Semver::sort(array_keys($api_versions));
         foreach ($sorted_numerical as $version) {
             $this->api_versions[] = $api_versions[$version];
@@ -456,7 +452,6 @@ class Config
                 $excludes[] = (string) $exclude['name'];
             }
 
-            // Keep things tidy.
             $excludes = array_unique($excludes);
         }
 
@@ -480,7 +475,6 @@ class Config
             );
         }
 
-        // Keep things tidy.
         $this->controllers = array_unique($this->controllers);
         sort($this->controllers);
 
@@ -533,7 +527,6 @@ class Config
                 $this->addExcludedRepresentation((string) $exclude['name']);
             }
 
-            // Keep things tidy.
             $this->excluded_representations = array_unique($this->excluded_representations);
         }
 
@@ -575,7 +568,6 @@ class Config
             }
         }
 
-        // Keep things tidy
         ksort($this->representations);
 
         if (empty($this->representations)) {

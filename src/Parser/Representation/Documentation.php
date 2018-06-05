@@ -260,7 +260,6 @@ class Documentation
             $data['content'][$key] = $annotation->toArray();
         }
 
-        // Keep things tidy.
         ksort($data['content']);
 
         return $data;

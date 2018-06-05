@@ -91,7 +91,6 @@ class Blueprint extends Generator
                             $coded_responses[$response->getHttpCode()][] = $response;
                         }
 
-                        // Keep things tidy.
                         ksort($coded_responses);
 
                         foreach ($coded_responses as $http_code => $responses) {
@@ -482,7 +481,6 @@ class Blueprint extends Generator
                 $blueprint .= $this->line(2);
             }
 
-            // Keep things tidy in the combined file.
             ksort($structures);
 
             $blueprint .= '# Data Structures';
