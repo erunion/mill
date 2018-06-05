@@ -94,24 +94,24 @@ class Parser
     {
         $original_docblock = $docblock;
         $annotations = [];
+        $annotation_tags = [];
         $matches = null;
 
         $parser = self::getAnnotationsFromDocblock($docblock);
         $tags = $parser->getTags();
-        if (!empty($tags)) {
-            $annotation_tags = [];
 
-            /** @var UnknownTag $tag */
-            foreach ($tags as $tag) {
-                // If this isn't a Mill annotation, then ignore it.
-                $annotation = $tag->getTagName();
-                if (substr($annotation, 0, 4) !== 'api-') {
-                    continue;
-                }
-
-                $annotation_tags[] = $tag;
+        /** @var UnknownTag $tag */
+        foreach ($tags as $tag) {
+            // If this isn't a Mill annotation, then ignore it.
+            $annotation = $tag->getTagName();
+            if (substr($annotation, 0, 4) !== 'api-') {
+                continue;
             }
 
+            $annotation_tags[] = $tag;
+        }
+
+        if (!empty($annotation_tags)) {
             $annotations = $this->parseAnnotations($annotation_tags, $original_docblock);
         }
 
