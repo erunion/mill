@@ -10,10 +10,6 @@ use Mill\Parser\Annotations\Traits\HasHttpCodeResponseTrait;
 use Mill\Parser\MSON;
 use Mill\Parser\Version;
 
-/**
- * Handler for the `@api-error` annotation.
- *
- */
 class ErrorAnnotation extends Annotation
 {
     use HasHttpCodeResponseTrait;
@@ -34,27 +30,21 @@ class ErrorAnnotation extends Annotation
         'representation'
     ];
 
-    /**
-     * Optional unique error code for the error that this exception handles.
-     *
-     * @var false|null|string
-     */
+    /** @var false|null|string Optional unique error code for the error that this exception handles. */
     protected $error_code = null;
 
-    /**
-     * Description for why this exception can be triggered.
-     *
-     * @var string
-     */
+    /** @var string Description for why this exception can be triggered. */
     protected $description;
 
     /**
      * {@inheritdoc}
-     * @throws UnknownReturnCodeException If a supplied HTTP code is invalid.
-     * @throws UnknownErrorRepresentationException If a supplied representation has not been configured as allowing
-     *      errors.
-     * @throws MissingRepresentationErrorCodeException If a supplied representation has been configured as requiring
-     *      an error code, but is missing it.
+     * @return array
+     * @throws MissingRepresentationErrorCodeException
+     * @throws UnknownErrorRepresentationException
+     * @throws UnknownReturnCodeException
+     * @throws \Mill\Exceptions\Annotations\UnsupportedTypeException
+     * @throws \Mill\Exceptions\MSON\ImproperlyWrittenEnumException
+     * @throws \Mill\Exceptions\MSON\MissingOptionsException
      */
     protected function parser(): array
     {
@@ -163,7 +153,7 @@ class ErrorAnnotation extends Annotation
 
     /**
      * @param string $description
-     * @return self
+     * @return ErrorAnnotation
      */
     public function setDescription(string $description): self
     {
@@ -181,7 +171,7 @@ class ErrorAnnotation extends Annotation
 
     /**
      * @param false|null|string $error_code
-     * @return self
+     * @return ErrorAnnotation
      */
     public function setErrorCode($error_code): self
     {

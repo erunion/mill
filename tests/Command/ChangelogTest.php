@@ -36,7 +36,7 @@ class ChangelogTest extends \PHPUnit\Framework\TestCase
     public function testCommand(bool $private_objects, array $vendor_tags, string $expected_file): void
     {
         /** @var string $output_dir */
-        $output_dir = tempnam(sys_get_temp_dir(), 'mill-generate-test-');
+        $output_dir = tempnam(sys_get_temp_dir(), 'mill-changelog-test-');
         if (file_exists($output_dir)) {
             unlink($output_dir);
         }
@@ -63,7 +63,7 @@ class ChangelogTest extends \PHPUnit\Framework\TestCase
         $this->assertFileEquals(
             $blueprints_dir . '/' . $expected_file,
             $output_dir . '/changelog.md',
-            'Generated changelog does not match.'
+            'Compiled changelog does not match.'
         );
     }
 

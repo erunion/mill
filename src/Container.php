@@ -7,9 +7,7 @@ use Mill\Provider\Reader;
 
 class Container extends \Pimple\Container
 {
-    /**
-     * @var Container|null
-     */
+    /** @var Container|null */
     protected static $instance = null;
 
     /**
@@ -43,7 +41,7 @@ class Container extends \Pimple\Container
      * Return the current instance of the container.
      *
      * @codeCoverageIgnore
-     * @return self
+     * @return Container
      */
     public static function getInstance(): self
     {

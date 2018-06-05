@@ -7,6 +7,12 @@ class UnknownErrorRepresentationException extends BaseException
 {
     use AnnotationExceptionTrait;
 
+    /**
+     * @param string $representation
+     * @param string $class
+     * @param string $method
+     * @return UnknownErrorRepresentationException
+     */
     public static function create(
         string $representation,
         string $class,

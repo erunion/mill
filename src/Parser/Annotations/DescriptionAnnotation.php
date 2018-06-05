@@ -4,10 +4,6 @@ namespace Mill\Parser\Annotations;
 use Mill\Parser\Annotation;
 use Mill\Parser\Version;
 
-/**
- * Handler for descriptions.
- *
- */
 class DescriptionAnnotation extends Annotation
 {
     const ARRAYABLE = [
@@ -57,7 +53,7 @@ class DescriptionAnnotation extends Annotation
 
     /**
      * @param string $description
-     * @return self
+     * @return DescriptionAnnotation
      */
     public function setDescription(string $description): self
     {

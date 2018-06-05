@@ -8,6 +8,10 @@ class UnconfiguredErrorRepresentationException extends BaseException
     /** @var string */
     public $representation;
 
+    /**
+     * @param string $representation
+     * @return UnconfiguredErrorRepresentationException
+     */
     public static function create(string $representation): UnconfiguredErrorRepresentationException
     {
         $message = sprintf(

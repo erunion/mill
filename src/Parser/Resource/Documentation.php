@@ -6,45 +6,21 @@ use Mill\Exceptions\Annotations\RequiredAnnotationException;
 use Mill\Exceptions\MethodNotImplementedException;
 use Mill\Parser;
 
-/**
- * Class for parsing a docblock on a given class for resource documentation.
- *
- */
 class Documentation
 {
-    /**
-     * Class that we're parsing for documentation.
-     *
-     * @var string
-     */
+    /** @var string Class that we're parsing for documentation. */
     protected $class;
 
-    /**
-     * Array of parsed method documentation for the current resource.
-     *
-     * @var array
-     */
+    /** @var array Array of parsed method documentation for the current resource. */
     protected $methods = [];
 
-    /**
-     * Short description/label/title of the resource.
-     *
-     * @var string
-     */
+    /** @var string Short description/label/title of the resource. */
     protected $label;
 
-    /**
-     * Fuller description of what this resource handles. This should normally consist of Markdown.
-     *
-     * @var null|string
-     */
+    /** @var null|string Fuller description of what this resource handles. This should normally consist of Markdown. */
     protected $description = null;
 
-    /**
-     * Current Parser instance.
-     *
-     * @var Parser
-     */
+    /** @var Parser Current Parser instance. */
     protected $parser;
 
     /**
@@ -59,9 +35,10 @@ class Documentation
     /**
      * Parse the instance class into actionable annotations and documentation.
      *
-     * @return self
-     * @throws RequiredAnnotationException If a required `@api-label` annotation is missing.
-     * @throws MultipleAnnotationsException If multiple `@api-label` annotations were found.
+     * @return Documentation
+     * @throws MultipleAnnotationsException
+     * @throws RequiredAnnotationException
+     * @throws \Mill\Exceptions\Resource\UnsupportedDecoratorException
      */
     public function parse(): self
     {
@@ -91,7 +68,15 @@ class Documentation
      *
      * Example: `$documentation = (new Documentation($class))->parseMethods()->toArray();`
      *
-     * @return self
+     * @return Documentation
+     * @throws MultipleAnnotationsException
+     * @throws RequiredAnnotationException
+     * @throws \Mill\Exceptions\Resource\MissingVisibilityDecoratorException
+     * @throws \Mill\Exceptions\Resource\NoAnnotationsException
+     * @throws \Mill\Exceptions\Resource\PublicDecoratorOnPrivateActionException
+     * @throws \Mill\Exceptions\Resource\TooManyAliasedPathsException
+     * @throws \Mill\Exceptions\Resource\UnsupportedDecoratorException
+     * @throws \ReflectionException
      */
     public function parseMethods(): self
     {
@@ -103,6 +88,14 @@ class Documentation
      * Return the parsed method documentation for HTTP Methods that are implemented on the current class.
      *
      * @return array
+     * @throws MultipleAnnotationsException
+     * @throws RequiredAnnotationException
+     * @throws \Mill\Exceptions\Resource\MissingVisibilityDecoratorException
+     * @throws \Mill\Exceptions\Resource\NoAnnotationsException
+     * @throws \Mill\Exceptions\Resource\PublicDecoratorOnPrivateActionException
+     * @throws \Mill\Exceptions\Resource\TooManyAliasedPathsException
+     * @throws \Mill\Exceptions\Resource\UnsupportedDecoratorException
+     * @throws \ReflectionException
      */
     public function getMethods(): array
     {
@@ -133,7 +126,15 @@ class Documentation
      *
      * @param string $method
      * @return Action\Documentation
-     * @throws MethodNotImplementedException If the instance class does not implement the supplied method.
+     * @throws MethodNotImplementedException
+     * @throws MultipleAnnotationsException
+     * @throws RequiredAnnotationException
+     * @throws \Mill\Exceptions\Resource\MissingVisibilityDecoratorException
+     * @throws \Mill\Exceptions\Resource\NoAnnotationsException
+     * @throws \Mill\Exceptions\Resource\PublicDecoratorOnPrivateActionException
+     * @throws \Mill\Exceptions\Resource\TooManyAliasedPathsException
+     * @throws \Mill\Exceptions\Resource\UnsupportedDecoratorException
+     * @throws \ReflectionException
      */
     public function getMethod(string $method): Action\Documentation
     {

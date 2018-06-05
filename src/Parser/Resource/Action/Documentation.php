@@ -13,17 +13,9 @@ use Mill\Parser;
 use Mill\Parser\Annotations\PathAnnotation;
 use Mill\Parser\Version;
 
-/**
- * Class for parsing a docblock on a given class and method for resource action documentation.
- *
- */
 class Documentation
 {
-    /**
-     * Array of required annotations.
-     *
-     * @var array
-     */
+    /** @var array Array of required annotations. */
     const REQUIRED_ANNOTATIONS = [
         'path'
     ];
@@ -46,53 +38,25 @@ class Documentation
         'vendortag'
     ];
 
-    /**
-     * Class we're parsing.
-     *
-     * @var string
-     */
+    /** @var string Class we're parsing. */
     protected $class;
 
-    /**
-     * Class method we're parsing.
-     *
-     * @var string
-     */
+    /** @var string Class method we're parsing. */
     protected $method;
 
-    /**
-     * Short description/label/title of the action.
-     *
-     * @var string
-     */
+    /** @var string Short description/label/title of the action. */
     protected $label;
 
-    /**
-     * Fuller description of the action. This should normally consist of Markdown.
-     *
-     * @var null|string
-     */
+    /** @var null|string Fuller description of the action. This should normally consist of Markdown. */
     protected $description = null;
 
-    /**
-     * Group that this action belongs to. Used for grouping generated documentation.
-     *
-     * @var string
-     */
+    /** @var string Group that this action belongs to. Used for grouping compiled documentation. */
     protected $group;
 
-    /**
-     * Content types that this action might return. Multiple may be returned because of versioning.
-     *
-     * @var array
-     */
+    /** @var array Content types that this action might return. Multiple may be returned because of versioning. */
     protected $content_types = [];
 
-    /**
-     * Array of parsed annotations that exist on this action.
-     *
-     * @var array
-     */
+    /** @var array Array of parsed annotations that exist on this action. */
     protected $annotations = [];
 
     /**
@@ -108,8 +72,14 @@ class Documentation
     /**
      * Parse the instance class and method into actionable annotations and documentation.
      *
-     * @return self
-     * @throws NoAnnotationsException If no annotations were found.
+     * @return Documentation
+     * @throws MissingVisibilityDecoratorException
+     * @throws MultipleAnnotationsException
+     * @throws NoAnnotationsException
+     * @throws PublicDecoratorOnPrivateActionException
+     * @throws RequiredAnnotationException
+     * @throws TooManyAliasedPathsException
+     * @throws \Mill\Exceptions\Resource\UnsupportedDecoratorException
      */
     public function parse(): self
     {
@@ -127,7 +97,7 @@ class Documentation
      * Parse an array of annotation objects and set them to the instance resource action documentation.
      *
      * @param array $annotations
-     * @return self
+     * @return Documentation
      * @throws MissingVisibilityDecoratorException
      * @throws MultipleAnnotationsException
      * @throws PublicDecoratorOnPrivateActionException
@@ -339,7 +309,7 @@ class Documentation
 
     /**
      * @param array $content_types
-     * @return self
+     * @return Documentation
      */
     public function setContentTypes(array $content_types): self
     {
@@ -615,7 +585,7 @@ class Documentation
         foreach ($this->annotations as $name => $data) {
             /** @var Parser\Annotation $annotation */
             foreach ($data as $k => $annotation) {
-                // While URI annotations are already filtered within the generator, so we don't need to further filter
+                // While URI annotations are already filtered within the compiler, so we don't need to further filter
                 // them out, we do need to filter URI aliases as those can have their independent visibilities.
                 if ($annotation instanceof PathAnnotation) {
                     $aliases = $annotation->getAliases();
@@ -635,7 +605,7 @@ class Documentation
                 }
 
                 // If this annotation has vendor tags, but those vendor tags aren't in the set of vendor tags we're
-                // generating documentation for, filter it out.
+                // compiling documentation for, filter it out.
                 $vendor_tags = $annotation->getVendorTags();
                 if (!empty($vendor_tags) || !empty($method_vendor_tags)) {
                     // If we don't even have vendor tags to look for, then filter this annotation out completely.
@@ -674,10 +644,16 @@ class Documentation
     }
 
     /**
-     * Hydrate a new resource action documentation object with an array of data generated from `toArray`.
+     * Hydrate a new resource action documentation object with an array of data constructed from `toArray`.
      *
      * @param array $data
-     * @return self
+     * @return Documentation
+     * @throws MissingVisibilityDecoratorException
+     * @throws MultipleAnnotationsException
+     * @throws PublicDecoratorOnPrivateActionException
+     * @throws RequiredAnnotationException
+     * @throws TooManyAliasedPathsException
+     * @throws \Mill\Exceptions\Version\UnrecognizedSchemaException
      */
     public static function hydrate(array $data): self
     {

@@ -9,10 +9,6 @@ use Mill\Parser\Annotation;
 use Mill\Parser\MSON;
 use Mill\Parser\Version;
 
-/**
- * Handler for the `@api-param` annotation.
- *
- */
 class ParamAnnotation extends Annotation
 {
     const REQUIRES_VISIBILITY_DECORATOR = true;
@@ -33,65 +29,37 @@ class ParamAnnotation extends Annotation
         'visible'
     ];
 
-    /**
-     * Name of this parameter's field.
-     *
-     * @var string
-     */
+    /** @var string Name of this parameter's field. */
     protected $field;
 
-    /**
-     * Sample data that this parameter might accept.
-     *
-     * @var false|string
-     */
+    /** @var false|string Sample data that this parameter might accept. */
     protected $sample_data = false;
 
-    /**
-     * Type of data that this parameter supports.
-     *
-     * @var string
-     */
+    /** @var string Type of data that this parameter supports. */
     protected $type;
 
-    /**
-     * Subtype of the type of data that this represents.
-     *
-     * @var false|string
-     */
+    /** @var false|string Subtype of the type of data that this represents. */
     protected $subtype = false;
 
-    /**
-     * Flag designating if this parameter is required or not.
-     *
-     * @var bool
-     */
+    /** @var bool Flag designating if this parameter is required or not. */
     protected $required = false;
 
-    /**
-     * Flag designating if this parameter is nullable.
-     *
-     * @var bool
-     */
+    /** @var bool Flag designating if this parameter is nullable. */
     protected $nullable = false;
 
-    /**
-     * Description of what this parameter does.
-     *
-     * @var string
-     */
+    /** @var string Description of what this parameter does. */
     protected $description;
 
-    /**
-     * Array of acceptable values for this parameter.
-     *
-     * @var array|null
-     */
+    /** @var array|null Array of acceptable values for this parameter. */
     protected $values = [];
 
     /**
      * {@inheritdoc}
-     * @throws UnsupportedTypeException If an unsupported parameter type has been supplied.
+     * @throws RestrictedFieldNameException
+     * @throws UnsupportedTypeException
+     * @throws \Mill\Exceptions\Annotations\UnknownErrorRepresentationException
+     * @throws \Mill\Exceptions\MSON\ImproperlyWrittenEnumException
+     * @throws \Mill\Exceptions\MSON\MissingOptionsException
      */
     protected function parser(): array
     {
@@ -195,7 +163,7 @@ class ParamAnnotation extends Annotation
 
     /**
      * @param string $field
-     * @return self
+     * @return ParamAnnotation
      */
     public function setField(string $field): self
     {
@@ -213,7 +181,7 @@ class ParamAnnotation extends Annotation
 
     /**
      * @param false|string $sample_data
-     * @return self
+     * @return ParamAnnotation
      */
     public function setSampleData($sample_data): self
     {
@@ -231,7 +199,7 @@ class ParamAnnotation extends Annotation
 
     /**
      * @param string $type
-     * @return self
+     * @return ParamAnnotation
      */
     public function setType(string $type): self
     {
@@ -249,7 +217,7 @@ class ParamAnnotation extends Annotation
 
     /**
      * @param false|string $subtype
-     * @return self
+     * @return ParamAnnotation
      */
     public function setSubtype($subtype): self
     {
@@ -267,7 +235,7 @@ class ParamAnnotation extends Annotation
 
     /**
      * @param string $description
-     * @return self
+     * @return ParamAnnotation
      */
     public function setDescription(string $description): self
     {
@@ -285,7 +253,7 @@ class ParamAnnotation extends Annotation
 
     /**
      * @param bool $required
-     * @return self
+     * @return ParamAnnotation
      */
     public function setRequired(bool $required): self
     {
@@ -303,7 +271,7 @@ class ParamAnnotation extends Annotation
 
     /**
      * @param bool $nullable
-     * @return self
+     * @return ParamAnnotation
      */
     public function setNullable(bool $nullable): self
     {
@@ -321,7 +289,7 @@ class ParamAnnotation extends Annotation
 
     /**
      * @param array|null $values
-     * @return self
+     * @return ParamAnnotation
      */
     public function setValues($values): self
     {

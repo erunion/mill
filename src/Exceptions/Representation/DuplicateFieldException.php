@@ -7,6 +7,12 @@ class DuplicateFieldException extends BaseException
 {
     use RepresentationExceptionTrait;
 
+    /**
+     * @param string $field
+     * @param string $class
+     * @param string $method
+     * @return DuplicateFieldException
+     */
     public static function create(string $field, string $class, string $method): DuplicateFieldException
     {
         $message = sprintf(

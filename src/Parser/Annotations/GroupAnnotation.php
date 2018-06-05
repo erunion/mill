@@ -4,10 +4,6 @@ namespace Mill\Parser\Annotations;
 use Mill\Parser\Annotation;
 use Mill\Parser\Version;
 
-/**
- * Handler for the `@api-group` annotation.
- *
- */
 class GroupAnnotation extends Annotation
 {
     const ARRAYABLE = [
@@ -57,7 +53,7 @@ class GroupAnnotation extends Annotation
 
     /**
      * @param string $group
-     * @return self
+     * @return GroupAnnotation
      */
     public function setGroup(string $group): self
     {

@@ -5,10 +5,6 @@ use Mill\Container;
 use Mill\Parser\Annotation;
 use Mill\Parser\Version;
 
-/**
- * Handler for the `@api-path` annotation.
- *
- */
 class PathAnnotation extends Annotation
 {
     const REQUIRES_VISIBILITY_DECORATOR = true;
@@ -18,11 +14,7 @@ class PathAnnotation extends Annotation
         'path'
     ];
 
-    /**
-     * URI path that this annotation represents.
-     *
-     * @var string
-     */
+    /** @var string URI path that this annotation represents. */
     protected $path;
 
     /**
@@ -77,7 +69,7 @@ class PathAnnotation extends Annotation
 
     /**
      * @param string $path
-     * @return self
+     * @return PathAnnotation
      */
     public function setPath(string $path): self
     {

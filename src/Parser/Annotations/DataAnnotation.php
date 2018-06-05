@@ -5,13 +5,8 @@ use Mill\Application;
 use Mill\Exceptions\Representation\RestrictedFieldNameException;
 use Mill\Parser\Annotation;
 use Mill\Parser\MSON;
-use Mill\Parser\Representation\Documentation;
 use Mill\Parser\Version;
 
-/**
- * Handler for the `@api-data` annotation.
- *
- */
 class DataAnnotation extends Annotation
 {
     const SUPPORTS_MSON = true;
@@ -29,58 +24,34 @@ class DataAnnotation extends Annotation
         'values'
     ];
 
-    /**
-     * Identifier for this data.
-     *
-     * @var string
-     */
+    /** @var string Identifier for this data. */
     protected $identifier;
 
-    /**
-     * Sample data that this might represent.
-     *
-     * @var false|string
-     */
+    /** @var false|string Sample data that this might represent. */
     protected $sample_data = false;
 
-    /**
-     * Type of data that this represents.
-     *
-     * @var string
-     */
+    /** @var string Type of data that this represents. */
     protected $type;
 
-    /**
-     * Subtype of the type of data that this represents.
-     *
-     * @var false|string
-     */
+    /** @var false|string Subtype of the type of data that this represents. */
     protected $subtype = false;
 
-    /**
-     * Flag designating if this data is nullable.
-     *
-     * @var bool
-     */
+    /** @var bool Flag designating if this data is nullable. */
     protected $nullable = false;
 
-    /**
-     * Array of acceptable values for this data.
-     *
-     * @var array|false|null
-     */
+    /** @var array|false|null Array of acceptable values for this data. */
     protected $values = [];
 
-    /**
-     * Description of what this data represents.
-     *
-     * @var string
-     */
+    /** @var string Description of what this data represents. */
     protected $description;
 
     /**
      * {@inheritdoc}
-     * @throws RestrictedFieldNameException If a restricted `@api-field` name is detected.
+     * @throws RestrictedFieldNameException
+     * @throws \Mill\Exceptions\Annotations\UnknownErrorRepresentationException
+     * @throws \Mill\Exceptions\Annotations\UnsupportedTypeException
+     * @throws \Mill\Exceptions\MSON\ImproperlyWrittenEnumException
+     * @throws \Mill\Exceptions\MSON\MissingOptionsException
      */
     protected function parser(): array
     {
@@ -173,7 +144,7 @@ class DataAnnotation extends Annotation
 
     /**
      * @param string $description
-     * @return self
+     * @return DataAnnotation
      */
     public function setDescription(string $description): self
     {
@@ -191,7 +162,7 @@ class DataAnnotation extends Annotation
 
     /**
      * @param string $identifier
-     * @return self
+     * @return DataAnnotation
      */
     public function setIdentifier(string $identifier): self
     {
@@ -203,9 +174,9 @@ class DataAnnotation extends Annotation
      * Set a dot notation prefix on the identifier.
      *
      * @param string $prefix
-     * @return self
+     * @return DataAnnotation
      */
-    public function setIdentifierPrefix($prefix): self
+    public function setIdentifierPrefix(string $prefix): self
     {
         $this->identifier = $prefix . '.' . $this->identifier;
         return $this;
@@ -221,7 +192,7 @@ class DataAnnotation extends Annotation
 
     /**
      * @param bool $nullable
-     * @return self
+     * @return DataAnnotation
      */
     public function setNullable(bool $nullable): self
     {
@@ -239,7 +210,7 @@ class DataAnnotation extends Annotation
 
     /**
      * @param false|string $sample_data
-     * @return self
+     * @return DataAnnotation
      */
     public function setSampleData($sample_data): self
     {
@@ -257,7 +228,7 @@ class DataAnnotation extends Annotation
 
     /**
      * @param string $type
-     * @return self
+     * @return DataAnnotation
      */
     public function setType(string $type): self
     {
@@ -275,7 +246,7 @@ class DataAnnotation extends Annotation
 
     /**
      * @param false|string $subtype
-     * @return self
+     * @return DataAnnotation
      */
     public function setSubtype($subtype): self
     {
@@ -293,7 +264,7 @@ class DataAnnotation extends Annotation
 
     /**
      * @param array|false|null $values
-     * @return self
+     * @return DataAnnotation
      */
     public function setValues($values): self
     {

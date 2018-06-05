@@ -13,25 +13,13 @@ use Mill\Exceptions\Version\UnrecognizedSchemaException;
  */
 class Version
 {
-    /**
-     * The parsed semver constraint object.
-     *
-     * @var ConstraintInterface
-     */
+    /** @var ConstraintInterface The parsed semver constraint object. */
     protected $constraint;
 
-    /**
-     * Class that this version is within.
-     *
-     * @var string
-     */
+    /** @var string Class that this version is within. */
     protected $class;
 
-    /**
-     * Class method that this version is within.
-     *
-     * @var string
-     */
+    /** @var string Class method that this version is within. */
     protected $method;
 
     /**

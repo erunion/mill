@@ -13,15 +13,13 @@
         </version>
     </versions>
 
-    <generators>
-        <blueprint>
-            <excludes>
-                <!-- This is here just for code coverage purposes, and to verify that we're able to exclude resource
-                    groups when loading a config XML file. -->
-                <exclude group="FakeExcludeGroup" />
-            </excludes>
-        </blueprint>
-    </generators>
+    <compilers>
+        <excludes>
+            <!-- This is here just for code coverage purposes, and to verify that we're able to exclude resource
+                groups when loading a config XML file. -->
+            <exclude group="FakeExcludeGroup" />
+        </excludes>
+    </compilers>
 
     <controllers>
         <filter>

@@ -5,6 +5,11 @@ use Mill\Exceptions\BaseException;
 
 class ValidationException extends BaseException
 {
+    /**
+     * @param int $line
+     * @param string $message
+     * @return ValidationException
+     */
     public static function create(int $line, string $message): ValidationException
     {
         $message = sprintf(

@@ -3,18 +3,14 @@ namespace Mill\Command;
 
 use Mill\Application;
 use Mill\Config;
+use Mill\Compiler;
 use Mill\Exceptions\Version\UnrecognizedSchemaException;
-use Mill\Generator;
 use Mill\Parser\Version;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Generate command for an error map off documented API errors.
- *
- */
 class ErrorMap extends Application
 {
     /**
@@ -37,7 +33,7 @@ class ErrorMap extends Application
                 'default',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Generate just the configured default API version documentation. `defaultApiVersion` in your ' .
+                'Compile just the configured default API version documentation. `defaultApiVersion` in your ' .
                     '`mill.xml` file.',
                 false
             )
@@ -52,27 +48,24 @@ class ErrorMap extends Application
                 'private',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Flag designating if you want to generate an error map that includes private error documentation.',
+                'Flag designating if you want to compile an error map that includes private error documentation.',
                 true
             )
             ->addOption(
                 'vendor_tag',
                 null,
                 InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
-                'The name of a vendor tag if you want to generate an error map that includes vendor tag-bound error' .
+                'The name of a vendor tag if you want to compile an error map that includes vendor tag-bound error' .
                     'documentation.'
             )
-            ->addArgument(
-                'output',
-                InputArgument::REQUIRED,
-                'Directory to output your generated `errors.md` file in.'
-            );
+            ->addArgument('output', InputArgument::REQUIRED, 'Directory to output your compiled `errors.md` file in.');
     }
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int
+     * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -87,7 +80,6 @@ class ErrorMap extends Application
         $private_docs = ($private_docs === true || strtolower($private_docs) == 'true') ? true : false;
         $vendor_tags = (!empty($vendor_tags)) ? $vendor_tags : null;
 
-        // Generate!
         if ($dry_run) {
             $output->writeln('<info>Running a dry run…</info>');
         }
@@ -96,7 +88,7 @@ class ErrorMap extends Application
             $version = $this->container['config']->getDefaultApiVersion();
         }
 
-        // Validate the current version generation constraint.
+        // Validate the current version constraint.
         if (!empty($version)) {
             try {
                 $version = new Version($version, __CLASS__, __METHOD__);
@@ -112,12 +104,12 @@ class ErrorMap extends Application
         /** @var \League\Flysystem\Filesystem $filesystem */
         $filesystem = $this->container['filesystem'];
 
-        $output->writeln('<comment>Generating an error map…</comment>');
+        $output->writeln('<comment>Compiling an error map…</comment>');
 
-        $error_map = new Generator\ErrorMap($config, $version);
+        $error_map = new Compiler\ErrorMap($config, $version);
         $error_map->setLoadPrivateDocs($private_docs);
         $error_map->setLoadVendorTagDocs($vendor_tags);
-        $markdown = $error_map->generateMarkdown();
+        $markdown = $error_map->toMarkdown();
 
         foreach ($markdown as $version => $content) {
             $output->writeLn('<comment> - API version: ' . $version . '</comment>');

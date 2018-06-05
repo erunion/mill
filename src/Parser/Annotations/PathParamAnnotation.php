@@ -5,10 +5,6 @@ use Mill\Parser\Annotation;
 use Mill\Parser\MSON;
 use Mill\Parser\Version;
 
-/**
- * Handler for the `@api-pathparam` annotation.
- *
- */
 class PathParamAnnotation extends Annotation
 {
     const SUPPORTS_MSON = true;
@@ -20,32 +16,16 @@ class PathParamAnnotation extends Annotation
         'values'
     ];
 
-    /**
-     * Name of this param's field.
-     *
-     * @var string
-     */
+    /** @var string Name of this param's field. */
     protected $field;
 
-    /**
-     * Type of data that this param supports.
-     *
-     * @var string
-     */
+    /** @var string Type of data that this param supports. */
     protected $type;
 
-    /**
-     * Description of what this param does.
-     *
-     * @var string
-     */
+    /** @var string Description of what this param does. */
     protected $description;
 
-    /**
-     * Array of acceptable values for this parameter.
-     *
-     * @var array|false|null
-     */
+    /** @var array|false|null Array of acceptable values for this parameter. */
     protected $values = [];
 
     /**
@@ -106,7 +86,7 @@ class PathParamAnnotation extends Annotation
 
     /**
      * @param string $field
-     * @return self
+     * @return PathParamAnnotation
      */
     public function setField(string $field): self
     {
@@ -124,7 +104,7 @@ class PathParamAnnotation extends Annotation
 
     /**
      * @param string $type
-     * @return self
+     * @return PathParamAnnotation
      */
     public function setType(string $type): self
     {
@@ -142,7 +122,7 @@ class PathParamAnnotation extends Annotation
 
     /**
      * @param string $description
-     * @return self
+     * @return PathParamAnnotation
      */
     public function setDescription(string $description): self
     {
@@ -160,7 +140,7 @@ class PathParamAnnotation extends Annotation
 
     /**
      * @param array|false|null $values
-     * @return self
+     * @return PathParamAnnotation
      */
     public function setValues($values): self
     {

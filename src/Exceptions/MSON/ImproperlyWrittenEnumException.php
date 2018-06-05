@@ -8,6 +8,12 @@ class ImproperlyWrittenEnumException extends BaseException
 {
     use AnnotationExceptionTrait;
 
+    /**
+     * @param string $annotation
+     * @param string $class
+     * @param null|string $method
+     * @return ImproperlyWrittenEnumException
+     */
     public static function create(string $annotation, string $class, ?string $method): ImproperlyWrittenEnumException
     {
         $message = sprintf(

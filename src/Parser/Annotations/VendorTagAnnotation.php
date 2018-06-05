@@ -6,21 +6,13 @@ use Mill\Exceptions\Annotations\InvalidVendorTagSuppliedException;
 use Mill\Parser\Annotation;
 use Mill\Parser\Version;
 
-/**
- * Handler for the `@api-vendortag` annotation.
- *
- */
 class VendorTagAnnotation extends Annotation
 {
     const ARRAYABLE = [
         'vendor_tag'
     ];
 
-    /**
-     * Name of this vendor tag.
-     *
-     * @var string
-     */
+    /** @var string Name of this vendor tag. */
     protected $vendor_tag;
 
     /**
@@ -75,7 +67,7 @@ class VendorTagAnnotation extends Annotation
 
     /**
      * @param string $vendor_tag
-     * @return self
+     * @return VendorTagAnnotation
      */
     public function setVendorTag(string $vendor_tag): self
     {

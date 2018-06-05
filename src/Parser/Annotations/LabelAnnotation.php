@@ -4,10 +4,6 @@ namespace Mill\Parser\Annotations;
 use Mill\Parser\Annotation;
 use Mill\Parser\Version;
 
-/**
- * Handler for the `@api-label` annotation.
- *
- */
 class LabelAnnotation extends Annotation
 {
     const ARRAYABLE = [
@@ -57,7 +53,7 @@ class LabelAnnotation extends Annotation
 
     /**
      * @param string $label
-     * @return self
+     * @return LabelAnnotation
      */
     public function setLabel(string $label): self
     {

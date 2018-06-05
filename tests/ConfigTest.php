@@ -47,7 +47,7 @@ class ConfigTest extends TestCase
 
         $this->assertSame([
             'FakeExcludeGroup'
-        ], $config->getBlueprintGroupExcludes());
+        ], $config->getCompilerGroupExclusions());
 
         $this->assertSame([
             'tag:BUY_TICKETS',
@@ -278,22 +278,20 @@ XML
             ],
 
             /**
-             * <generators>
+             * <compilers>
              *
              */
-            'generators.blueprint.exclude.invalid' => [
+            'compilers.exclude.invalid' => [
                 'includes' => ['versions', 'controllers', 'representations'],
                 'exception' => [
-                    'regex' => '/invalid Blueprint generator group/'
+                    'regex' => '/invalid compiler group exclusion/'
                 ],
                 'xml' => <<<XML
-<generators>
-    <blueprint>
-        <excludes>
-            <exclude group="" />
-        </excludes>
-    </blueprint>
-</generators>
+<compilers>
+    <excludes>
+        <exclude group="" />
+    </excludes>
+</compilers>
 XML
             ],
 

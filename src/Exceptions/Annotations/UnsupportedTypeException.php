@@ -7,6 +7,12 @@ class UnsupportedTypeException extends BaseException
 {
     use AnnotationExceptionTrait;
 
+    /**
+     * @param string $annotation
+     * @param string $class
+     * @param null|string $method
+     * @return UnsupportedTypeException
+     */
     public static function create(string $annotation, string $class, ?string $method): UnsupportedTypeException
     {
         $message = sprintf(

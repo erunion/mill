@@ -54,7 +54,7 @@
         "build-blueprints": [
             "rm -rf resources/examples/Showtimes/blueprints",
             "mkdir resources/examples/Showtimes/blueprints",
-            "./bin/mill generate --config=resources/examples/mill.xml resources/examples/Showtimes/blueprints/"
+            "./bin/mill compile --config=resources/examples/mill.xml resources/examples/Showtimes/blueprints/"
         ],
         "build-changelogs": [
             "./bin/mill changelog --config=resources/examples/mill.xml --private=false resources/examples/Showtimes/blueprints/",

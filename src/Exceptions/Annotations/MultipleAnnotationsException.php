@@ -7,6 +7,12 @@ class MultipleAnnotationsException extends BaseException
 {
     use AnnotationExceptionTrait;
 
+    /**
+     * @param string $annotation
+     * @param string $class
+     * @param string|null $method
+     * @return MultipleAnnotationsException
+     */
     public static function create(
         string $annotation,
         string $class,

@@ -6,10 +6,6 @@ use Mill\Exceptions\Annotations\InvalidScopeSuppliedException;
 use Mill\Parser\Annotation;
 use Mill\Parser\Version;
 
-/**
- * Handler for the `@api-scope` annotation.
- *
- */
 class ScopeAnnotation extends Annotation
 {
     const ARRAYABLE = [
@@ -20,11 +16,7 @@ class ScopeAnnotation extends Annotation
     /** @var string */
     protected $scope;
 
-    /**
-     * Description for why this scope is required.
-     *
-     * @var false|null|string
-     */
+    /** @var false|null|string Description for why this scope is required. */
     protected $description = null;
 
     /**
@@ -86,7 +78,7 @@ class ScopeAnnotation extends Annotation
 
     /**
      * @param string $scope
-     * @return self
+     * @return ScopeAnnotation
      */
     public function setScope(string $scope): self
     {
@@ -104,7 +96,7 @@ class ScopeAnnotation extends Annotation
 
     /**
      * @param false|null|string $description
-     * @return self
+     * @return ScopeAnnotation
      */
     public function setDescription($description): self
     {
