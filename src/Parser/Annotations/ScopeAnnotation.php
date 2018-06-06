@@ -56,19 +56,6 @@ class ScopeAnnotation extends Annotation
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public static function hydrate(array $data = [], Version $version = null): self
-    {
-        /** @var ScopeAnnotation $annotation */
-        $annotation = parent::hydrate($data, $version);
-        $annotation->setScope($data['scope']);
-        $annotation->setDescription($data['description']);
-
-        return $annotation;
-    }
-
-    /**
      * @return string
      */
     public function getScope(): string

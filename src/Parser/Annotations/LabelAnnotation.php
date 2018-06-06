@@ -32,18 +32,6 @@ class LabelAnnotation extends Annotation
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public static function hydrate(array $data = [], Version $version = null): self
-    {
-        /** @var LabelAnnotation $annotation */
-        $annotation = parent::hydrate($data, $version);
-        $annotation->setLabel($data['label']);
-
-        return $annotation;
-    }
-
-    /**
      * @return string
      */
     public function getLabel(): string

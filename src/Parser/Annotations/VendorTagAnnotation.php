@@ -47,17 +47,6 @@ class VendorTagAnnotation extends Annotation
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public static function hydrate(array $data = [], Version $version = null): self
-    {
-        /** @var VendorTagAnnotation $annotation */
-        $annotation = parent::hydrate($data, $version);
-        $annotation->setVendorTag($data['vendor_tag']);
-        return $annotation;
-    }
-
-    /**
      * @return string
      */
     public function getVendorTag(): string

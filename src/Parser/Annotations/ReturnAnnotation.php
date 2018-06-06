@@ -102,21 +102,6 @@ class ReturnAnnotation extends Annotation
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public static function hydrate(array $data = [], Version $version = null): self
-    {
-        /** @var ReturnAnnotation $annotation */
-        $annotation = parent::hydrate($data, $version);
-        $annotation->setDescription($data['description']);
-        $annotation->setHttpCode($data['http_code']);
-        $annotation->setRepresentation($data['representation']);
-        $annotation->setType($data['type']);
-
-        return $annotation;
-    }
-
-    /**
      * Grab the HTTP code for a given response type.
      *
      * @param string $type

@@ -117,24 +117,6 @@ class DataAnnotation extends Annotation
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public static function hydrate(array $data = [], Version $version = null): self
-    {
-        /** @var DataAnnotation $annotation */
-        $annotation = parent::hydrate($data, $version);
-        $annotation->setDescription($data['description']);
-        $annotation->setIdentifier($data['identifier']);
-        $annotation->setNullable($data['nullable']);
-        $annotation->setSampleData($data['sample_data']);
-        $annotation->setType($data['type']);
-        $annotation->setSubtype($data['subtype']);
-        $annotation->setValues($data['values']);
-
-        return $annotation;
-    }
-
-    /**
      * @return string
      */
     public function getDescription(): string

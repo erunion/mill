@@ -62,21 +62,6 @@ class PathParamAnnotation extends Annotation
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public static function hydrate(array $data = [], Version $version = null)
-    {
-        /** @var PathParamAnnotation $annotation */
-        $annotation = parent::hydrate($data, $version);
-        $annotation->setDescription($data['description']);
-        $annotation->setField($data['field']);
-        $annotation->setType($data['type']);
-        $annotation->setValues($data['values']);
-
-        return $annotation;
-    }
-
-    /**
      * @return string
      */
     public function getField(): string

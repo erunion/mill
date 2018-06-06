@@ -23,27 +23,6 @@ class PathAnnotationTest extends AnnotationTest
         $this->assertAnnotation($annotation, $expected);
     }
 
-    /**
-     * @dataProvider providerAnnotation
-     * @param string $content
-     * @param bool $visible
-     * @param bool $deprecated
-     * @param array $expected
-     */
-    public function testHydrate(string $content, bool $visible, bool $deprecated, array $expected): void
-    {
-        /** @var PathAnnotation $annotation */
-        $annotation = PathAnnotation::hydrate(array_merge(
-            $expected['array'],
-            [
-                'class' => __CLASS__,
-                'method' => __METHOD__
-            ]
-        ));
-
-        $this->assertAnnotation($annotation, $expected);
-    }
-
     private function assertAnnotation(PathAnnotation $annotation, array $expected): void
     {
         $this->assertTrue($annotation->supportsDeprecation());

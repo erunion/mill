@@ -20,24 +20,6 @@ class MaxVersionAnnotationTest extends AnnotationTest
         $this->assertAnnotation($annotation, $expected);
     }
 
-    /**
-     * @dataProvider providerAnnotation
-     * @param string $content
-     * @param array $expected
-     */
-    public function testHydrate(string $content, array $expected): void
-    {
-        $annotation = MaxVersionAnnotation::hydrate(array_merge(
-            $expected,
-            [
-                'class' => __CLASS__,
-                'method' => __METHOD__
-            ]
-        ));
-
-        $this->assertAnnotation($annotation, $expected);
-    }
-
     private function assertAnnotation(MaxVersionAnnotation $annotation, array $expected): void
     {
         $this->assertFalse($annotation->supportsDeprecation());

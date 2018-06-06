@@ -32,18 +32,6 @@ class DescriptionAnnotation extends Annotation
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public static function hydrate(array $data = [], Version $version = null): self
-    {
-        /** @var DescriptionAnnotation $annotation */
-        $annotation = parent::hydrate($data, $version);
-        $annotation->setDescription($data['description']);
-
-        return $annotation;
-    }
-
-    /**
      * @return string
      */
     public function getDescription(): string

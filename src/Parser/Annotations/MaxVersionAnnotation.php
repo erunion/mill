@@ -45,18 +45,6 @@ class MaxVersionAnnotation extends Annotation
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public static function hydrate(array $data = [], Version $version = null): self
-    {
-        /** @var MaxVersionAnnotation $annotation */
-        $annotation = parent::hydrate($data, $version);
-        $annotation->setMaximumVersion($data['maximum_version']);
-
-        return $annotation;
-    }
-
-    /**
      * @return string
      */
     public function getMaximumVersion(): string

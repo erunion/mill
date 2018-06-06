@@ -127,25 +127,6 @@ class ParamAnnotation extends Annotation
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public static function hydrate(array $data = [], Version $version = null): self
-    {
-        /** @var ParamAnnotation $annotation */
-        $annotation = parent::hydrate($data, $version);
-        $annotation->setDescription($data['description']);
-        $annotation->setField($data['field']);
-        $annotation->setNullable($data['nullable']);
-        $annotation->setRequired($data['required']);
-        $annotation->setSampleData($data['sample_data']);
-        $annotation->setType($data['type']);
-        $annotation->setSubtype($data['subtype']);
-        $annotation->setValues($data['values']);
-
-        return $annotation;
-    }
-
-    /**
      * @return string
      */
     public function getPayloadFormat(): string

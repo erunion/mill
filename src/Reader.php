@@ -4,10 +4,6 @@ namespace Mill;
 use Mill\Exceptions\MethodNotImplementedException;
 use ReflectionClass;
 
-/**
- * Class for loading a class (or class method) and reading its docblock.
- *
- */
 class Reader
 {
     /**

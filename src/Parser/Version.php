@@ -7,10 +7,6 @@ use Composer\Semver\Semver;
 use Composer\Semver\VersionParser;
 use Mill\Exceptions\Version\UnrecognizedSchemaException;
 
-/**
- * Version parsing class for realizing a `@api-version` annotation.
- *
- */
 class Version
 {
     /** @var ConstraintInterface The parsed semver constraint object. */

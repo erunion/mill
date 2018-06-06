@@ -36,30 +36,6 @@ class PathAnnotation extends Annotation
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public static function hydrate(array $data = [], Version $version = null)
-    {
-        /** @var PathAnnotation $annotation */
-        $annotation = parent::hydrate($data, $version);
-        $annotation->setPath($data['path']);
-
-        $annotation->setAliased($data['aliased']);
-
-        $aliases = [];
-        foreach ($data['aliases'] as $alias) {
-            $aliases[] = PathAnnotation::hydrate(array_merge([
-                'class' => $data['class'],
-                'method' => $data['method']
-            ], $alias));
-        }
-
-        $annotation->setAliases($aliases);
-
-        return $annotation;
-    }
-
-    /**
      * @return string
      */
     public function getPath(): string

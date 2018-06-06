@@ -20,25 +20,6 @@ class PathParamAnnotationTest extends AnnotationTest
         $this->assertAnnotation($annotation, $expected);
     }
 
-    /**
-     * @dataProvider providerAnnotation
-     * @param string $param
-     * @param array $expected
-     */
-    public function testHydrate(string $param, array $expected): void
-    {
-        /** @var PathParamAnnotation $annotation */
-        $annotation = PathParamAnnotation::hydrate(array_merge(
-            $expected,
-            [
-                'class' => __CLASS__,
-                'method' => __METHOD__
-            ]
-        ));
-
-        $this->assertAnnotation($annotation, $expected);
-    }
-
     private function assertAnnotation(PathParamAnnotation $annotation, array $expected): void
     {
         $this->assertFalse($annotation->supportsDeprecation());

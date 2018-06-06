@@ -7,11 +7,6 @@ use Mill\Parser\Representation;
 use Mill\Parser\Resource;
 use Mill\Parser\Version;
 
-/**
- * Compiler system for compiling API documentation down into a parseable array. This class can be then be extended to
- * further compile into other formats (API Blueprint, OAI, Swagger, etc.)
- *
- */
 class Compiler
 {
     /** @var Config */

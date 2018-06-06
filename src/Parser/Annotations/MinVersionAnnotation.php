@@ -45,18 +45,6 @@ class MinVersionAnnotation extends Annotation
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public static function hydrate(array $data = [], Version $version = null): self
-    {
-        /** @var MinVersionAnnotation $annotation */
-        $annotation = parent::hydrate($data, $version);
-        $annotation->setMinimumVersion($data['minimum_version']);
-
-        return $annotation;
-    }
-
-    /**
      * @return string
      */
     public function getMinimumVersion(): string

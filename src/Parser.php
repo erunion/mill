@@ -9,10 +9,6 @@ use Mill\Parser\MSON;
 use Mill\Parser\Version;
 use ReflectionClass;
 
-/**
- * Class for tokenizing a docblock on a given class or method.
- *
- */
 class Parser
 {
     const REGEX_DECORATOR = '/^(?P<decorator>(:\w+)+)?/u';
@@ -176,37 +172,6 @@ class Parser
         }
 
         return $annotations;
-    }
-
-    /**
-     * Hydrate an annotation with some data.
-     *
-     * @param string $name
-     * @param string $class
-     * @param string $method
-     * @param array $data
-     * @return Annotation
-     * @throws Exceptions\Version\UnrecognizedSchemaException
-     */
-    public function hydrateAnnotation(string $name, string $class, string $method, array $data = []): Annotation
-    {
-        $annotation_class = $this->getAnnotationClass(str_replace('_', '', $name));
-
-        $version = null;
-        if (!empty($data['version'])) {
-            $version = new Version($data['version'], $class, $method);
-        }
-
-        return $annotation_class::hydrate(
-            array_merge(
-                $data,
-                [
-                    'class' => $class,
-                    'method' => $method
-                ]
-            ),
-            $version
-        );
     }
 
     /**

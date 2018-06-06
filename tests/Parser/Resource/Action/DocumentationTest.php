@@ -26,22 +26,6 @@ class DocumentationTest extends TestCase
         $this->assertMethodDocumentation($parser, $class_stub, $method, $expected);
     }
 
-    /**
-     * @dataProvider providerParseMethodDocumentation
-     * @param string $method
-     * @param array $expected
-     */
-    public function testHydrate(string $method, array $expected): void
-    {
-        $class_stub = '\Mill\Examples\Showtimes\Controllers\Movie';
-        $parser = (new Documentation($class_stub, $method))->parse();
-        $docs = $parser->toArray();
-
-        $hydrate = Documentation::hydrate($docs);
-
-        $this->assertMethodDocumentation($hydrate, $class_stub, $method, $expected);
-    }
-
     private function assertMethodDocumentation(
         Documentation $parser,
         string $class,

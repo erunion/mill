@@ -644,60 +644,6 @@ class Documentation
     }
 
     /**
-     * Hydrate a new resource action documentation object with an array of data constructed from `toArray`.
-     *
-     * @param array $data
-     * @return Documentation
-     * @throws MissingVisibilityDecoratorException
-     * @throws MultipleAnnotationsException
-     * @throws PublicDecoratorOnPrivateActionException
-     * @throws RequiredAnnotationException
-     * @throws TooManyAliasedPathsException
-     * @throws \Mill\Exceptions\Version\UnrecognizedSchemaException
-     */
-    public static function hydrate(array $data): self
-    {
-        $annotations = [];
-        $parser = new Parser($data['class']);
-        $action = new self($data['class'], $data['method']);
-
-        $annotations['label'][] = $parser->hydrateAnnotation('label', $data['class'], $data['method'], $data);
-
-        if (!empty($data['description'])) {
-            $annotations['description'][] = $parser->hydrateAnnotation(
-                'description',
-                $data['class'],
-                $data['method'],
-                $data
-            );
-        }
-
-        $annotations['group'][] = $parser->hydrateAnnotation('group', $data['class'], $data['method'], $data);
-
-        foreach ($data['content_types'] as $content_type) {
-            $annotations['contenttype'][] = $parser->hydrateAnnotation(
-                'content_type',
-                $data['class'],
-                $data['method'],
-                $content_type
-            );
-        }
-
-        foreach ($data['annotations'] as $name => $datas) {
-            foreach ($datas as $annotation_data) {
-                $annotations[$name][] = $parser->hydrateAnnotation(
-                    $name,
-                    $data['class'],
-                    $data['method'],
-                    $annotation_data
-                );
-            }
-        }
-
-        return $action->parseAnnotations($annotations);
-    }
-
-    /**
      * Convert the parsed parameter documentation content dot notation field names into an exploded array.
      *
      * @return array

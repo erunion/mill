@@ -34,18 +34,6 @@ class ContentTypeAnnotation extends Annotation
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public static function hydrate(array $data = [], Version $version = null): self
-    {
-        /** @var ContentTypeAnnotation $annotation */
-        $annotation = parent::hydrate($data, $version);
-        $annotation->setContentType($data['content_type']);
-
-        return $annotation;
-    }
-
-    /**
      * @return string
      */
     public function getContentType(): string

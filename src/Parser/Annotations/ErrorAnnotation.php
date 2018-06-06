@@ -129,21 +129,6 @@ class ErrorAnnotation extends Annotation
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public static function hydrate(array $data = [], Version $version = null)
-    {
-        /** @var ErrorAnnotation $annotation */
-        $annotation = parent::hydrate($data, $version);
-        $annotation->setDescription($data['description']);
-        $annotation->setErrorCode($data['error_code']);
-        $annotation->setHttpCode($data['http_code']);
-        $annotation->setRepresentation($data['representation']);
-
-        return $annotation;
-    }
-
-    /**
      * @return string
      */
     public function getDescription(): string

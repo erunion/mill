@@ -184,66 +184,6 @@ abstract class Annotation
     abstract protected function interpreter(): void;
 
     /**
-     * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
-     *
-     * @param array $data
-     * @param Version|null $version
-     * @return Annotation
-     */
-    public static function hydrate(array $data = [], Version $version = null)
-    {
-        $class = get_called_class();
-
-        /** @var Annotation $annotation */
-        $annotation = new $class('', $data['class'], $data['method'], $version);
-
-        if ($annotation->requiresVisibilityDecorator()) {
-            $annotation->setVisibility($data['visible']);
-        }
-
-        if ($annotation->supportsDeprecation()) {
-            $annotation->setDeprecated($data['deprecated']);
-        }
-
-        if ($annotation->supportsScopes()) {
-            $scopes = [];
-            foreach ($data['scopes'] as $scope) {
-                $scopes[] = ScopeAnnotation::hydrate(array_merge(
-                    $scope,
-                    [
-                        'class' => __CLASS__,
-                        'method' => __METHOD__
-                    ]
-                ));
-            }
-
-            $annotation->setScopes($scopes);
-        }
-
-        if ($annotation->supportsVendorTags() &&
-            (array_key_exists('vendor_tags', $data) && !empty($data['vendor_tags']))
-        ) {
-            $vendor_tags = [];
-            foreach ($data['vendor_tags'] as $vendor_tag) {
-                $vendor_tags[] = (new VendorTagAnnotation(
-                    $vendor_tag,
-                    $data['class'],
-                    $data['method'],
-                    $version
-                ))->process();
-            }
-
-            $annotation->setVendorTags($vendor_tags);
-        }
-
-        if ($annotation->supportsVersioning() && $version) {
-            $annotation->setVersion($version);
-        }
-
-        return $annotation;
-    }
-
-    /**
      * Does this annotation require a visibility decorator?
      *
      * @return bool
