@@ -8,7 +8,6 @@ use Mill\Exceptions\Annotations\UnknownReturnCodeException;
 use Mill\Parser\Annotation;
 use Mill\Parser\Annotations\Traits\HasHttpCodeResponseTrait;
 use Mill\Parser\MSON;
-use Mill\Parser\Version;
 
 class ErrorAnnotation extends Annotation
 {

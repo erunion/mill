@@ -4,7 +4,6 @@ namespace Mill\Parser\Annotations;
 use Mill\Container;
 use Mill\Exceptions\Annotations\InvalidScopeSuppliedException;
 use Mill\Parser\Annotation;
-use Mill\Parser\Version;
 
 class ScopeAnnotation extends Annotation
 {

@@ -1,13 +1,17 @@
 <?php
 namespace Mill\Parser\Annotations;
 
-use Mill\Parser\Annotation;
 use Mill\Parser\MSON;
-use Mill\Parser\Version;
 
-class PathParamAnnotation extends Annotation
+class PathParamAnnotation extends ParamAnnotation
 {
+    const REQUIRES_VISIBILITY_DECORATOR = false;
+    const SUPPORTS_DEPRECATION = false;
     const SUPPORTS_MSON = true;
+    const SUPPORTS_VENDOR_TAGS = false;
+    const SUPPORTS_VERSIONING = false;
+
+    const PAYLOAD_FORMAT = 'path';
 
     const ARRAYABLE = [
         'description',
@@ -15,18 +19,6 @@ class PathParamAnnotation extends Annotation
         'type',
         'values'
     ];
-
-    /** @var string Name of this param's field. */
-    protected $field;
-
-    /** @var string Type of data that this param supports. */
-    protected $type;
-
-    /** @var string Description of what this param does. */
-    protected $description;
-
-    /** @var array|false|null Array of acceptable values for this parameter. */
-    protected $values = [];
 
     /**
      * {@inheritdoc}
@@ -59,77 +51,5 @@ class PathParamAnnotation extends Annotation
         $this->description = $this->required('description');
 
         $this->values = $this->optional('values');
-    }
-
-    /**
-     * @return string
-     */
-    public function getField(): string
-    {
-        return $this->field;
-    }
-
-    /**
-     * @param string $field
-     * @return PathParamAnnotation
-     */
-    public function setField(string $field): self
-    {
-        $this->field = $field;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param string $type
-     * @return PathParamAnnotation
-     */
-    public function setType(string $type): self
-    {
-        $this->type = $type;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    /**
-     * @param string $description
-     * @return PathParamAnnotation
-     */
-    public function setDescription(string $description): self
-    {
-        $this->description = $description;
-        return $this;
-    }
-
-    /**
-     * @return array|false|null
-     */
-    public function getValues()
-    {
-        return $this->values;
-    }
-
-    /**
-     * @param array|false|null $values
-     * @return PathParamAnnotation
-     */
-    public function setValues($values): self
-    {
-        $this->values = $values;
-        return $this;
     }
 }

@@ -5,7 +5,6 @@ use Mill\Application;
 use Mill\Exceptions\Representation\RestrictedFieldNameException;
 use Mill\Parser\Annotation;
 use Mill\Parser\MSON;
-use Mill\Parser\Version;
 
 class DataAnnotation extends Annotation
 {

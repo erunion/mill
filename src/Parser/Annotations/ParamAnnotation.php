@@ -7,7 +7,6 @@ use Mill\Exceptions\Annotations\UnsupportedTypeException;
 use Mill\Exceptions\Representation\RestrictedFieldNameException;
 use Mill\Parser\Annotation;
 use Mill\Parser\MSON;
-use Mill\Parser\Version;
 
 class ParamAnnotation extends Annotation
 {
@@ -16,6 +15,8 @@ class ParamAnnotation extends Annotation
     const SUPPORTS_MSON = true;
     const SUPPORTS_VENDOR_TAGS = true;
     const SUPPORTS_VERSIONING = true;
+
+    const PAYLOAD_FORMAT = 'body';
 
     const ARRAYABLE = [
         'description',
@@ -131,7 +132,7 @@ class ParamAnnotation extends Annotation
      */
     public function getPayloadFormat(): string
     {
-        return 'body';
+        return static::PAYLOAD_FORMAT;
     }
 
     /**

@@ -27,6 +27,8 @@ class PathParamAnnotationTest extends AnnotationTest
         $this->assertFalse($annotation->supportsVendorTags());
         $this->assertFalse($annotation->requiresVisibilityDecorator());
 
+        $this->assertSame('path', $annotation->getPayloadFormat());
+
         $this->assertSame($expected, $annotation->toArray());
         $this->assertSame($expected['field'], $annotation->getField());
         $this->assertSame($expected['type'], $annotation->getType());

@@ -3,7 +3,6 @@ namespace Mill\Parser\Annotations;
 
 use Mill\Container;
 use Mill\Parser\Annotation;
-use Mill\Parser\Version;
 
 class PathAnnotation extends Annotation
 {

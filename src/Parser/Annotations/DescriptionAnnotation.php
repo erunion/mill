@@ -2,7 +2,6 @@
 namespace Mill\Parser\Annotations;
 
 use Mill\Parser\Annotation;
-use Mill\Parser\Version;
 
 class DescriptionAnnotation extends Annotation
 {

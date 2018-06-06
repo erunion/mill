@@ -4,7 +4,6 @@ namespace Mill\Parser\Annotations;
 use Mill\Container;
 use Mill\Exceptions\Annotations\InvalidVendorTagSuppliedException;
 use Mill\Parser\Annotation;
-use Mill\Parser\Version;
 
 class VendorTagAnnotation extends Annotation
 {

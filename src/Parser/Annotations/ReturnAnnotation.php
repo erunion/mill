@@ -7,7 +7,6 @@ use Mill\Exceptions\Annotations\UnknownReturnCodeException;
 use Mill\Exceptions\Config\UnconfiguredRepresentationException;
 use Mill\Parser\Annotation;
 use Mill\Parser\Annotations\Traits\HasHttpCodeResponseTrait;
-use Mill\Parser\Version;
 
 class ReturnAnnotation extends Annotation
 {
