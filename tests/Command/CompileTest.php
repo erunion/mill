@@ -52,7 +52,6 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         ];
 
         $output = $this->tester->getDisplay();
-        $this->assertNotContains('Running a dry run', $output);
 
         foreach ($versions as $version) {
             $this->assertContains('API version: ' . $version, $output);
@@ -93,33 +92,16 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function testCommandWithDryRun(): void
-    {
-        $this->tester->execute([
-            'command' => $this->command->getName(),
-            '--config' => $this->config_file,
-            '--dry-run' => true,
-            'output' => sys_get_temp_dir()
-        ]);
-
-        $output = $this->tester->getDisplay();
-        $this->assertContains('Running a dry run', $output);
-        $this->assertContains('API version: 1.0', $output);
-        $this->assertContains('API version: 1.1', $output);
-    }
-
     public function testCommandWithDefaultVersion(): void
     {
         $this->tester->execute([
             'command' => $this->command->getName(),
             '--config' => $this->config_file,
-            '--dry-run' => true,
             '--default' => true,
             'output' => sys_get_temp_dir()
         ]);
 
         $output = $this->tester->getDisplay();
-        $this->assertContains('Running a dry run', $output);
         $this->assertNotContains('API version: 1.0', $output);
         $this->assertContains('API version: 1.1', $output);
     }
@@ -129,13 +111,11 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         $this->tester->execute([
             'command' => $this->command->getName(),
             '--config' => $this->config_file,
-            '--dry-run' => true,
             '--constraint' => '1.0',
             'output' => sys_get_temp_dir()
         ]);
 
         $output = $this->tester->getDisplay();
-        $this->assertContains('Running a dry run', $output);
         $this->assertContains('API version: 1.0', $output);
         $this->assertNotContains('API version: 1.1', $output);
     }
@@ -157,7 +137,6 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         $this->tester->execute([
             'command' => $this->command->getName(),
             '--config' => $this->config_file,
-            '--dry-run' => true,
             '--constraint' => '1.^',
             'output' => sys_get_temp_dir()
         ]);
@@ -165,5 +144,19 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         $output = $this->tester->getDisplay();
         $this->assertContains('1.^', $output);
         $this->assertContains('unrecognized schema', $output);
+    }
+
+    public function testCommandFailsOnInvalidFormat(): void
+    {
+        $this->tester->execute([
+            'command' => $this->command->getName(),
+            '--config' => $this->config_file,
+            '--format' => 'raml',
+            'output' => sys_get_temp_dir()
+        ]);
+
+        $output = $this->tester->getDisplay();
+        $this->assertContains('raml', $output);
+        $this->assertContains('unknown compilation format', $output);
     }
 }

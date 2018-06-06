@@ -1,9 +1,8 @@
 <?php
-namespace Mill\Compiler;
+namespace Mill\Compiler\Specification;
 
 use Mill\Application;
 use Mill\Compiler;
-use Mill\Exceptions\Resource\NoAnnotationsException;
 use Mill\Parser\Annotations\ErrorAnnotation;
 use Mill\Parser\Annotations\PathParamAnnotation;
 use Mill\Parser\Annotations\ReturnAnnotation;
@@ -11,7 +10,7 @@ use Mill\Parser\Annotations\ScopeAnnotation;
 use Mill\Parser\Representation\Documentation;
 use Mill\Parser\Resource\Action;
 
-class Blueprint extends Compiler
+class ApiBlueprint extends Compiler
 {
     use Compiler\Traits\Markdown;
 
@@ -26,7 +25,7 @@ class Blueprint extends Compiler
      * @psalm-suppress PossiblyUndefinedVariable
      * @psalm-suppress PossiblyUndefinedArrayOffset
      * @return array
-     * @throws NoAnnotationsException
+     * @throws \Exception
      */
     public function compile(): array
     {

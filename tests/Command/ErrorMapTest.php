@@ -67,7 +67,6 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
         ];
 
         $output = $this->tester->getDisplay();
-        $this->assertNotContains('Running a dry run', $output);
 
         $this->assertNotContains('API version: 1.1.2', $output);
         foreach ($versions as $version) {
@@ -82,34 +81,16 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function testCommandWithDryRun(): void
-    {
-        $this->tester->execute([
-            'command' => $this->command->getName(),
-            '--config' => $this->config_file,
-            '--dry-run' => true,
-            'output' => sys_get_temp_dir()
-        ]);
-
-        $output = $this->tester->getDisplay();
-        $this->assertContains('Running a dry run', $output);
-        $this->assertContains('API version: 1.0', $output);
-        $this->assertContains('API version: 1.1.1', $output);
-        $this->assertNotContains('API version: 1.1.2', $output);
-    }
-
     public function testCommandWithDefaultVersion(): void
     {
         $this->tester->execute([
             'command' => $this->command->getName(),
             '--config' => $this->config_file,
-            '--dry-run' => true,
             '--default' => true,
             'output' => sys_get_temp_dir()
         ]);
 
         $output = $this->tester->getDisplay();
-        $this->assertContains('Running a dry run', $output);
 
         // In our test cases, there's no error codes under the default API version, so this shouldn't be creating error
         // maps.
@@ -121,13 +102,11 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
         $this->tester->execute([
             'command' => $this->command->getName(),
             '--config' => $this->config_file,
-            '--dry-run' => true,
             '--constraint' => '1.0',
             'output' => sys_get_temp_dir()
         ]);
 
         $output = $this->tester->getDisplay();
-        $this->assertContains('Running a dry run', $output);
         $this->assertContains('API version: 1.0', $output);
         $this->assertNotContains('API version: 1.1', $output);
     }
@@ -149,7 +128,6 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
         $this->tester->execute([
             'command' => $this->command->getName(),
             '--config' => $this->config_file,
-            '--dry-run' => true,
             '--constraint' => '1.^',
             'output' => sys_get_temp_dir()
         ]);

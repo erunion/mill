@@ -1,10 +1,10 @@
 <?php
-namespace Mill\Tests\Compiler;
+namespace Mill\Tests\Compiler\Specification;
 
-use Mill\Compiler\Blueprint;
+use Mill\Compiler\Specification\ApiBlueprint;
 use Mill\Tests\TestCase;
 
-class BlueprintTest extends TestCase
+class ApiBlueprintTest extends TestCase
 {
     const DS = DIRECTORY_SEPARATOR;
 
@@ -12,7 +12,7 @@ class BlueprintTest extends TestCase
     {
         $dir = static::$resourcesDir . 'examples/Showtimes/blueprints/';
 
-        $compiler = new Blueprint($this->getConfig());
+        $compiler = new ApiBlueprint($this->getConfig());
         $compiled = $compiler->compile();
 
         foreach ($compiled as $version => $section) {
@@ -52,7 +52,7 @@ class BlueprintTest extends TestCase
     {
         $this->getConfig()->addCompilerGroupExclusion('Movies');
 
-        $compiler = new Blueprint($this->getConfig());
+        $compiler = new ApiBlueprint($this->getConfig());
         $compiled = $compiler->compile();
 
         $this->assertSame([

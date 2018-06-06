@@ -66,7 +66,7 @@ class Changelog extends Application
         /** @var \League\Flysystem\Filesystem $filesystem */
         $filesystem = $this->container['filesystem'];
 
-        $output->writeln('<comment>Compiling a changelog…</comment>');
+        $output->writeln('<comment>Compiling a changelog...</comment>');
 
         $changelog = new Compiler\Changelog($config);
         $changelog->setLoadPrivateDocs($private_docs);

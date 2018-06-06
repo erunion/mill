@@ -3,7 +3,7 @@ namespace Mill\Command;
 
 use Mill\Application;
 use Mill\Config;
-use Mill\Compiler\Blueprint;
+use Mill\Compiler\Specification\ApiBlueprint;
 use Mill\Exceptions\Version\UnrecognizedSchemaException;
 use Mill\Parser\Version;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -24,6 +24,13 @@ class Compile extends Application
         $this->setName('compile')
             ->setDescription('Compile API documentation.')
             ->addOption(
+                'format',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'API specification format to compile documentation into. Available formats: `apiblueprint`, `openapi`',
+                'openapi'
+            )
+            ->addOption(
                 'constraint',
                 null,
                 InputOption::VALUE_OPTIONAL,
@@ -38,32 +45,26 @@ class Compile extends Application
                     '`mill.xml` file.',
                 false
             )
-            ->addOption(
-                'dry-run',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Execute a dry run (do not save any files).',
-                false
-            )
-            ->addArgument('output', InputArgument::REQUIRED, 'Directory to output your compiled `.apib` files in.');
+            ->addArgument('output', InputArgument::REQUIRED, 'Directory to output your compiled documentation in.');
     }
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int
-     * @throws \Mill\Exceptions\Resource\NoAnnotationsException
+     * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         parent::execute($input, $output);
 
         $output_dir = realpath($input->getArgument('output'));
+        $format = strtolower($input->getOption('format'));
         $version = $input->getOption('constraint');
-        $dry_run = $input->getOption('dry-run');
 
-        if ($dry_run) {
-            $output->writeln('<info>Running a dry run…</info>');
+        if (!in_array($format, ['apiblueprint', 'openapi'])) {
+            $output->writeLn('<error>`' . $format . '` is an unknown compilation format.</error>');
+            return 1;
         }
 
         if ($input->getOption('default')) {
@@ -86,10 +87,10 @@ class Compile extends Application
         /** @var \League\Flysystem\Filesystem $filesystem */
         $filesystem = $this->container['filesystem'];
 
-        $output->writeln('<comment>Compiling controllers and representations…</comment>');
-        $compiler = new Blueprint($config, $version);
+        $output->writeln('<comment>Compiling controllers and representations...</comment>');
+        $compiler = new ApiBlueprint($config, $version);
 
-        $output->writeln('<comment>Compiling API Blueprint files…</comment>');
+        $output->writeln('<comment>Compiling API Blueprint files...</comment>');
         $blueprints = $compiler->compile();
 
         foreach ($blueprints as $version => $section) {
@@ -107,13 +108,9 @@ class Compile extends Application
 
             // Process resource groups.
             if (isset($section['groups'])) {
-                $progress->setMessage('Processing resources…');
+                $progress->setMessage('Processing resources...');
                 foreach ($section['groups'] as $group => $markdown) {
                     $progress->advance();
-
-                    if ($dry_run) {
-                        continue;
-                    }
 
                     // Convert any nested groups, like `Me\Videos`, into a proper directory structure: `Me/Videos`.
                     $group = str_replace('\\', self::DS, $group);
@@ -127,13 +124,9 @@ class Compile extends Application
 
             // Process data structures.
             if (isset($section['structures'])) {
-                $progress->setMessage('Processing representations…');
+                $progress->setMessage('Processing representations...');
                 foreach ($section['structures'] as $structure => $markdown) {
                     $progress->advance();
-
-                    if ($dry_run) {
-                        continue;
-                    }
 
                     // Sanitize any structure names with forward slashes to avoid them from being nested in directories
                     // by Flysystem.
@@ -147,12 +140,7 @@ class Compile extends Application
             }
 
             // Save a, single, combined API Blueprint file.
-            if (!$dry_run) {
-                $filesystem->put(
-                    $version_dir . 'api.apib',
-                    $section['combined']
-                );
-            }
+            $filesystem->put($version_dir . 'api.apib', $section['combined']);
 
             $progress->setMessage('');
             $progress->finish();

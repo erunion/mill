@@ -38,13 +38,6 @@ class ErrorMap extends Application
                 false
             )
             ->addOption(
-                'dry-run',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Execute a dry run (do not save any files).',
-                false
-            )
-            ->addOption(
                 'private',
                 null,
                 InputOption::VALUE_OPTIONAL,
@@ -75,14 +68,9 @@ class ErrorMap extends Application
         $vendor_tags = $input->getOption('vendor_tag');
         $output_dir = realpath($input->getArgument('output'));
         $version = $input->getOption('constraint');
-        $dry_run = $input->getOption('dry-run');
 
         $private_docs = ($private_docs === true || strtolower($private_docs) == 'true') ? true : false;
         $vendor_tags = (!empty($vendor_tags)) ? $vendor_tags : null;
-
-        if ($dry_run) {
-            $output->writeln('<info>Running a dry run…</info>');
-        }
 
         if ($input->getOption('default')) {
             $version = $this->container['config']->getDefaultApiVersion();
@@ -104,7 +92,7 @@ class ErrorMap extends Application
         /** @var \League\Flysystem\Filesystem $filesystem */
         $filesystem = $this->container['filesystem'];
 
-        $output->writeln('<comment>Compiling an error map…</comment>');
+        $output->writeln('<comment>Compiling an error map...</comment>');
 
         $error_map = new Compiler\ErrorMap($config, $version);
         $error_map->setLoadPrivateDocs($private_docs);
@@ -114,12 +102,10 @@ class ErrorMap extends Application
         foreach ($markdown as $version => $content) {
             $output->writeLn('<comment> - API version: ' . $version . '</comment>');
 
-            if (!$dry_run) {
-                $filesystem->put(
-                    $output_dir . self::DS . $version . self::DS . 'errors.md',
-                    trim($content)
-                );
-            }
+            $filesystem->put(
+                $output_dir . self::DS . $version . self::DS . 'errors.md',
+                trim($content)
+            );
         }
 
         $output->writeln(['', '<success>Done!</success>']);
