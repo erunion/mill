@@ -16,6 +16,7 @@ class PathParamAnnotation extends ParamAnnotation
     const ARRAYABLE = [
         'description',
         'field',
+        'sample_data',
         'type',
         'values'
     ];
@@ -33,6 +34,7 @@ class PathParamAnnotation extends ParamAnnotation
         $mson = (new MSON($this->class, $method))->parse($content);
         $parsed = array_merge($parsed, [
             'field' => $mson->getField(),
+            'sample_data' => $mson->getSampleData(),
             'type' => $mson->getType(),
             'description' => $mson->getDescription(),
             'values' => $mson->getValues()
@@ -46,7 +48,10 @@ class PathParamAnnotation extends ParamAnnotation
      */
     protected function interpreter(): void
     {
+        $this->required = true;
+
         $this->field = $this->required('field');
+        $this->sample_data = $this->optional('sample_data');
         $this->type = $this->required('type');
         $this->description = $this->required('description');
 

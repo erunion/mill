@@ -46,18 +46,30 @@ class PathParamAnnotationTest extends AnnotationTest
                 'expected' => [
                     'description' => 'Movie ID',
                     'field' => 'id',
+                    'sample_data' => false,
+                    'type' => 'string',
+                    'values' => []
+                ]
+            ],
+            'sample_data' => [
+                'param' => 'id `1234` (string) - Movie ID',
+                'expected' => [
+                    'description' => 'Movie ID',
+                    'field' => 'id',
+                    'sample_data' => '1234',
                     'type' => 'string',
                     'values' => []
                 ]
             ],
             '_complete' => [
-                'param' => 'date (enum) - Date to look for movie showtimes.
+                'param' => 'date `2018-06-09` (enum) - Date to look for movie showtimes.
                     + Members
                         - `today`
                         - `tomorrow`',
                 'expected' => [
                     'description' => 'Date to look for movie showtimes.',
                     'field' => 'date',
+                    'sample_data' => '2018-06-09',
                     'type' => 'enum',
                     'values' => [
                         'today' => '',
