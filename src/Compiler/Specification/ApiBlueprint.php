@@ -10,15 +10,12 @@ use Mill\Parser\Annotations\ScopeAnnotation;
 use Mill\Parser\Representation\Documentation;
 use Mill\Parser\Resource\Action;
 
-class ApiBlueprint extends Compiler
+class ApiBlueprint extends Compiler\Specification
 {
     use Compiler\Traits\Markdown;
 
-    /** @var array Current list of representations for the current API version we're working with. */
-    private $representations = [];
-
     /**
-     * Take compiled API documentation and create API Blueprint representations.
+     * Take compiled API documentation and create a API Blueprint specification.
      *
      * @psalm-suppress PossiblyFalseOperand
      * @psalm-suppress InvalidScalarArgument
@@ -34,7 +31,7 @@ class ApiBlueprint extends Compiler
         $group_excludes = $this->config->getCompilerGroupExclusions();
         $resources = $this->getResources();
 
-        $blueprints = [];
+        $specifications = [];
 
         /** @var array $data */
         foreach ($resources as $version => $groups) {
@@ -123,7 +120,7 @@ class ApiBlueprint extends Compiler
                 }
 
                 $contents = trim($contents);
-                $blueprints[$this->version]['groups'][$group] = $contents;
+                $specifications[$this->version]['groups'][$group] = $contents;
             }
 
             // Process representation data structures.
@@ -142,18 +139,18 @@ class ApiBlueprint extends Compiler
                     $contents .= $this->processMSON($fields, 0);
 
                     $contents = trim($contents);
-                    $blueprints[$this->version]['structures'][$identifier] = $contents;
+                    $specifications[$this->version]['structures'][$identifier] = $contents;
                 }
             }
 
             // Process the combined file.
-            $blueprints[$this->version]['combined'] = $this->processCombinedFile(
-                $blueprints[$this->version]['groups'],
-                $blueprints[$this->version]['structures']
+            $specifications[$this->version]['combined'] = $this->processCombinedFile(
+                $specifications[$this->version]['groups'],
+                $specifications[$this->version]['structures']
             );
         }
 
-        return $blueprints;
+        return $specifications;
     }
 
     /**
@@ -194,7 +191,7 @@ class ApiBlueprint extends Compiler
      */
     protected function processParameters(Action\Documentation $action)
     {
-        $params = $action->getPathParams();
+        $params = $action->getPathParameters();
         if (empty($params)) {
             return false;
         }
@@ -489,26 +486,6 @@ class ApiBlueprint extends Compiler
     }
 
     /**
-     * Convert an MSON sample data into an API Blueprint-compatible piece of data for that appropriate field type.
-     *
-     * @param bool|string $data
-     * @param string $type
-     * @return bool|string
-     */
-    private function convertSampleDataToCompatibleDataType($data, string $type)
-    {
-        if ($type == 'boolean') {
-            if ($data === '0') {
-                return 'false';
-            } elseif ($data === '1') {
-                return 'true';
-            }
-        }
-
-        return $data;
-    }
-
-    /**
      * Convert a Mill-supported documentation into an API Blueprint-compatible type.
      *
      * @link https://github.com/apiaryio/mson/blob/master/MSON%20Specification.md#2-types
@@ -561,16 +538,5 @@ class ApiBlueprint extends Compiler
         }
 
         return $type;
-    }
-
-    /**
-     * Pull a representation from the current versioned set of representations.
-     *
-     * @param string $representation
-     * @return false|\Mill\Parser\Representation\Documentation
-     */
-    private function getRepresentation(string $representation)
-    {
-        return (isset($this->representations[$representation])) ? $this->representations[$representation] : false;
     }
 }

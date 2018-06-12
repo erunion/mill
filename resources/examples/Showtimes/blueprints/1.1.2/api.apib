@@ -25,10 +25,10 @@ sem malesuada magna mollis euismod.
 
 + Parameters
     - `id` (number, required) - Movie ID
-+ Response 200 (application/mill.example.movie)
++ Response 200 (application/mill.example.movie+json)
     + Attributes (Movie)
-+ Response 304 (application/mill.example.movie)
-+ Response 404 (application/mill.example.movie)
++ Response 304 (application/mill.example.movie+json)
++ Response 404 (application/mill.example.movie+json)
     + Attributes (Error)
 
 ## Movies [/movies/{id}]
@@ -52,10 +52,10 @@ sem malesuada magna mollis euismod.
 
 + Parameters
     - `id` (number, required) - Movie ID
-+ Response 200 (application/mill.example.movie)
++ Response 200 (application/mill.example.movie+json)
     + Attributes (Movie)
-+ Response 304 (application/mill.example.movie)
-+ Response 404 (application/mill.example.movie)
++ Response 304 (application/mill.example.movie+json)
++ Response 404 (application/mill.example.movie+json)
     + Attributes (Error)
 
 ### Update a movie. [PATCH]
@@ -73,14 +73,14 @@ This action requires a bearer token with the `edit` scope.
                 - `role` (string) - Cast member role.
         - `content_rating` (enum[string]) - MPAA rating
             + Members
-                + `G`
-                + `NC-17`
-                + `NR`
-                + `PG`
-                + `PG-13`
-                + `R`
-                + `UR`
-                + `X`
+                + `G` - Rated G
+                + `NC-17` - Rated NC-17
+                + `NR` - Not rated
+                + `PG` - Rated PG
+                + `PG-13` - Rated PG-13
+                + `R` - Rated R
+                + `UR` - Unrated
+                + `X` - Rated X
         - `description` (string, required) - Description, or tagline, for the movie.
         - `director` (string) - Name of the director.
         - `genres` (array) - Array of movie genres.
@@ -90,14 +90,14 @@ This action requires a bearer token with the `edit` scope.
         - `rotten_tomatoes_score` (number) - Rotten Tomatoes score
         - `runtime` (string) - Movie runtime, in `HHhr MMmin` format.
         - `trailer` (string, nullable) - Trailer URL
-+ Response 200 (application/mill.example.movie)
++ Response 200 (application/mill.example.movie+json)
     + Attributes (Movie)
-+ Response 400 (application/mill.example.movie)
++ Response 400 (application/mill.example.movie+json)
     There are two ways that this status code can be encountered:
          * If there is a problem with the request.
          * If the IMDB URL could not be validated.
     + Attributes (Error)
-+ Response 404 (application/mill.example.movie)
++ Response 404 (application/mill.example.movie+json)
     + Attributes (Error)
 
 ### Delete a movie. [DELETE]
@@ -123,9 +123,9 @@ Returns all movies for a specific location.
     + Attributes
         - `location` (string, required) - Location you want movies for.
         - `page` (number) - Page of results to pull.
-+ Response 200 (application/mill.example.movie)
++ Response 200 (application/mill.example.movie+json)
     + Attributes (array[Movie])
-+ Response 400 (application/mill.example.movie)
++ Response 400 (application/mill.example.movie+json)
     + Attributes (Error)
 
 ### Create a movie. [POST]
@@ -141,14 +141,14 @@ This action requires a bearer token with the `create` scope.
                 - `role` (string) - Cast member role.
         - `content_rating` (enum[string]) - MPAA rating
             + Members
-                + `G`
-                + `NC-17`
-                + `NR`
-                + `PG`
-                + `PG-13`
-                + `R`
-                + `UR`
-                + `X`
+                + `G` - Rated G
+                + `NC-17` - Rated NC-17
+                + `NR` - Not rated
+                + `PG` - Rated PG
+                + `PG-13` - Rated PG-13
+                + `R` - Rated R
+                + `UR` - Unrated
+                + `X` - Rated X
         - `description` (string, required) - Description, or tagline, for the movie.
         - `director` (string) - Name of the director.
         - `genres` (array) - Array of movie genres.
@@ -158,9 +158,9 @@ This action requires a bearer token with the `create` scope.
         - `rotten_tomatoes_score` (number) - Rotten Tomatoes score
         - `runtime` (string) - Movie runtime, in `HHhr MMmin` format.
         - `trailer` (string, nullable) - Trailer URL
-+ Response 200 (application/mill.example.movie)
++ Response 200 (application/mill.example.movie+json)
     + Attributes (Movie)
-+ Response 400 (application/mill.example.movie)
++ Response 400 (application/mill.example.movie+json)
     There are two ways that this status code can be encountered:
          * If there is a problem with the request.
          * If the IMDB URL could not be validated.
@@ -177,10 +177,10 @@ Return information on a specific movie theater.
 
 + Parameters
     - `id` (number, required) - Theater ID
-+ Response 200 (application/mill.example.theater)
++ Response 200 (application/mill.example.theater+json)
     + Attributes (Theater)
-+ Response 304 (application/mill.example.theater)
-+ Response 404 (application/mill.example.theater)
++ Response 304 (application/mill.example.theater+json)
++ Response 404 (application/mill.example.theater+json)
     + Attributes (Error)
 
 ### Update a movie theater. [PATCH]
@@ -195,11 +195,11 @@ This action requires a bearer token with the `create` scope.
         - `address` (string, required) - Theater address
         - `name` (string, required) - Name of the theater.
         - `phone_number` (string, required) - Theater phone number
-+ Response 200 (application/mill.example.theater)
++ Response 200 (application/mill.example.theater+json)
     + Attributes (Theater)
-+ Response 400 (application/mill.example.theater)
++ Response 400 (application/mill.example.theater+json)
     + Attributes (Error)
-+ Response 404 (application/mill.example.theater)
++ Response 404 (application/mill.example.theater+json)
     + Attributes (Error)
 
 ### Delete a movie theater. [DELETE]
@@ -224,9 +224,9 @@ Returns all movie theatres for a specific location.
 + Request
     + Attributes
         - `location` (string, required) - Location you want theaters in.
-+ Response 200 (application/mill.example.theater)
++ Response 200 (application/mill.example.theater+json)
     + Attributes (array[Theater])
-+ Response 400 (application/mill.example.theater)
++ Response 400 (application/mill.example.theater+json)
     + Attributes (Error)
 
 ### Create a movie theater. [POST]
@@ -239,9 +239,9 @@ This action requires a bearer token with the `create` scope.
         - `address` (string, required) - Theater address
         - `name` (string, required) - Name of the theater.
         - `phone_number` (string, required) - Theater phone number
-+ Response 200 (application/mill.example.theater)
++ Response 200 (application/mill.example.theater+json)
     + Attributes (Theater)
-+ Response 400 (application/mill.example.theater)
++ Response 400 (application/mill.example.theater+json)
     + Attributes (Error)
 
 # Data Structures

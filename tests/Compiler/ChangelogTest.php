@@ -152,7 +152,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Movies',
                                 'method' => 'GET',
                                 'path' => '/movie/{id}',
-                                'content_type' => 'application/mill.example.movie'
+                                'content_type' => 'application/mill.example.movie+json'
                             ]
                         ]
                     ]
@@ -164,7 +164,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Movies',
                                 'method' => 'GET',
                                 'path' => '/movies',
-                                'content_type' => 'application/mill.example.movie'
+                                'content_type' => 'application/mill.example.movie+json'
                             ]
                         ],
                         '066564ef49' => [
@@ -172,7 +172,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Movies',
                                 'method' => 'POST',
                                 'path' => '/movies',
-                                'content_type' => 'application/mill.example.movie'
+                                'content_type' => 'application/mill.example.movie+json'
                             ]
                         ]
                     ]
@@ -184,7 +184,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Movies',
                                 'method' => 'GET',
                                 'path' => '/movies/{id}',
-                                'content_type' => 'application/mill.example.movie'
+                                'content_type' => 'application/mill.example.movie+json'
                             ]
                         ],
                         'f4628f751a' => [
@@ -192,7 +192,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Movies',
                                 'method' => 'PATCH',
                                 'path' => '/movies/{id}',
-                                'content_type' => 'application/mill.example.movie'
+                                'content_type' => 'application/mill.example.movie+json'
                             ]
                         ]
                     ]
@@ -204,7 +204,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Theaters',
                                 'method' => 'GET',
                                 'path' => '/theaters',
-                                'content_type' => 'application/mill.example.theater'
+                                'content_type' => 'application/mill.example.theater+json'
                             ]
                         ],
                         '066564ef49' => [
@@ -212,7 +212,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Theaters',
                                 'method' => 'POST',
                                 'path' => '/theaters',
-                                'content_type' => 'application/mill.example.theater'
+                                'content_type' => 'application/mill.example.theater+json'
                             ]
                         ]
                     ]
@@ -236,7 +236,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Theaters',
                                 'method' => 'GET',
                                 'path' => '/theaters/{id}',
-                                'content_type' => 'application/mill.example.theater'
+                                'content_type' => 'application/mill.example.theater+json'
                             ]
                         ],
                         'f4628f751a' => [
@@ -244,7 +244,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Theaters',
                                 'method' => 'PATCH',
                                 'path' => '/theaters/{id}',
-                                'content_type' => 'application/mill.example.theater'
+                                'content_type' => 'application/mill.example.theater+json'
                             ]
                         ]
                     ]

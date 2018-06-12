@@ -187,6 +187,8 @@ class CompilerTest extends TestCase
                     [
                         'description' => 'Movie ID',
                         'field' => 'id',
+                        'required' => true,
+                        'sample_data' => false,
                         'type' => 'integer',
                         'values' => []
                     ]
@@ -251,6 +253,8 @@ class CompilerTest extends TestCase
                     [
                         'description' => 'Movie ID',
                         'field' => 'id',
+                        'required' => true,
+                        'sample_data' => false,
                         'type' => 'integer',
                         'values' => []
                     ]
@@ -272,6 +276,8 @@ class CompilerTest extends TestCase
                     [
                         'description' => 'Movie ID',
                         'field' => 'id',
+                        'required' => true,
+                        'sample_data' => false,
                         'type' => 'integer',
                         'values' => []
                     ]
@@ -309,6 +315,8 @@ class CompilerTest extends TestCase
                     [
                         'description' => 'Movie ID',
                         'field' => 'id',
+                        'required' => true,
+                        'sample_data' => false,
                         'type' => 'integer',
                         'values' => []
                     ]
@@ -369,6 +377,8 @@ class CompilerTest extends TestCase
                     [
                         'description' => 'Theater ID',
                         'field' => 'id',
+                        'required' => true,
+                        'sample_data' => false,
                         'type' => 'integer',
                         'values' => []
                     ]
@@ -390,6 +400,8 @@ class CompilerTest extends TestCase
                     [
                         'description' => 'Theater ID',
                         'field' => 'id',
+                        'required' => true,
+                        'sample_data' => false,
                         'type' => 'integer',
                         'values' => []
                     ]
@@ -417,6 +429,8 @@ class CompilerTest extends TestCase
                     [
                         'description' => 'Theater ID',
                         'field' => 'id',
+                        'required' => true,
+                        'sample_data' => false,
                         'type' => 'integer',
                         'values' => []
                     ]

@@ -119,9 +119,9 @@ class Compiler
                     $params = [];
 
                     /** @var \Mill\Parser\Annotations\PathParamAnnotation $param */
-                    foreach ($method->getPathParams() as $param) {
+                    foreach ($method->getPathParameters() as $param) {
                         if ($path->doesPathHaveParam($param)) {
-                            $params[] = $param;
+                            $params[$param->getField()] = $param;
                         }
                     }
 

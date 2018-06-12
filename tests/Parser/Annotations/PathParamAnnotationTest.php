@@ -46,6 +46,7 @@ class PathParamAnnotationTest extends AnnotationTest
                 'expected' => [
                     'description' => 'Movie ID',
                     'field' => 'id',
+                    'required' => true,
                     'sample_data' => false,
                     'type' => 'string',
                     'values' => []
@@ -56,6 +57,7 @@ class PathParamAnnotationTest extends AnnotationTest
                 'expected' => [
                     'description' => 'Movie ID',
                     'field' => 'id',
+                    'required' => true,
                     'sample_data' => '1234',
                     'type' => 'string',
                     'values' => []
@@ -69,6 +71,7 @@ class PathParamAnnotationTest extends AnnotationTest
                 'expected' => [
                     'description' => 'Date to look for movie showtimes.',
                     'field' => 'date',
+                    'required' => true,
                     'sample_data' => '2018-06-09',
                     'type' => 'enum',
                     'values' => [

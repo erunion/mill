@@ -16,6 +16,7 @@ class PathParamAnnotation extends ParamAnnotation
     const ARRAYABLE = [
         'description',
         'field',
+        'required',
         'sample_data',
         'type',
         'values'

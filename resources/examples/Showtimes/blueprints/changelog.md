@@ -29,16 +29,16 @@ Changed up the responses for `/movie/{id}`, `/movies/{id}` and `/movies`.
 #### Changed
 ##### Resources
 - The following Movies resources have changed:
-    - On `/movie/{id}`, `GET` requests now return a `application/mill.example.movie` Content-Type header.
-    - On `/movies/{id}`, `GET` requests now return a `application/mill.example.movie` Content-Type header.
-    - On `/movies/{id}`, `PATCH` requests now return a `application/mill.example.movie` Content-Type header.
-    - On `/movies`, `GET` requests now return a `application/mill.example.movie` Content-Type header.
-    - On `/movies`, `POST` requests now return a `application/mill.example.movie` Content-Type header.
+    - On `/movie/{id}`, `GET` requests now return a `application/mill.example.movie+json` Content-Type header.
+    - On `/movies/{id}`, `GET` requests now return a `application/mill.example.movie+json` Content-Type header.
+    - On `/movies/{id}`, `PATCH` requests now return a `application/mill.example.movie+json` Content-Type header.
+    - On `/movies`, `GET` requests now return a `application/mill.example.movie+json` Content-Type header.
+    - On `/movies`, `POST` requests now return a `application/mill.example.movie+json` Content-Type header.
 - The following Theaters resources have changed:
-    - On `/theaters/{id}`, `GET` requests now return a `application/mill.example.theater` Content-Type header.
-    - On `/theaters/{id}`, `PATCH` requests now return a `application/mill.example.theater` Content-Type header.
-    - On `/theaters`, `GET` requests now return a `application/mill.example.theater` Content-Type header.
-    - On `/theaters`, `POST` requests now return a `application/mill.example.theater` Content-Type header.
+    - On `/theaters/{id}`, `GET` requests now return a `application/mill.example.theater+json` Content-Type header.
+    - On `/theaters/{id}`, `PATCH` requests now return a `application/mill.example.theater+json` Content-Type header.
+    - On `/theaters`, `GET` requests now return a `application/mill.example.theater+json` Content-Type header.
+    - On `/theaters`, `POST` requests now return a `application/mill.example.theater+json` Content-Type header.
 
 #### Removed
 ##### Resources

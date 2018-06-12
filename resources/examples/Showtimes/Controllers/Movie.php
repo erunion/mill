@@ -37,7 +37,7 @@ class Movie
      * @api-error:public 404 (\Mill\Examples\Showtimes\Representations\Error) - If the movie could not be found.
      *
      * @api-version >=1.1.2
-     * @api-contenttype application/mill.example.movie
+     * @api-contenttype application/mill.example.movie+json
      *
      * @api-version <1.1.2
      * @api-contenttype application/json
@@ -68,14 +68,14 @@ class Movie
      * @api-param:public runtime (string, optional) - Movie runtime, in `HHhr MMmin` format.
      * @api-param:public content_rating (enum, optional) - MPAA rating
      *  + Members
-     *      - `G`
-     *      - `PG`
-     *      - `PG-13`
-     *      - `R`
-     *      - `NC-17`
-     *      - `X`
-     *      - `NR`
-     *      - `UR`
+     *      - `G` - Rated G
+     *      - `PG` - Rated PG
+     *      - `PG-13` - Rated PG-13
+     *      - `R` - Rated R
+     *      - `NC-17` - Rated NC-17
+     *      - `X` - Rated X
+     *      - `NR` - Not rated
+     *      - `UR` - Unrated
      * @api-param:public genres (array, optional) - Array of movie genres.
      * @api-param:public trailer (string, optional, nullable) - Trailer URL
      * @api-param:public director (string, optional) - Name of the director.
@@ -92,7 +92,7 @@ class Movie
      * @api-error:public 404 (\Mill\Examples\Showtimes\Representations\Error) - If the movie could not be found.
      *
      * @api-version >=1.1.2
-     * @api-contenttype application/mill.example.movie
+     * @api-contenttype application/mill.example.movie+json
      *
      * @api-version <1.1.2
      * @api-contenttype application/json

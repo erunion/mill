@@ -21,7 +21,7 @@ class Theaters
      * @api-error:public 400 (\Mill\Examples\Showtimes\Representations\Error) - If the location is invalid.
      *
      * @api-version >=1.1.2
-     * @api-contenttype application/mill.example.theater
+     * @api-contenttype application/mill.example.theater+json
      *
      * @api-version <1.1.2
      * @api-contenttype application/json
@@ -50,7 +50,7 @@ class Theaters
      * @api-error:public 400 (\Mill\Examples\Showtimes\Representations\Error) - If there is a problem with the request.
      *
      * @api-version >=1.1.2
-     * @api-contenttype application/mill.example.theater
+     * @api-contenttype application/mill.example.theater+json
      *
      * @api-version <1.1.2
      * @api-contenttype application/json

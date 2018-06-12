@@ -25,7 +25,7 @@ class Theater
      * @api-error:public 404 (\Mill\Examples\Showtimes\Representations\Error) - If the movie theater could not be found.
      *
      * @api-version >=1.1.2
-     * @api-contenttype application/mill.example.theater
+     * @api-contenttype application/mill.example.theater+json
      *
      * @api-version <1.1.2
      * @api-contenttype application/json
@@ -56,7 +56,7 @@ class Theater
      * @api-error:public 404 (\Mill\Examples\Showtimes\Representations\Error) - If the movie movie could not be found.
      *
      * @api-version >=1.1.2
-     * @api-contenttype application/mill.example.theater
+     * @api-contenttype application/mill.example.theater+json
      *
      * @api-version <1.1.2
      * @api-contenttype application/json

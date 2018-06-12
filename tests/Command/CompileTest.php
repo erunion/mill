@@ -40,6 +40,7 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         $this->tester->execute([
             'command' => $this->command->getName(),
             '--config' => $this->config_file,
+            '--format' => 'apiblueprint',
             'output' => $output_dir
         ]);
 
@@ -98,6 +99,7 @@ class CompileTest extends \PHPUnit\Framework\TestCase
             'command' => $this->command->getName(),
             '--config' => $this->config_file,
             '--default' => true,
+            '--format' => 'apiblueprint',
             'output' => sys_get_temp_dir()
         ]);
 
@@ -112,6 +114,7 @@ class CompileTest extends \PHPUnit\Framework\TestCase
             'command' => $this->command->getName(),
             '--config' => $this->config_file,
             '--constraint' => '1.0',
+            '--format' => 'apiblueprint',
             'output' => sys_get_temp_dir()
         ]);
 

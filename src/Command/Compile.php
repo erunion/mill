@@ -2,6 +2,7 @@
 namespace Mill\Command;
 
 use Mill\Application;
+use Mill\Compiler\Specification\OpenApi;
 use Mill\Config;
 use Mill\Compiler\Specification\ApiBlueprint;
 use Mill\Exceptions\Version\UnrecognizedSchemaException;
@@ -14,6 +15,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Compile extends Application
 {
+    const FORMAT_API_BLUEPRINT = 'apiblueprint';
+    const FORMAT_OPENAPI = 'openapi';
+
+    const FORMATS = [
+        self::FORMAT_API_BLUEPRINT,
+        self::FORMAT_OPENAPI
+    ];
+
     /**
      * @return void
      */
@@ -27,8 +36,13 @@ class Compile extends Application
                 'format',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'API specification format to compile documentation into. Available formats: `apiblueprint`, `openapi`',
-                'openapi'
+                'API specification format to compile documentation into. Available formats: ' . implode(
+                    ', ',
+                    array_map(function (string $format): string {
+                        return '`' . $format . '`';
+                    }, self::FORMATS)
+                ),
+                self::FORMAT_OPENAPI
             )
             ->addOption(
                 'constraint',
@@ -88,18 +102,27 @@ class Compile extends Application
         $filesystem = $this->container['filesystem'];
 
         $output->writeln('<comment>Compiling controllers and representations...</comment>');
-        $compiler = new ApiBlueprint($config, $version);
+        if ($format === self::FORMAT_API_BLUEPRINT) {
+            $compiler = new ApiBlueprint($config, $version);
+        } else {
+            $compiler = new OpenApi($config, $version);
+        }
 
-        $output->writeln('<comment>Compiling API Blueprint files...</comment>');
-        $blueprints = $compiler->compile();
+        $output->writeln(
+            sprintf(
+                '<comment>Compiling %s files...</comment>',
+                ($format === self::FORMAT_API_BLUEPRINT) ? 'API Blueprint' : 'OpenAPI'
+            )
+        );
 
-        foreach ($blueprints as $version => $section) {
+        $compiled = $compiler->compile();
+        foreach ($compiled as $version => $files) {
             $version_dir = $output_dir . self::DS . $version . self::DS;
 
             $output->writeLn('<comment> - API version: ' . $version . '</comment>');
 
-            $total_work = (isset($section['groups'])) ? count($section['groups']) : 0;
-            $total_work += (isset($section['structures'])) ? count($section['structures']) : 0;
+            $total_work = (isset($files['groups'])) ? count($files['groups']) : 0;
+            $total_work += (isset($files['structures'])) ? count($files['structures']) : 0;
 
             $progress = new ProgressBar($output, $total_work);
             $progress->setFormatDefinition('custom', ' %current%/%max% [%bar%] %message%');
@@ -107,9 +130,9 @@ class Compile extends Application
             $progress->start();
 
             // Process resource groups.
-            if (isset($section['groups'])) {
+            if (isset($files['groups'])) {
                 $progress->setMessage('Processing resources...');
-                foreach ($section['groups'] as $group => $markdown) {
+                foreach ($files['groups'] as $group => $markdown) {
                     $progress->advance();
 
                     // Convert any nested groups, like `Me\Videos`, into a proper directory structure: `Me/Videos`.
@@ -123,9 +146,9 @@ class Compile extends Application
             }
 
             // Process data structures.
-            if (isset($section['structures'])) {
+            if (isset($files['structures'])) {
                 $progress->setMessage('Processing representations...');
-                foreach ($section['structures'] as $structure => $markdown) {
+                foreach ($files['structures'] as $structure => $markdown) {
                     $progress->advance();
 
                     // Sanitize any structure names with forward slashes to avoid them from being nested in directories
@@ -140,7 +163,7 @@ class Compile extends Application
             }
 
             // Save a, single, combined API Blueprint file.
-            $filesystem->put($version_dir . 'api.apib', $section['combined']);
+            $filesystem->put($version_dir . 'api.apib', $files['combined']);
 
             $progress->setMessage('');
             $progress->finish();

@@ -204,7 +204,7 @@ DESCRIPTION;
                     'content_types.latest-version' => '1.1.2',
                     'content_types' => [
                         [
-                            'content_type' => 'application/mill.example.movie',
+                            'content_type' => 'application/mill.example.movie+json',
                             'version' => '>=1.1.2'
                         ],
                         [
@@ -274,6 +274,8 @@ DESCRIPTION;
                             [
                                 'description' => 'Movie ID',
                                 'field' => 'id',
+                                'required' => true,
+                                'sample_data' => false,
                                 'type' => 'integer',
                                 'values' => []
                             ]
@@ -312,7 +314,7 @@ DESCRIPTION;
                     'content_types.latest-version' => '1.1.2',
                     'content_types' => [
                         [
-                            'content_type' => 'application/mill.example.movie',
+                            'content_type' => 'application/mill.example.movie+json',
                             'version' => '>=1.1.2'
                         ],
                         [
@@ -440,14 +442,14 @@ DESCRIPTION;
                                 'subtype' => false,
                                 'type' => 'enum',
                                 'values' => [
-                                    'G' => '',
-                                    'NC-17' => '',
-                                    'NR' => '',
-                                    'PG' => '',
-                                    'PG-13' => '',
-                                    'R' => '',
-                                    'UR' => '',
-                                    'X' => ''
+                                    'G' => 'Rated G',
+                                    'NC-17' => 'Rated NC-17',
+                                    'NR' => 'Not rated',
+                                    'PG' => 'Rated PG',
+                                    'PG-13' => 'Rated PG-13',
+                                    'R' => 'Rated R',
+                                    'UR' => 'Unrated',
+                                    'X' => 'Rated X'
                                 ],
                                 'vendor_tags' => [],
                                 'version' => false,
@@ -593,6 +595,8 @@ DESCRIPTION;
                             [
                                 'description' => 'Movie ID',
                                 'field' => 'id',
+                                'required' => true,
+                                'sample_data' => false,
                                 'type' => 'integer',
                                 'values' => []
                             ]
@@ -682,14 +686,14 @@ DESCRIPTION;
                                 'subtype' => false,
                                 'type' => 'enum',
                                 'values' => [
-                                    'G' => '',
-                                    'NC-17' => '',
-                                    'NR' => '',
-                                    'PG' => '',
-                                    'PG-13' => '',
-                                    'R' => '',
-                                    'UR' => '',
-                                    'X' => ''
+                                    'G' => 'Rated G',
+                                    'NC-17' => 'Rated NC-17',
+                                    'NR' => 'Not rated',
+                                    'PG' => 'Rated PG',
+                                    'PG-13' => 'Rated PG-13',
+                                    'R' => 'Rated R',
+                                    'UR' => 'Unrated',
+                                    'X' => 'Rated X'
                                 ],
                                 'vendor_tags' => [],
                                 'version' => false,
@@ -898,6 +902,8 @@ DESCRIPTION;
                             [
                                 'description' => 'Movie ID',
                                 'field' => 'id',
+                                'required' => true,
+                                'sample_data' => false,
                                 'type' => 'integer',
                                 'values' => []
                             ]

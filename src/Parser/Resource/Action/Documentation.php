@@ -160,7 +160,7 @@ class Documentation
 
                 // If we're dealing with parameter annotations, let's set us up the ability to later sort them in
                 // alphabetical order by keying their annotation array off the parameter field name.
-                if (in_array($key, ['param', 'queryparam'])) {
+                if (in_array($key, ['param', 'pathparam', 'queryparam'])) {
                     /** @var Parser\Annotations\ParamAnnotation|Parser\Annotations\QueryParamAnnotation $annotation */
                     $this->annotations[$key][$annotation->getField()] = $annotation;
                 } else {
@@ -172,6 +172,10 @@ class Documentation
         // Keep the parameter annotation array in alphabetical order, so they're easier to consume in the documentation.
         if (isset($this->annotations['param'])) {
             ksort($this->annotations['param']);
+        }
+
+        if (isset($this->annotations['pathparam'])) {
+            ksort($this->annotations['pathparam']);
         }
 
         if (isset($this->annotations['queryparam'])) {
@@ -437,7 +441,7 @@ class Documentation
      *
      * @return array
      */
-    public function getPathParams(): array
+    public function getPathParameters(): array
     {
         return (isset($this->annotations['pathparam'])) ? $this->annotations['pathparam'] : [];
     }
@@ -503,7 +507,7 @@ class Documentation
      */
     public function getAllParameters(): array
     {
-        return array_merge($this->getParameters(), $this->getQueryParameters());
+        return array_merge($this->getPathParameters(), $this->getParameters(), $this->getQueryParameters());
     }
 
     /**
@@ -661,6 +665,16 @@ class Documentation
     public function getExplodedQueryParameterDotNotation(): array
     {
         return $this->buildExplodedDotNotation($this->getQueryParameters());
+    }
+
+    /**
+     * Convert the parsed path parameter documentation content dot notation field names into an exploded array.
+     *
+     * @return array
+     */
+    public function getExplodedPathParameterDotNotation(): array
+    {
+        return $this->buildExplodedDotNotation($this->getPathParameters());
     }
 
     /**
