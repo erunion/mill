@@ -6,7 +6,6 @@ use Mill\Compiler;
 use Mill\Parser\Annotations\DataAnnotation;
 use Mill\Parser\Annotations\ErrorAnnotation;
 use Mill\Parser\Annotations\ParamAnnotation;
-use Mill\Parser\Annotations\PathAnnotation;
 use Mill\Parser\Annotations\PathParamAnnotation;
 use Mill\Parser\Annotations\QueryParamAnnotation;
 use Mill\Parser\Annotations\ReturnAnnotation;
@@ -19,7 +18,7 @@ class OpenApi extends Compiler\Specification
     use Compiler\Traits\Markdown;
 
     /**
-     * Take compiled API documentation and create a API Blueprint specification.
+     * Take compiled API documentation and create a OpenAPI specification.
      *
      * @psalm-suppress PossiblyFalseOperand
      * @psalm-suppress InvalidScalarArgument
@@ -37,7 +36,6 @@ class OpenApi extends Compiler\Specification
 
         $specifications = [];
 
-        /** @var array $data */
         foreach ($resources as $version => $groups) {
             $this->version = $version;
             $this->representations = $this->getRepresentations($this->version);
@@ -48,14 +46,21 @@ class OpenApi extends Compiler\Specification
                     'title' => $this->config->getName(),
                     'version' => $this->version
                 ],
-                'tags' => (function () use ($groups, $group_excludes) {
-                    $tags = array_filter(array_map(function ($group) use ($group_excludes) {
-                        if (!in_array($group, $group_excludes)) {
-                            return [
-                                'name' => $group
-                            ];
-                        }
-                    }, array_keys($groups)));
+                'tags' => (function () use ($groups, $group_excludes): array {
+                    $tags = array_filter(
+                        array_map(
+                            function (string $group) use ($group_excludes): ?array {
+                                if (in_array($group, $group_excludes)) {
+                                    return [];
+                                }
+
+                                return [
+                                    'name' => $group
+                                ];
+                            },
+                            array_keys($groups)
+                        )
+                    );
 
                     // Excluding some groups and filtering off empty arrays will leave gaps in the keys of the tags
                     // array, resulting in some funky looking compiled YAML.
@@ -76,6 +81,7 @@ class OpenApi extends Compiler\Specification
             ];
 
             // Process resource groups.
+            /** @var array $data */
             foreach ($groups as $group => $data) {
                 // If this group has been designated in the config file to be excluded, then exclude it.
                 if (in_array($group, $group_excludes)) {
@@ -128,26 +134,11 @@ class OpenApi extends Compiler\Specification
                     }
 
                     $identifier = $this->getReferenceName($representation->getLabel());
-
-                    /*$contents = sprintf('## %s', $identifier);
-                    $contents .= $this->line();
-
-                    $contents .= $this->processMSON($fields, 0);
-
-                    $contents = trim($contents);
-                    $specifications[$this->version]['structures'][$identifier] = $contents;*/
-
                     $specifications[$this->version]['components']['schemas'][$identifier] = [
                         'properties' => $this->processMSON(DataAnnotation::PAYLOAD_FORMAT, $fields)
                     ];
                 }
             }
-
-            // Process the combined file.
-            /*$specifications[$this->version]['combined'] = $this->processCombinedFile(
-                $specifications[$this->version]['groups'],
-                $specifications[$this->version]['structures']
-            );*/
         }
 
         return $specifications;
@@ -179,13 +170,17 @@ class OpenApi extends Compiler\Specification
 
         return [
             'required' => !empty(
-                array_reduce($action->getParameters(), function ($carry, ParamAnnotation $param): ?array {
-                    if ($param->isRequired()) {
-                        $carry[] = $param->getField();
-                    }
+                array_reduce(
+                    $action->getParameters(),
+                    /** @param mixed $carry */
+                    function ($carry, ParamAnnotation $param): ?array {
+                        if ($param->isRequired()) {
+                            $carry[] = $param->getField();
+                        }
 
-                    return $carry;
-                })
+                        return $carry;
+                    }
+                )
             ),
             'content' => [
                 $action->getContentType($this->version) => [
@@ -227,6 +222,7 @@ class OpenApi extends Compiler\Specification
 
                 $description .= $this->line();
             } else {
+                /** @var string $description */
                 $description = current($responses)->getDescription();
             }
 
@@ -287,149 +283,6 @@ class OpenApi extends Compiler\Specification
 
         return $schema;
     }
-
-    /**
-     * Recursively process an array of representation fields.
-     *
-     * @param array $fields
-     * @param int $indent
-     * @return string
-     */
-    /*private function processMSON(array $fields = [], int $indent = 2): string
-    {
-        $blueprint = '';
-
-        /** @var array $field
-        foreach ($fields as $field_name => $field) {
-            $blueprint .= $this->tab($indent);
-
-            $data = [];
-            if (isset($field[Application::DOT_NOTATION_ANNOTATION_DATA_KEY])) {
-                /** @var array $data
-                $data = $field[Application::DOT_NOTATION_ANNOTATION_DATA_KEY];
-                $type = $this->convertTypeToCompatibleType(
-                    $data['type'],
-                    (isset($data['subtype'])) ? $data['subtype'] : false
-                );
-
-                $sample_data = $this->convertSampleDataToCompatibleDataType($data['sample_data'], $type);
-
-                $description = $data['description'];
-                if (!empty($data['scopes'])) {
-                    // If this description doesn't end with punctuation, add a period before we display a list of
-                    // required authentication scopes.
-                    $description .= (!in_array(substr($description, -1), ['.', '!', '?'])) ? '.' : '';
-
-                    $strings = [];
-                    foreach ($data['scopes'] as $scope) {
-                        $strings[] = $scope['scope'];
-                    }
-
-                    $description .= sprintf(
-                        ' This data requires a bearer token with the %s scope%s.',
-                        '`' . implode(', ', $strings) . '`',
-                        (count($strings) > 1) ? 's' : null
-                    );
-                }
-
-                $blueprint .= sprintf(
-                    '- `%s`%s (%s%s%s) - %s',
-                    $field_name,
-                    ($sample_data !== false) ? sprintf(': `%s`', $sample_data) : '',
-                    $type,
-                    (isset($data['required']) && $data['required']) ? ', required' : null,
-                    ($data['nullable']) ? ', nullable' : null,
-                    $description
-                );
-
-                $blueprint .= $this->line();
-
-                // Only enum's support options/members.
-                if (($data['type'] === 'enum' || (isset($data['subtype']) && $data['subtype'] === 'enum')) &&
-                    !empty($data['values'])
-                ) {
-                    $blueprint .= $this->tab($indent + 1);
-                    $blueprint .= '+ Members';
-                    $blueprint .= $this->line();
-
-                    foreach ($data['values'] as $value => $value_description) {
-                        $blueprint .= $this->tab($indent + 2);
-                        $blueprint .= sprintf(
-                            '+ `%s`%s',
-                            $value,
-                            (!empty($value_description)) ? sprintf(' - %s', $value_description) : ''
-                        );
-
-                        $blueprint .= $this->line();
-                    }
-                }
-            } else {
-                $blueprint .= sprintf('- `%s` (object)', $field_name);
-                $blueprint .= $this->line();
-            }
-
-            // Process any exploded dot notation children of this field.
-            unset($field[Application::DOT_NOTATION_ANNOTATION_DATA_KEY]);
-            if (!empty($field)) {
-                // If this is an array, and has a subtype of object, we should indent a bit so we can properly render
-                // out the array objects.
-                if (!empty($data) && isset($data['subtype']) && $data['subtype'] === 'object') {
-                    $blueprint .= $this->tab($indent + 1);
-                    $blueprint .= ' - (object)';
-                    $blueprint .= $this->line();
-
-                    $blueprint .= $this->processMSON($field, $indent + 2);
-                } else {
-                    $blueprint .= $this->processMSON($field, $indent + 1);
-                }
-            }
-        }
-
-        return $blueprint;
-    }*/
-
-    /**
-     * Given an array of resource groups, and representation structures, build a combined API Blueprint file.
-     *
-     * @param array $groups
-     * @param array $structures
-     * @return string
-     */
-    /*protected function processCombinedFile(array $groups = [], array $structures = []): string
-    {
-        $blueprint = 'FORMAT: 1A';
-        $blueprint .= $this->line(2);
-
-        $api_name = $this->config->getName();
-        if (!empty($api_name)) {
-            $blueprint .= sprintf('# %s', $api_name);
-            $blueprint .= $this->line();
-
-            $blueprint .= sprintf("This is the API Blueprint file for %s.", $api_name);
-            $blueprint .= $this->line(2);
-        }
-
-        if (!empty($groups)) {
-            $blueprint .= implode($this->line(2), $groups);
-        }
-
-        if (!empty($structures)) {
-            if (!empty($groups)) {
-                $blueprint .= $this->line(2);
-            }
-
-            ksort($structures);
-
-            $blueprint .= '# Data Structures';
-            $blueprint .= $this->line();
-
-            $blueprint .= implode($this->line(2), $structures);
-        }
-
-        $blueprint = trim($blueprint);
-
-        return $blueprint;
-    }*/
 
     /**
      * @param Action\Documentation $action
@@ -499,7 +352,7 @@ class OpenApi extends Compiler\Specification
                     $spec['description'] .= (!in_array(substr($spec['description'], -1), ['.', '!', '?'])) ? '.' : '';
                     $spec['description'] .= sprintf(
                         ' This data requires a bearer token with the %s scope%s.',
-                        '`' . implode('`, `', array_map(function ($scope) {
+                        '`' . implode('`, `', array_map(function (array $scope): string {
                             return $scope['scope'];
                         }, $data['scopes'])) . '`',
                         (count($data['scopes']) > 1) ? 's' : null
@@ -507,7 +360,10 @@ class OpenApi extends Compiler\Specification
                 }
 
                 if ($data['sample_data'] !== false) {
-                    $spec['schema']['example'] = $this->convertSampleDataToCompatibleDataType($data['sample_data'], $spec['schema']['type']);
+                    $spec['schema']['example'] = $this->convertSampleDataToCompatibleDataType(
+                        $data['sample_data'],
+                        $spec['schema']['type']
+                    );
                 }
 
                 if (array_key_exists('nullable', $data) && $data['nullable']) {
@@ -517,7 +373,7 @@ class OpenApi extends Compiler\Specification
                 if ($spec['schema']['type'] === 'object') {
                     $representation = $this->getRepresentation($data['type']);
                     if ($representation) {
-                        $ref = '#/components/schemas/' . $this->getReferenceName($representation->getLabel());;
+                        $ref = '#/components/schemas/' . $this->getReferenceName($representation->getLabel());
 
                         if ($payload_format === DataAnnotation::PAYLOAD_FORMAT) {
                             unset($spec['schema']['type']);
@@ -618,25 +474,17 @@ class OpenApi extends Compiler\Specification
                 } else {
                     $spec['items'] = $this->processMSON($payload_format, $field);
                 }
-
-                // If this is an array, and has a subtype of object, we should indent a bit so we can properly render
-                // out the array objects.
-                /*if ((!empty($data) && isset($data['subtype']) && $data['subtype'] === 'object')) {
-                    if ($payload_format === DataAnnotation::PAYLOAD_FORMAT && $data['type'] === 'array') {
-                        $spec['items'] = $this->processMSON($payload_format, $field);
-                    } else {
-                        $spec['properties'] = $this->processMSON($payload_format, $field);
-                    }
-                } else {
-                    $spec['items'] = $this->processMSON($payload_format, $field);
-                }*/
             } elseif ($data['type'] === 'array') {
                 $spec['items'] = [
                     'type' => 'string'
                 ];
             }
 
-            if (in_array($payload_format, [PathParamAnnotation::PAYLOAD_FORMAT, QueryParamAnnotation::PAYLOAD_FORMAT])) {
+            // Path and query parameters should not be keyed off the field name.
+            if (in_array($payload_format, [
+                PathParamAnnotation::PAYLOAD_FORMAT,
+                QueryParamAnnotation::PAYLOAD_FORMAT
+            ])) {
                 $schema[] = $spec;
             } else {
                 $schema[$field_name] = $spec;

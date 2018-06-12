@@ -165,33 +165,33 @@ class JsonTest extends TestCase
                         [
                             'On <span class="mill-changelog_path" data-mill-resource-group="Movies" ' .
                                 'data-mill-method="GET" data-mill-path="/movie/{id}" ' .
-                                'data-mill-content-type="application/mill.example.movie+json">/movie/{id}</span>, <span ' .
-                                'class="mill-changelog_method" data-mill-resource-group="Movies" ' .
+                                'data-mill-content-type="application/mill.example.movie+json">/movie/{id}</span>, ' .
+                                '<span class="mill-changelog_method" data-mill-resource-group="Movies" ' .
                                 'data-mill-method="GET" data-mill-path="/movie/{id}" ' .
-                                'data-mill-content-type="application/mill.example.movie+json">GET</span> requests now ' .
-                                'return a <span class="mill-changelog_content_type" ' .
+                                'data-mill-content-type="application/mill.example.movie+json">GET</span> requests ' .
+                                'now return a <span class="mill-changelog_content_type" ' .
                                 'data-mill-resource-group="Movies" data-mill-method="GET" ' .
                                 'data-mill-path="/movie/{id}" ' .
                                 'data-mill-content-type="application/mill.example.movie+json">' .
                                 'application/mill.example.movie+json</span> Content-Type header.',
                             'On <span class="mill-changelog_path" data-mill-resource-group="Movies" ' .
                                 'data-mill-method="GET" data-mill-path="/movies/{id}" ' .
-                                'data-mill-content-type="application/mill.example.movie+json">/movies/{id}</span>, <span ' .
-                                'class="mill-changelog_method" data-mill-resource-group="Movies" ' .
+                                'data-mill-content-type="application/mill.example.movie+json">/movies/{id}</span>, ' .
+                                '<span class="mill-changelog_method" data-mill-resource-group="Movies" ' .
                                 'data-mill-method="GET" data-mill-path="/movies/{id}" ' .
-                                'data-mill-content-type="application/mill.example.movie+json">GET</span> requests now ' .
-                                'return a <span class="mill-changelog_content_type" ' .
+                                'data-mill-content-type="application/mill.example.movie+json">GET</span> requests ' .
+                                'now return a <span class="mill-changelog_content_type" ' .
                                 'data-mill-resource-group="Movies" data-mill-method="GET" ' .
                                 'data-mill-path="/movies/{id}" ' .
                                 'data-mill-content-type="application/mill.example.movie+json">' .
                                 'application/mill.example.movie+json</span> Content-Type header.',
                             'On <span class="mill-changelog_path" data-mill-resource-group="Movies" ' .
                                 'data-mill-method="PATCH" data-mill-path="/movies/{id}" ' .
-                                'data-mill-content-type="application/mill.example.movie+json">/movies/{id}</span>, <span ' .
-                                'class="mill-changelog_method" data-mill-resource-group="Movies" ' .
+                                'data-mill-content-type="application/mill.example.movie+json">/movies/{id}</span>, ' .
+                                '<span class="mill-changelog_method" data-mill-resource-group="Movies" ' .
                                 'data-mill-method="PATCH" data-mill-path="/movies/{id}" ' .
-                                'data-mill-content-type="application/mill.example.movie+json">PATCH</span> requests now ' .
-                                'return a <span class="mill-changelog_content_type" ' .
+                                'data-mill-content-type="application/mill.example.movie+json">PATCH</span> requests ' .
+                                'now return a <span class="mill-changelog_content_type" ' .
                                 'data-mill-resource-group="Movies" data-mill-method="PATCH" ' .
                                 'data-mill-path="/movies/{id}" ' .
                                 'data-mill-content-type="application/mill.example.movie+json">' .
@@ -201,20 +201,22 @@ class JsonTest extends TestCase
                                 'data-mill-content-type="application/mill.example.movie+json">/movies</span>, <span ' .
                                 'class="mill-changelog_method" data-mill-resource-group="Movies" ' .
                                 'data-mill-method="GET" data-mill-path="/movies" ' .
-                                'data-mill-content-type="application/mill.example.movie+json">GET</span> requests now ' .
-                                'return a <span class="mill-changelog_content_type" ' .
+                                'data-mill-content-type="application/mill.example.movie+json">GET</span> requests ' .
+                                'now return a <span class="mill-changelog_content_type" ' .
                                 'data-mill-resource-group="Movies" data-mill-method="GET" ' .
-                                'data-mill-path="/movies" data-mill-content-type="application/mill.example.movie+json">' .
+                                'data-mill-path="/movies" ' .
+                                'data-mill-content-type="application/mill.example.movie+json">' .
                                 'application/mill.example.movie+json</span> Content-Type header.',
                             'On <span class="mill-changelog_path" data-mill-resource-group="Movies" ' .
                                 'data-mill-method="POST" data-mill-path="/movies" ' .
                                 'data-mill-content-type="application/mill.example.movie+json">/movies</span>, <span ' .
                                 'class="mill-changelog_method" data-mill-resource-group="Movies" ' .
                                 'data-mill-method="POST" data-mill-path="/movies" ' .
-                                'data-mill-content-type="application/mill.example.movie+json">POST</span> requests now ' .
-                                'return a <span class="mill-changelog_content_type" ' .
+                                'data-mill-content-type="application/mill.example.movie+json">POST</span> requests ' .
+                                'now return a <span class="mill-changelog_content_type" ' .
                                 'data-mill-resource-group="Movies" data-mill-method="POST" ' .
-                                'data-mill-path="/movies" data-mill-content-type="application/mill.example.movie+json">' .
+                                'data-mill-path="/movies" ' .
+                                'data-mill-content-type="application/mill.example.movie+json">' .
                                 'application/mill.example.movie+json</span> Content-Type header.'
                         ]
                     ],
@@ -224,44 +226,44 @@ class JsonTest extends TestCase
                         [
                             'On <span class="mill-changelog_path" data-mill-resource-group="Theaters" ' .
                                 'data-mill-method="GET" data-mill-path="/theaters/{id}" ' .
-                                'data-mill-content-type="application/mill.example.theater+json">/theaters/{id}</span>, ' .
-                                '<span class="mill-changelog_method" data-mill-resource-group="Theaters" ' .
+                                'data-mill-content-type="application/mill.example.theater+json">/theaters/{id}' .
+                                '</span>, <span class="mill-changelog_method" data-mill-resource-group="Theaters" ' .
                                 'data-mill-method="GET" data-mill-path="/theaters/{id}" ' .
-                                'data-mill-content-type="application/mill.example.theater+json">GET</span> requests now ' .
-                                'return a <span class="mill-changelog_content_type" ' .
+                                'data-mill-content-type="application/mill.example.theater+json">GET</span> requests ' .
+                                'now return a <span class="mill-changelog_content_type" ' .
                                 'data-mill-resource-group="Theaters" data-mill-method="GET" ' .
                                 'data-mill-path="/theaters/{id}" ' .
                                 'data-mill-content-type="application/mill.example.theater+json">' .
                                 'application/mill.example.theater+json</span> Content-Type header.',
                             'On <span class="mill-changelog_path" data-mill-resource-group="Theaters" ' .
                                 'data-mill-method="PATCH" data-mill-path="/theaters/{id}" ' .
-                                'data-mill-content-type="application/mill.example.theater+json">/theaters/{id}</span>, ' .
-                                '<span class="mill-changelog_method" data-mill-resource-group="Theaters" ' .
+                                'data-mill-content-type="application/mill.example.theater+json">/theaters/{id}' .
+                                '</span>, <span class="mill-changelog_method" data-mill-resource-group="Theaters" ' .
                                 'data-mill-method="PATCH" data-mill-path="/theaters/{id}" ' .
-                                'data-mill-content-type="application/mill.example.theater+json">PATCH</span> requests now ' .
-                                'return a <span class="mill-changelog_content_type" ' .
+                                'data-mill-content-type="application/mill.example.theater+json">PATCH</span> ' .
+                                'requests now return a <span class="mill-changelog_content_type" ' .
                                 'data-mill-resource-group="Theaters" data-mill-method="PATCH" ' .
                                 'data-mill-path="/theaters/{id}" ' .
                                 'data-mill-content-type="application/mill.example.theater+json">' .
                                 'application/mill.example.theater+json</span> Content-Type header.',
                             'On <span class="mill-changelog_path" data-mill-resource-group="Theaters" ' .
                                 'data-mill-method="GET" data-mill-path="/theaters" ' .
-                                'data-mill-content-type="application/mill.example.theater+json">/theaters</span>, <span ' .
-                                'class="mill-changelog_method" data-mill-resource-group="Theaters" ' .
+                                'data-mill-content-type="application/mill.example.theater+json">/theaters</span>, ' .
+                                '<span class="mill-changelog_method" data-mill-resource-group="Theaters" ' .
                                 'data-mill-method="GET" data-mill-path="/theaters" ' .
-                                'data-mill-content-type="application/mill.example.theater+json">GET</span> requests now ' .
-                                'return a <span class="mill-changelog_content_type" ' .
+                                'data-mill-content-type="application/mill.example.theater+json">GET</span> requests ' .
+                                'now return a <span class="mill-changelog_content_type" ' .
                                 'data-mill-resource-group="Theaters" data-mill-method="GET" ' .
                                 'data-mill-path="/theaters" ' .
                                 'data-mill-content-type="application/mill.example.theater+json">' .
                                 'application/mill.example.theater+json</span> Content-Type header.',
                             'On <span class="mill-changelog_path" data-mill-resource-group="Theaters" ' .
                                 'data-mill-method="POST" data-mill-path="/theaters" ' .
-                                'data-mill-content-type="application/mill.example.theater+json">/theaters</span>, <span ' .
-                                'class="mill-changelog_method" data-mill-resource-group="Theaters" ' .
+                                'data-mill-content-type="application/mill.example.theater+json">/theaters</span>, ' .
+                                '<span class="mill-changelog_method" data-mill-resource-group="Theaters" ' .
                                 'data-mill-method="POST" data-mill-path="/theaters" ' .
-                                'data-mill-content-type="application/mill.example.theater+json">POST</span> requests now ' .
-                                'return a <span class="mill-changelog_content_type" ' .
+                                'data-mill-content-type="application/mill.example.theater+json">POST</span> requests ' .
+                                'now return a <span class="mill-changelog_content_type" ' .
                                 'data-mill-resource-group="Theaters" data-mill-method="POST" ' .
                                 'data-mill-path="/theaters" ' .
                                 'data-mill-content-type="application/mill.example.theater+json">' .

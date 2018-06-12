@@ -33,12 +33,12 @@ class ApiBlueprint extends Compiler\Specification
 
         $specifications = [];
 
-        /** @var array $data */
         foreach ($resources as $version => $groups) {
             $this->version = $version;
             $this->representations = $this->getRepresentations($this->version);
 
             // Process resource groups.
+            /** @var array $data */
             foreach ($groups as $group => $data) {
                 // If this group has been designated in the config file to be excluded, then exclude it.
                 if (in_array($group, $group_excludes)) {
