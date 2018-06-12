@@ -78,9 +78,7 @@ class PathAnnotation extends Annotation
     }
 
     /**
-     * Convert the parsed annotation into an array.
-     *
-     * @return array
+     * {{@inheritdoc}}
      */
     public function toArray(): array
     {

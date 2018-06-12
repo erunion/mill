@@ -103,7 +103,7 @@ class ErrorMap extends Application
             $output->writeLn('<comment> - API version: ' . $version . '</comment>');
 
             $filesystem->put(
-                $output_dir . self::DS . $version . self::DS . 'errors.md',
+                $output_dir . DIRECTORY_SEPARATOR . $version . DIRECTORY_SEPARATOR . 'errors.md',
                 trim($content)
             );
         }

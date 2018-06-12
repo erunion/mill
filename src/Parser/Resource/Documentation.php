@@ -1,12 +1,13 @@
 <?php
 namespace Mill\Parser\Resource;
 
+use Mill\Contracts\Arrayable;
 use Mill\Exceptions\Annotations\MultipleAnnotationsException;
 use Mill\Exceptions\Annotations\RequiredAnnotationException;
 use Mill\Exceptions\MethodNotImplementedException;
 use Mill\Parser;
 
-class Documentation
+class Documentation implements Arrayable
 {
     /** @var string Class that we're parsing for documentation. */
     protected $class;
@@ -150,9 +151,7 @@ class Documentation
     }
 
     /**
-     * Convert the parsed resource documentation into an array.
-     *
-     * @return array
+     * {{@inheritdoc}}
      */
     public function toArray(): array
     {

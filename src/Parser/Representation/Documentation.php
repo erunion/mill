@@ -3,12 +3,13 @@ namespace Mill\Parser\Representation;
 
 use Dflydev\DotAccessData\Data;
 use Mill\Application;
+use Mill\Contracts\Arrayable;
 use Mill\Exceptions\Annotations\MultipleAnnotationsException;
 use Mill\Exceptions\Annotations\RequiredAnnotationException;
 use Mill\Exceptions\Resource\NoAnnotationsException;
 use Mill\Parser;
 
-class Documentation
+class Documentation implements Arrayable
 {
     /** @var string Name of the representation class that we're going to be parsing for documentation. */
     protected $class;
@@ -225,9 +226,7 @@ class Documentation
     }
 
     /**
-     * Convert the parsed representation method documentation into an array.
-     *
-     * @return array
+     * {{@inheritdoc}}
      */
     public function toArray(): array
     {

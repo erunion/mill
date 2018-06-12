@@ -9,8 +9,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Application extends Command
 {
-    const DS = DIRECTORY_SEPARATOR;
-
     /**
      * When building out dot-notation annotation keys for compiling documentation we use this key to designate the
      * content of an annotations' data.

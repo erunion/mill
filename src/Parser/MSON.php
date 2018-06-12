@@ -2,6 +2,7 @@
 namespace Mill\Parser;
 
 use Mill\Container;
+use Mill\Contracts\Arrayable;
 use Mill\Exceptions\Annotations\UnknownErrorRepresentationException;
 use Mill\Exceptions\Annotations\UnsupportedTypeException;
 use Mill\Exceptions\Config\UnconfiguredErrorRepresentationException;
@@ -9,7 +10,7 @@ use Mill\Exceptions\Config\UnconfiguredRepresentationException;
 use Mill\Exceptions\MSON\ImproperlyWrittenEnumException;
 use Mill\Exceptions\MSON\MissingOptionsException;
 
-class MSON
+class MSON implements Arrayable
 {
     /**
      * This is the regex to match Mill-flavored MSON enum members.
@@ -378,9 +379,7 @@ class MSON
     }
 
     /**
-     * Get parsed MSON content in an array.
-     *
-     * @return array
+     * {{@inheritdoc}}
      */
     public function toArray(): array
     {

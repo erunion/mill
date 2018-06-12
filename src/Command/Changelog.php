@@ -73,7 +73,7 @@ class Changelog extends Application
         $changelog->setLoadVendorTagDocs($vendor_tags);
         $markdown = $changelog->toMarkdown();
 
-        $filesystem->put($output_dir . self::DS . 'changelog.md', trim($markdown));
+        $filesystem->put($output_dir . DIRECTORY_SEPARATOR . 'changelog.md', trim($markdown));
 
         $output->writeln(['', '<success>Done!</success>']);
 

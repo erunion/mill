@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Command;
 
+use League\Flysystem\Filesystem;
 use Mill\Application;
 use Mill\Compiler\Specification\OpenApi;
 use Mill\Config;
@@ -12,6 +13,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Yaml\Yaml;
 
 class Compile extends Application
 {
@@ -22,6 +24,9 @@ class Compile extends Application
         self::FORMAT_API_BLUEPRINT,
         self::FORMAT_OPENAPI
     ];
+
+    /** @var Filesystem */
+    private $filesystem;
 
     /**
      * @return void
@@ -97,9 +102,7 @@ class Compile extends Application
 
         /** @var Config $config */
         $config = $this->container['config'];
-
-        /** @var \League\Flysystem\Filesystem $filesystem */
-        $filesystem = $this->container['filesystem'];
+        $this->filesystem = $this->container['filesystem'];
 
         $output->writeln('<comment>Compiling controllers and representations...</comment>');
         if ($format === self::FORMAT_API_BLUEPRINT) {
@@ -116,62 +119,75 @@ class Compile extends Application
         );
 
         $compiled = $compiler->compile();
-        foreach ($compiled as $version => $files) {
-            $version_dir = $output_dir . self::DS . $version . self::DS;
+        foreach ($compiled as $version => $spec) {
+            $version_dir = $output_dir . DIRECTORY_SEPARATOR . $version . DIRECTORY_SEPARATOR;
 
             $output->writeLn('<comment> - API version: ' . $version . '</comment>');
 
-            $total_work = (isset($files['groups'])) ? count($files['groups']) : 0;
-            $total_work += (isset($files['structures'])) ? count($files['structures']) : 0;
+            switch ($format) {
+                case self::FORMAT_API_BLUEPRINT:
+                    $this->saveApiBlueprint($output, $version_dir, $spec);
+                    break;
 
-            $progress = new ProgressBar($output, $total_work);
-            $progress->setFormatDefinition('custom', ' %current%/%max% [%bar%] %message%');
-            $progress->setFormat('custom');
-            $progress->start();
-
-            // Process resource groups.
-            if (isset($files['groups'])) {
-                $progress->setMessage('Processing resources...');
-                foreach ($files['groups'] as $group => $markdown) {
-                    $progress->advance();
-
-                    // Convert any nested groups, like `Me\Videos`, into a proper directory structure: `Me/Videos`.
-                    $group = str_replace('\\', self::DS, $group);
-
-                    $filesystem->put(
-                        $version_dir . 'resources' . self::DS . $group . '.apib',
-                        trim($markdown)
-                    );
-                }
+                case self::FORMAT_OPENAPI:
+                    $this->saveOpenApi($output, $version_dir, $spec);
+                    break;
             }
-
-            // Process data structures.
-            if (isset($files['structures'])) {
-                $progress->setMessage('Processing representations...');
-                foreach ($files['structures'] as $structure => $markdown) {
-                    $progress->advance();
-
-                    // Sanitize any structure names with forward slashes to avoid them from being nested in directories
-                    // by Flysystem.
-                    $structure = str_replace('/', '-', $structure);
-
-                    $filesystem->put(
-                        $version_dir . 'representations' . self::DS . $structure . '.apib',
-                        trim($markdown)
-                    );
-                }
-            }
-
-            // Save a, single, combined API Blueprint file.
-            $filesystem->put($version_dir . 'api.apib', $files['combined']);
-
-            $progress->setMessage('');
-            $progress->finish();
-            $output->writeLn('');
         }
 
         $output->writeln(['', '<success>Done!</success>']);
 
         return 0;
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param string $version_dir
+     * @param array $spec
+     */
+    private function saveApiBlueprint(OutputInterface $output, string $version_dir, array $spec): void
+    {
+        // Process resource groups.
+        if (isset($spec['groups'])) {
+            foreach ($spec['groups'] as $group => $markdown) {
+                // Convert any nested groups, like `Me\Videos`, into a proper directory structure: `Me/Videos`.
+                $group = str_replace('\\', DIRECTORY_SEPARATOR, $group);
+
+                $this->filesystem->put(
+                    $version_dir . 'resources' . DIRECTORY_SEPARATOR . $group . '.apib',
+                    trim($markdown)
+                );
+            }
+        }
+
+        // Process data structures.
+        if (isset($spec['structures'])) {
+            foreach ($spec['structures'] as $structure => $markdown) {
+                // Sanitize any structure names with forward slashes to avoid them from being nested in directories
+                // by Flysystem.
+                $structure = str_replace('/', '-', $structure);
+
+                $this->filesystem->put(
+                    $version_dir . 'representations' . DIRECTORY_SEPARATOR . $structure . '.apib',
+                    trim($markdown)
+                );
+            }
+        }
+
+        // Save a, single, combined API Blueprint file.
+        $this->filesystem->put($version_dir . 'api.apib', $spec['combined']);
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param string $version_dir
+     * @param array $spec
+     */
+    private function saveOpenApi(OutputInterface $output, string $version_dir, array $spec): void
+    {
+        $this->filesystem->put(
+            $version_dir . 'api.yaml',
+            Yaml::dump($spec, PHP_INT_MAX, 4, Yaml::DUMP_EXCEPTION_ON_INVALID_TYPE)
+        );
     }
 }

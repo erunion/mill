@@ -3,6 +3,7 @@ namespace Mill\Parser\Resource\Action;
 
 use Dflydev\DotAccessData\Data;
 use Mill\Application;
+use Mill\Contracts\Arrayable;
 use Mill\Exceptions\Annotations\MultipleAnnotationsException;
 use Mill\Exceptions\Annotations\RequiredAnnotationException;
 use Mill\Exceptions\Resource\MissingVisibilityDecoratorException;
@@ -13,7 +14,7 @@ use Mill\Parser;
 use Mill\Parser\Annotations\PathAnnotation;
 use Mill\Parser\Version;
 
-class Documentation
+class Documentation implements Arrayable
 {
     /** @var array Array of required annotations. */
     const REQUIRED_ANNOTATIONS = [
@@ -714,9 +715,7 @@ class Documentation
     }
 
     /**
-     * Convert the parsed resource action documentation into an array.
-     *
-     * @return array
+     * {{@inheritdoc}}
      */
     public function toArray(): array
     {

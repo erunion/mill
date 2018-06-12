@@ -72,9 +72,9 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
         foreach ($versions as $version) {
             $this->assertContains('API version: ' . $version, $output);
 
-            $blueprints_dir = __DIR__ . '/../../resources/examples/Showtimes/blueprints/' . $version;
+            $control_dir = __DIR__ . '/../../resources/examples/Showtimes/compiled/' . $version;
             $this->assertFileEquals(
-                $blueprints_dir . '/' . $expected_file,
+                $control_dir . '/' . $expected_file,
                 $output_dir . '/' . $version . '/errors.md',
                 'Compiled error map does not match.'
             );

@@ -6,18 +6,17 @@ use Mill\Tests\TestCase;
 
 class ApiBlueprintTest extends TestCase
 {
-    const DS = DIRECTORY_SEPARATOR;
-
     public function testCompilation(): void
     {
-        $dir = static::$resourcesDir . 'examples/Showtimes/blueprints/';
+        $control_dir = static::$resourcesDir . 'examples/Showtimes/compiled/';
 
         $compiler = new ApiBlueprint($this->getConfig());
         $compiled = $compiler->compile();
 
         foreach ($compiled as $version => $section) {
+            $version_dir = $control_dir . $version . DIRECTORY_SEPARATOR;
             foreach ($section['groups'] as $group => $content) {
-                $file = $dir . $version . self::DS . 'resources' . self::DS . str_replace('\\', '-', ucwords($group));
+                $file = $version_dir . 'resources' . DIRECTORY_SEPARATOR . str_replace('\\', '-', ucwords($group));
                 $expected = file_get_contents($file . '.apib');
 
                 $this->assertSame(
@@ -32,7 +31,7 @@ class ApiBlueprintTest extends TestCase
             }
 
             foreach ($section['structures'] as $representation => $content) {
-                $file = $dir . $version . self::DS . 'representations' . self::DS . $representation;
+                $file = $version_dir . 'representations' . DIRECTORY_SEPARATOR . $representation;
                 $expected = file_get_contents($file . '.apib');
 
                 $this->assertSame(

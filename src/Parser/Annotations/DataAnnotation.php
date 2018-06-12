@@ -13,6 +13,8 @@ class DataAnnotation extends Annotation
     const SUPPORTS_VENDOR_TAGS = true;
     const SUPPORTS_VERSIONING = true;
 
+    const PAYLOAD_FORMAT = 'response';
+
     const ARRAYABLE = [
         'description',
         'identifier',

@@ -1,12 +1,11 @@
 <?php
 namespace Mill\Parser;
 
+use Mill\Contracts\Arrayable;
 use Mill\Exceptions\Annotations\InvalidMSONSyntaxException;
 use Mill\Exceptions\Annotations\MissingRequiredFieldException;
-use Mill\Parser\Annotations\ScopeAnnotation;
-use Mill\Parser\Annotations\VendorTagAnnotation;
 
-abstract class Annotation
+abstract class Annotation implements Arrayable
 {
     /** @var bool Does this annotation require a visibility decorator? */
     const REQUIRES_VISIBILITY_DECORATOR = false;
@@ -234,9 +233,7 @@ abstract class Annotation
     }
 
     /**
-     * Convert the parsed annotation into an array.
-     *
-     * @return array
+     * {{@inheritdoc}}
      */
     public function toArray(): array
     {

@@ -59,9 +59,9 @@ class ChangelogTest extends \PHPUnit\Framework\TestCase
 
         $this->tester->execute($params);
 
-        $blueprints_dir = __DIR__ . '/../../resources/examples/Showtimes/blueprints';
+        $control_dir = __DIR__ . '/../../resources/examples/Showtimes/compiled';
         $this->assertFileEquals(
-            $blueprints_dir . '/' . $expected_file,
+            $control_dir . '/' . $expected_file,
             $output_dir . '/changelog.md',
             'Compiled changelog does not match.'
         );
