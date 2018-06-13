@@ -35,7 +35,7 @@ class MSON implements Arrayable
      * @var string
      */
     const REGEX_MSON_ENUM = '/(?:\+ Members\n(?:\s*?))?(?:- `(?P<value>.*?)`( - ' .
-        '(?P<description>(.*)((((\s+)([a-zA-Z. ,`]+)(\n)+))+)?))?)/uim';
+        '(?P<description>(.*)((((\s+)([a-zA-Z\s.,`"_!?@~!%]+)(\n)*))+)?))?)/uim';
 
     /**
      * Take a multi-line string or paragraph, remove any multi-lines, and contract sentences.

@@ -162,27 +162,36 @@ class MSONTest extends TestCase
                 ]
             ],
             'enum-with-extra-long-descriptions' => [
-                'content' => 'is_kid_friendly `yes` (enum, optional) - Is this movie kid friendly?
+                'content' => 'access_type `default` (enum) - The promotion access type, which is a purchase option
+                    that is not available on the container. VIP promotions always make the content free of charge. If
+                    you use this type, you must further define the promotion with the `download` or `stream_period`
+                    fields.
                     + Members
-                        - `yes` - Justo Ligula Ullamcorper Commodo Consectetur
-                        - `no` - Aenean lacinia bibendum nulla sed consectetur. Nulla vitae elit libero, a pharetra 
-                            augue. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Nullam quis risus eget 
-                            urna mollis ornare vel eu leo. Nulla vitae elit libero, a pharetra augue.
-                        - `maybe` - Commodo Ligula',
+                        - `default` - Promotions grant discount on the existing purchase options for an On Demand 
+                            Container.
+                        - `optional`
+                        - `vip` - Promotions can be used to grant free access to vod content before it is released, or 
+                            to offer a purchase option that is not available on the container. "vip" promotions will 
+                            always make the content free, and must be further defined with the `download` or 
+                            `stream_period` fields.',
                 'expected' => [
-                    'description' => 'Is this movie kid friendly?',
-                    'field' => 'is_kid_friendly',
+                    'description' => 'The promotion access type, which is a purchase option that is not available on ' .
+                        'the container. VIP promotions always make the content free of charge. If you use this ' .
+                        'type, you must further define the promotion with the `download` or `stream_period` fields.',
+                    'field' => 'access_type',
                     'nullable' => false,
                     'required' => false,
-                    'sample_data' => 'yes',
+                    'sample_data' => 'default',
                     'subtype' => false,
                     'type' => 'enum',
                     'values' => [
-                        'maybe' => 'Commodo Ligula',
-                        'no' => 'Aenean lacinia bibendum nulla sed consectetur. Nulla vitae elit libero, a ' .
-                            'pharetra augue. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Nullam ' .
-                            'quis risus eget urna mollis ornare vel eu leo. Nulla vitae elit libero, a pharetra augue.',
-                        'yes' => 'Justo Ligula Ullamcorper Commodo Consectetur'
+                        'default' => 'Promotions grant discount on the existing purchase options for an On Demand ' .
+                            'Container.',
+                        'optional' => '',
+                        'vip' => 'Promotions can be used to grant free access to vod content before it is released, ' .
+                            'or to offer a purchase option that is not available on the container. "vip" promotions ' .
+                            'will always make the content free, and must be further defined with the `download` or ' .
+                            '`stream_period` fields.',
                     ],
                     'vendor_tags' => []
                 ]
