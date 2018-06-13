@@ -29,7 +29,7 @@ class Movie
      *
      * @api-path:private:alias /movie/+id
      * @api-path:public /movies/+id
-     * @api-pathparam id (integer) - Movie ID
+     * @api-pathparam id `1234` (integer) - Movie ID
      *
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Movie
      * @api-return:public {notmodified} If no content has been modified since the supplied Last-Modified header.
@@ -58,15 +58,15 @@ class Movie
      * @api-group Movies
      *
      * @api-path:public /movies/+id
-     * @api-pathparam id (integer) - Movie ID
+     * @api-pathparam id `1234` (integer) - Movie ID
      *
      * @api-scope edit
      * @api-minversion 1.1
      *
-     * @api-param:public name (string, required) - Name of the movie.
+     * @api-param:public name `Demons` (string, required) - Name of the movie.
      * @api-param:public description (string, required) - Description, or tagline, for the movie.
-     * @api-param:public runtime (string, optional) - Movie runtime, in `HHhr MMmin` format.
-     * @api-param:public content_rating (enum, optional) - MPAA rating
+     * @api-param:public runtime `1hr 20min` (string, optional) - Movie runtime, in `HHhr MMmin` format.
+     * @api-param:public content_rating `NR` (enum, optional) - MPAA rating
      *  + Members
      *      - `G` - Rated G
      *      - `PG` - Rated PG
@@ -77,13 +77,14 @@ class Movie
      *      - `NR` - Not rated
      *      - `UR` - Unrated
      * @api-param:public genres (array, optional) - Array of movie genres.
-     * @api-param:public trailer (string, optional, nullable) - Trailer URL
-     * @api-param:public director (string, optional) - Name of the director.
+     * @api-param:public trailer `https://www.youtube.com/watch?v=_cNjTdFHL8E` (string, optional, nullable) - Trailer
+     *      URL
+     * @api-param:public director `Lamberto Bava` (string, optional) - Name of the director.
      * @api-param:public cast (array<object>, optional) - Array of cast members.
-     * @api-param:public cast.name (string, optional) - Cast member name.
-     * @api-param:public cast.role (string, optional) - Cast member role.
+     * @api-param:public cast.name `Natasha Hovey` (string, optional) - Cast member name.
+     * @api-param:public cast.role `Cheryl` (string, optional) - Cast member role.
      * @api-param:public is_kid_friendly (boolean, optional) - Is this movie kid friendly?
-     * @api-param:public rotten_tomatoes_score (integer, optional) - Rotten Tomatoes score
+     * @api-param:public rotten_tomatoes_score `56` (integer, optional) - Rotten Tomatoes score
      *
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Movie
      *
@@ -98,7 +99,7 @@ class Movie
      * @api-contenttype application/json
      *
      * @api-version >=1.1.1
-     * @api-param:public imdb (string, optional) - IMDB URL
+     * @api-param:public imdb `https://www.imdb.com/title/tt0089013/` (string, optional) - IMDB URL
      *
      * @api-version >=1.1.3
      * @api-return:public {accepted} \Mill\Examples\Showtimes\Representations\Movie
@@ -120,7 +121,7 @@ class Movie
      * @api-group Movies
      *
      * @api-path:private /movies/+id
-     * @api-pathparam id (integer) - Movie ID
+     * @api-pathparam id `1234` (integer) - Movie ID
      *
      * @api-contenttype application/json
      * @api-vendortag tag:DELETE_CONTENT

@@ -41,9 +41,9 @@ class Theaters
      *
      * @api-scope create
      *
-     * @api-param:public name (string, required) - Name of the theater.
-     * @api-param:public address (string, required) - Theater address
-     * @api-param:public phone_number (string, required) - Theater phone number
+     * @api-param:public name `Alamo Drafthouse Cinema - Yonkers` (string, required) - Name of the theater.
+     * @api-param:public address `2548 Central Park Ave, Yonkers, NY 10710` (string, required) - Theater address
+     * @api-param:public phone_number `(914) 226-3082` (string, required) - Theater phone number
      *
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Theater
      *

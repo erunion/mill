@@ -15,8 +15,6 @@ use Mill\Parser\Resource\Action;
 
 class OpenApi extends Compiler\Specification
 {
-    use Compiler\Traits\Markdown;
-
     /**
      * Take compiled API documentation and create a OpenAPI specification.
      *
@@ -184,10 +182,16 @@ class OpenApi extends Compiler\Specification
             ),
             'content' => [
                 $action->getContentType($this->version) => [
-                    'schema' => [
-                        'type' => 'object',
-                        'properties' => $this->processMSON(ParamAnnotation::PAYLOAD_FORMAT, $params)
-                    ]
+                    'schema' => (function () use ($params): array {
+                        $spec = [
+                            'type' => 'object',
+                            'properties' => $this->processMSON(ParamAnnotation::PAYLOAD_FORMAT, $params)
+                        ];
+
+                        $spec = $this->extractRequiredFields($spec);
+
+                        return $spec;
+                    })()
                 ]
             ]
         ];
@@ -444,7 +448,6 @@ class OpenApi extends Compiler\Specification
 
                     unset($spec['name']);
                     unset($spec['in']);
-                    unset($spec['required']); //@todo
                     break;
             }
 
@@ -480,6 +483,11 @@ class OpenApi extends Compiler\Specification
                 ];
             }
 
+            // Request body requirement definitions need to be separate from the item schema.
+            if ($payload_format === ParamAnnotation::PAYLOAD_FORMAT) {
+                $spec = $this->extractRequiredFields($spec);
+            }
+
             // Path and query parameters should not be keyed off the field name.
             if (in_array($payload_format, [
                 PathParamAnnotation::PAYLOAD_FORMAT,
@@ -495,6 +503,46 @@ class OpenApi extends Compiler\Specification
     }
 
     /**
+     * @param array $spec
+     * @return array
+     */
+    private function extractRequiredFields(array $spec): array
+    {
+        /** @var array $properties */
+        $properties = [];
+        if (isset($spec['properties'])) {
+            $properties = $spec['properties'];
+        } elseif (isset($spec['items']['properties'])) {
+            $properties = $spec['items']['properties'];
+        }
+
+        if (!empty($properties)) {
+            $required = [];
+            foreach ($properties as $name => $property) {
+                if ($property['required']) {
+                    $required[] = $name;
+                }
+
+                unset($properties[$name]['required']);
+            }
+
+            if (isset($spec['properties'])) {
+                $spec['properties'] = $properties;
+                if (!empty($required)) {
+                    $spec['required'] = $required;
+                }
+            } elseif (isset($spec['items']['properties'])) {
+                $spec['items']['properties'] = $properties;
+                if (!empty($required)) {
+                    $spec['items']['required'] = $required;
+                }
+            }
+        }
+
+        return $spec;
+    }
+
+    /**
      * Convert a Mill-supported documentation into an OpenAPI-compatible type.
      *
      * @link https://swagger.io/docs/specification/data-models/data-types/
@@ -504,8 +552,11 @@ class OpenApi extends Compiler\Specification
     private function convertTypeToCompatibleType(string $type): string
     {
         switch ($type) {
-            case 'enum':
-                return 'string';
+            case 'array':
+            case 'boolean':
+            case 'number':
+            case 'string':
+                return $type;
                 break;
 
             case 'float':
@@ -515,18 +566,14 @@ class OpenApi extends Compiler\Specification
 
             case 'date':
             case 'datetime':
+            case 'enum':
             case 'timestamp':
             case 'uri':
                 return 'string';
                 break;
 
-            case 'array':
-                return 'array';
-                break;
-
             default:
                 return 'object';
-                break;
         }
 
         return $type;

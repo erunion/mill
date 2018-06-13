@@ -12,8 +12,6 @@ use Mill\Parser\Resource\Action;
 
 class ApiBlueprint extends Compiler\Specification
 {
-    use Compiler\Traits\Markdown;
-
     /**
      * Take compiled API documentation and create a API Blueprint specification.
      *

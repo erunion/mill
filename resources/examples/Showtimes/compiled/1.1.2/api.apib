@@ -69,9 +69,9 @@ This action requires a bearer token with the `edit` scope.
     + Attributes
         - `cast` (array) - Array of cast members.
              - (object)
-                - `name` (string) - Cast member name.
-                - `role` (string) - Cast member role.
-        - `content_rating` (enum[string]) - MPAA rating
+                - `name`: `Natasha Hovey` (string) - Cast member name.
+                - `role`: `Cheryl` (string) - Cast member role.
+        - `content_rating`: `NR` (enum[string]) - MPAA rating
             + Members
                 + `G` - Rated G
                 + `NC-17` - Rated NC-17
@@ -82,14 +82,14 @@ This action requires a bearer token with the `edit` scope.
                 + `UR` - Unrated
                 + `X` - Rated X
         - `description` (string, required) - Description, or tagline, for the movie.
-        - `director` (string) - Name of the director.
+        - `director`: `Lamberto Bava` (string) - Name of the director.
         - `genres` (array) - Array of movie genres.
-        - `imdb` (string) - IMDB URL
+        - `imdb`: `https://www.imdb.com/title/tt0089013/` (string) - IMDB URL
         - `is_kid_friendly` (boolean) - Is this movie kid friendly?
-        - `name` (string, required) - Name of the movie.
-        - `rotten_tomatoes_score` (number) - Rotten Tomatoes score
-        - `runtime` (string) - Movie runtime, in `HHhr MMmin` format.
-        - `trailer` (string, nullable) - Trailer URL
+        - `name`: `Demons` (string, required) - Name of the movie.
+        - `rotten_tomatoes_score`: `56` (number) - Rotten Tomatoes score
+        - `runtime`: `1hr 20min` (string) - Movie runtime, in `HHhr MMmin` format.
+        - `trailer`: `https://www.youtube.com/watch?v=_cNjTdFHL8E` (string, nullable) - Trailer URL
 + Response 200 (application/mill.example.movie+json)
     + Attributes (Movie)
 + Response 400 (application/mill.example.movie+json)
@@ -137,9 +137,9 @@ This action requires a bearer token with the `create` scope.
     + Attributes
         - `cast` (array) - Array of cast members.
              - (object)
-                - `name` (string) - Cast member name.
-                - `role` (string) - Cast member role.
-        - `content_rating` (enum[string]) - MPAA rating
+                - `name`: `Natasha Hovey` (string) - Cast member name.
+                - `role`: `Cheryl` (string) - Cast member role.
+        - `content_rating`: `NR` (enum[string]) - MPAA rating
             + Members
                 + `G` - Rated G
                 + `NC-17` - Rated NC-17
@@ -150,14 +150,14 @@ This action requires a bearer token with the `create` scope.
                 + `UR` - Unrated
                 + `X` - Rated X
         - `description` (string, required) - Description, or tagline, for the movie.
-        - `director` (string) - Name of the director.
+        - `director`: `Lamberto Bava` (string) - Name of the director.
         - `genres` (array) - Array of movie genres.
-        - `imdb` (string) - IMDB URL
+        - `imdb`: `https://www.imdb.com/title/tt0089013/` (string) - IMDB URL
         - `is_kid_friendly` (boolean) - Is this movie kid friendly?
-        - `name` (string, required) - Name of the movie.
-        - `rotten_tomatoes_score` (number) - Rotten Tomatoes score
-        - `runtime` (string) - Movie runtime, in `HHhr MMmin` format.
-        - `trailer` (string, nullable) - Trailer URL
+        - `name`: `Demons` (string, required) - Name of the movie.
+        - `rotten_tomatoes_score`: `56` (number) - Rotten Tomatoes score
+        - `runtime`: `1hr 20min` (string) - Movie runtime, in `HHhr MMmin` format.
+        - `trailer`: `https://www.youtube.com/watch?v=_cNjTdFHL8E` (string, nullable) - Trailer URL
 + Response 200 (application/mill.example.movie+json)
     + Attributes (Movie)
 + Response 400 (application/mill.example.movie+json)
@@ -192,9 +192,9 @@ This action requires a bearer token with the `create` scope.
     - `id` (number, required) - Theater ID
 + Request
     + Attributes
-        - `address` (string, required) - Theater address
-        - `name` (string, required) - Name of the theater.
-        - `phone_number` (string, required) - Theater phone number
+        - `address`: `2548 Central Park Ave, Yonkers, NY 10710` (string, required) - Theater address
+        - `name`: `Alamo Drafthouse Cinema - Yonkers` (string, required) - Name of the theater.
+        - `phone_number`: `(914) 226-3082` (string, required) - Theater phone number
 + Response 200 (application/mill.example.theater+json)
     + Attributes (Theater)
 + Response 400 (application/mill.example.theater+json)
@@ -236,9 +236,9 @@ This action requires a bearer token with the `create` scope.
 
 + Request
     + Attributes
-        - `address` (string, required) - Theater address
-        - `name` (string, required) - Name of the theater.
-        - `phone_number` (string, required) - Theater phone number
+        - `address`: `2548 Central Park Ave, Yonkers, NY 10710` (string, required) - Theater address
+        - `name`: `Alamo Drafthouse Cinema - Yonkers` (string, required) - Name of the theater.
+        - `phone_number`: `(914) 226-3082` (string, required) - Theater phone number
 + Response 200 (application/mill.example.theater+json)
     + Attributes (Theater)
 + Response 400 (application/mill.example.theater+json)

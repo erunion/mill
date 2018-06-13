@@ -5,6 +5,8 @@ use Mill\Compiler;
 
 class Specification extends Compiler
 {
+    use Compiler\Traits\Markdown;
+
     /** @var array Current list of representations for the current API version we're working with. */
     protected $representations = [];
 

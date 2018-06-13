@@ -23,6 +23,7 @@ paths:
                     required: true
                     schema:
                         type: number
+                        example: '1234'
             responses:
                 200:
                     description: 'Standard request.'
@@ -53,6 +54,7 @@ paths:
                     required: true
                     schema:
                         type: number
+                        example: '1234'
             responses:
                 200:
                     description: 'Standard request.'
@@ -82,6 +84,7 @@ paths:
                     required: true
                     schema:
                         type: number
+                        example: '1234'
             requestBody:
                 required: true
                 content:
@@ -97,13 +100,16 @@ paths:
                                         properties:
                                             name:
                                                 description: 'Cast member name.'
-                                                type: object
+                                                type: string
+                                                example: 'Natasha Hovey'
                                             role:
                                                 description: 'Cast member role.'
-                                                type: object
+                                                type: string
+                                                example: Cheryl
                                 content_rating:
                                     description: "MPAA rating\n\nOption descriptions:\n * `G` - Rated G\n * `NC-17` - Rated NC-17\n * `NR` - Not rated\n * `PG` - Rated PG\n * `PG-13` - Rated PG-13\n * `R` - Rated R\n * `UR` - Unrated\n * `X` - Rated X\n"
                                     type: string
+                                    example: NR
                                     enum:
                                         - G
                                         - NC-17
@@ -115,10 +121,11 @@ paths:
                                         - X
                                 description:
                                     description: 'Description, or tagline, for the movie.'
-                                    type: object
+                                    type: string
                                 director:
                                     description: 'Name of the director.'
-                                    type: object
+                                    type: string
+                                    example: 'Lamberto Bava'
                                 genres:
                                     description: 'Array of movie genres.'
                                     type: array
@@ -126,23 +133,31 @@ paths:
                                         type: string
                                 imdb:
                                     description: 'IMDB URL'
-                                    type: object
+                                    type: string
+                                    example: 'https://www.imdb.com/title/tt0089013/'
                                 is_kid_friendly:
                                     description: 'Is this movie kid friendly?'
-                                    type: object
+                                    type: boolean
                                 name:
                                     description: 'Name of the movie.'
-                                    type: object
+                                    type: string
+                                    example: Demons
                                 rotten_tomatoes_score:
                                     description: 'Rotten Tomatoes score'
                                     type: number
+                                    example: '56'
                                 runtime:
                                     description: 'Movie runtime, in `HHhr MMmin` format.'
-                                    type: object
+                                    type: string
+                                    example: '1hr 20min'
                                 trailer:
                                     description: 'Trailer URL'
-                                    type: object
+                                    type: string
+                                    example: 'https://www.youtube.com/watch?v=_cNjTdFHL8E'
                                     nullable: true
+                            required:
+                                - description
+                                - name
             responses:
                 200:
                     description: 'Standard request.'
@@ -192,7 +207,7 @@ paths:
                     description: 'Location you want movies for.'
                     required: true
                     schema:
-                        type: object
+                        type: string
                 -
                     name: page
                     in: query
@@ -236,13 +251,16 @@ paths:
                                         properties:
                                             name:
                                                 description: 'Cast member name.'
-                                                type: object
+                                                type: string
+                                                example: 'Natasha Hovey'
                                             role:
                                                 description: 'Cast member role.'
-                                                type: object
+                                                type: string
+                                                example: Cheryl
                                 content_rating:
                                     description: "MPAA rating\n\nOption descriptions:\n * `G` - Rated G\n * `NC-17` - Rated NC-17\n * `NR` - Not rated\n * `PG` - Rated PG\n * `PG-13` - Rated PG-13\n * `R` - Rated R\n * `UR` - Unrated\n * `X` - Rated X\n"
                                     type: string
+                                    example: NR
                                     enum:
                                         - G
                                         - NC-17
@@ -254,10 +272,11 @@ paths:
                                         - X
                                 description:
                                     description: 'Description, or tagline, for the movie.'
-                                    type: object
+                                    type: string
                                 director:
                                     description: 'Name of the director.'
-                                    type: object
+                                    type: string
+                                    example: 'Lamberto Bava'
                                 genres:
                                     description: 'Array of movie genres.'
                                     type: array
@@ -265,23 +284,31 @@ paths:
                                         type: string
                                 imdb:
                                     description: 'IMDB URL'
-                                    type: object
+                                    type: string
+                                    example: 'https://www.imdb.com/title/tt0089013/'
                                 is_kid_friendly:
                                     description: 'Is this movie kid friendly?'
-                                    type: object
+                                    type: boolean
                                 name:
                                     description: 'Name of the movie.'
-                                    type: object
+                                    type: string
+                                    example: Demons
                                 rotten_tomatoes_score:
                                     description: 'Rotten Tomatoes score'
                                     type: number
+                                    example: '56'
                                 runtime:
                                     description: 'Movie runtime, in `HHhr MMmin` format.'
-                                    type: object
+                                    type: string
+                                    example: '1hr 20min'
                                 trailer:
                                     description: 'Trailer URL'
-                                    type: object
+                                    type: string
+                                    example: 'https://www.youtube.com/watch?v=_cNjTdFHL8E'
                                     nullable: true
+                            required:
+                                - description
+                                - name
             responses:
                 200:
                     description: 'Standard request.'
@@ -316,6 +343,7 @@ paths:
                     required: true
                     schema:
                         type: number
+                        example: '1234'
             responses:
                 200:
                     description: 'Standard request.'
@@ -345,6 +373,7 @@ paths:
                     required: true
                     schema:
                         type: number
+                        example: '1234'
             requestBody:
                 required: true
                 content:
@@ -354,13 +383,20 @@ paths:
                             properties:
                                 address:
                                     description: 'Theater address'
-                                    type: object
+                                    type: string
+                                    example: '2548 Central Park Ave, Yonkers, NY 10710'
                                 name:
                                     description: 'Name of the theater.'
-                                    type: object
+                                    type: string
+                                    example: 'Alamo Drafthouse Cinema - Yonkers'
                                 phone_number:
                                     description: 'Theater phone number'
-                                    type: object
+                                    type: string
+                                    example: '(914) 226-3082'
+                            required:
+                                - address
+                                - name
+                                - phone_number
             responses:
                 200:
                     description: 'Standard request.'
@@ -398,6 +434,7 @@ paths:
                     required: true
                     schema:
                         type: number
+                        example: '1234'
             responses:
                 204:
                     description: 'Standard request.'
@@ -425,7 +462,7 @@ paths:
                     description: 'Location you want theaters in.'
                     required: true
                     schema:
-                        type: object
+                        type: string
             responses:
                 200:
                     description: 'Standard request.'
@@ -456,13 +493,20 @@ paths:
                             properties:
                                 address:
                                     description: 'Theater address'
-                                    type: object
+                                    type: string
+                                    example: '2548 Central Park Ave, Yonkers, NY 10710'
                                 name:
                                     description: 'Name of the theater.'
-                                    type: object
+                                    type: string
+                                    example: 'Alamo Drafthouse Cinema - Yonkers'
                                 phone_number:
                                     description: 'Theater phone number'
-                                    type: object
+                                    type: string
+                                    example: '(914) 226-3082'
+                            required:
+                                - address
+                                - name
+                                - phone_number
             responses:
                 200:
                     description: 'Standard request.'
@@ -486,15 +530,15 @@ components:
             properties:
                 error:
                     description: 'User-friendly error message'
-                    type: object
+                    type: string
                 error_code:
                     description: 'Error code'
-                    type: object
+                    type: number
         Error:
             properties:
                 error:
                     description: 'User-friendly error message'
-                    type: object
+                    type: string
         Movie:
             properties:
                 cast:
@@ -517,7 +561,7 @@ components:
                         - X
                 description:
                     description: Description
-                    type: object
+                    type: string
                 director:
                     description: 'Director. This data requires a bearer token with the `public` scope.'
                     allOf:
@@ -531,10 +575,10 @@ components:
                         properties:
                             imdb:
                                 description: 'IMDB URL. This data requires a bearer token with the `public` scope.'
-                                type: object
+                                type: string
                             trailer:
                                 description: 'Trailer URL. This data requires a bearer token with the `public` scope.'
-                                type: object
+                                type: string
                 genres:
                     description: Genres
                     type: array
@@ -542,26 +586,26 @@ components:
                         type: string
                 id:
                     description: 'Unique ID'
-                    type: object
+                    type: number
                 kid_friendly:
                     description: 'Kid friendly?'
-                    type: object
-                    example: '0'
+                    type: boolean
+                    example: 'false'
                 name:
                     description: Name
-                    type: object
+                    type: string
                 purchase:
                     type: object
                     properties:
                         url:
                             description: 'URL to purchase the film.'
-                            type: object
+                            type: string
                 rotten_tomatoes_score:
                     description: 'Rotten Tomatoes score'
-                    type: object
+                    type: number
                 runtime:
                     description: Runtime
-                    type: object
+                    type: string
                 showtimes:
                     description: 'Non-theater specific showtimes'
                     type: array
@@ -579,13 +623,13 @@ components:
             properties:
                 id:
                     description: 'Unique ID'
-                    type: object
+                    type: number
                 imdb:
                     description: 'IMDB URL'
-                    type: object
+                    type: string
                 name:
                     description: Name
-                    type: object
+                    type: string
                 uri:
                     description: 'Person URI'
                     type: string
@@ -593,10 +637,10 @@ components:
             properties:
                 address:
                     description: Address
-                    type: object
+                    type: string
                 id:
                     description: 'Unique ID'
-                    type: object
+                    type: number
                 movies:
                     description: 'Movies currently playing'
                     type: array
@@ -604,10 +648,10 @@ components:
                         type: string
                 name:
                     description: Name
-                    type: object
+                    type: string
                 phone_number:
                     description: 'Phone number'
-                    type: object
+                    type: string
                 showtimes:
                     description: 'Non-movie specific showtimes'
                     type: array
