@@ -3,36 +3,21 @@ namespace Mill\Parser\Representation;
 
 use Dflydev\DotAccessData\Data;
 use Mill\Application;
+use Mill\Contracts\Arrayable;
 use Mill\Exceptions\Annotations\MultipleAnnotationsException;
 use Mill\Exceptions\Annotations\RequiredAnnotationException;
 use Mill\Exceptions\Resource\NoAnnotationsException;
 use Mill\Parser;
 
-/**
- * Class for parsing a docblock on a given representation class and method for documentation.
- *
- */
-class Documentation
+class Documentation implements Arrayable
 {
-    /**
-     * Name of the representation class that we're going to be parsing for documentation.
-     *
-     * @var string
-     */
+    /** @var string Name of the representation class that we're going to be parsing for documentation. */
     protected $class;
 
-    /**
-     * Name of the representation class method that we're going to be parsing for documentation.
-     *
-     * @var string
-     */
+    /** @var string Name of the representation class method that we're going to be parsing for documentation. */
     protected $method;
 
-    /**
-     * Short description/label/title of the representation.
-     *
-     * @var string
-     */
+    /** @var string Short description/label/title of the representation. */
     protected $label;
 
     /**
@@ -42,11 +27,7 @@ class Documentation
      */
     protected $description = null;
 
-    /**
-     * Array of parsed field annotations that exist on this representation.
-     *
-     * @var array
-     */
+    /** @var array Array of parsed field annotations that exist on this representation. */
     protected $representation = [];
 
     /**
@@ -62,11 +43,13 @@ class Documentation
     /**
      * Parse the instance controller and method into actionable annotations and documentation.
      *
-     * @return self
-     * @throws NoAnnotationsException If no annotations were found on the class.
-     * @throws NoAnnotationsException If no annotations were found on the method.
-     * @throws RequiredAnnotationException If a required `@api-label` annotation is missing.
-     * @throws MultipleAnnotationsException If multiple `@api-label` annotations were found.
+     * @return Documentation
+     * @throws MultipleAnnotationsException
+     * @throws NoAnnotationsException
+     * @throws RequiredAnnotationException
+     * @throws \Mill\Exceptions\MethodNotSuppliedException
+     * @throws \Mill\Exceptions\Representation\DuplicateFieldException
+     * @throws \Mill\Exceptions\Resource\UnsupportedDecoratorException
      */
     public function parse(): self
     {
@@ -140,7 +123,7 @@ class Documentation
         /** @var Parser\Annotation $annotation */
         foreach ($this->representation as $name => $annotation) {
             // If this annotation has vendor tags, but those vendor tags aren't in the set of vendor tags we're
-            // generating documentation for, filter it out.
+            // compiling documentation for, filter it out.
             $vendor_tags = $annotation->getVendorTags();
             if (!empty($vendor_tags)) {
                 // If we don't even have vendor tags to look for, then filter this annotation out completely.
@@ -243,9 +226,7 @@ class Documentation
     }
 
     /**
-     * Convert the parsed representation method documentation into an array.
-     *
-     * @return array
+     * {{@inheritdoc}}
      */
     public function toArray(): array
     {
@@ -260,7 +241,6 @@ class Documentation
             $data['content'][$key] = $annotation->toArray();
         }
 
-        // Keep things tidy.
         ksort($data['content']);
 
         return $data;

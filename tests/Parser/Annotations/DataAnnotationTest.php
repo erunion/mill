@@ -21,25 +21,6 @@ class DataAnnotationTest extends AnnotationTest
         $this->assertAnnotation($annotation, $expected);
     }
 
-    /**
-     * @dataProvider providerAnnotation
-     * @param string $content
-     * @param Version|null $version
-     * @param array $expected
-     */
-    public function testHydrate(string $content, ?Version $version, array $expected): void
-    {
-        $annotation = DataAnnotation::hydrate(array_merge(
-            $expected,
-            [
-                'class' => __CLASS__,
-                'method' => __METHOD__
-            ]
-        ), $version);
-
-        $this->assertAnnotation($annotation, $expected);
-    }
-
     private function assertAnnotation(DataAnnotation $annotation, array $expected): void
     {
         $this->assertFalse($annotation->supportsDeprecation());

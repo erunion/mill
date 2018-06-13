@@ -7,6 +7,12 @@ class PublicDecoratorOnPrivateActionException extends BaseException
 {
     use ResourceExceptionTrait;
 
+    /**
+     * @param string $annotation
+     * @param string $class
+     * @param string $method
+     * @return PublicDecoratorOnPrivateActionException
+     */
     public static function create(
         string $annotation,
         string $class,

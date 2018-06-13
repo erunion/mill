@@ -5,10 +5,6 @@ use Mill\Exceptions\Annotations\AbsoluteVersionException;
 use Mill\Parser\Annotation;
 use Mill\Parser\Version;
 
-/**
- * Handler for the `@api-minversion` annotation.
- *
- */
 class MinVersionAnnotation extends Annotation
 {
     const ARRAYABLE = [
@@ -20,7 +16,8 @@ class MinVersionAnnotation extends Annotation
 
     /**
      * {@inheritdoc}
-     * @throws AbsoluteVersionException If an `@api-minversion` annotation version is not absolute.
+     * @throws AbsoluteVersionException
+     * @throws \Mill\Exceptions\Version\UnrecognizedSchemaException
      */
     protected function parser(): array
     {
@@ -48,18 +45,6 @@ class MinVersionAnnotation extends Annotation
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public static function hydrate(array $data = [], Version $version = null): self
-    {
-        /** @var MinVersionAnnotation $annotation */
-        $annotation = parent::hydrate($data, $version);
-        $annotation->setMinimumVersion($data['minimum_version']);
-
-        return $annotation;
-    }
-
-    /**
      * @return string
      */
     public function getMinimumVersion(): string
@@ -69,7 +54,7 @@ class MinVersionAnnotation extends Annotation
 
     /**
      * @param string $minimum_version
-     * @return self
+     * @return MinVersionAnnotation
      */
     public function setMinimumVersion(string $minimum_version): self
     {

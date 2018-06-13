@@ -33,32 +33,6 @@ class QueryParamAnnotationTest extends ParamAnnotationTest
         $this->assertAnnotation($annotation, $expected);
     }
 
-    /**
-     * @dataProvider providerAnnotation
-     * @param string $content
-     * @param Version|null $version
-     * @param bool $visible
-     * @param bool $deprecated
-     * @param array $expected
-     */
-    public function testHydrate(
-        string $content,
-        ?Version $version,
-        bool $visible,
-        bool $deprecated,
-        array $expected
-    ): void {
-        $annotation = QueryParamAnnotation::hydrate(array_merge(
-            $expected,
-            [
-                'class' => __CLASS__,
-                'method' => __METHOD__
-            ]
-        ), $version);
-
-        $this->assertAnnotation($annotation, $expected);
-    }
-
     public function providerAnnotationFailsOnInvalidContent(): array
     {
         return [

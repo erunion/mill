@@ -8,6 +8,10 @@ class UncallableErrorRepresentationException extends BaseException
     /** @var string */
     public $representation;
 
+    /**
+     * @param string $representation
+     * @return UncallableErrorRepresentationException
+     */
     public static function create(string $representation): UncallableErrorRepresentationException
     {
         $message = sprintf(

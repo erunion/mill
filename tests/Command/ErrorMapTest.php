@@ -36,7 +36,7 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
     public function testCommand(bool $private_objects, array $vendor_tags, string $expected_file): void
     {
         /** @var string $output_dir */
-        $output_dir = tempnam(sys_get_temp_dir(), 'mill-generate-test-');
+        $output_dir = tempnam(sys_get_temp_dir(), 'mill-errormap-test-');
         if (file_exists($output_dir)) {
             unlink($output_dir);
         }
@@ -67,35 +67,18 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
         ];
 
         $output = $this->tester->getDisplay();
-        $this->assertNotContains('Running a dry run', $output);
 
         $this->assertNotContains('API version: 1.1.2', $output);
         foreach ($versions as $version) {
             $this->assertContains('API version: ' . $version, $output);
 
-            $blueprints_dir = __DIR__ . '/../../resources/examples/Showtimes/blueprints/' . $version;
+            $control_dir = __DIR__ . '/../../resources/examples/Showtimes/compiled/' . $version;
             $this->assertFileEquals(
-                $blueprints_dir . '/' . $expected_file,
+                $control_dir . '/' . $expected_file,
                 $output_dir . '/' . $version . '/errors.md',
-                'Generated error map does not match.'
+                'Compiled error map does not match.'
             );
         }
-    }
-
-    public function testCommandWithDryRun(): void
-    {
-        $this->tester->execute([
-            'command' => $this->command->getName(),
-            '--config' => $this->config_file,
-            '--dry-run' => true,
-            'output' => sys_get_temp_dir()
-        ]);
-
-        $output = $this->tester->getDisplay();
-        $this->assertContains('Running a dry run', $output);
-        $this->assertContains('API version: 1.0', $output);
-        $this->assertContains('API version: 1.1.1', $output);
-        $this->assertNotContains('API version: 1.1.2', $output);
     }
 
     public function testCommandWithDefaultVersion(): void
@@ -103,13 +86,11 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
         $this->tester->execute([
             'command' => $this->command->getName(),
             '--config' => $this->config_file,
-            '--dry-run' => true,
             '--default' => true,
             'output' => sys_get_temp_dir()
         ]);
 
         $output = $this->tester->getDisplay();
-        $this->assertContains('Running a dry run', $output);
 
         // In our test cases, there's no error codes under the default API version, so this shouldn't be creating error
         // maps.
@@ -121,13 +102,11 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
         $this->tester->execute([
             'command' => $this->command->getName(),
             '--config' => $this->config_file,
-            '--dry-run' => true,
             '--constraint' => '1.0',
             'output' => sys_get_temp_dir()
         ]);
 
         $output = $this->tester->getDisplay();
-        $this->assertContains('Running a dry run', $output);
         $this->assertContains('API version: 1.0', $output);
         $this->assertNotContains('API version: 1.1', $output);
     }
@@ -149,7 +128,6 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
         $this->tester->execute([
             'command' => $this->command->getName(),
             '--config' => $this->config_file,
-            '--dry-run' => true,
             '--constraint' => '1.^',
             'output' => sys_get_temp_dir()
         ]);

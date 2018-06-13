@@ -2,12 +2,7 @@
 namespace Mill\Parser\Annotations;
 
 use Mill\Parser\Annotation;
-use Mill\Parser\Version;
 
-/**
- * Handler for the `@api-group` annotation.
- *
- */
 class GroupAnnotation extends Annotation
 {
     const ARRAYABLE = [
@@ -36,18 +31,6 @@ class GroupAnnotation extends Annotation
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public static function hydrate(array $data = [], Version $version = null): self
-    {
-        /** @var GroupAnnotation $annotation */
-        $annotation = parent::hydrate($data, $version);
-        $annotation->setGroup($data['group']);
-
-        return $annotation;
-    }
-
-    /**
      * @return string
      */
     public function getGroup(): string
@@ -57,7 +40,7 @@ class GroupAnnotation extends Annotation
 
     /**
      * @param string $group
-     * @return self
+     * @return GroupAnnotation
      */
     public function setGroup(string $group): self
     {

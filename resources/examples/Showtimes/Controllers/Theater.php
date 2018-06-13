@@ -17,7 +17,7 @@ class Theater
      * @api-group Theaters
      *
      * @api-path:public /theaters/+id
-     * @api-pathparam id (integer) - Theater ID
+     * @api-pathparam id `1234` (integer) - Theater ID
      *
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Theater
      * @api-return:public {notmodified} If no content has been modified since the supplied Last-Modified header.
@@ -25,7 +25,7 @@ class Theater
      * @api-error:public 404 (\Mill\Examples\Showtimes\Representations\Error) - If the movie theater could not be found.
      *
      * @api-version >=1.1.2
-     * @api-contenttype application/mill.example.theater
+     * @api-contenttype application/mill.example.theater+json
      *
      * @api-version <1.1.2
      * @api-contenttype application/json
@@ -42,13 +42,13 @@ class Theater
      * @api-group Theaters
      *
      * @api-path:public /theaters/+id
-     * @api-pathparam id (integer) - Theater ID
+     * @api-pathparam id `1234` (integer) - Theater ID
      *
      * @api-scope create
      *
-     * @api-param:public name (string, required) - Name of the theater.
-     * @api-param:public address (string, required) - Theater address
-     * @api-param:public phone_number (string, required) - Theater phone number
+     * @api-param:public name `Alamo Drafthouse Cinema - Yonkers` (string, required) - Name of the theater.
+     * @api-param:public address `2548 Central Park Ave, Yonkers, NY 10710` (string, required) - Theater address
+     * @api-param:public phone_number `(914) 226-3082` (string, required) - Theater phone number
      *
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Theater
      *
@@ -56,7 +56,7 @@ class Theater
      * @api-error:public 404 (\Mill\Examples\Showtimes\Representations\Error) - If the movie movie could not be found.
      *
      * @api-version >=1.1.2
-     * @api-contenttype application/mill.example.theater
+     * @api-contenttype application/mill.example.theater+json
      *
      * @api-version <1.1.2
      * @api-contenttype application/json
@@ -74,7 +74,7 @@ class Theater
      * @api-group Theaters
      *
      * @api-path:private /theaters/+id
-     * @api-pathparam id (integer) - Theater ID
+     * @api-pathparam id `1234` (integer) - Theater ID
      *
      * @api-contenttype application/json
      * @api-scope delete

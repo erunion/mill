@@ -11,25 +11,24 @@ use Mill\Parser\Annotations\DataAnnotation;
 use Mill\Parser\Annotations\ScopeAnnotation;
 use Mill\Parser\Version;
 
-/**
- * Class for parsing the docblock on a representation.
- *
- */
 class RepresentationParser extends Parser
 {
-    // http://stackoverflow.com/a/13114141/1886079
+    /**
+     * @link http://stackoverflow.com/a/13114141/1886079
+     * @var string
+     */
     const DOC_PATTERN = '~/\*\*(.*?)\*/~s';
 
-    // Everything between the second asterisk and the first annotation
+    /** @var string Everything between the second asterisk and the first annotation */
     const DOC_BODY_MATCH = '~\s*\*\s+(.*)~';
 
     /**
      * Locate, and parse, the annotations for a representation method.
      *
-     * @param null|string $method_name
-     * @return array An array containing all the found annotations.
-     * @throws MethodNotSuppliedException If a method is not supplied to parse.
-     * @throws MethodNotImplementedException If the supplied method does not exist on the supplied controller.
+     * @param string|null $method_name
+     * @return array
+     * @throws DuplicateFieldException
+     * @throws MethodNotSuppliedException
      */
     public function getAnnotations(string $method_name = null): array
     {
@@ -46,7 +45,6 @@ class RepresentationParser extends Parser
         $annotations = $this->parse($code);
 
         if (count($annotations) > 1) {
-            // Keep things tidy.
             ksort($annotations);
 
             // Run through all created annotations and cascade any versioning down into any present child annotations.
@@ -69,6 +67,9 @@ class RepresentationParser extends Parser
      * @param array $tags
      * @param string $original_content
      * @return array
+     * @throws DuplicateFieldException
+     * @throws MethodNotSuppliedException
+     * @throws \Mill\Exceptions\Version\UnrecognizedSchemaException
      */
     public function parseAnnotations(array $tags, string $original_content): array
     {
@@ -185,7 +186,8 @@ class RepresentationParser extends Parser
      *
      * @param string $code
      * @return array
-     * @throws DuplicateFieldException If a found field exists more than once.
+     * @throws DuplicateFieldException
+     * @throws \Mill\Exceptions\Resource\UnsupportedDecoratorException
      */
     public function parse(string $code): array
     {

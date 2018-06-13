@@ -7,6 +7,12 @@ class RequiredAnnotationException extends BaseException
 {
     use AnnotationExceptionTrait;
 
+    /**
+     * @param string $annotation
+     * @param string $class
+     * @param string|null $method
+     * @return RequiredAnnotationException
+     */
     public static function create(string $annotation, string $class, string $method = null): RequiredAnnotationException
     {
         $message = sprintf(

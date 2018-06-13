@@ -7,6 +7,11 @@ class NoAnnotationsException extends BaseException
 {
     use ResourceExceptionTrait;
 
+    /**
+     * @param string $class
+     * @param null|string $method
+     * @return NoAnnotationsException
+     */
     public static function create(string $class, ?string $method): NoAnnotationsException
     {
         if (empty($method)) {

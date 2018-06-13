@@ -17,6 +17,8 @@
             </errorLevel>
         </InvalidScalarArgument>
 
+        <LessSpecificReturnType errorLevel="suppress" />
+
         <PossiblyInvalidArgument>
             <errorLevel type="suppress">
                 <!-- Masking errors where we're passing methods that return `bool|object` into test assertions. -->

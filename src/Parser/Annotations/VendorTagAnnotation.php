@@ -4,23 +4,14 @@ namespace Mill\Parser\Annotations;
 use Mill\Container;
 use Mill\Exceptions\Annotations\InvalidVendorTagSuppliedException;
 use Mill\Parser\Annotation;
-use Mill\Parser\Version;
 
-/**
- * Handler for the `@api-vendortag` annotation.
- *
- */
 class VendorTagAnnotation extends Annotation
 {
     const ARRAYABLE = [
         'vendor_tag'
     ];
 
-    /**
-     * Name of this vendor tag.
-     *
-     * @var string
-     */
+    /** @var string Name of this vendor tag. */
     protected $vendor_tag;
 
     /**
@@ -55,17 +46,6 @@ class VendorTagAnnotation extends Annotation
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public static function hydrate(array $data = [], Version $version = null): self
-    {
-        /** @var VendorTagAnnotation $annotation */
-        $annotation = parent::hydrate($data, $version);
-        $annotation->setVendorTag($data['vendor_tag']);
-        return $annotation;
-    }
-
-    /**
      * @return string
      */
     public function getVendorTag(): string
@@ -75,7 +55,7 @@ class VendorTagAnnotation extends Annotation
 
     /**
      * @param string $vendor_tag
-     * @return self
+     * @return VendorTagAnnotation
      */
     public function setVendorTag(string $vendor_tag): self
     {

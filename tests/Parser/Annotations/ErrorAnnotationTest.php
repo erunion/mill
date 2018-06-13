@@ -28,27 +28,6 @@ class ErrorAnnotationTest extends AnnotationTest
         $this->assertAnnotation($annotation, $expected);
     }
 
-    /**
-     * @dataProvider providerAnnotation
-     * @param string $content
-     * @param Version|null $version
-     * @param bool $visible
-     * @param array $expected
-     */
-    public function testHydrate(string $content, $version, bool $visible, array $expected): void
-    {
-        /** @var ErrorAnnotation $annotation */
-        $annotation = ErrorAnnotation::hydrate(array_merge(
-            $expected,
-            [
-                'class' => __CLASS__,
-                'method' => __METHOD__
-            ]
-        ), $version);
-
-        $this->assertAnnotation($annotation, $expected);
-    }
-
     private function assertAnnotation(ErrorAnnotation $annotation, array $expected): void
     {
         $this->assertFalse($annotation->supportsDeprecation());

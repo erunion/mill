@@ -5,10 +5,6 @@ use Mill\Exceptions\Annotations\AbsoluteVersionException;
 use Mill\Parser\Annotation;
 use Mill\Parser\Version;
 
-/**
- * Handler for the `@api-maxversion` annotation.
- *
- */
 class MaxVersionAnnotation extends Annotation
 {
     const ARRAYABLE = [
@@ -20,7 +16,8 @@ class MaxVersionAnnotation extends Annotation
 
     /**
      * {@inheritdoc}
-     * @throws AbsoluteVersionException If an `@api-maxversion` annotation version is not absolute.
+     * @throws AbsoluteVersionException
+     * @throws \Mill\Exceptions\Version\UnrecognizedSchemaException
      */
     protected function parser(): array
     {
@@ -48,18 +45,6 @@ class MaxVersionAnnotation extends Annotation
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public static function hydrate(array $data = [], Version $version = null): self
-    {
-        /** @var MaxVersionAnnotation $annotation */
-        $annotation = parent::hydrate($data, $version);
-        $annotation->setMaximumVersion($data['maximum_version']);
-
-        return $annotation;
-    }
-
-    /**
      * @return string
      */
     public function getMaximumVersion(): string
@@ -69,7 +54,7 @@ class MaxVersionAnnotation extends Annotation
 
     /**
      * @param string $maximum_version
-     * @return self
+     * @return MaxVersionAnnotation
      */
     public function setMaximumVersion(string $maximum_version): self
     {

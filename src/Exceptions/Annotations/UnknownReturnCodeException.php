@@ -7,6 +7,13 @@ class UnknownReturnCodeException extends BaseException
 {
     use AnnotationExceptionTrait;
 
+    /**
+     * @param string $annotation
+     * @param string $docblock
+     * @param string $class
+     * @param string $method
+     * @return UnknownReturnCodeException
+     */
     public static function create(
         string $annotation,
         string $docblock,

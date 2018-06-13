@@ -3,12 +3,16 @@ namespace Mill\Exceptions\Representation;
 
 use Mill\Application;
 use Mill\Exceptions\BaseException;
-use Mill\Parser\Representation\Documentation;
 
 class RestrictedFieldNameException extends BaseException
 {
     use RepresentationExceptionTrait;
 
+    /**
+     * @param string $class
+     * @param null|string $method
+     * @return RestrictedFieldNameException
+     */
     public static function create(string $class, ?string $method): RestrictedFieldNameException
     {
         $message = sprintf(

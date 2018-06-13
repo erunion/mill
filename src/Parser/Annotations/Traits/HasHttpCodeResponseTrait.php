@@ -1,17 +1,9 @@
 <?php
 namespace Mill\Parser\Annotations\Traits;
 
-/**
- * Handler for annotations that have an HTTP coded response.
- *
- */
 trait HasHttpCodeResponseTrait
 {
-    /**
-     * HTTP code that this response throws.
-     *
-     * @var string
-     */
+    /** @var string HTTP code that this response throws. */
     protected $http_code;
 
     /**

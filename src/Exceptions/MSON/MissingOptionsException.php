@@ -5,11 +5,15 @@ use Mill\Exceptions\BaseException;
 
 class MissingOptionsException extends BaseException
 {
-    /**
-     * @var null|string
-     */
+    /** @var null|string */
     public $type = null;
 
+    /**
+     * @param string $type
+     * @param string $class
+     * @param string $method
+     * @return MissingOptionsException
+     */
     public static function create(string $type, string $class, string $method): MissingOptionsException
     {
         $message = sprintf(

@@ -26,22 +26,6 @@ class DocumentationTest extends TestCase
         $this->assertMethodDocumentation($parser, $class_stub, $method, $expected);
     }
 
-    /**
-     * @dataProvider providerParseMethodDocumentation
-     * @param string $method
-     * @param array $expected
-     */
-    public function testHydrate(string $method, array $expected): void
-    {
-        $class_stub = '\Mill\Examples\Showtimes\Controllers\Movie';
-        $parser = (new Documentation($class_stub, $method))->parse();
-        $docs = $parser->toArray();
-
-        $hydrate = Documentation::hydrate($docs);
-
-        $this->assertMethodDocumentation($hydrate, $class_stub, $method, $expected);
-    }
-
     private function assertMethodDocumentation(
         Documentation $parser,
         string $class,
@@ -220,7 +204,7 @@ DESCRIPTION;
                     'content_types.latest-version' => '1.1.2',
                     'content_types' => [
                         [
-                            'content_type' => 'application/mill.example.movie',
+                            'content_type' => 'application/mill.example.movie+json',
                             'version' => '>=1.1.2'
                         ],
                         [
@@ -290,6 +274,8 @@ DESCRIPTION;
                             [
                                 'description' => 'Movie ID',
                                 'field' => 'id',
+                                'required' => true,
+                                'sample_data' => '1234',
                                 'type' => 'integer',
                                 'values' => []
                             ]
@@ -328,7 +314,7 @@ DESCRIPTION;
                     'content_types.latest-version' => '1.1.2',
                     'content_types' => [
                         [
-                            'content_type' => 'application/mill.example.movie',
+                            'content_type' => 'application/mill.example.movie+json',
                             'version' => '>=1.1.2'
                         ],
                         [
@@ -424,7 +410,7 @@ DESCRIPTION;
                                 'field' => 'cast.name',
                                 'nullable' => false,
                                 'required' => false,
-                                'sample_data' => false,
+                                'sample_data' => 'Natasha Hovey',
                                 'subtype' => false,
                                 'type' => 'string',
                                 'values' => [],
@@ -438,7 +424,7 @@ DESCRIPTION;
                                 'field' => 'cast.role',
                                 'nullable' => false,
                                 'required' => false,
-                                'sample_data' => false,
+                                'sample_data' => 'Cheryl',
                                 'subtype' => false,
                                 'type' => 'string',
                                 'values' => [],
@@ -452,18 +438,18 @@ DESCRIPTION;
                                 'field' => 'content_rating',
                                 'nullable' => false,
                                 'required' => false,
-                                'sample_data' => false,
+                                'sample_data' => 'NR',
                                 'subtype' => false,
                                 'type' => 'enum',
                                 'values' => [
-                                    'G' => '',
-                                    'NC-17' => '',
-                                    'NR' => '',
-                                    'PG' => '',
-                                    'PG-13' => '',
-                                    'R' => '',
-                                    'UR' => '',
-                                    'X' => ''
+                                    'G' => 'Rated G',
+                                    'NC-17' => 'Rated NC-17',
+                                    'NR' => 'Not rated',
+                                    'PG' => 'Rated PG',
+                                    'PG-13' => 'Rated PG-13',
+                                    'R' => 'Rated R',
+                                    'UR' => 'Unrated',
+                                    'X' => 'Rated X'
                                 ],
                                 'vendor_tags' => [],
                                 'version' => false,
@@ -489,7 +475,7 @@ DESCRIPTION;
                                 'field' => 'director',
                                 'nullable' => false,
                                 'required' => false,
-                                'sample_data' => false,
+                                'sample_data' => 'Lamberto Bava',
                                 'subtype' => false,
                                 'type' => 'string',
                                 'values' => [],
@@ -517,7 +503,7 @@ DESCRIPTION;
                                 'field' => 'name',
                                 'nullable' => false,
                                 'required' => true,
-                                'sample_data' => false,
+                                'sample_data' => 'Demons',
                                 'subtype' => false,
                                 'type' => 'string',
                                 'values' => [],
@@ -545,7 +531,7 @@ DESCRIPTION;
                                 'field' => 'imdb',
                                 'nullable' => false,
                                 'required' => false,
-                                'sample_data' => false,
+                                'sample_data' => 'https://www.imdb.com/title/tt0089013/',
                                 'subtype' => false,
                                 'type' => 'string',
                                 'values' => [],
@@ -559,7 +545,7 @@ DESCRIPTION;
                                 'field' => 'rotten_tomatoes_score',
                                 'nullable' => false,
                                 'required' => false,
-                                'sample_data' => false,
+                                'sample_data' => '56',
                                 'subtype' => false,
                                 'type' => 'integer',
                                 'values' => [],
@@ -573,7 +559,7 @@ DESCRIPTION;
                                 'field' => 'runtime',
                                 'nullable' => false,
                                 'required' => false,
-                                'sample_data' => false,
+                                'sample_data' => '1hr 20min',
                                 'subtype' => false,
                                 'type' => 'string',
                                 'values' => [],
@@ -587,7 +573,7 @@ DESCRIPTION;
                                 'field' => 'trailer',
                                 'nullable' => true,
                                 'required' => false,
-                                'sample_data' => false,
+                                'sample_data' => 'https://www.youtube.com/watch?v=_cNjTdFHL8E',
                                 'subtype' => false,
                                 'type' => 'string',
                                 'values' => [],
@@ -609,6 +595,8 @@ DESCRIPTION;
                             [
                                 'description' => 'Movie ID',
                                 'field' => 'id',
+                                'required' => true,
+                                'sample_data' => '1234',
                                 'type' => 'integer',
                                 'values' => []
                             ]
@@ -661,7 +649,7 @@ DESCRIPTION;
                                     'field' => 'cast.name',
                                     'nullable' => false,
                                     'required' => false,
-                                    'sample_data' => false,
+                                    'sample_data' => 'Natasha Hovey',
                                     'subtype' => false,
                                     'type' => 'string',
                                     'values' => [],
@@ -677,7 +665,7 @@ DESCRIPTION;
                                     'field' => 'cast.role',
                                     'nullable' => false,
                                     'required' => false,
-                                    'sample_data' => false,
+                                    'sample_data' => 'Cheryl',
                                     'subtype' => false,
                                     'type' => 'string',
                                     'values' => [],
@@ -694,18 +682,18 @@ DESCRIPTION;
                                 'field' => 'content_rating',
                                 'nullable' => false,
                                 'required' => false,
-                                'sample_data' => false,
+                                'sample_data' => 'NR',
                                 'subtype' => false,
                                 'type' => 'enum',
                                 'values' => [
-                                    'G' => '',
-                                    'NC-17' => '',
-                                    'NR' => '',
-                                    'PG' => '',
-                                    'PG-13' => '',
-                                    'R' => '',
-                                    'UR' => '',
-                                    'X' => ''
+                                    'G' => 'Rated G',
+                                    'NC-17' => 'Rated NC-17',
+                                    'NR' => 'Not rated',
+                                    'PG' => 'Rated PG',
+                                    'PG-13' => 'Rated PG-13',
+                                    'R' => 'Rated R',
+                                    'UR' => 'Unrated',
+                                    'X' => 'Rated X'
                                 ],
                                 'vendor_tags' => [],
                                 'version' => false,
@@ -735,7 +723,7 @@ DESCRIPTION;
                                 'field' => 'director',
                                 'nullable' => false,
                                 'required' => false,
-                                'sample_data' => false,
+                                'sample_data' => 'Lamberto Bava',
                                 'subtype' => false,
                                 'type' => 'string',
                                 'values' => [],
@@ -767,7 +755,7 @@ DESCRIPTION;
                                 'field' => 'name',
                                 'nullable' => false,
                                 'required' => true,
-                                'sample_data' => false,
+                                'sample_data' => 'Demons',
                                 'subtype' => false,
                                 'type' => 'string',
                                 'values' => [],
@@ -799,7 +787,7 @@ DESCRIPTION;
                                 'field' => 'imdb',
                                 'nullable' => false,
                                 'required' => false,
-                                'sample_data' => false,
+                                'sample_data' => 'https://www.imdb.com/title/tt0089013/',
                                 'subtype' => false,
                                 'type' => 'string',
                                 'values' => [],
@@ -815,7 +803,7 @@ DESCRIPTION;
                                 'field' => 'rotten_tomatoes_score',
                                 'nullable' => false,
                                 'required' => false,
-                                'sample_data' => false,
+                                'sample_data' => '56',
                                 'subtype' => false,
                                 'type' => 'integer',
                                 'values' => [],
@@ -831,7 +819,7 @@ DESCRIPTION;
                                 'field' => 'runtime',
                                 'nullable' => false,
                                 'required' => false,
-                                'sample_data' => false,
+                                'sample_data' => '1hr 20min',
                                 'subtype' => false,
                                 'type' => 'string',
                                 'values' => [],
@@ -847,7 +835,7 @@ DESCRIPTION;
                                 'field' => 'trailer',
                                 'nullable' => true,
                                 'required' => false,
-                                'sample_data' => false,
+                                'sample_data' => 'https://www.youtube.com/watch?v=_cNjTdFHL8E',
                                 'subtype' => false,
                                 'type' => 'string',
                                 'values' => [],
@@ -914,6 +902,8 @@ DESCRIPTION;
                             [
                                 'description' => 'Movie ID',
                                 'field' => 'id',
+                                'required' => true,
+                                'sample_data' => '1234',
                                 'type' => 'integer',
                                 'values' => []
                             ]

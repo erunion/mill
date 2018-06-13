@@ -7,6 +7,11 @@ class TooManyAliasedPathsException extends BaseException
 {
     use ResourceExceptionTrait;
 
+    /**
+     * @param string $class
+     * @param null|string $method
+     * @return TooManyAliasedPathsException
+     */
     public static function create(string $class, ?string $method): TooManyAliasedPathsException
     {
         $message = sprintf(

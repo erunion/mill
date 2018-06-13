@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "test": "find resources/examples/Showtimes/blueprints/ -name 'api.apib' -exec api-blueprint-validator-module {} true \\;"
+    "test": "find resources/examples/Showtimes/compiled/ -name 'api.apib' -exec api-blueprint-validator-module {} true \\;"
   },
   "devDependencies": {
     "api-blueprint-validator-module": "^1.2.2"

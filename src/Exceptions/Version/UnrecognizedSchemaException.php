@@ -5,11 +5,15 @@ use Mill\Exceptions\BaseException;
 
 class UnrecognizedSchemaException extends BaseException
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     public $version;
 
+    /**
+     * @param string $version
+     * @param string $class
+     * @param string $method
+     * @return UnrecognizedSchemaException
+     */
     public static function create(string $version, string $class, string $method): UnrecognizedSchemaException
     {
         $message = sprintf(

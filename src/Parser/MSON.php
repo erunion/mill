@@ -2,6 +2,7 @@
 namespace Mill\Parser;
 
 use Mill\Container;
+use Mill\Contracts\Arrayable;
 use Mill\Exceptions\Annotations\UnknownErrorRepresentationException;
 use Mill\Exceptions\Annotations\UnsupportedTypeException;
 use Mill\Exceptions\Config\UnconfiguredErrorRepresentationException;
@@ -9,7 +10,7 @@ use Mill\Exceptions\Config\UnconfiguredRepresentationException;
 use Mill\Exceptions\MSON\ImproperlyWrittenEnumException;
 use Mill\Exceptions\MSON\MissingOptionsException;
 
-class MSON
+class MSON implements Arrayable
 {
     /**
      * This is the regex to match Mill-flavored MSON enum members.
@@ -44,100 +45,13 @@ class MSON
      *  - "If there is a problem with the
      *      request." becomes "If there is a problem with the request."
      *
+     * @var string
      * @todo This does not currently support multi-paragraph strings.
      */
     const REGEX_CLEAN_MULTILINE = '/(\s)?[ \t]*(\r\n|\n)[ \t]*(\s)/';
 
-    /**
-     * Controller that this MSON is being parsed from.
-     *
-     * @var string
-     */
-    protected $class;
-
-    /**
-     * Controller method that MSON is being parsed from.
-     *
-     * @var string
-     */
-    protected $method;
-
-    /**
-     * Name of the field that was parsed out of the MSON content.
-     *
-     * @var null|string
-     */
-    protected $field = null;
-
-    /**
-     * Sample data that was parsed out of the MSON content.
-     *
-     * @var false|string
-     */
-    protected $sample_data = false;
-
-    /**
-     * Type of field that this MSON content represents.
-     *
-     * @var null|string
-     */
-    protected $type = null;
-
-    /**
-     * Subtype of the type of field that this MSON content represents.
-     *
-     * @var false|string
-     */
-    protected $subtype = false;
-
-    /**
-     * Is this MSON content designated as being required?
-     *
-     * @var bool
-     */
-    protected $is_required = false;
-
-    /**
-     * Is this MSON content designated as nullable?
-     *
-     * @var bool
-     */
-    protected $is_nullable = false;
-
-    /**
-     * Application-specific vendor tags that were parsed out of the MSON content.
-     *
-     * @var array
-     */
-    protected $vendor_tags = [];
-
-    /**
-     * Parsed description from the MSON content.
-     *
-     * @var null|string
-     */
-    protected $description = null;
-
-    /**
-     * Array of enumerated values from the MSON content.
-     *
-     * @var array<string, string>
-     */
-    protected $values = [];
-
-    /**
-     * Allow all kind of subtypes. Used for `@api-error` annotations to allow error codes.
-     *
-     * @var bool
-     */
-    protected $allow_all_subtypes = false;
-
-    /**
-     * Supported MSON field types.
-     *
-     * @var array
-     */
-    protected $supported_types = [
+    /** @var array Supported MSON field types. */
+    const SUPPORTED_TYPES = [
         'array',
         'boolean',
         'date',
@@ -151,6 +65,42 @@ class MSON
         'timestamp',
         'uri'
     ];
+
+    /** @var string Controller that this MSON is being parsed from. */
+    protected $class;
+
+    /** @var string Controller method that MSON is being parsed from. */
+    protected $method;
+
+    /** @var null|string Name of the field that was parsed out of the MSON content. */
+    protected $field = null;
+
+    /** @var false|string Sample data that was parsed out of the MSON content. */
+    protected $sample_data = false;
+
+    /** @var null|string Type of field that this MSON content represents. */
+    protected $type = null;
+
+    /** @var false|string Subtype of the type of field that this MSON content represents. */
+    protected $subtype = false;
+
+    /** @var bool Is this MSON content designated as being required? */
+    protected $is_required = false;
+
+    /** @var bool Is this MSON content designated as nullable? */
+    protected $is_nullable = false;
+
+    /** @var array Application-specific vendor tags that were parsed out of the MSON content. */
+    protected $vendor_tags = [];
+
+    /** @var null|string Parsed description from the MSON content. */
+    protected $description = null;
+
+    /** @var array<string, string> Array of enumerated values from the MSON content. */
+    protected $values = [];
+
+    /** @var bool Allow all kind of subtypes. Used for `@api-error` annotations to allow error codes. */
+    protected $allow_all_subtypes = false;
 
     /**
      * @param string $class
@@ -166,10 +116,11 @@ class MSON
      * Given a piece of Mill-flavored MSON content, parse it out.
      *
      * @param string $content
-     * @return self
-     * @throws UnsupportedTypeException If an unsupported MSON field type has been supplied.
-     * @throws MissingOptionsException If a supplied MSON type of `enum` missing corresponding acceptable values.
-     * @throws UnsupportedTypeException If a supplied MSON type of `string` should actually be written as `enum`.
+     * @return MSON
+     * @throws ImproperlyWrittenEnumException
+     * @throws MissingOptionsException
+     * @throws UnknownErrorRepresentationException
+     * @throws UnsupportedTypeException
      */
     public function parse(string $content): self
     {
@@ -237,7 +188,7 @@ class MSON
         if (!empty($this->type)) {
             $config = Container::getConfig();
 
-            if (!in_array(strtolower($this->type), $this->supported_types)) {
+            if (!in_array(strtolower($this->type), self::SUPPORTED_TYPES)) {
                 try {
                     // If we're allowing all subtypes, then we're dealing with error states and the `@api-error`
                     // annotation, so we should look at error representations instead here.
@@ -257,7 +208,7 @@ class MSON
             if (!empty($this->subtype)) {
                 switch ($this->type) {
                     case 'array':
-                        if (!in_array(strtolower($this->subtype), $this->supported_types)) {
+                        if (!in_array(strtolower($this->subtype), self::SUPPORTED_TYPES)) {
                             try {
                                 // If this isn't a valid representation, then it's an invalid type.
                                 $config->doesRepresentationExist($this->subtype);
@@ -321,7 +272,6 @@ class MSON
             $enum[$value] = $description;
         }
 
-        // Keep the array of values alphabetical so it's cleaner when generated into documentation.
         ksort($enum);
 
         return $enum;
@@ -429,9 +379,7 @@ class MSON
     }
 
     /**
-     * Get parsed MSON content in an array.
-     *
-     * @return array
+     * {{@inheritdoc}}
      */
     public function toArray(): array
     {

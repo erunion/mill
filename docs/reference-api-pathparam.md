@@ -7,7 +7,7 @@ This allows you to describe the parameters of a coupled resource action path.
 
 ## Syntax
 ```php
-@api-pathparam paramName (type) - Description
+@api-pathparam paramName `sampleData` (type) - Description
     + Members
         - `option` - Value description
 ```
@@ -23,13 +23,14 @@ This allows you to describe the parameters of a coupled resource action path.
 | Tag | Optional | Description |
 | :--- | :--- | :--- |
 | paramName | × | This is the name of the parameter that is used within the path. |
+| sampleData | ✓ | This is a sample of what the contents of the parameter should be. For example, if you're passing in a number, this can be "50". |
 | type | × | This can be a reference to the type of variable that is being passed in (string, boolean, array, etc.), into the coupled path. |
 | description | × | Description of what the parameter is for. |
 | Members | ✓ | If this path parameter has acceptable values (like in the case of an `enum` type), you can document those values here along with a description for what the value is, or means. |
 
 ### Supported Types
 
-| Type | API Blueprint conversion |
+| Type | Specification representation |
 | :--- | :--- |
 | array | array |
 | boolean | boolean |
@@ -50,7 +51,7 @@ This allows you to describe the parameters of a coupled resource action path.
  * …
  *
  * @api-path:private:deprecated /movies/+id
- * @api-pathparam id (integer) - Movie ID
+ * @api-pathparam id `1234` (integer) - Movie ID
  *
  * …
  */

@@ -20,112 +20,50 @@ use SimpleXMLElement;
 
 class Config
 {
-    /**
-     * The base directory for this configuration file.
-     *
-     * @var string
-     */
+    /** @var string The base directory for this configuration file. */
     protected $base_dir;
 
-    /**
-     * The name of your API.
-     *
-     * @var null|string
-     */
+    /** @var null|string The name of your API. */
     protected $name = null;
 
-    /**
-     * The first version of your API.
-     *
-     * @var string
-     */
+    /** @var string The first version of your API. */
     public $first_api_version;
 
-    /**
-     * The default version for your API.
-     *
-     * @var string
-     */
+    /** @var string The default version for your API. */
     public $default_api_version;
 
-    /**
-     * The latest version of your API.
-     *
-     * @var string
-     */
+    /** @var string The latest version of your API. */
     public $latest_api_version;
 
-    /**
-     * Array of API versions.
-     *
-     * @var array
-     */
+    /** @var array Array of API versions. */
     protected $api_versions = [];
 
-    /**
-     * Allowable list of valid application vendor tags.
-     *
-     * @var array
-     */
+    /** @var array Allowable list of valid application vendor tags. */
     protected $vendor_tags = [];
 
-    /**
-     * Allowable list of valid application authentication scopes.
-     *
-     * @var array
-     */
+    /** @var array Allowable list of valid application authentication scopes. */
     protected $scopes = [];
 
-    /**
-     * Array of application controllers.
-     *
-     * @var array
-     */
+    /** @var array Array of application controllers. */
     protected $controllers = [];
 
-    /**
-     * Array of application representations.
-     *
-     * @var array
-     */
+    /** @var array Array of application representations. */
     protected $representations = [];
 
-    /**
-     * Array of application error representations.
-     *
-     * @var array
-     */
+    /** @var array Array of application error representations. */
     protected $error_representations = [];
 
-    /**
-     * Array of excluded application representations.
-     *
-     * These are representations that you have, but, for whatever reason, don't want to be parsed for documentation.
-     *
-     * @var array
-     */
+    /** @var array Array of excluded application representations. */
     protected $excluded_representations = [];
 
-    /**
-     * Array of path param translations. (Like translating `+clip_id` to `+video_id`.)
-     *
-     * @var array
-     */
+    /** @var array Array of path parameter translations. (Like translating `+clip_id` to `+video_id`.)  */
     protected $path_param_translations = [];
 
-    /**
-     * Array of `@api-param` configured replacement tokens.
-     *
-     * @var array
-     */
+    /** @var array Array of `@api-param` configured replacement tokens. */
     protected $parameter_tokens = [];
 
-    /**
-     * Array of API Blueprint generator resource group excludes.
-     *
-     * @var array
-     */
-    protected $blueprint_group_excludes = [];
+    /** @var array Array of compiler resource group exclusions. */
+    protected $compiler_group_exclusions = [];
 
     /**
      * Create a new configuration object from a given config file.
@@ -134,10 +72,10 @@ class Config
      * @param Filesystem $filesystem
      * @param string $config_file
      * @param bool $load_bootstrap
-     * @return self
-     * @throws InvalidArgumentException If the config file can't be read.
-     * @throws InvalidArgumentException If the config file does not exist.
-     * @throws ValidationException If there are errors validating the schema of your config file.
+     * @return Config
+     * @throws UncallableErrorRepresentationException
+     * @throws UncallableRepresentationException
+     * @throws ValidationException
      */
     public static function loadFromXML(Filesystem $filesystem, string $config_file, bool $load_bootstrap = true): self
     {
@@ -205,8 +143,8 @@ class Config
             $config->loadParameterTokens($xml->parameterTokens->token);
         }
 
-        if (isset($xml->generators)) {
-            $config->loadGeneratorSettings($xml->generators);
+        if (isset($xml->compilers)) {
+            $config->loadCompilerSettings($xml->compilers);
         }
 
         $config->api_versions = [];
@@ -236,7 +174,6 @@ class Config
             $this->addVendorTag((string) $vendor_tag['name']);
         }
 
-        // Keep things tidy.
         $this->vendor_tags = array_unique($this->vendor_tags);
     }
 
@@ -262,7 +199,6 @@ class Config
             $this->scopes[] = (string) $scope['name'];
         }
 
-        // Keep things tidy.
         $this->scopes = array_unique($this->scopes);
     }
 
@@ -315,7 +251,6 @@ class Config
             $this->addParameterToken($parameter, $annotation);
         }
 
-        // Keep things tidy.
         $this->parameter_tokens = array_unique($this->parameter_tokens);
     }
 
@@ -338,54 +273,52 @@ class Config
     }
 
     /**
-     * Load in generator settings.
+     * Load in compiler settings.
      *
-     * @param SimpleXMLElement $generators
+     * @param SimpleXMLElement $compilers
      */
-    protected function loadGeneratorSettings(SimpleXMLElement $generators): void
+    protected function loadCompilerSettings(SimpleXMLElement $compilers): void
     {
-        if (isset($generators->blueprint)) {
-            if (isset($generators->blueprint->excludes)) {
-                /** @var SimpleXMLElement $exclude */
-                foreach ($generators->blueprint->excludes->exclude as $exclude) {
-                    $group = trim((string) $exclude['group']);
+        if (isset($compilers->excludes)) {
+            /** @var SimpleXMLElement $exclude */
+            foreach ($compilers->excludes->exclude as $exclude) {
+                $group = trim((string) $exclude['group']);
 
-                    $this->addBlueprintGroupExclude($group);
-                }
+                $this->addCompilerGroupExclusion($group);
             }
         }
     }
 
     /**
-     * Add a new API Blueprint resource group generator exclusion.
+     * Add a new compiler resource group exclusion.
      *
      * @param string $group
-     * @throws DomainException If an invalid Blueprint generator group exclude was detected.
+     * @throws DomainException If an invalid compiler group exclusion was detected.
      */
-    public function addBlueprintGroupExclude(string $group): void
+    public function addCompilerGroupExclusion(string $group): void
     {
         if (empty($group)) {
             throw new DomainException(
-                'An invalid Blueprint generator group exclude was supplied in the Mill `generators` section.'
+                'An invalid compiler group exclusion was supplied in the Mill `compilers` section.'
             );
         }
 
-        $this->blueprint_group_excludes[] = $group;
+        $this->compiler_group_exclusions[] = $group;
     }
 
     /**
-     * Remove a currently configured API Blueprint resource group generator exclusion.
+     * Remove a currently configured compiler resource group exclusion.
      *
      * @param string $group
      */
-    public function removeBlueprintGroupExclude(string $group): void
+    public function removeCompilerGroupExclusion(string $group): void
     {
-        $excludes = array_flip($this->blueprint_group_excludes);
+        $excludes = array_flip($this->compiler_group_exclusions);
         if (isset($excludes[$group])) {
             unset($excludes[$group]);
         }
 
-        $this->blueprint_group_excludes = array_flip($excludes);
+        $this->compiler_group_exclusions = array_flip($excludes);
     }
 
     /**
@@ -424,7 +357,6 @@ class Config
             throw new DomainException('You must set a default API version.');
         }
 
-        // Keep things tidy.
         $sorted_numerical = Semver::sort(array_keys($api_versions));
         foreach ($sorted_numerical as $version) {
             $this->api_versions[] = $api_versions[$version];
@@ -456,7 +388,6 @@ class Config
                 $excludes[] = (string) $exclude['name'];
             }
 
-            // Keep things tidy.
             $excludes = array_unique($excludes);
         }
 
@@ -480,7 +411,6 @@ class Config
             );
         }
 
-        // Keep things tidy.
         $this->controllers = array_unique($this->controllers);
         sort($this->controllers);
 
@@ -533,7 +463,6 @@ class Config
                 $this->addExcludedRepresentation((string) $exclude['name']);
             }
 
-            // Keep things tidy.
             $this->excluded_representations = array_unique($this->excluded_representations);
         }
 
@@ -575,7 +504,6 @@ class Config
             }
         }
 
-        // Keep things tidy
         ksort($this->representations);
 
         if (empty($this->representations)) {
@@ -834,13 +762,13 @@ class Config
     }
 
     /**
-     * Get the array of configured API Blueprint resource group excludes.
+     * Get the array of configured compiler resource group exclusions.
      *
      * @return array
      */
-    public function getBlueprintGroupExcludes(): array
+    public function getCompilerGroupExclusions(): array
     {
-        return $this->blueprint_group_excludes;
+        return $this->compiler_group_exclusions;
     }
 
     /**

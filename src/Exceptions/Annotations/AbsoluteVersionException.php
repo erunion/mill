@@ -7,6 +7,13 @@ class AbsoluteVersionException extends BaseException
 {
     use AnnotationExceptionTrait;
 
+    /**
+     * @param string $version_type
+     * @param string $annotation
+     * @param string $class
+     * @param string $method
+     * @return AbsoluteVersionException
+     */
     public static function create(
         string $version_type,
         string $annotation,

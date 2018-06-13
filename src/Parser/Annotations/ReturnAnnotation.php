@@ -7,12 +7,7 @@ use Mill\Exceptions\Annotations\UnknownReturnCodeException;
 use Mill\Exceptions\Config\UnconfiguredRepresentationException;
 use Mill\Parser\Annotation;
 use Mill\Parser\Annotations\Traits\HasHttpCodeResponseTrait;
-use Mill\Parser\Version;
 
-/**
- * Handler for the `@api-return` annotation.
- *
- */
 class ReturnAnnotation extends Annotation
 {
     use HasHttpCodeResponseTrait;
@@ -30,23 +25,16 @@ class ReturnAnnotation extends Annotation
         'visible'
     ];
 
-    /**
-     * Description for what this annotations' action return is.
-     *
-     * @var false|null|string
-     */
+    /** @var false|null|string Description for what this annotations' action return is. */
     protected $description = null;
 
-    /**
-     * Type of object that is being returned for this annotations' action.
-     *
-     * @var string
-     */
+    /** @var string Type of object that is being returned for this annotations' action. */
     protected $type;
 
     /**
      * {@inheritdoc}
-     * @throws UnknownRepresentationException If a supplied representation has not been configured.
+     * @throws UnknownRepresentationException
+     * @throws UnknownReturnCodeException
      */
     protected function parser(): array
     {
@@ -113,21 +101,6 @@ class ReturnAnnotation extends Annotation
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public static function hydrate(array $data = [], Version $version = null): self
-    {
-        /** @var ReturnAnnotation $annotation */
-        $annotation = parent::hydrate($data, $version);
-        $annotation->setDescription($data['description']);
-        $annotation->setHttpCode($data['http_code']);
-        $annotation->setRepresentation($data['representation']);
-        $annotation->setType($data['type']);
-
-        return $annotation;
-    }
-
-    /**
      * Grab the HTTP code for a given response type.
      *
      * @param string $type
@@ -175,7 +148,7 @@ class ReturnAnnotation extends Annotation
 
     /**
      * @param false|null|string $description
-     * @return self
+     * @return ReturnAnnotation
      */
     public function setDescription($description): self
     {
@@ -193,7 +166,7 @@ class ReturnAnnotation extends Annotation
 
     /**
      * @param string $type
-     * @return self
+     * @return ReturnAnnotation
      */
     public function setType(string $type): self
     {

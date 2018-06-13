@@ -3,12 +3,7 @@ namespace Mill\Parser\Annotations;
 
 use Mill\Container;
 use Mill\Parser\Annotation;
-use Mill\Parser\Version;
 
-/**
- * Handler for the `@api-path` annotation.
- *
- */
 class PathAnnotation extends Annotation
 {
     const REQUIRES_VISIBILITY_DECORATOR = true;
@@ -18,11 +13,7 @@ class PathAnnotation extends Annotation
         'path'
     ];
 
-    /**
-     * URI path that this annotation represents.
-     *
-     * @var string
-     */
+    /** @var string URI path that this annotation represents. */
     protected $path;
 
     /**
@@ -44,30 +35,6 @@ class PathAnnotation extends Annotation
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public static function hydrate(array $data = [], Version $version = null)
-    {
-        /** @var PathAnnotation $annotation */
-        $annotation = parent::hydrate($data, $version);
-        $annotation->setPath($data['path']);
-
-        $annotation->setAliased($data['aliased']);
-
-        $aliases = [];
-        foreach ($data['aliases'] as $alias) {
-            $aliases[] = PathAnnotation::hydrate(array_merge([
-                'class' => $data['class'],
-                'method' => $data['method']
-            ], $alias));
-        }
-
-        $annotation->setAliases($aliases);
-
-        return $annotation;
-    }
-
-    /**
      * @return string
      */
     public function getPath(): string
@@ -77,7 +44,7 @@ class PathAnnotation extends Annotation
 
     /**
      * @param string $path
-     * @return self
+     * @return PathAnnotation
      */
     public function setPath(string $path): self
     {
@@ -111,9 +78,7 @@ class PathAnnotation extends Annotation
     }
 
     /**
-     * Convert the parsed annotation into an array.
-     *
-     * @return array
+     * {{@inheritdoc}}
      */
     public function toArray(): array
     {

@@ -1,0 +1,77 @@
+# Group Theaters
+## Movie Theaters [/theaters/{id}]
+Information on a specific movie theater.
+
+These actions will allow you to pull information on a specific movie theater.
+
+### Get a single movie theater. [GET]
+Return information on a specific movie theater.
+
++ Parameters
+    - `id` (number, required) - Theater ID
++ Response 200 (application/mill.example.theater+json)
+    + Attributes (Theater)
++ Response 304 (application/mill.example.theater+json)
++ Response 404 (application/mill.example.theater+json)
+    + Attributes (Error)
+
+### Update a movie theater. [PATCH]
+Update a movie theaters' data.
+
+This action requires a bearer token with the `create` scope.
+
++ Parameters
+    - `id` (number, required) - Theater ID
++ Request
+    + Attributes
+        - `address`: `2548 Central Park Ave, Yonkers, NY 10710` (string, required) - Theater address
+        - `name`: `Alamo Drafthouse Cinema - Yonkers` (string, required) - Name of the theater.
+        - `phone_number`: `(914) 226-3082` (string, required) - Theater phone number
++ Response 200 (application/mill.example.theater+json)
+    + Attributes (Theater)
++ Response 400 (application/mill.example.theater+json)
+    + Attributes (Error)
++ Response 404 (application/mill.example.theater+json)
+    + Attributes (Error)
+
+### Delete a movie theater. [DELETE]
+Delete a movie theater.
+
+This action requires a bearer token with the `delete` scope.
+
++ Parameters
+    - `id` (number, required) - Theater ID
++ Response 204 (application/json)
++ Response 404 (application/json)
+    + Attributes (Error)
+
+## Movie Theaters [/theaters]
+Information on a specific movie theater.
+
+These actions will allow you to pull information on a specific movie theater.
+
+### Get movie theaters. [GET]
+Returns all movie theatres for a specific location.
+
++ Request
+    + Attributes
+        - `location` (string, required) - Location you want theaters in.
++ Response 200 (application/mill.example.theater+json)
+    + Attributes (array[Theater])
++ Response 400 (application/mill.example.theater+json)
+    + Attributes (Error)
+
+### Create a movie theater. [POST]
+Create a new movie theater.
+
+This action requires a bearer token with the `create` scope.
+
++ Request
+    + Attributes
+        - `address`: `2548 Central Park Ave, Yonkers, NY 10710` (string, required) - Theater address
+        - `name`: `Alamo Drafthouse Cinema - Yonkers` (string, required) - Name of the theater.
+        - `phone_number`: `(914) 226-3082` (string, required) - Theater phone number
++ Response 200 (application/mill.example.theater+json)
+    + Attributes (Theater)
++ Response 400 (application/mill.example.theater+json)
+    + Attributes (Error)

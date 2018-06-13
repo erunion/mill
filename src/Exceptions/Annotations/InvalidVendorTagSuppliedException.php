@@ -10,6 +10,12 @@ class InvalidVendorTagSuppliedException extends BaseException
     /** @var string */
     public $vendor_tag;
 
+    /**
+     * @param string $vendor_tag
+     * @param string $class
+     * @param string $method
+     * @return InvalidVendorTagSuppliedException
+     */
     public static function create(
         string $vendor_tag,
         string $class,

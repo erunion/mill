@@ -3,6 +3,7 @@ namespace Mill\Parser\Resource\Action;
 
 use Dflydev\DotAccessData\Data;
 use Mill\Application;
+use Mill\Contracts\Arrayable;
 use Mill\Exceptions\Annotations\MultipleAnnotationsException;
 use Mill\Exceptions\Annotations\RequiredAnnotationException;
 use Mill\Exceptions\Resource\MissingVisibilityDecoratorException;
@@ -13,17 +14,9 @@ use Mill\Parser;
 use Mill\Parser\Annotations\PathAnnotation;
 use Mill\Parser\Version;
 
-/**
- * Class for parsing a docblock on a given class and method for resource action documentation.
- *
- */
-class Documentation
+class Documentation implements Arrayable
 {
-    /**
-     * Array of required annotations.
-     *
-     * @var array
-     */
+    /** @var array Array of required annotations. */
     const REQUIRED_ANNOTATIONS = [
         'path'
     ];
@@ -46,53 +39,25 @@ class Documentation
         'vendortag'
     ];
 
-    /**
-     * Class we're parsing.
-     *
-     * @var string
-     */
+    /** @var string Class we're parsing. */
     protected $class;
 
-    /**
-     * Class method we're parsing.
-     *
-     * @var string
-     */
+    /** @var string Class method we're parsing. */
     protected $method;
 
-    /**
-     * Short description/label/title of the action.
-     *
-     * @var string
-     */
+    /** @var string Short description/label/title of the action. */
     protected $label;
 
-    /**
-     * Fuller description of the action. This should normally consist of Markdown.
-     *
-     * @var null|string
-     */
+    /** @var null|string Fuller description of the action. This should normally consist of Markdown. */
     protected $description = null;
 
-    /**
-     * Group that this action belongs to. Used for grouping generated documentation.
-     *
-     * @var string
-     */
+    /** @var string Group that this action belongs to. Used for grouping compiled documentation. */
     protected $group;
 
-    /**
-     * Content types that this action might return. Multiple may be returned because of versioning.
-     *
-     * @var array
-     */
+    /** @var array Content types that this action might return. Multiple may be returned because of versioning. */
     protected $content_types = [];
 
-    /**
-     * Array of parsed annotations that exist on this action.
-     *
-     * @var array
-     */
+    /** @var array Array of parsed annotations that exist on this action. */
     protected $annotations = [];
 
     /**
@@ -108,8 +73,14 @@ class Documentation
     /**
      * Parse the instance class and method into actionable annotations and documentation.
      *
-     * @return self
-     * @throws NoAnnotationsException If no annotations were found.
+     * @return Documentation
+     * @throws MissingVisibilityDecoratorException
+     * @throws MultipleAnnotationsException
+     * @throws NoAnnotationsException
+     * @throws PublicDecoratorOnPrivateActionException
+     * @throws RequiredAnnotationException
+     * @throws TooManyAliasedPathsException
+     * @throws \Mill\Exceptions\Resource\UnsupportedDecoratorException
      */
     public function parse(): self
     {
@@ -127,7 +98,7 @@ class Documentation
      * Parse an array of annotation objects and set them to the instance resource action documentation.
      *
      * @param array $annotations
-     * @return self
+     * @return Documentation
      * @throws MissingVisibilityDecoratorException
      * @throws MultipleAnnotationsException
      * @throws PublicDecoratorOnPrivateActionException
@@ -190,7 +161,7 @@ class Documentation
 
                 // If we're dealing with parameter annotations, let's set us up the ability to later sort them in
                 // alphabetical order by keying their annotation array off the parameter field name.
-                if (in_array($key, ['param', 'queryparam'])) {
+                if (in_array($key, ['param', 'pathparam', 'queryparam'])) {
                     /** @var Parser\Annotations\ParamAnnotation|Parser\Annotations\QueryParamAnnotation $annotation */
                     $this->annotations[$key][$annotation->getField()] = $annotation;
                 } else {
@@ -202,6 +173,10 @@ class Documentation
         // Keep the parameter annotation array in alphabetical order, so they're easier to consume in the documentation.
         if (isset($this->annotations['param'])) {
             ksort($this->annotations['param']);
+        }
+
+        if (isset($this->annotations['pathparam'])) {
+            ksort($this->annotations['pathparam']);
         }
 
         if (isset($this->annotations['queryparam'])) {
@@ -339,7 +314,7 @@ class Documentation
 
     /**
      * @param array $content_types
-     * @return self
+     * @return Documentation
      */
     public function setContentTypes(array $content_types): self
     {
@@ -467,7 +442,7 @@ class Documentation
      *
      * @return array
      */
-    public function getPathParams(): array
+    public function getPathParameters(): array
     {
         return (isset($this->annotations['pathparam'])) ? $this->annotations['pathparam'] : [];
     }
@@ -533,7 +508,7 @@ class Documentation
      */
     public function getAllParameters(): array
     {
-        return array_merge($this->getParameters(), $this->getQueryParameters());
+        return array_merge($this->getPathParameters(), $this->getParameters(), $this->getQueryParameters());
     }
 
     /**
@@ -615,7 +590,7 @@ class Documentation
         foreach ($this->annotations as $name => $data) {
             /** @var Parser\Annotation $annotation */
             foreach ($data as $k => $annotation) {
-                // While URI annotations are already filtered within the generator, so we don't need to further filter
+                // While URI annotations are already filtered within the compiler, so we don't need to further filter
                 // them out, we do need to filter URI aliases as those can have their independent visibilities.
                 if ($annotation instanceof PathAnnotation) {
                     $aliases = $annotation->getAliases();
@@ -635,7 +610,7 @@ class Documentation
                 }
 
                 // If this annotation has vendor tags, but those vendor tags aren't in the set of vendor tags we're
-                // generating documentation for, filter it out.
+                // compiling documentation for, filter it out.
                 $vendor_tags = $annotation->getVendorTags();
                 if (!empty($vendor_tags) || !empty($method_vendor_tags)) {
                     // If we don't even have vendor tags to look for, then filter this annotation out completely.
@@ -674,54 +649,6 @@ class Documentation
     }
 
     /**
-     * Hydrate a new resource action documentation object with an array of data generated from `toArray`.
-     *
-     * @param array $data
-     * @return self
-     */
-    public static function hydrate(array $data): self
-    {
-        $annotations = [];
-        $parser = new Parser($data['class']);
-        $action = new self($data['class'], $data['method']);
-
-        $annotations['label'][] = $parser->hydrateAnnotation('label', $data['class'], $data['method'], $data);
-
-        if (!empty($data['description'])) {
-            $annotations['description'][] = $parser->hydrateAnnotation(
-                'description',
-                $data['class'],
-                $data['method'],
-                $data
-            );
-        }
-
-        $annotations['group'][] = $parser->hydrateAnnotation('group', $data['class'], $data['method'], $data);
-
-        foreach ($data['content_types'] as $content_type) {
-            $annotations['contenttype'][] = $parser->hydrateAnnotation(
-                'content_type',
-                $data['class'],
-                $data['method'],
-                $content_type
-            );
-        }
-
-        foreach ($data['annotations'] as $name => $datas) {
-            foreach ($datas as $annotation_data) {
-                $annotations[$name][] = $parser->hydrateAnnotation(
-                    $name,
-                    $data['class'],
-                    $data['method'],
-                    $annotation_data
-                );
-            }
-        }
-
-        return $action->parseAnnotations($annotations);
-    }
-
-    /**
      * Convert the parsed parameter documentation content dot notation field names into an exploded array.
      *
      * @return array
@@ -739,6 +666,16 @@ class Documentation
     public function getExplodedQueryParameterDotNotation(): array
     {
         return $this->buildExplodedDotNotation($this->getQueryParameters());
+    }
+
+    /**
+     * Convert the parsed path parameter documentation content dot notation field names into an exploded array.
+     *
+     * @return array
+     */
+    public function getExplodedPathParameterDotNotation(): array
+    {
+        return $this->buildExplodedDotNotation($this->getPathParameters());
     }
 
     /**
@@ -778,9 +715,7 @@ class Documentation
     }
 
     /**
-     * Convert the parsed resource action documentation into an array.
-     *
-     * @return array
+     * {{@inheritdoc}}
      */
     public function toArray(): array
     {

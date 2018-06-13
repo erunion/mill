@@ -24,7 +24,8 @@
         "gossi/docblock": "^1.5",
         "nicmart/string-template": "^0.1.1",
         "ocramius/package-versions": "^1.1",
-        "symfony/console": "^3.2 || ^4.0"
+        "symfony/console": "^3.2 || ^4.0",
+        "symfony/yaml": "^4.1"
     },
     "require-dev": {
         "league/flysystem-memory": "^1.0",
@@ -51,46 +52,50 @@
         }
     },
     "scripts": {
-        "build-blueprints": [
-            "rm -rf resources/examples/Showtimes/blueprints",
-            "mkdir resources/examples/Showtimes/blueprints",
-            "./bin/mill generate --config=resources/examples/mill.xml resources/examples/Showtimes/blueprints/"
+        "build-docs-apiblueprint": [
+            "./bin/mill compile --config=resources/examples/mill.xml --format=apiblueprint resources/examples/Showtimes/compiled/"
+        ],
+        "build-docs-openapi": [
+            "./bin/mill compile --config=resources/examples/mill.xml --format=openapi resources/examples/Showtimes/compiled/"
         ],
         "build-changelogs": [
-            "./bin/mill changelog --config=resources/examples/mill.xml --private=false resources/examples/Showtimes/blueprints/",
-            "mv resources/examples/Showtimes/blueprints/changelog.md resources/examples/Showtimes/blueprints/changelog-public-only-all-vendor-tags.md",
+            "./bin/mill changelog --config=resources/examples/mill.xml --private=false resources/examples/Showtimes/compiled/",
+            "mv resources/examples/Showtimes/compiled/changelog.md resources/examples/Showtimes/compiled/changelog-public-only-all-vendor-tags.md",
 
-            "./bin/mill changelog --config=resources/examples/mill.xml --private=false --vendor_tag='tag:BUY_TICKETS' --vendor_tag='tag:FEATURE_FLAG' resources/examples/Showtimes/blueprints/",
-            "mv resources/examples/Showtimes/blueprints/changelog.md resources/examples/Showtimes/blueprints/changelog-public-only-matched-with-tickets-and-feature-vendor-tags.md",
+            "./bin/mill changelog --config=resources/examples/mill.xml --private=false --vendor_tag='tag:BUY_TICKETS' --vendor_tag='tag:FEATURE_FLAG' resources/examples/Showtimes/compiled/",
+            "mv resources/examples/Showtimes/compiled/changelog.md resources/examples/Showtimes/compiled/changelog-public-only-matched-with-tickets-and-feature-vendor-tags.md",
 
-            "./bin/mill changelog --config=resources/examples/mill.xml --private=false --vendor_tag='tag:DELETE_CONTENT' resources/examples/Showtimes/blueprints/",
-            "mv resources/examples/Showtimes/blueprints/changelog.md resources/examples/Showtimes/blueprints/changelog-public-only-matched-with-delete-vendor-tags.md",
+            "./bin/mill changelog --config=resources/examples/mill.xml --private=false --vendor_tag='tag:DELETE_CONTENT' resources/examples/Showtimes/compiled/",
+            "mv resources/examples/Showtimes/compiled/changelog.md resources/examples/Showtimes/compiled/changelog-public-only-matched-with-delete-vendor-tags.md",
 
-            "./bin/mill changelog --config=resources/examples/mill.xml resources/examples/Showtimes/blueprints/"
+            "./bin/mill changelog --config=resources/examples/mill.xml resources/examples/Showtimes/compiled/"
         ],
         "build-errors": [
-            "./bin/mill errors --config=resources/examples/mill.xml --private=false resources/examples/Showtimes/blueprints/",
-            "mv resources/examples/Showtimes/blueprints/1.0/errors.md resources/examples/Showtimes/blueprints/1.0/errors-public-only-all-vendor-tags.md",
-            "mv resources/examples/Showtimes/blueprints/1.1/errors.md resources/examples/Showtimes/blueprints/1.1/errors-public-only-all-vendor-tags.md",
-            "mv resources/examples/Showtimes/blueprints/1.1.1/errors.md resources/examples/Showtimes/blueprints/1.1.1/errors-public-only-all-vendor-tags.md",
-            "mv resources/examples/Showtimes/blueprints/1.1.3/errors.md resources/examples/Showtimes/blueprints/1.1.3/errors-public-only-all-vendor-tags.md",
+            "./bin/mill errors --config=resources/examples/mill.xml --private=false resources/examples/Showtimes/compiled/",
+            "mv resources/examples/Showtimes/compiled/1.0/errors.md resources/examples/Showtimes/compiled/1.0/errors-public-only-all-vendor-tags.md",
+            "mv resources/examples/Showtimes/compiled/1.1/errors.md resources/examples/Showtimes/compiled/1.1/errors-public-only-all-vendor-tags.md",
+            "mv resources/examples/Showtimes/compiled/1.1.1/errors.md resources/examples/Showtimes/compiled/1.1.1/errors-public-only-all-vendor-tags.md",
+            "mv resources/examples/Showtimes/compiled/1.1.3/errors.md resources/examples/Showtimes/compiled/1.1.3/errors-public-only-all-vendor-tags.md",
 
-            "./bin/mill errors --config=resources/examples/mill.xml --private=false --vendor_tag='tag:BUY_TICKETS' --vendor_tag='tag:FEATURE_FLAG' resources/examples/Showtimes/blueprints/",
-            "mv resources/examples/Showtimes/blueprints/1.0/errors.md resources/examples/Showtimes/blueprints/1.0/errors-public-only-unmatched-vendor-tags.md",
-            "mv resources/examples/Showtimes/blueprints/1.1/errors.md resources/examples/Showtimes/blueprints/1.1/errors-public-only-unmatched-vendor-tags.md",
-            "mv resources/examples/Showtimes/blueprints/1.1.1/errors.md resources/examples/Showtimes/blueprints/1.1.1/errors-public-only-unmatched-vendor-tags.md",
-            "mv resources/examples/Showtimes/blueprints/1.1.3/errors.md resources/examples/Showtimes/blueprints/1.1.3/errors-public-only-unmatched-vendor-tags.md",
+            "./bin/mill errors --config=resources/examples/mill.xml --private=false --vendor_tag='tag:BUY_TICKETS' --vendor_tag='tag:FEATURE_FLAG' resources/examples/Showtimes/compiled/",
+            "mv resources/examples/Showtimes/compiled/1.0/errors.md resources/examples/Showtimes/compiled/1.0/errors-public-only-unmatched-vendor-tags.md",
+            "mv resources/examples/Showtimes/compiled/1.1/errors.md resources/examples/Showtimes/compiled/1.1/errors-public-only-unmatched-vendor-tags.md",
+            "mv resources/examples/Showtimes/compiled/1.1.1/errors.md resources/examples/Showtimes/compiled/1.1.1/errors-public-only-unmatched-vendor-tags.md",
+            "mv resources/examples/Showtimes/compiled/1.1.3/errors.md resources/examples/Showtimes/compiled/1.1.3/errors-public-only-unmatched-vendor-tags.md",
 
-            "./bin/mill errors --config=resources/examples/mill.xml --private=false --vendor_tag='tag:DELETE_CONTENT' resources/examples/Showtimes/blueprints/",
-            "mv resources/examples/Showtimes/blueprints/1.0/errors.md resources/examples/Showtimes/blueprints/1.0/errors-public-only-matched-vendor-tags.md",
-            "mv resources/examples/Showtimes/blueprints/1.1/errors.md resources/examples/Showtimes/blueprints/1.1/errors-public-only-matched-vendor-tags.md",
-            "mv resources/examples/Showtimes/blueprints/1.1.1/errors.md resources/examples/Showtimes/blueprints/1.1.1/errors-public-only-matched-vendor-tags.md",
-            "mv resources/examples/Showtimes/blueprints/1.1.3/errors.md resources/examples/Showtimes/blueprints/1.1.3/errors-public-only-matched-vendor-tags.md",
+            "./bin/mill errors --config=resources/examples/mill.xml --private=false --vendor_tag='tag:DELETE_CONTENT' resources/examples/Showtimes/compiled/",
+            "mv resources/examples/Showtimes/compiled/1.0/errors.md resources/examples/Showtimes/compiled/1.0/errors-public-only-matched-vendor-tags.md",
+            "mv resources/examples/Showtimes/compiled/1.1/errors.md resources/examples/Showtimes/compiled/1.1/errors-public-only-matched-vendor-tags.md",
+            "mv resources/examples/Showtimes/compiled/1.1.1/errors.md resources/examples/Showtimes/compiled/1.1.1/errors-public-only-matched-vendor-tags.md",
+            "mv resources/examples/Showtimes/compiled/1.1.3/errors.md resources/examples/Showtimes/compiled/1.1.3/errors-public-only-matched-vendor-tags.md",
 
-            "./bin/mill errors --config=resources/examples/mill.xml resources/examples/Showtimes/blueprints/"
+            "./bin/mill errors --config=resources/examples/mill.xml resources/examples/Showtimes/compiled/"
         ],
         "build-resources": [
-            "composer build-blueprints",
+            "rm -rf resources/examples/Showtimes/compiled",
+            "mkdir resources/examples/Showtimes/compiled",
+            "composer build-docs-apiblueprint",
+            "composer build-docs-openapi",
             "composer build-changelogs",
             "composer build-errors"
         ],

@@ -45,7 +45,7 @@ In order to instruct Mill on where to look for documentation, and any constraint
 ## Options
 | Option | Optional |Description |
 | :--- | :--- | :--- |
-| name | ✓ | This is the canonical name of your API. When you generate API Blueprint files, this will be the header declaration. |
+| name | ✓ | This is the canonical name of your API. |
 | bootstrap | × | Relative path to a PHP bootstrap file that will get loaded before Mill does any work. This is usually a [Composer](https://getcomposer.org/) `vendor/autoload.php` file. This is necessary so Mill can access, and parse your API classes for documentation. |
 
 ## Settings
@@ -155,25 +155,22 @@ If you'd like to add additional metadata (that you can eventually filter your do
 
 You can find usage details for vendor tags in the [`@api-vendortag`](reference-api-vendortag.md), [`@api-param`](reference-api-param.md), [`@api-queryparam`](reference-api-queryparam.md), [`@api-return`](reference-api-return.md), and [`@api-error`](reference-api-error.md) documentation.
 
-### Generators
+### Compilers
 These settings let you control the documentation generators that Mill supports from the `./bin/mill generate` command.
 
-#### API Blueprint
-##### Excludes
-* Use `<exclude>` elements to specify a resource group that should be excluded from API Blueprint generation and compilation.
+#### Excludes
+* Use `<exclude>` elements to specify a resource group that should be excluded from compiled specifications.
     * Make sure to add a `group` attribute so Mill knows what group you're excluding.
 
 Example:
 
 ```xml
-<generators>
-    <blueprint>
-        <excludes>
-            <exclude group="/" />
-            <exclude group="OAuth" />
-        </excludes>
-    </blueprint>
-</generators>
+<compilers>
+    <excludes>
+        <exclude group="/" />
+        <exclude group="OAuth" />
+    </excludes>
+</compilers>
 ```
 
 ## XML Schema Definition

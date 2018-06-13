@@ -7,6 +7,12 @@ class MissingRepresentationErrorCodeException extends BaseException
 {
     use AnnotationExceptionTrait;
 
+    /**
+     * @param string $representation
+     * @param string $class
+     * @param string $method
+     * @return MissingRepresentationErrorCodeException
+     */
     public static function create(
         string $representation,
         string $class,

@@ -17,7 +17,7 @@ $version = PackageVersions\Versions::getVersion('ocramius/package-versions');
 
 $application = new Application('Mill', $version);
 $application->add(new Mill\Command\Changelog);
+$application->add(new Mill\Command\Compile);
 $application->add(new Mill\Command\ErrorMap);
-$application->add(new Mill\Command\Generate);
 
 $application->run();
