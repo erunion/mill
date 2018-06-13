@@ -36,7 +36,7 @@ A request parameter that can be supplied to a resource action via a body payload
 
 ### Supported Types
 
-| Type | API Blueprint conversion |
+| Type | Specification representation |
 | :--- | :--- |
 | array | array |
 | boolean | boolean |

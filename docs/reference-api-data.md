@@ -33,7 +33,7 @@ This describes a piece of data within a representation that a resource action ca
 
 ### Supported Types
 
-| Type | API Blueprint conversion |
+| Type | Specification representation |
 | :--- | :--- |
 | array | array |
 | boolean | boolean |

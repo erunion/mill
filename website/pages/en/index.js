@@ -64,22 +64,30 @@ const Block = props => (
 )
 
 const Features = props => (
-  <Block layout='twoColumn'>
-    {[
-      {
-        content: 'Generate <a href="https://apiblueprint.org/">API Blueprint</a> specifications from your documentation.',
-        image: imgUrl('api_blueprint.png'),
-        imageAlign: 'top',
-        title: 'API Blueprint'
-      },
-      {
-        content: 'Automatically compiled, <a href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>-friendly, changelogs of your documentation.',
-        image: imgUrl('keep-a-changelog.svg'),
-        imageAlign: 'top',
-        title: 'Changelogs'
-      }
-    ]}
-  </Block>
+  <div>
+    <Block layout='threeColumn'>
+      {[
+        {
+          content: 'Compile <a href="https://swagger.io/">OpenAPI 3.0</a> specifications from your documentation.',
+          image: imgUrl('openapi.png'),
+          imageAlign: 'top',
+          title: 'OpenAPI 3.0 ready'
+        },
+        {
+          content: 'Automatically compiled, <a href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>-friendly, changelogs of your documentation.',
+          image: imgUrl('keep-a-changelog.svg'),
+          imageAlign: 'top',
+          title: 'Automatic changelogs'
+        },
+        {
+          content: 'Compile <a href="https://apiblueprint.org/">API Blueprint</a> specifications for simple API design.',
+          image: imgUrl('api_blueprint.png'),
+          imageAlign: 'top',
+          title: 'API Blueprint compatible'
+        }
+      ]}
+    </Block>
+  </div>
 )
 
 class Index extends React.Component {

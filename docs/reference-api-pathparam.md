@@ -30,7 +30,7 @@ This allows you to describe the parameters of a coupled resource action path.
 
 ### Supported Types
 
-| Type | API Blueprint conversion |
+| Type | Specification representation |
 | :--- | :--- |
 | array | array |
 | boolean | boolean |
