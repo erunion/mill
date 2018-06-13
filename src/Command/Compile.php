@@ -187,7 +187,7 @@ class Compile extends Application
     {
         $this->filesystem->put(
             $version_dir . 'api.yaml',
-            Yaml::dump($spec, PHP_INT_MAX, 4, Yaml::DUMP_EXCEPTION_ON_INVALID_TYPE)
+            Yaml::dump($spec, PHP_INT_MAX, 4, true)
         );
     }
 }
