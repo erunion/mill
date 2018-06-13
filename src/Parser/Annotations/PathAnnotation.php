@@ -74,7 +74,15 @@ class PathAnnotation extends Annotation
      */
     public function doesPathHaveParam(PathParamAnnotation $param): bool
     {
-        return strpos($this->getCleanPath(), '{' . $param->getField() . '}') !== false;
+        $field = $param->getField();
+
+        // If we have any path param translations configured, let's process them.
+        $translations = Container::getConfig()->getPathParamTranslations();
+        if (isset($translations[$field])) {
+            $field = $translations[$field];
+        }
+
+        return strpos($this->getCleanPath(), '{' . $field . '}') !== false;
     }
 
     /**
