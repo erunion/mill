@@ -27,9 +27,9 @@ class Movie
      * @api-label Get a single movie.
      * @api-group Movies
      *
-     * @api-path:private:alias /movie/+id
-     * @api-path:public /movies/+id
-     * @api-pathparam id `1234` (integer) - Movie ID
+     * @api-path:private:alias /movie/+movie_id
+     * @api-path:public /movies/+movie_id
+     * @api-pathparam movie_id `1234` (integer) - Movie ID
      *
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Movie
      * @api-return:public {notmodified} If no content has been modified since the supplied Last-Modified header.

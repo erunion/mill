@@ -21,8 +21,12 @@ class PathAnnotation extends Annotation
      */
     protected function parser(): array
     {
+        $path = trim($this->docblock);
+        if (!empty($path)) {
+        }
+
         return [
-            'path' => trim($this->docblock)
+            'path' => $path
         ];
     }
 
@@ -32,6 +36,14 @@ class PathAnnotation extends Annotation
     protected function interpreter(): void
     {
         $this->path = $this->required('path');
+
+        // If we have any path param translations configured, let's process them.
+        $translations = Container::getConfig()->getPathParamTranslations();
+        foreach ($translations as $from => $to) {
+            if (preg_match('/([@#+*!~])' . $from . '(\/|$)/', $this->path, $matches)) {
+                $this->path = preg_replace('/([@#+*!~])' . $from . '(\/|$)/', '$1' . $to . '$2', $this->path);
+            }
+        }
     }
 
     /**
@@ -57,15 +69,7 @@ class PathAnnotation extends Annotation
      */
     public function getCleanPath(): string
     {
-        $path = preg_replace('/[@#+*!~]((\w|_)+)(\/|$)/', '{$1}$3', $this->getPath());
-
-        // If we have any path param translations configured, let's process them.
-        $translations = Container::getConfig()->getPathParamTranslations();
-        foreach ($translations as $from => $to) {
-            $path = str_replace('{' . $from . '}', '{' . $to . '}', $path);
-        }
-
-        return $path;
+        return preg_replace('/[@#+*!~]((\w|_)+)(\/|$)/', '{$1}$3', $this->getPath());
     }
 
     /**
@@ -74,15 +78,7 @@ class PathAnnotation extends Annotation
      */
     public function doesPathHaveParam(PathParamAnnotation $param): bool
     {
-        $field = $param->getField();
-
-        // If we have any path param translations configured, let's process them.
-        $translations = Container::getConfig()->getPathParamTranslations();
-        if (isset($translations[$field])) {
-            $field = $translations[$field];
-        }
-
-        return strpos($this->getCleanPath(), '{' . $field . '}') !== false;
+        return strpos($this->getCleanPath(), '{' . $param->getField() . '}') !== false;
     }
 
     /**

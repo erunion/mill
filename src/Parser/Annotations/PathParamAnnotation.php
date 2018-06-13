@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Parser\Annotations;
 
+use Mill\Container;
 use Mill\Parser\MSON;
 
 class PathParamAnnotation extends ParamAnnotation
@@ -27,19 +28,26 @@ class PathParamAnnotation extends ParamAnnotation
      */
     protected function parser(): array
     {
-        $parsed = [];
         $content = trim($this->docblock);
 
         /** @var string $method */
         $method = $this->method;
         $mson = (new MSON($this->class, $method))->parse($content);
-        $parsed = array_merge($parsed, [
+        $parsed = [
             'field' => $mson->getField(),
             'sample_data' => $mson->getSampleData(),
             'type' => $mson->getType(),
             'description' => $mson->getDescription(),
             'values' => $mson->getValues()
-        ]);
+        ];
+
+        if (!empty($parsed['field'])) {
+            // If we have any path param translations configured, let's process them.
+            $translations = Container::getConfig()->getPathParamTranslations();
+            if (isset($translations[$parsed['field']])) {
+                $parsed['field'] = $translations[$parsed['field']];
+            }
+        }
 
         return $parsed;
     }

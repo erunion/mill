@@ -45,7 +45,7 @@ class PathAnnotationTest extends AnnotationTest
         $annotation->process();
 
         $this->assertSame('/movies/{id}/showtimes', $annotation->getCleanPath());
-        $this->assertSame('/movies/+movie_id/showtimes', $annotation->toArray()['path']);
+        $this->assertSame('/movies/+id/showtimes', $annotation->toArray()['path']);
     }
 
     public function providerAnnotation(): array

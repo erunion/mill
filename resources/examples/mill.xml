@@ -49,4 +49,11 @@
         <vendorTag name="tag:FEATURE_FLAG" />
         <vendorTag name="tag:MOVIE_RATINGS" />
     </vendorTags>
+
+    <pathParams>
+        <translations>
+            <translation from="movie_id" to="id" />
+            <translation from="theater_id" to="id" />
+        </translations>
+    </pathParams>
 </mill>

@@ -197,15 +197,8 @@ class ApiBlueprint extends Compiler\Specification
         $blueprint = '+ Parameters';
         $blueprint .= $this->line();
 
-        $translations = $this->config->getPathParamTranslations();
-
         /** @var PathParamAnnotation $param */
         foreach ($params as $param) {
-            $field = $param->getField();
-            foreach ($translations as $from => $to) {
-                $field = str_replace($from, $to, $field);
-            }
-
             /** @var array $values */
             $values = $param->getValues();
             $type = $this->convertTypeToCompatibleType($param->getType());
@@ -213,7 +206,7 @@ class ApiBlueprint extends Compiler\Specification
             $blueprint .= $this->tab();
             $blueprint .= sprintf(
                 '- `%s` (%s, required) - %s',
-                $field,
+                $param->getField(),
                 $type,
                 $param->getDescription()
             );
