@@ -4,6 +4,8 @@
 // Ignore any user application issues with classes that they have that aren't strictly handled.
 error_reporting(E_ALL & ~E_STRICT & ~E_WARNING);
 
+ini_set('memory_limit', '4096M');
+
 foreach ([__DIR__ . '/../../../autoload.php', __DIR__ . '/../vendor/autoload.php'] as $file) {
     if (file_exists($file)) {
         require $file;

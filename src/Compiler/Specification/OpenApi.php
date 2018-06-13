@@ -519,7 +519,9 @@ class OpenApi extends Compiler\Specification
         if (!empty($properties)) {
             $required = [];
             foreach ($properties as $name => $property) {
-                if ($property['required']) {
+                if (!array_key_exists('required', $property)) {
+                    continue;
+                } elseif ($property['required']) {
                     $required[] = $name;
                 }
 

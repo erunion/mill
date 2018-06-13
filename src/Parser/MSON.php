@@ -244,11 +244,11 @@ class MSON implements Arrayable
             $this->description = preg_replace(self::REGEX_CLEAN_MULTILINE, ' ', $this->description);
         }
 
-        if ($this->type === 'enum' && empty($this->values)) {
+        if (($this->type === 'enum' || $this->subtype === 'enum') && empty($this->values)) {
             throw MissingOptionsException::create($this->type, $this->class, $this->method);
         }
 
-        if ($this->type !== 'enum' && !empty($this->values)) {
+        if (($this->type !== 'enum' && $this->subtype !== 'enum') && !empty($this->values)) {
             throw ImproperlyWrittenEnumException::create($content, $this->class, $this->method);
         }
 
