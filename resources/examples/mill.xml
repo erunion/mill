@@ -16,6 +16,11 @@
         </externalDocs>
     </info>
 
+    <servers>
+        <server url="https://api.example.com/v1" description="Production" />
+        <server url="https://api.example.local/v1" description="Development" />
+    </servers>
+
     <versions>
         <version name="1.0" releaseDate="2017-01-01" />
         <version name="1.1" releaseDate="2017-02-01" />

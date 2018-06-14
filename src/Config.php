@@ -35,6 +35,9 @@ class Config
     /** @var array External API documentation. */
     protected $external_documentation = [];
 
+    /** @var array Your API servers. */
+    protected $servers = [];
+
     /** @var string The first version of your API. */
     public $first_api_version;
 
@@ -65,7 +68,7 @@ class Config
     /** @var array Array of excluded application representations. */
     protected $excluded_representations = [];
 
-    /** @var array Array of path parameter translations. (Like translating `+clip_id` to `+video_id`.)  */
+    /** @var array Array of path parameter translations. (Like translating `+clip_id` to `+video_id`.) */
     protected $path_param_translations = [];
 
     /** @var array Array of `@api-param` configured replacement tokens. */
@@ -118,7 +121,7 @@ class Config
         $xml = new SimpleXMLElement($contents);
 
         if ($xml['name']) {
-            $config->name = (string) $xml['name'];
+            $config->name = (string)$xml['name'];
         }
 
         // Load in the user-configured bootstrap. This should either be a Composer autoload file, or set up the
@@ -161,6 +164,9 @@ class Config
         $config->external_documentation = [];
         $config->loadInfo($xml->info);
 
+        $config->servers = [];
+        $config->loadServers($xml->servers);
+
         $config->api_versions = [];
         $config->loadVersions($xml->versions->version);
 
@@ -185,7 +191,7 @@ class Config
     {
         /** @var SimpleXMLElement $vendor_tag */
         foreach ($vendor_tags as $vendor_tag) {
-            $this->addVendorTag((string) $vendor_tag['name']);
+            $this->addVendorTag((string)$vendor_tag['name']);
         }
 
         $this->vendor_tags = array_unique($this->vendor_tags);
@@ -210,7 +216,7 @@ class Config
     {
         /** @var SimpleXMLElement $scope */
         foreach ($scopes as $scope) {
-            $this->scopes[] = (string) $scope['name'];
+            $this->scopes[] = (string)$scope['name'];
         }
 
         $this->scopes = array_unique($this->scopes);
@@ -225,8 +231,8 @@ class Config
     {
         /** @var SimpleXMLElement $translation */
         foreach ($translations as $translation) {
-            $translate_from = trim((string) $translation['from']);
-            $translate_to = trim((string) $translation['to']);
+            $translate_from = trim((string)$translation['from']);
+            $translate_to = trim((string)$translation['to']);
 
             $this->addPathParamTranslation($translate_from, $translate_to);
         }
@@ -259,8 +265,8 @@ class Config
     {
         /** @var SimpleXMLElement $token */
         foreach ($tokens as $token) {
-            $parameter = trim((string) $token['name']);
-            $annotation = trim((string) $token);
+            $parameter = trim((string)$token['name']);
+            $annotation = trim((string)$token);
 
             $this->addParameterToken($parameter, $annotation);
         }
@@ -296,7 +302,7 @@ class Config
         if (isset($compilers->excludes)) {
             /** @var SimpleXMLElement $exclude */
             foreach ($compilers->excludes->exclude as $exclude) {
-                $group = trim((string) $exclude['group']);
+                $group = trim((string)$exclude['group']);
 
                 $this->addCompilerGroupExclusion($group);
             }
@@ -343,12 +349,12 @@ class Config
     protected function loadInfo(SimpleXMLElement $info): void
     {
         if (isset($info->terms)) {
-            $this->terms = (string) $info->terms['url'];
+            $this->terms = (string)$info->terms['url'];
         }
 
         foreach (['name', 'email', 'url'] as $contact_data) {
             if (isset($info->contact[$contact_data])) {
-                $this->contact[$contact_data] = (string) $info->contact[$contact_data];
+                $this->contact[$contact_data] = (string)$info->contact[$contact_data];
             }
         }
 
@@ -359,6 +365,21 @@ class Config
                     'url' => (string) $external_doc['url']
                 ];
             }
+        }
+    }
+
+    /**
+     * Load in an API server configuration definition.
+     *
+     * @param SimpleXMLElement $servers
+     */
+    protected function loadServers(SimpleXMLElement $servers): void
+    {
+        foreach ($servers->server as $server) {
+            $this->servers[] = [
+                'url' => (string) $server['url'],
+                'description' => (string) $server['description']
+            ];
         }
     }
 
@@ -682,6 +703,16 @@ class Config
     public function getExternalDocumentation(): array
     {
         return $this->external_documentation;
+    }
+
+    /**
+     * Get your API servers.
+     *
+     * @return array
+     */
+    public function getServers(): array
+    {
+        return $this->servers;
     }
 
     /**

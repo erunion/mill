@@ -15,7 +15,10 @@
     <xs:group name="group.config">
         <xs:all>
             <xs:element name="info" type="component.info" minOccurs="1" maxOccurs="1" />
+            <xs:element name="servers" type="component.servers" minOccurs="1" maxOccurs="1" />
+
             <xs:element name="versions" type="component.versions" minOccurs="1" maxOccurs="1" />
+
             <xs:element name="compilers" type="component.compilers" minOccurs="0" maxOccurs="1" />
 
             <xs:element name="controllers" type="component.controllers" minOccurs="1" maxOccurs="1" />
@@ -58,6 +61,21 @@
                             </xs:complexType>
                         </xs:element>
                     </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="component.servers">
+        <xs:sequence>
+            <xs:element name="server" minOccurs="1" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="url" type="xs:string" use="required" />
+                            <xs:attribute name="description" type="xs:string" use="required" />
+                        </xs:extension>
+                    </xs:simpleContent>
                 </xs:complexType>
             </xs:element>
         </xs:sequence>

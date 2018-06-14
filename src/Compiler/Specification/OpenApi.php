@@ -46,9 +46,7 @@ class OpenApi extends Compiler\Specification
                     'version' => $this->version,
                     'contact' => (function (): array {
                         $contact = $this->config->getContactInformation();
-                        $spec = [
-                            'url' => $contact['url']
-                        ];
+                        $spec = [];
 
                         foreach (['name', 'email'] as $data) {
                             if (isset($contact[$data])) {
@@ -56,6 +54,7 @@ class OpenApi extends Compiler\Specification
                             }
                         }
 
+                        $spec['url'] = $contact['url'];
                         return $spec;
                     })()
                 ],
@@ -81,9 +80,17 @@ class OpenApi extends Compiler\Specification
 
                     return $tags;
                 })(),
-                /*'servers' => [
-                    ['url' => '']
-                ],*/
+                'servers' => (function (): array {
+                    $spec = [];
+                    foreach ($this->config->getServers() as $server) {
+                        $spec[] = [
+                            'url' => $server['url'],
+                            'description' => $server['description']
+                        ];
+                    }
+
+                    return $spec;
+                })(),
                 'paths' => [],
                 'components' => [],
                 'security' => [
