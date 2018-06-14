@@ -82,10 +82,22 @@ class ConfigTest extends TestCase
         ], $config->getVendorTags());
 
         $this->assertSame([
-            'create',
-            'delete',
-            'edit',
-            'public'
+            'create' => [
+                'name' => 'create',
+                'description' => 'create new content'
+            ],
+            'delete' => [
+                'name' => 'delete',
+                'description' => false
+            ],
+            'edit' => [
+                'name' => 'edit',
+                'description' => false
+            ],
+            'public' => [
+                'name' => 'public',
+                'description' => false
+            ]
         ], $config->getScopes());
 
         $this->assertSame([
@@ -189,16 +201,15 @@ XML;
 
     /**
      * @dataProvider providerLoadFromXMLFailuresOnVariousBadXMLFiles
-     * @param array $includes
      * @param array $exception_details
      * @param string $xml
      * @throws \Exception
      */
-    public function testLoadFromXMLFailuresOnVariousBadXMLFiles(
-        array $includes,
-        array $exception_details,
-        string $xml
-    ): void {
+    public function testLoadFromXMLFailuresOnVariousBadXMLFiles(array $exception_details, string $xml): void
+    {
+        /** @var string $provider */
+        $provider = $this->getName();
+
         if (isset($exception_details['exception'])) {
             $this->expectException($exception_details['exception']);
         } else {
@@ -207,8 +218,8 @@ XML;
         }
 
         // Customize the provider XML so we don't need to have a bunch of DRY'd XML everywhere.
-        $info = $servers = $versions = $controllers = $representations = false;
-        if (in_array('info', $includes)) {
+        $info = $servers = $versions = $controllers = $representations = $authentication = false;
+        if (strpos($provider, 'info.') === false) {
             $info = <<<XML
 <info>
     <terms url="https://example.com/terms" />
@@ -225,7 +236,7 @@ XML;
 XML;
         }
 
-        if (in_array('servers', $includes)) {
+        if (strpos($provider, 'servers.') === false) {
             $servers = <<<XML
 <servers>
     <server url="https://api.example.com/v1" description="Production" />
@@ -234,7 +245,7 @@ XML;
 XML;
         }
 
-        if (in_array('versions', $includes)) {
+        if (strpos($provider, 'versions.') === false) {
             $versions = <<<XML
 <versions>
     <version name="1.0" releaseDate="2017-01-01" />
@@ -243,7 +254,7 @@ XML;
 XML;
         }
 
-        if (in_array('controllers', $includes)) {
+        if (strpos($provider, 'controllers.') === false) {
             $controllers = <<<XML
 <controllers>
     <filter>
@@ -253,13 +264,26 @@ XML;
 XML;
         }
 
-        if (in_array('representations', $includes)) {
+        if (strpos($provider, 'representations.') === false) {
             $representations = <<<XML
 <representations>
     <filter>
         <class name="\Mill\Examples\Showtimes\Representations\Movie" method="create" />
     </filter>
 </representations>
+XML;
+        }
+
+        if (strpos($provider, 'authentication.') === false) {
+            $authentication = <<<XML
+<authentication>
+    <scopes>
+        <scope name="create" />
+        <scope name="delete" />
+        <scope name="edit" />
+        <scope name="public" />
+    </scopes>
+</authentication>
 XML;
         }
 
@@ -271,6 +295,7 @@ XML;
     $versions
     $controllers
     $representations
+    $authentication
     $xml
 </mill>
 XML;
@@ -305,7 +330,6 @@ XML;
              *
              */
             'versions.no-default' => [
-                'includes' => ['info', 'servers', 'controllers', 'representations'],
                 'exception' => [
                     'regex' => '/You must set/'
                 ],
@@ -317,7 +341,6 @@ XML
             ],
 
             'versions.multiple-defaults' => [
-                'includes' => ['info', 'servers', 'controllers', 'representations'],
                 'exception' => [
                     'exception' => \InvalidArgumentException::class,
                     'regex' => '/Multiple default API versions/'
@@ -335,7 +358,6 @@ XML
              *
              */
             'compilers.exclude.invalid' => [
-                'includes' => ['info', 'servers', 'versions', 'controllers', 'representations'],
                 'exception' => [
                     'regex' => '/invalid compiler group exclusion/'
                 ],
@@ -353,7 +375,6 @@ XML
              *
              */
             'controllers.directory.invalid' => [
-                'includes' => ['info', 'servers', 'versions', 'representations'],
                 'exception' => [
                     'exception' => \InvalidArgumentException::class,
                     'regex' => '/does not exist/'
@@ -368,7 +389,6 @@ XML
             ],
 
             'controllers.none-found' => [
-                'includes' => ['info', 'servers', 'versions', 'representations'],
                 'exception' => [
                     'exception' => \InvalidArgumentException::class,
                     'regex' => '/requires a set of controllers/'
@@ -383,7 +403,6 @@ XML
             ],
 
             'controllers.class.uncallable' => [
-                'includes' => ['info', 'servers', 'versions', 'representations'],
                 'exception' => [
                     'exception' => \InvalidArgumentException::class,
                     'regex' => '/could not be called/'
@@ -402,7 +421,6 @@ XML
              *
              */
             'representations.none-found' => [
-                'includes' => ['info', 'servers', 'versions', 'controllers'],
                 'exception' => [
                     'exception' => \InvalidArgumentException::class,
                     'regex' => '/requires a set of representations/'
@@ -417,7 +435,6 @@ XML
             ],
 
             'representations.class.missing-method' => [
-                'includes' => ['info', 'servers', 'versions', 'controllers'],
                 'exception' => [
                     'regex' => '/missing a `method`/'
                 ],
@@ -431,7 +448,6 @@ XML
             ],
 
             'representations.class.uncallable' => [
-                'includes' => ['info', 'servers', 'versions', 'controllers'],
                 'exception' => [
                     'exception' => UncallableRepresentationException::class
                 ],
@@ -445,7 +461,6 @@ XML
             ],
 
             'representations.directory.invalid' => [
-                'includes' => ['info', 'servers', 'versions', 'controllers'],
                 'exception' => [
                     'exception' => \InvalidArgumentException::class,
                     'regex' => '/does not exist/'
@@ -460,7 +475,6 @@ XML
             ],
 
             'representations.error.uncallable' => [
-                'includes' => ['info', 'servers', 'versions', 'controllers'],
                 'exception' => [
                     'exception' => UncallableErrorRepresentationException::class
                 ],
@@ -478,7 +492,6 @@ XML
             ],
 
             'representations.error.missing-method' => [
-                'includes' => ['info', 'servers', 'versions', 'controllers'],
                 'exception' => [
                     'regex' => '/missing a `method`/'
                 ],
@@ -500,7 +513,6 @@ XML
              *
              */
             'parametertokens.invalid' => [
-                'includes' => ['info', 'servers', 'versions', 'controllers', 'representations'],
                 'exception' => [
                     'regex' => '/invalid parameter token/'
                 ],
@@ -516,7 +528,6 @@ XML
              *
              */
             'pathparams.invalid' => [
-                'includes' => ['info', 'servers', 'versions', 'controllers', 'representations'],
                 'exception' => [
                     'regex' => '/invalid translation text/'
                 ],

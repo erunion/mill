@@ -697,7 +697,15 @@ components:
 security:
   -
     OAuth2:
-      - create
-      - delete
-      - edit
-      - public
+      create:
+        name: create
+        description: 'create new content'
+      delete:
+        name: delete
+        description: false
+      edit:
+        name: edit
+        description: false
+      public:
+        name: public
+        description: false

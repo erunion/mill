@@ -54,19 +54,14 @@
         </errors>
     </representations>
 
-    <scopes>
-        <scope name="create" />
-        <scope name="delete" />
-        <scope name="edit" />
-        <scope name="public" />
-    </scopes>
-
-    <vendorTags>
-        <vendorTag name="tag:BUY_TICKETS" />
-        <vendorTag name="tag:DELETE_CONTENT" />
-        <vendorTag name="tag:FEATURE_FLAG" />
-        <vendorTag name="tag:MOVIE_RATINGS" />
-    </vendorTags>
+    <authentication>
+        <scopes>
+            <scope name="create" description="create new content" />
+            <scope name="delete" />
+            <scope name="edit" />
+            <scope name="public" />
+        </scopes>
+    </authentication>
 
     <pathParams>
         <translations>
@@ -74,4 +69,11 @@
             <translation from="theater_id" to="id" />
         </translations>
     </pathParams>
+
+    <vendorTags>
+        <vendorTag name="tag:BUY_TICKETS" />
+        <vendorTag name="tag:DELETE_CONTENT" />
+        <vendorTag name="tag:FEATURE_FLAG" />
+        <vendorTag name="tag:MOVIE_RATINGS" />
+    </vendorTags>
 </mill>
