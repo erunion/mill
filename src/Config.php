@@ -26,6 +26,15 @@ class Config
     /** @var null|string The name of your API. */
     protected $name = null;
 
+    /** @var null|string The terms of service URL for your API. */
+    protected $terms = null;
+
+    /** @var array The contact information for your API. */
+    protected $contact = [];
+
+    /** @var array External API documentation. */
+    protected $external_documentation = [];
+
     /** @var string The first version of your API. */
     public $first_api_version;
 
@@ -146,6 +155,11 @@ class Config
         if (isset($xml->compilers)) {
             $config->loadCompilerSettings($xml->compilers);
         }
+
+        $config->terms = null;
+        $config->contact = [];
+        $config->external_documentation = [];
+        $config->loadInfo($xml->info);
 
         $config->api_versions = [];
         $config->loadVersions($xml->versions->version);
@@ -319,6 +333,33 @@ class Config
         }
 
         $this->compiler_group_exclusions = array_flip($excludes);
+    }
+
+    /**
+     * Load in an API information configuration definition.
+     *
+     * @param SimpleXMLElement $info
+     */
+    protected function loadInfo(SimpleXMLElement $info): void
+    {
+        if (isset($info->terms)) {
+            $this->terms = (string) $info->terms['url'];
+        }
+
+        foreach (['name', 'email', 'url'] as $contact_data) {
+            if (isset($info->contact[$contact_data])) {
+                $this->contact[$contact_data] = (string) $info->contact[$contact_data];
+            }
+        }
+
+        if (isset($info->externalDocs)) {
+            foreach ($info->externalDocs->externalDoc as $external_doc) {
+                $this->external_documentation[] = [
+                    'name' => (string) $external_doc['name'],
+                    'url' => (string) $external_doc['url']
+                ];
+            }
+        }
     }
 
     /**
@@ -611,6 +652,36 @@ class Config
     public function getName(): ?string
     {
         return $this->name;
+    }
+
+    /**
+     * Get the terms of service URL for your API.
+     *
+     * @return null|string
+     */
+    public function getTerms(): ?string
+    {
+        return $this->terms;
+    }
+
+    /**
+     * Get the contact information for your API.
+     *
+     * @return array
+     */
+    public function getContactInformation(): array
+    {
+        return $this->contact;
+    }
+
+    /**
+     * Get external documentation for your API.
+     *
+     * @return array
+     */
+    public function getExternalDocumentation(): array
+    {
+        return $this->external_documentation;
     }
 
     /**

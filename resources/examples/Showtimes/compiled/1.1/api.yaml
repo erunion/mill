@@ -1,688 +1,692 @@
 openapi: 3.0.0
 info:
-    title: 'Mill unit test API, Showtimes'
-    version: '1.1'
+  title: 'Mill unit test API, Showtimes'
+  version: '1.1'
+  contact:
+    url: 'https://developer.example.com/help'
+    name: 'Get help!'
+    email: support@example.com
 tags:
-    -
-        name: Movies
-    -
-        name: Theaters
+  -
+    name: Movies
+  -
+    name: Theaters
 paths:
-    '/movie/{id}':
-        get:
-            summary: 'Get a single movie.'
-            description: "Return information on a specific movie.\n\nDonec id elit non mi porta gravida at eget metus. Cras mattis consectetur purus sit amet fermentum. Lorem\nipsum dolor sit amet, consectetur adipiscing elit. Etiam porta sem malesuada magna mollis euismod. Duis\nmollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Etiam porta\nsem malesuada magna mollis euismod.\n\n```\n[\n  {\"id\": \"fizzbuzz\"}\n]\n```"
-            operationId: getMovieId
-            tags:
-                - Movies
-            parameters:
-                -
-                    name: id
-                    in: path
-                    description: 'Movie ID'
-                    required: true
-                    schema:
-                        type: number
-                        example: '1234'
-            responses:
-                200:
-                    description: 'Standard request.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Movie'
-                304:
-                    description: 'If no content has been modified since the supplied Last-Modified header.'
-                404:
-                    description: 'If the movie could not be found.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Error'
-    '/movies/{id}':
-        get:
-            summary: 'Get a single movie.'
-            description: "Return information on a specific movie.\n\nDonec id elit non mi porta gravida at eget metus. Cras mattis consectetur purus sit amet fermentum. Lorem\nipsum dolor sit amet, consectetur adipiscing elit. Etiam porta sem malesuada magna mollis euismod. Duis\nmollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Etiam porta\nsem malesuada magna mollis euismod.\n\n```\n[\n  {\"id\": \"fizzbuzz\"}\n]\n```"
-            operationId: getMoviesId
-            tags:
-                - Movies
-            parameters:
-                -
-                    name: id
-                    in: path
-                    description: 'Movie ID'
-                    required: true
-                    schema:
-                        type: number
-                        example: '1234'
-            responses:
-                200:
-                    description: 'Standard request.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Movie'
-                304:
-                    description: 'If no content has been modified since the supplied Last-Modified header.'
-                404:
-                    description: 'If the movie could not be found.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Error'
-        patch:
-            summary: 'Update a movie.'
-            description: 'Update a movies data.'
-            operationId: patchMoviesId
-            tags:
-                - Movies
-            parameters:
-                -
-                    name: id
-                    in: path
-                    description: 'Movie ID'
-                    required: true
-                    schema:
-                        type: number
-                        example: '1234'
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            properties:
-                                cast:
-                                    description: 'Array of cast members.'
-                                    type: array
-                                    items:
-                                        type: object
-                                        properties:
-                                            name:
-                                                description: 'Cast member name.'
-                                                type: string
-                                                example: 'Natasha Hovey'
-                                            role:
-                                                description: 'Cast member role.'
-                                                type: string
-                                                example: Cheryl
-                                content_rating:
-                                    description: "MPAA rating\n\nOption descriptions:\n * `G` - Rated G\n * `NC-17` - Rated NC-17\n * `NR` - Not rated\n * `PG` - Rated PG\n * `PG-13` - Rated PG-13\n * `R` - Rated R\n * `UR` - Unrated\n * `X` - Rated X\n"
-                                    type: string
-                                    example: NR
-                                    enum:
-                                        - G
-                                        - NC-17
-                                        - NR
-                                        - PG
-                                        - PG-13
-                                        - R
-                                        - UR
-                                        - X
-                                description:
-                                    description: 'Description, or tagline, for the movie.'
-                                    type: string
-                                director:
-                                    description: 'Name of the director.'
-                                    type: string
-                                    example: 'Lamberto Bava'
-                                genres:
-                                    description: 'Array of movie genres.'
-                                    type: array
-                                    items:
-                                        type: string
-                                is_kid_friendly:
-                                    description: 'Is this movie kid friendly?'
-                                    type: boolean
-                                name:
-                                    description: 'Name of the movie.'
-                                    type: string
-                                    example: Demons
-                                rotten_tomatoes_score:
-                                    description: 'Rotten Tomatoes score'
-                                    type: number
-                                    example: '56'
-                                runtime:
-                                    description: 'Movie runtime, in `HHhr MMmin` format.'
-                                    type: string
-                                    example: '1hr 20min'
-                                trailer:
-                                    description: 'Trailer URL'
-                                    type: string
-                                    example: 'https://www.youtube.com/watch?v=_cNjTdFHL8E'
-                                    nullable: true
-                            required:
-                                - description
-                                - name
-            responses:
-                200:
-                    description: 'Standard request.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Movie'
-                400:
-                    description: "There are two ways that this status code can be encountered:\n * If there is a problem with the request.\n * If the IMDB URL could not be validated."
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Error'
-                404:
-                    description: 'If the movie could not be found.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Error'
-            security:
-                -
-                    OAuth2:
-                        - edit
-        delete:
-            summary: 'Delete a movie.'
-            description: 'Delete a movie.'
-            operationId: deleteMoviesId
-            tags:
-                - Movies
-            parameters:
-                -
-                    name: id
-                    in: path
-                    description: 'Movie ID'
-                    required: true
-                    schema:
-                        type: number
-                        example: '1234'
-            responses:
-                204:
-                    description: 'Standard request.'
-                404:
-                    description: 'If the movie could not be found.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Error'
-            security:
-                -
-                    OAuth2:
-                        - delete
-    /movies:
-        get:
-            summary: 'Get movies.'
-            description: 'Returns all movies for a specific location.'
-            operationId: getMovies
-            tags:
-                - Movies
-            parameters:
-                -
-                    name: location
-                    in: query
-                    description: 'Location you want movies for.'
-                    required: true
-                    schema:
-                        type: string
-                -
-                    name: page
-                    in: query
-                    description: 'Page of results to pull.'
-                    required: false
-                    schema:
-                        type: number
-            responses:
-                200:
-                    description: 'Standard request.'
-                    content:
-                        application/json:
-                            schema:
-                                type: array
-                                items:
-                                    $ref: '#/components/schemas/Movie'
-                400:
-                    description: 'If the location is invalid.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Error'
-        post:
-            summary: 'Create a movie.'
-            description: 'Create a new movie.'
-            operationId: postMovies
-            tags:
-                - Movies
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            properties:
-                                cast:
-                                    description: 'Array of cast members.'
-                                    type: array
-                                    items:
-                                        type: object
-                                        properties:
-                                            name:
-                                                description: 'Cast member name.'
-                                                type: string
-                                                example: 'Natasha Hovey'
-                                            role:
-                                                description: 'Cast member role.'
-                                                type: string
-                                                example: Cheryl
-                                content_rating:
-                                    description: "MPAA rating\n\nOption descriptions:\n * `G` - Rated G\n * `NC-17` - Rated NC-17\n * `NR` - Not rated\n * `PG` - Rated PG\n * `PG-13` - Rated PG-13\n * `R` - Rated R\n * `UR` - Unrated\n * `X` - Rated X\n"
-                                    type: string
-                                    example: NR
-                                    enum:
-                                        - G
-                                        - NC-17
-                                        - NR
-                                        - PG
-                                        - PG-13
-                                        - R
-                                        - UR
-                                        - X
-                                description:
-                                    description: 'Description, or tagline, for the movie.'
-                                    type: string
-                                director:
-                                    description: 'Name of the director.'
-                                    type: string
-                                    example: 'Lamberto Bava'
-                                genres:
-                                    description: 'Array of movie genres.'
-                                    type: array
-                                    items:
-                                        type: string
-                                imdb:
-                                    description: 'IMDB URL'
-                                    type: string
-                                    example: 'https://www.imdb.com/title/tt0089013/'
-                                is_kid_friendly:
-                                    description: 'Is this movie kid friendly?'
-                                    type: boolean
-                                name:
-                                    description: 'Name of the movie.'
-                                    type: string
-                                    example: Demons
-                                rotten_tomatoes_score:
-                                    description: 'Rotten Tomatoes score'
-                                    type: number
-                                    example: '56'
-                                runtime:
-                                    description: 'Movie runtime, in `HHhr MMmin` format.'
-                                    type: string
-                                    example: '1hr 20min'
-                                trailer:
-                                    description: 'Trailer URL'
-                                    type: string
-                                    example: 'https://www.youtube.com/watch?v=_cNjTdFHL8E'
-                                    nullable: true
-                            required:
-                                - description
-                                - name
-            responses:
-                200:
-                    description: 'Standard request.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Movie'
-                400:
-                    description: "There are two ways that this status code can be encountered:\n * If there is a problem with the request.\n * If the IMDB URL could not be validated."
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Error'
-            security:
-                -
-                    OAuth2:
-                        - create
-    '/theaters/{id}':
-        get:
-            summary: 'Get a single movie theater.'
-            description: 'Return information on a specific movie theater.'
-            operationId: getTheatersId
-            tags:
-                - Theaters
-            parameters:
-                -
-                    name: id
-                    in: path
-                    description: 'Theater ID'
-                    required: true
-                    schema:
-                        type: number
-                        example: '1234'
-            responses:
-                200:
-                    description: 'Standard request.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Theater'
-                304:
-                    description: 'If no content has been modified since the supplied Last-Modified header.'
-                404:
-                    description: 'If the movie theater could not be found.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Error'
-        patch:
-            summary: 'Update a movie theater.'
-            description: 'Update a movie theaters'' data.'
-            operationId: patchTheatersId
-            tags:
-                - Theaters
-            parameters:
-                -
-                    name: id
-                    in: path
-                    description: 'Theater ID'
-                    required: true
-                    schema:
-                        type: number
-                        example: '1234'
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            properties:
-                                address:
-                                    description: 'Theater address'
-                                    type: string
-                                    example: '2548 Central Park Ave, Yonkers, NY 10710'
-                                name:
-                                    description: 'Name of the theater.'
-                                    type: string
-                                    example: 'Alamo Drafthouse Cinema - Yonkers'
-                                phone_number:
-                                    description: 'Theater phone number'
-                                    type: string
-                                    example: '(914) 226-3082'
-                            required:
-                                - address
-                                - name
-                                - phone_number
-            responses:
-                200:
-                    description: 'Standard request.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Theater'
-                400:
-                    description: 'If there is a problem with the request.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Error'
-                404:
-                    description: 'If the movie movie could not be found.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Error'
-                403:
-                    description: 'If something cool happened. Returns a unique error code of `1337`.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/CodedError'
-            security:
-                -
-                    OAuth2:
-                        - create
-        delete:
-            summary: 'Delete a movie theater.'
-            description: 'Delete a movie theater.'
-            operationId: deleteTheatersId
-            tags:
-                - Theaters
-            parameters:
-                -
-                    name: id
-                    in: path
-                    description: 'Theater ID'
-                    required: true
-                    schema:
-                        type: number
-                        example: '1234'
-            responses:
-                204:
-                    description: 'Standard request.'
-                404:
-                    description: 'If the movie theater could not be found.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Error'
-            security:
-                -
-                    OAuth2:
-                        - delete
-    /theaters:
-        get:
-            summary: 'Get movie theaters.'
-            description: 'Returns all movie theatres for a specific location.'
-            operationId: getTheaters
-            tags:
-                - Theaters
-            parameters:
-                -
-                    name: location
-                    in: query
-                    description: 'Location you want theaters in.'
-                    required: true
-                    schema:
-                        type: string
-            responses:
-                200:
-                    description: 'Standard request.'
-                    content:
-                        application/json:
-                            schema:
-                                type: array
-                                items:
-                                    $ref: '#/components/schemas/Theater'
-                400:
-                    description: 'If the location is invalid.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Error'
-        post:
-            summary: 'Create a movie theater.'
-            description: 'Create a new movie theater.'
-            operationId: postTheaters
-            tags:
-                - Theaters
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            properties:
-                                address:
-                                    description: 'Theater address'
-                                    type: string
-                                    example: '2548 Central Park Ave, Yonkers, NY 10710'
-                                name:
-                                    description: 'Name of the theater.'
-                                    type: string
-                                    example: 'Alamo Drafthouse Cinema - Yonkers'
-                                phone_number:
-                                    description: 'Theater phone number'
-                                    type: string
-                                    example: '(914) 226-3082'
-                            required:
-                                - address
-                                - name
-                                - phone_number
-            responses:
-                200:
-                    description: 'Standard request.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Theater'
-                400:
-                    description: 'If there is a problem with the request.'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Error'
-            security:
-                -
-                    OAuth2:
-                        - create
-components:
-    schemas:
-        CodedError:
-            properties:
-                error:
-                    description: 'User-friendly error message'
-                    type: string
-                error_code:
-                    description: 'Error code'
-                    type: number
-        Error:
-            properties:
-                error:
-                    description: 'User-friendly error message'
-                    type: string
-        Movie:
-            properties:
+  '/movie/{id}':
+    get:
+      summary: 'Get a single movie.'
+      description: "Return information on a specific movie.\n\nDonec id elit non mi porta gravida at eget metus. Cras mattis consectetur purus sit amet fermentum. Lorem\nipsum dolor sit amet, consectetur adipiscing elit. Etiam porta sem malesuada magna mollis euismod. Duis\nmollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Etiam porta\nsem malesuada magna mollis euismod.\n\n```\n[\n  {\"id\": \"fizzbuzz\"}\n]\n```"
+      operationId: getMovieId
+      tags:
+        - Movies
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Movie ID'
+          required: true
+          schema:
+            type: number
+            example: '1234'
+      responses:
+        200:
+          description: 'Standard request.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/movie'
+        304:
+          description: 'If no content has been modified since the supplied Last-Modified header.'
+        404:
+          description: 'If the movie could not be found.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  '/movies/{id}':
+    get:
+      summary: 'Get a single movie.'
+      description: "Return information on a specific movie.\n\nDonec id elit non mi porta gravida at eget metus. Cras mattis consectetur purus sit amet fermentum. Lorem\nipsum dolor sit amet, consectetur adipiscing elit. Etiam porta sem malesuada magna mollis euismod. Duis\nmollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Etiam porta\nsem malesuada magna mollis euismod.\n\n```\n[\n  {\"id\": \"fizzbuzz\"}\n]\n```"
+      operationId: getMoviesId
+      tags:
+        - Movies
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Movie ID'
+          required: true
+          schema:
+            type: number
+            example: '1234'
+      responses:
+        200:
+          description: 'Standard request.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/movie'
+        304:
+          description: 'If no content has been modified since the supplied Last-Modified header.'
+        404:
+          description: 'If the movie could not be found.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+    patch:
+      summary: 'Update a movie.'
+      description: 'Update a movies data.'
+      operationId: patchMoviesId
+      tags:
+        - Movies
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Movie ID'
+          required: true
+          schema:
+            type: number
+            example: '1234'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
                 cast:
-                    description: 'Cast. This data requires a bearer token with the `public` scope.'
-                    type: array
-                    items:
-                        type: string
-                content_rating:
-                    description: 'MPAA rating'
-                    type: string
-                    example: G
-                    enum:
-                        - G
-                        - NC-17
-                        - NR
-                        - PG
-                        - PG-13
-                        - R
-                        - UR
-                        - X
-                description:
-                    description: Description
-                    type: string
-                director:
-                    description: 'Director. This data requires a bearer token with the `public` scope.'
-                    allOf:
-                        -
-                            $ref: '#/components/schemas/Person'
-                external_urls:
-                    description: 'External URLs. This data requires a bearer token with the `public` scope.'
-                    type: array
-                    items:
-                        type: object
-                        properties:
-                            imdb:
-                                description: 'IMDB URL. This data requires a bearer token with the `public` scope.'
-                                type: string
-                            tickets:
-                                description: 'Tickets URL. This data requires a bearer token with the `public` scope.'
-                                type: string
-                            trailer:
-                                description: 'Trailer URL. This data requires a bearer token with the `public` scope.'
-                                type: string
-                genres:
-                    description: Genres
-                    type: array
-                    items:
-                        type: string
-                id:
-                    description: 'Unique ID'
-                    type: number
-                kid_friendly:
-                    description: 'Kid friendly?'
-                    type: boolean
-                    example: 'false'
-                name:
-                    description: Name
-                    type: string
-                purchase:
+                  description: 'Array of cast members.'
+                  type: array
+                  items:
                     type: object
                     properties:
-                        url:
-                            description: 'URL to purchase the film.'
-                            type: string
+                      name:
+                        description: 'Cast member name.'
+                        type: string
+                        example: 'Natasha Hovey'
+                      role:
+                        description: 'Cast member role.'
+                        type: string
+                        example: Cheryl
+                content_rating:
+                  description: "MPAA rating\n\nOption descriptions:\n * `G` - Rated G\n * `NC-17` - Rated NC-17\n * `NR` - Not rated\n * `PG` - Rated PG\n * `PG-13` - Rated PG-13\n * `R` - Rated R\n * `UR` - Unrated\n * `X` - Rated X\n"
+                  type: string
+                  example: NR
+                  enum:
+                    - G
+                    - NC-17
+                    - NR
+                    - PG
+                    - PG-13
+                    - R
+                    - UR
+                    - X
+                description:
+                  description: 'Description, or tagline, for the movie.'
+                  type: string
+                director:
+                  description: 'Name of the director.'
+                  type: string
+                  example: 'Lamberto Bava'
+                genres:
+                  description: 'Array of movie genres.'
+                  type: array
+                  items:
+                    type: string
+                is_kid_friendly:
+                  description: 'Is this movie kid friendly?'
+                  type: boolean
+                name:
+                  description: 'Name of the movie.'
+                  type: string
+                  example: Demons
                 rotten_tomatoes_score:
-                    description: 'Rotten Tomatoes score'
-                    type: number
+                  description: 'Rotten Tomatoes score'
+                  type: number
+                  example: '56'
                 runtime:
-                    description: Runtime
-                    type: string
-                showtimes:
-                    description: 'Non-theater specific showtimes'
-                    type: array
-                    items:
-                        type: string
-                theaters:
-                    description: 'Theaters the movie is currently showing in'
-                    type: array
-                    items:
-                        type: string
-                uri:
-                    description: 'Movie URI'
-                    type: string
-        Person:
-            properties:
-                id:
-                    description: 'Unique ID'
-                    type: number
-                imdb:
-                    description: 'IMDB URL'
-                    type: string
-                name:
-                    description: Name
-                    type: string
-                uri:
-                    description: 'Person URI'
-                    type: string
-        Theater:
-            properties:
-                address:
-                    description: Address
-                    type: string
-                id:
-                    description: 'Unique ID'
-                    type: number
-                movies:
-                    description: 'Movies currently playing'
-                    type: array
-                    items:
-                        type: string
-                name:
-                    description: Name
-                    type: string
-                phone_number:
-                    description: 'Phone number'
-                    type: string
-                showtimes:
-                    description: 'Non-movie specific showtimes'
-                    type: array
-                    items:
-                        type: string
-                uri:
-                    description: 'Theater URI'
-                    type: string
-security:
-    -
-        OAuth2:
-            - create
-            - delete
+                  description: 'Movie runtime, in `HHhr MMmin` format.'
+                  type: string
+                  example: '1hr 20min'
+                trailer:
+                  description: 'Trailer URL'
+                  type: string
+                  example: 'https://www.youtube.com/watch?v=_cNjTdFHL8E'
+                  nullable: true
+              required:
+                - description
+                - name
+      responses:
+        200:
+          description: 'Standard request.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/movie'
+        400:
+          description: "There are two ways that this status code can be encountered:\n * If there is a problem with the request.\n * If the IMDB URL could not be validated."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        404:
+          description: 'If the movie could not be found.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          OAuth2:
             - edit
-            - public
+    delete:
+      summary: 'Delete a movie.'
+      description: 'Delete a movie.'
+      operationId: deleteMoviesId
+      tags:
+        - Movies
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Movie ID'
+          required: true
+          schema:
+            type: number
+            example: '1234'
+      responses:
+        204:
+          description: 'Standard request.'
+        404:
+          description: 'If the movie could not be found.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          OAuth2:
+            - delete
+  /movies:
+    get:
+      summary: 'Get movies.'
+      description: 'Returns all movies for a specific location.'
+      operationId: getMovies
+      tags:
+        - Movies
+      parameters:
+        -
+          name: location
+          in: query
+          description: 'Location you want movies for.'
+          required: true
+          schema:
+            type: string
+        -
+          name: page
+          in: query
+          description: 'Page of results to pull.'
+          required: false
+          schema:
+            type: number
+      responses:
+        200:
+          description: 'Standard request.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/movie'
+        400:
+          description: 'If the location is invalid.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+    post:
+      summary: 'Create a movie.'
+      description: 'Create a new movie.'
+      operationId: postMovies
+      tags:
+        - Movies
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cast:
+                  description: 'Array of cast members.'
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        description: 'Cast member name.'
+                        type: string
+                        example: 'Natasha Hovey'
+                      role:
+                        description: 'Cast member role.'
+                        type: string
+                        example: Cheryl
+                content_rating:
+                  description: "MPAA rating\n\nOption descriptions:\n * `G` - Rated G\n * `NC-17` - Rated NC-17\n * `NR` - Not rated\n * `PG` - Rated PG\n * `PG-13` - Rated PG-13\n * `R` - Rated R\n * `UR` - Unrated\n * `X` - Rated X\n"
+                  type: string
+                  example: NR
+                  enum:
+                    - G
+                    - NC-17
+                    - NR
+                    - PG
+                    - PG-13
+                    - R
+                    - UR
+                    - X
+                description:
+                  description: 'Description, or tagline, for the movie.'
+                  type: string
+                director:
+                  description: 'Name of the director.'
+                  type: string
+                  example: 'Lamberto Bava'
+                genres:
+                  description: 'Array of movie genres.'
+                  type: array
+                  items:
+                    type: string
+                imdb:
+                  description: 'IMDB URL'
+                  type: string
+                  example: 'https://www.imdb.com/title/tt0089013/'
+                is_kid_friendly:
+                  description: 'Is this movie kid friendly?'
+                  type: boolean
+                name:
+                  description: 'Name of the movie.'
+                  type: string
+                  example: Demons
+                rotten_tomatoes_score:
+                  description: 'Rotten Tomatoes score'
+                  type: number
+                  example: '56'
+                runtime:
+                  description: 'Movie runtime, in `HHhr MMmin` format.'
+                  type: string
+                  example: '1hr 20min'
+                trailer:
+                  description: 'Trailer URL'
+                  type: string
+                  example: 'https://www.youtube.com/watch?v=_cNjTdFHL8E'
+                  nullable: true
+              required:
+                - description
+                - name
+      responses:
+        200:
+          description: 'Standard request.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/movie'
+        400:
+          description: "There are two ways that this status code can be encountered:\n * If there is a problem with the request.\n * If the IMDB URL could not be validated."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          OAuth2:
+            - create
+  '/theaters/{id}':
+    get:
+      summary: 'Get a single movie theater.'
+      description: 'Return information on a specific movie theater.'
+      operationId: getTheatersId
+      tags:
+        - Theaters
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Theater ID'
+          required: true
+          schema:
+            type: number
+            example: '1234'
+      responses:
+        200:
+          description: 'Standard request.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/theater'
+        304:
+          description: 'If no content has been modified since the supplied Last-Modified header.'
+        404:
+          description: 'If the movie theater could not be found.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+    patch:
+      summary: 'Update a movie theater.'
+      description: 'Update a movie theaters'' data.'
+      operationId: patchTheatersId
+      tags:
+        - Theaters
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Theater ID'
+          required: true
+          schema:
+            type: number
+            example: '1234'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                address:
+                  description: 'Theater address'
+                  type: string
+                  example: '2548 Central Park Ave, Yonkers, NY 10710'
+                name:
+                  description: 'Name of the theater.'
+                  type: string
+                  example: 'Alamo Drafthouse Cinema - Yonkers'
+                phone_number:
+                  description: 'Theater phone number'
+                  type: string
+                  example: '(914) 226-3082'
+              required:
+                - address
+                - name
+                - phone_number
+      responses:
+        200:
+          description: 'Standard request.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/theater'
+        400:
+          description: 'If there is a problem with the request.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        404:
+          description: 'If the movie movie could not be found.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        403:
+          description: 'If something cool happened. Returns a unique error code of `1337`.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/coded-error'
+      security:
+        -
+          OAuth2:
+            - create
+    delete:
+      summary: 'Delete a movie theater.'
+      description: 'Delete a movie theater.'
+      operationId: deleteTheatersId
+      tags:
+        - Theaters
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Theater ID'
+          required: true
+          schema:
+            type: number
+            example: '1234'
+      responses:
+        204:
+          description: 'Standard request.'
+        404:
+          description: 'If the movie theater could not be found.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          OAuth2:
+            - delete
+  /theaters:
+    get:
+      summary: 'Get movie theaters.'
+      description: 'Returns all movie theatres for a specific location.'
+      operationId: getTheaters
+      tags:
+        - Theaters
+      parameters:
+        -
+          name: location
+          in: query
+          description: 'Location you want theaters in.'
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'Standard request.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/theater'
+        400:
+          description: 'If the location is invalid.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+    post:
+      summary: 'Create a movie theater.'
+      description: 'Create a new movie theater.'
+      operationId: postTheaters
+      tags:
+        - Theaters
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                address:
+                  description: 'Theater address'
+                  type: string
+                  example: '2548 Central Park Ave, Yonkers, NY 10710'
+                name:
+                  description: 'Name of the theater.'
+                  type: string
+                  example: 'Alamo Drafthouse Cinema - Yonkers'
+                phone_number:
+                  description: 'Theater phone number'
+                  type: string
+                  example: '(914) 226-3082'
+              required:
+                - address
+                - name
+                - phone_number
+      responses:
+        200:
+          description: 'Standard request.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/theater'
+        400:
+          description: 'If there is a problem with the request.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          OAuth2:
+            - create
+components:
+  schemas:
+    coded-error:
+      properties:
+        error:
+          description: 'User-friendly error message'
+          type: string
+        error_code:
+          description: 'Error code'
+          type: number
+    error:
+      properties:
+        error:
+          description: 'User-friendly error message'
+          type: string
+    movie:
+      properties:
+        cast:
+          description: 'Cast. This data requires a bearer token with the `public` scope.'
+          type: array
+          items:
+            type: string
+        content_rating:
+          description: 'MPAA rating'
+          type: string
+          example: G
+          enum:
+            - G
+            - NC-17
+            - NR
+            - PG
+            - PG-13
+            - R
+            - UR
+            - X
+        description:
+          description: Description
+          type: string
+        director:
+          description: 'Director. This data requires a bearer token with the `public` scope.'
+          allOf:
+            -
+              $ref: '#/components/schemas/person'
+        external_urls:
+          description: 'External URLs. This data requires a bearer token with the `public` scope.'
+          type: array
+          items:
+            type: object
+            properties:
+              imdb:
+                description: 'IMDB URL. This data requires a bearer token with the `public` scope.'
+                type: string
+              tickets:
+                description: 'Tickets URL. This data requires a bearer token with the `public` scope.'
+                type: string
+              trailer:
+                description: 'Trailer URL. This data requires a bearer token with the `public` scope.'
+                type: string
+        genres:
+          description: Genres
+          type: array
+          items:
+            type: string
+        id:
+          description: 'Unique ID'
+          type: number
+        kid_friendly:
+          description: 'Kid friendly?'
+          type: boolean
+          example: 'false'
+        name:
+          description: Name
+          type: string
+        purchase:
+          type: object
+          properties:
+            url:
+              description: 'URL to purchase the film.'
+              type: string
+        rotten_tomatoes_score:
+          description: 'Rotten Tomatoes score'
+          type: number
+        runtime:
+          description: Runtime
+          type: string
+        showtimes:
+          description: 'Non-theater specific showtimes'
+          type: array
+          items:
+            type: string
+        theaters:
+          description: 'Theaters the movie is currently showing in'
+          type: array
+          items:
+            type: string
+        uri:
+          description: 'Movie URI'
+          type: string
+    person:
+      properties:
+        id:
+          description: 'Unique ID'
+          type: number
+        imdb:
+          description: 'IMDB URL'
+          type: string
+        name:
+          description: Name
+          type: string
+        uri:
+          description: 'Person URI'
+          type: string
+    theater:
+      properties:
+        address:
+          description: Address
+          type: string
+        id:
+          description: 'Unique ID'
+          type: number
+        movies:
+          description: 'Movies currently playing'
+          type: array
+          items:
+            type: string
+        name:
+          description: Name
+          type: string
+        phone_number:
+          description: 'Phone number'
+          type: string
+        showtimes:
+          description: 'Non-movie specific showtimes'
+          type: array
+          items:
+            type: string
+        uri:
+          description: 'Theater URI'
+          type: string
+security:
+  -
+    OAuth2:
+      - create
+      - delete
+      - edit
+      - public

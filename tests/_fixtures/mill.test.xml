@@ -3,6 +3,19 @@
     name="Mill unit test API, Showtimes"
     bootstrap="vendor/autoload.php"
 >
+    <info>
+        <terms url="https://example.com/terms" />
+
+        <contact
+            name="Get help!"
+            email="support@example.com"
+            url="https://developer.example.com/help" />
+
+        <externalDocs>
+            <externalDoc name="Developer Docs" url="https://developer.example.com" />
+        </externalDocs>
+    </info>
+
     <versions>
         <version name="1.0" releaseDate="2017-01-01" />
         <version name="1.1" releaseDate="2017-02-01" />

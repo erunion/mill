@@ -16,7 +16,7 @@ class OpenApiTest extends TestCase
 
         foreach ($compiled as $version => $spec) {
             $expected = file_get_contents($control_dir . $version . DIRECTORY_SEPARATOR . 'api.yaml');
-            $content = Yaml::dump($spec, PHP_INT_MAX, 4, true);
+            $content = Yaml::dump($spec, PHP_INT_MAX, 2, true);
 
             $this->assertSame(
                 $expected,

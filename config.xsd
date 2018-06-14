@@ -8,12 +8,13 @@
     </xs:complexType>
 
     <xs:attributeGroup name="group.config.attribute">
-        <xs:attribute name="name" type="xs:string" />
+        <xs:attribute name="name" type="xs:string" use="required" />
         <xs:attribute name="bootstrap" type="xs:string" use="required" />
     </xs:attributeGroup>
 
     <xs:group name="group.config">
         <xs:all>
+            <xs:element name="info" type="component.info" minOccurs="1" maxOccurs="1" />
             <xs:element name="versions" type="component.versions" minOccurs="1" maxOccurs="1" />
             <xs:element name="compilers" type="component.compilers" minOccurs="0" maxOccurs="1" />
 
@@ -26,6 +27,41 @@
             <xs:element name="vendorTags" type="component.vendorTags" minOccurs="0" maxOccurs="1" />
         </xs:all>
     </xs:group>
+
+    <xs:complexType name="component.info">
+        <xs:sequence>
+            <xs:element name="terms" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:attribute name="url" type="xs:string" use="required" />
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="contact" minOccurs="1" maxOccurs="1">
+                <xs:complexType>
+                    <xs:attribute name="name" type="xs:string" use="optional" />
+                    <xs:attribute name="email" type="xs:string" use="optional" />
+                    <xs:attribute name="url" type="xs:string" use="required" />
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="externalDocs" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="externalDoc" minOccurs="1" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:simpleContent>
+                                    <xs:extension base="xs:string">
+                                        <xs:attribute name="name" type="xs:string" use="required" />
+                                        <xs:attribute name="url" type="xs:string" use="required" />
+                                    </xs:extension>
+                                </xs:simpleContent>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
 
     <xs:complexType name="component.versions">
         <xs:choice>

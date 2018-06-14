@@ -1,8 +1,11 @@
 {
   "scripts": {
-    "test": "find resources/examples/Showtimes/compiled/ -name 'api.apib' -exec api-blueprint-validator-module {} true \\;"
+    "test": "npm run test-openapi; npm run test-apiblueprint",
+    "test-openapi": "find resources/examples/Showtimes/compiled/ -name 'api.yaml' -exec speccy lint {} true \\;",
+    "test-apiblueprint": "find resources/examples/Showtimes/compiled/ -name 'api.apib' -exec api-blueprint-validator-module {} true \\;"
   },
   "devDependencies": {
-    "api-blueprint-validator-module": "^1.2.2"
+    "api-blueprint-validator-module": "^1.2.2",
+    "speccy": "^0.7.2"
   }
 }

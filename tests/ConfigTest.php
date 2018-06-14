@@ -12,6 +12,20 @@ class ConfigTest extends TestCase
         $config = $this->getConfig();
 
         $this->assertSame('Mill unit test API, Showtimes', $config->getName());
+        $this->assertSame('https://example.com/terms', $config->getTerms());
+
+        $this->assertSame([
+            'name' => 'Get help!',
+            'email' => 'support@example.com',
+            'url' => 'https://developer.example.com/help'
+        ], $config->getContactInformation());
+
+        $this->assertSame([
+            [
+                'name' => 'Developer Docs',
+                'url' => 'https://developer.example.com'
+            ]
+        ], $config->getExternalDocumentation());
 
         $this->assertSame('1.0', $config->getFirstApiVersion());
         $this->assertSame('1.1.2', $config->getDefaultApiVersion());
@@ -182,7 +196,24 @@ XML;
         }
 
         // Customize the provider XML so we don't need to have a bunch of DRY'd XML everywhere.
-        $versions = $controllers = $representations = false;
+        $info = $versions = $controllers = $representations = false;
+        if (in_array('info', $includes)) {
+            $info = <<<XML
+<info>
+    <terms url="https://example.com/terms" />
+
+    <contact
+        name="Get help!"
+        email="support@example.com"
+        url="https://developer.example.com/help" />
+
+    <externalDocs>
+        <externalDoc name="Developer Docs" url="https://developer.example.com" />
+    </externalDocs>
+</info>
+XML;
+        }
+
         if (in_array('versions', $includes)) {
             $versions = <<<XML
 <versions>
@@ -214,7 +245,8 @@ XML;
 
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
-<mill bootstrap="vendor/autoload.php">
+<mill name="Test API" bootstrap="vendor/autoload.php">
+    $info
     $versions
     $controllers
     $representations
@@ -252,7 +284,7 @@ XML;
              *
              */
             'versions.no-default' => [
-                'includes' => ['controllers', 'representations'],
+                'includes' => ['info', 'controllers', 'representations'],
                 'exception' => [
                     'regex' => '/You must set/'
                 ],
@@ -264,7 +296,7 @@ XML
             ],
 
             'versions.multiple-defaults' => [
-                'includes' => ['controllers', 'representations'],
+                'includes' => ['info', 'controllers', 'representations'],
                 'exception' => [
                     'exception' => \InvalidArgumentException::class,
                     'regex' => '/Multiple default API versions/'
@@ -282,7 +314,7 @@ XML
              *
              */
             'compilers.exclude.invalid' => [
-                'includes' => ['versions', 'controllers', 'representations'],
+                'includes' => ['info', 'versions', 'controllers', 'representations'],
                 'exception' => [
                     'regex' => '/invalid compiler group exclusion/'
                 ],
@@ -300,7 +332,7 @@ XML
              *
              */
             'controllers.directory.invalid' => [
-                'includes' => ['versions', 'representations'],
+                'includes' => ['info', 'versions', 'representations'],
                 'exception' => [
                     'exception' => \InvalidArgumentException::class,
                     'regex' => '/does not exist/'
@@ -315,7 +347,7 @@ XML
             ],
 
             'controllers.none-found' => [
-                'includes' => ['versions', 'representations'],
+                'includes' => ['info', 'versions', 'representations'],
                 'exception' => [
                     'exception' => \InvalidArgumentException::class,
                     'regex' => '/requires a set of controllers/'
@@ -330,7 +362,7 @@ XML
             ],
 
             'controllers.class.uncallable' => [
-                'includes' => ['versions', 'representations'],
+                'includes' => ['info', 'versions', 'representations'],
                 'exception' => [
                     'exception' => \InvalidArgumentException::class,
                     'regex' => '/could not be called/'
@@ -349,7 +381,7 @@ XML
              *
              */
             'representations.none-found' => [
-                'includes' => ['versions', 'controllers'],
+                'includes' => ['info', 'versions', 'controllers'],
                 'exception' => [
                     'exception' => \InvalidArgumentException::class,
                     'regex' => '/requires a set of representations/'
@@ -364,7 +396,7 @@ XML
             ],
 
             'representations.class.missing-method' => [
-                'includes' => ['versions', 'controllers'],
+                'includes' => ['info', 'versions', 'controllers'],
                 'exception' => [
                     'regex' => '/missing a `method`/'
                 ],
@@ -378,7 +410,7 @@ XML
             ],
 
             'representations.class.uncallable' => [
-                'includes' => ['versions', 'controllers'],
+                'includes' => ['info', 'versions', 'controllers'],
                 'exception' => [
                     'exception' => UncallableRepresentationException::class
                 ],
@@ -392,7 +424,7 @@ XML
             ],
 
             'representations.directory.invalid' => [
-                'includes' => ['versions', 'controllers'],
+                'includes' => ['info', 'versions', 'controllers'],
                 'exception' => [
                     'exception' => \InvalidArgumentException::class,
                     'regex' => '/does not exist/'
@@ -407,7 +439,7 @@ XML
             ],
 
             'representations.error.uncallable' => [
-                'includes' => ['versions', 'controllers'],
+                'includes' => ['info', 'versions', 'controllers'],
                 'exception' => [
                     'exception' => UncallableErrorRepresentationException::class
                 ],
@@ -425,7 +457,7 @@ XML
             ],
 
             'representations.error.missing-method' => [
-                'includes' => ['versions', 'controllers'],
+                'includes' => ['info', 'versions', 'controllers'],
                 'exception' => [
                     'regex' => '/missing a `method`/'
                 ],
@@ -447,7 +479,7 @@ XML
              *
              */
             'parametertokens.invalid' => [
-                'includes' => ['versions', 'controllers', 'representations'],
+                'includes' => ['info', 'versions', 'controllers', 'representations'],
                 'exception' => [
                     'regex' => '/invalid parameter token/'
                 ],
@@ -463,7 +495,7 @@ XML
              *
              */
             'pathparams.invalid' => [
-                'includes' => ['versions', 'controllers', 'representations'],
+                'includes' => ['info', 'versions', 'controllers', 'representations'],
                 'exception' => [
                     'regex' => '/invalid translation text/'
                 ],
