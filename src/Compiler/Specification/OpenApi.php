@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Compiler\Specification;
 
+use Cocur\Slugify\Slugify;
 use Mill\Application;
 use Mill\Compiler;
 use Mill\Parser\Annotations\DataAnnotation;
@@ -10,6 +11,7 @@ use Mill\Parser\Annotations\PathParamAnnotation;
 use Mill\Parser\Annotations\QueryParamAnnotation;
 use Mill\Parser\Annotations\ReturnAnnotation;
 use Mill\Parser\Annotations\ScopeAnnotation;
+use Mill\Parser\Annotations\VendorTagAnnotation;
 use Mill\Parser\Representation\Documentation;
 use Mill\Parser\Resource\Action;
 
@@ -42,7 +44,20 @@ class OpenApi extends Compiler\Specification
                 'openapi' => '3.0.0',
                 'info' => [
                     'title' => $this->config->getName(),
-                    'version' => $this->version
+                    'version' => $this->version,
+                    'contact' => (function (): array {
+                        $contact = $this->config->getContactInformation();
+                        $spec = [];
+
+                        foreach (['name', 'email'] as $data) {
+                            if (isset($contact[$data])) {
+                                $spec[$data] = $contact[$data];
+                            }
+                        }
+
+                        $spec['url'] = $contact['url'];
+                        return $spec;
+                    })()
                 ],
                 'tags' => (function () use ($groups, $group_excludes): array {
                     $tags = array_filter(
@@ -66,14 +81,24 @@ class OpenApi extends Compiler\Specification
 
                     return $tags;
                 })(),
-                /*'servers' => [
-                    ['url' => '']
-                ],*/
+                'servers' => (function (): array {
+                    $spec = [];
+                    foreach ($this->config->getServers() as $server) {
+                        $spec[] = [
+                            'url' => $server['url'],
+                            'description' => $server['description']
+                        ];
+                    }
+
+                    return $spec;
+                })(),
                 'paths' => [],
-                'components' => [],
+                'components' => [
+                    'securitySchemes' => $this->processSecuritySchemes()
+                ],
                 'security' => [
                     [
-                        'OAuth2' => $this->config->getScopes()
+                        'oauth2' => array_keys($this->config->getScopes())
                     ]
                 ]
             ];
@@ -109,13 +134,32 @@ class OpenApi extends Compiler\Specification
                             'parameters' => $this->processParameters($action),
                             'requestBody' => $this->processRequest($action),
                             'responses' => $this->processResponses($action),
-                            'security' => $this->processSecurity($action)
+                            'security' => $this->processSecurity($action),
+                            'x-mill-vendortags' => $this->processVendorTags($action),
+                            'x-mill-visibility-private' => $action->getPath()->isVisible(),
+                            'x-mill-deprecated' => $action->getPath()->isDeprecated()
                         ];
 
-                        foreach (['parameters', 'requestBody', 'security'] as $key) {
+                        foreach ([
+                            'description',
+                            'parameters',
+                            'requestBody',
+                            'security',
+                            'x-mill-vendortags'
+                        ] as $key) {
                             if (empty($spec[$key])) {
                                 unset($spec[$key]);
                             }
+                        }
+
+                        // Only include the `x-mill-visibility-private` tag if the action is private.
+                        if (!$spec['x-mill-visibility-private']) {
+                            unset($spec['x-mill-visibility-private']);
+                        }
+
+                        // Only include the `x-mill-deprecated` tag if the action is deprecated.
+                        if (!$spec['x-mill-deprecated']) {
+                            unset($spec['x-mill-deprecated']);
                         }
 
                         $specifications[$this->version]['paths'][$identifier][$method] = $spec;
@@ -140,6 +184,55 @@ class OpenApi extends Compiler\Specification
         }
 
         return $specifications;
+    }
+
+    /**
+     * @return array
+     */
+    protected function processSecuritySchemes(): array
+    {
+        $spec = [];
+        $flows = $this->config->getAuthenticationFlows();
+
+        if (isset($flows['bearer'])) {
+            $spec['bearer'] = [
+                'type' => 'http',
+                'scheme' => 'bearer',
+                'bearerFormat' => $flows['bearer']['format']
+            ];
+        }
+
+        if (isset($flows['oauth2']) && !empty($flows['oauth2'])) {
+            $spec['oauth2'] = [
+                'type' => 'oauth2',
+                'flows' => (function () use ($flows): array {
+                    $spec = [];
+                    $scopes = [];
+                    foreach ($this->config->getScopes() as $scope => $data) {
+                        $scopes[$scope] = $data['description'];
+                    }
+
+                    if (isset($flows['oauth2']['authorization_code'])) {
+                        $spec['authorizationCode'] = [
+                            'authorizationUrl' => $flows['oauth2']['authorization_code']['authorization_url'],
+                            'tokenUrl' => $flows['oauth2']['authorization_code']['token_url'],
+                            'scopes' => $scopes
+                        ];
+                    }
+
+                    if (isset($flows['oauth2']['client_credentials'])) {
+                        $spec['clientCredentials'] = [
+                            'tokenUrl' => $flows['oauth2']['client_credentials']['token_url'],
+                            'scopes' => $scopes
+                        ];
+                    }
+
+                    return $spec;
+                })()
+            ];
+        }
+
+        return $spec;
     }
 
     /**
@@ -301,11 +394,27 @@ class OpenApi extends Compiler\Specification
 
         return [
             [
-                'OAuth2' => array_map(function (ScopeAnnotation $scope): string {
+                'oauth2' => array_map(function (ScopeAnnotation $scope): string {
                     return $scope->getScope();
                 }, $scopes)
             ]
         ];
+    }
+
+    /**
+     * @param Action\Documentation $action
+     * @return array
+     */
+    protected function processVendorTags(Action\Documentation $action): array
+    {
+        $vendor_tags = $action->getVendorTags();
+        if (empty($vendor_tags)) {
+            return [];
+        }
+
+        return array_map(function (VendorTagAnnotation $vendor_tag): string {
+            return $vendor_tag->getVendorTag();
+        }, $vendor_tags);
     }
 
     /**
@@ -421,59 +530,38 @@ class OpenApi extends Compiler\Specification
                     'name' => $field_name,
                     'in' => $payload_format,
                     'schema' => [
-                        'type' => 'object',
-                        'properties' => []
+                        'type' => 'object'
                     ]
                 ];
             }
 
             // If we're processing MSON for a component, clean it up so it can be used as a component.
-            switch ($payload_format) {
-                case DataAnnotation::PAYLOAD_FORMAT:
-                    if (isset($spec['schema'])) {
-                        $spec += $spec['schema'];
-                        unset($spec['schema']);
-                    }
+            if (in_array($payload_format, [DataAnnotation::PAYLOAD_FORMAT, ParamAnnotation::PAYLOAD_FORMAT])) {
+                if (isset($spec['schema'])) {
+                    $spec += $spec['schema'];
+                    unset($spec['schema']);
+                }
 
-                    unset($spec['name']);
-                    unset($spec['in']);
+                unset($spec['name']);
+                unset($spec['in']);
+
+                if ($payload_format === DataAnnotation::PAYLOAD_FORMAT) {
                     unset($spec['required']);
-                    break;
-
-                case ParamAnnotation::PAYLOAD_FORMAT:
-                    if (isset($spec['schema'])) {
-                        $spec += $spec['schema'];
-                        unset($spec['schema']);
-                    }
-
-                    unset($spec['name']);
-                    unset($spec['in']);
-                    break;
+                }
             }
 
             // Process any exploded dot notation children of this field.
             unset($field[Application::DOT_NOTATION_ANNOTATION_DATA_KEY]);
             if (!empty($field)) {
-                if ($payload_format === DataAnnotation::PAYLOAD_FORMAT) {
-                    if (empty($data)) {
-                        $spec['properties'] = $this->processMSON($payload_format, $field);
-                    } elseif ($data['type'] === 'array' && $data['subtype'] === 'object') {
-                        $spec['items'] = [
-                            'type' => 'object',
-                            'properties' => $this->processMSON($payload_format, $field)
-                        ];
-                    } else {
-                        $spec['items'] = $this->processMSON($payload_format, $field);
-                    }
-                } elseif (isset($data['subtype']) && $data['subtype'] === 'object') {
-                    if ($payload_format === ParamAnnotation::PAYLOAD_FORMAT && $data['type'] === 'array') {
-                        $spec['items'] = [
-                            'type' => 'object',
-                            'properties' => $this->processMSON($payload_format, $field)
-                        ];
-                    } else {
-                        $spec['properties'] = $this->processMSON($payload_format, $field);
-                    }
+                if (empty($data)) {
+                    $spec['properties'] = $this->processMSON($payload_format, $field);
+                } elseif ($data['type'] === 'array' && $data['subtype'] === 'object') {
+                    $spec['items'] = [
+                        'type' => 'object',
+                        'properties' => $this->processMSON($payload_format, $field)
+                    ];
+                } elseif ($data['type'] === 'object') {
+                    $spec['properties'] = $this->processMSON($payload_format, $field);
                 } else {
                     $spec['items'] = $this->processMSON($payload_format, $field);
                 }
@@ -587,6 +675,6 @@ class OpenApi extends Compiler\Specification
      */
     private function getReferenceName(string $name): string
     {
-        return str_replace(' ', '', ucwords($name));
+        return (new Slugify())->slugify($name);
     }
 }

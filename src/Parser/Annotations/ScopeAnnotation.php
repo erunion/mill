@@ -31,8 +31,7 @@ class ScopeAnnotation extends Annotation
 
         if (!empty($scope)) {
             // Validate the supplied scope with what has been configured as allowable.
-            $scopes = Container::getConfig()->getScopes();
-            if (!in_array($scope, $scopes)) {
+            if (!Container::getConfig()->hasScope($scope)) {
                 /** @var string $method */
                 $method = $this->method;
                 throw InvalidScopeSuppliedException::create($scope, $this->class, $method);
