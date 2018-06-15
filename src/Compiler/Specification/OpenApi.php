@@ -135,7 +135,8 @@ class OpenApi extends Compiler\Specification
                             'requestBody' => $this->processRequest($action),
                             'responses' => $this->processResponses($action),
                             'security' => $this->processSecurity($action),
-                            'x-mill-vendortags' => $this->processVendorTags($action)
+                            'x-mill-vendortags' => $this->processVendorTags($action),
+                            'x-mill-visibility-private' => $action->getPath()->isVisible()
                         ];
 
                         foreach ([
@@ -148,6 +149,11 @@ class OpenApi extends Compiler\Specification
                             if (empty($spec[$key])) {
                                 unset($spec[$key]);
                             }
+                        }
+
+                        // Only include the `x-mill-visibility-private` tag if the action is private.
+                        if (!$spec['x-mill-visibility-private']) {
+                            unset($spec['x-mill-visibility-private']);
                         }
 
                         $specifications[$this->version]['paths'][$identifier][$method] = $spec;
