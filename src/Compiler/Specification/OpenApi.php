@@ -92,10 +92,12 @@ class OpenApi extends Compiler\Specification
                     return $spec;
                 })(),
                 'paths' => [],
-                'components' => [],
+                'components' => [
+                    'securitySchemes' => $this->processSecuritySchemes()
+                ],
                 'security' => [
                     [
-                        'OAuth2' => $this->config->getScopes()
+                        'oauth2' => array_keys($this->config->getScopes())
                     ]
                 ]
             ];
@@ -162,6 +164,52 @@ class OpenApi extends Compiler\Specification
         }
 
         return $specifications;
+    }
+
+    protected function processSecuritySchemes(): array
+    {
+        $spec = [];
+        $flows = $this->config->getAuthenticationFlows();
+
+        if (isset($flows['bearer'])) {
+            $spec['bearer'] = [
+                'type' => 'http',
+                'scheme' => 'bearer',
+                'bearerFormat' => $flows['bearer']['format']
+            ];
+        }
+
+        if (isset($flows['oauth2']) && !empty($flows['oauth2'])) {
+            $spec['oauth2'] = [
+                'type' => 'oauth2',
+                'flows' => (function () use ($flows): array {
+                    $spec = [];
+                    $scopes = [];
+                    foreach ($this->config->getScopes() as $scope => $data) {
+                        $scopes[$scope] = $data['description'];
+                    }
+
+                    if (isset($flows['oauth2']['authorization_code'])) {
+                        $spec['authorizationCode'] = [
+                            'authorizationUrl' => $flows['oauth2']['authorization_code']['authorization_url'],
+                            'tokenUrl' => $flows['oauth2']['authorization_code']['token_url'],
+                            'scopes' => $scopes
+                        ];
+                    }
+
+                    if (isset($flows['oauth2']['client_credentials'])) {
+                        $spec['clientCredentials'] = [
+                            'tokenUrl' => $flows['oauth2']['client_credentials']['token_url'],
+                            'scopes' => $scopes
+                        ];
+                    }
+
+                    return $spec;
+                })()
+            ];
+        }
+
+        return $spec;
     }
 
     /**
@@ -323,7 +371,7 @@ class OpenApi extends Compiler\Specification
 
         return [
             [
-                'OAuth2' => array_map(function (ScopeAnnotation $scope): string {
+                'oauth2' => array_map(function (ScopeAnnotation $scope): string {
                     return $scope->getScope();
                 }, $scopes)
             ]

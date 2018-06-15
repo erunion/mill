@@ -20,6 +20,11 @@ use SimpleXMLElement;
 
 class Config
 {
+    const SUPPORTED_AUTH_FLOWS = [
+        'bearer',
+        'oauth2'
+    ];
+
     /** @var string The base directory for this configuration file. */
     protected $base_dir;
 
@@ -37,6 +42,9 @@ class Config
 
     /** @var array Your API servers. */
     protected $servers = [];
+
+    /** @var array Your API authentication flows. */
+    protected $authentication_flows = [];
 
     /** @var string The first version of your API. */
     public $first_api_version;
@@ -172,20 +180,46 @@ class Config
      */
     protected function loadAuthentication(SimpleXMLElement $xml): void
     {
-        if (!isset($xml->authentication->scopes)) {
-            return;
-        }
+        /** @var SimpleXMLElement $authentication */
+        $authentication = $xml->authentication;
 
-        /** @var SimpleXMLElement $scope */
-        foreach ($xml->authentication->scopes->scope as $scope) {
-            $name = (string) $scope['name'];
-            $this->scopes[$name] = [
-                'name' => $name,
-                'description' => (isset($scope['description'])) ? (string) $scope['description'] : false
+        if (isset($authentication->flows->bearer)) {
+            $this->authentication_flows['bearer'] = [
+                'format' => (isset($authentication->flows->bearer['format']))
+                    ? (string) $authentication->flows->bearer['format']
+                    : 'bearer'
             ];
         }
 
-        ksort($this->scopes);
+        if (isset($authentication->flows->oauth2)) {
+            $this->authentication_flows['oauth2'] = [];
+
+            if (isset($authentication->flows->oauth2->authorizationCode)) {
+                $this->authentication_flows['oauth2']['authorization_code'] = [
+                    'authorization_url' => (string) $authentication->flows->oauth2->authorizationCode['url'],
+                    'token_url' => (string) $authentication->flows->oauth2->authorizationCode['tokenUrl']
+                ];
+            }
+
+            if (isset($authentication->flows->oauth2->clientCredentials)) {
+                $this->authentication_flows['oauth2']['client_credentials'] = [
+                    'token_url' => (string) $authentication->flows->oauth2->clientCredentials['url']
+                ];
+            }
+        }
+
+        if (isset($authentication->scopes)) {
+            /** @var SimpleXMLElement $scope */
+            foreach ($authentication->scopes->scope as $scope) {
+                $name = (string) $scope['name'];
+                $this->scopes[$name] = [
+                    'name' => $name,
+                    'description' => (string) $scope['description']
+                ];
+            }
+
+            ksort($this->scopes);
+        }
     }
 
     /**
@@ -193,7 +227,7 @@ class Config
      */
     protected function loadPathParamTranslations(SimpleXMLElement $xml): void
     {
-        if (!isset($xml->pathParams) ) {
+        if (!isset($xml->pathParams)) {
             return;
         } elseif (!isset($xml->pathParams->translations)) {
             return;
@@ -603,6 +637,16 @@ class Config
     public function getVendorTags(): array
     {
         return $this->vendor_tags;
+    }
+
+    /**
+     * Get your API authentication flows.
+     *
+     * @return array
+     */
+    public function getAuthenticationFlows(): array
+    {
+        return $this->authentication_flows;
     }
 
     /**

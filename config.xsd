@@ -177,6 +177,37 @@
             <xs:element name="authentication" minOccurs="1" maxOccurs="1">
                 <xs:complexType>
                     <xs:sequence>
+                        <xs:element name="flows" minOccurs="0" maxOccurs="1">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="bearer" minOccurs="0" maxOccurs="1">
+                                        <xs:complexType>
+                                            <xs:attribute name="format" type="xs:string" use="optional" />
+                                        </xs:complexType>
+                                    </xs:element>
+
+                                    <xs:element name="oauth2" minOccurs="0" maxOccurs="1">
+                                        <xs:complexType>
+                                            <xs:sequence>
+                                                <xs:element name="authorizationCode" minOccurs="0" maxOccurs="1">
+                                                    <xs:complexType>
+                                                        <xs:attribute name="url" type="xs:string" use="required" />
+                                                        <xs:attribute name="tokenUrl" type="xs:string" use="required" />
+                                                    </xs:complexType>
+                                                </xs:element>
+
+                                                <xs:element name="clientCredentials" minOccurs="0" maxOccurs="1">
+                                                    <xs:complexType>
+                                                        <xs:attribute name="url" type="xs:string" use="required" />
+                                                    </xs:complexType>
+                                                </xs:element>
+                                            </xs:sequence>
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+
                         <xs:element name="scopes" minOccurs="0" maxOccurs="1">
                             <xs:complexType>
                                 <xs:sequence>
@@ -185,7 +216,7 @@
                                             <xs:simpleContent>
                                                 <xs:extension base="xs:string">
                                                     <xs:attribute name="name" type="xs:string" use="required" />
-                                                    <xs:attribute name="description" type="xs:string" use="optional" />
+                                                    <xs:attribute name="description" type="xs:string" use="required" />
                                                 </xs:extension>
                                             </xs:simpleContent>
                                         </xs:complexType>

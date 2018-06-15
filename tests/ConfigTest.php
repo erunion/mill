@@ -29,11 +29,11 @@ class ConfigTest extends TestCase
 
         $this->assertSame([
             [
-                'url' => 'https://api.example.com/v1',
+                'url' => 'https://api.example.com',
                 'description' => 'Production'
             ],
             [
-                'url' => 'https://api.example.local/v1',
+                'url' => 'https://api.example.local',
                 'description' => 'Development'
             ]
         ], $config->getServers());
@@ -82,21 +82,36 @@ class ConfigTest extends TestCase
         ], $config->getVendorTags());
 
         $this->assertSame([
+            'bearer' => [
+                'format' => 'bearer'
+            ],
+            'oauth2' => [
+                'authorization_code' => [
+                    'authorization_url' => '/oauth/authorize',
+                    'token_url' => '/oauth/access_token'
+                ],
+                'client_credentials' => [
+                    'token_url' => '/oauth/authorize/client'
+                ]
+            ]
+        ], $config->getAuthenticationFlows());
+
+        $this->assertSame([
             'create' => [
                 'name' => 'create',
-                'description' => 'create new content'
+                'description' => 'Create'
             ],
             'delete' => [
                 'name' => 'delete',
-                'description' => false
+                'description' => 'Delete'
             ],
             'edit' => [
                 'name' => 'edit',
-                'description' => false
+                'description' => 'Edit'
             ],
             'public' => [
                 'name' => 'public',
-                'description' => false
+                'description' => 'Public'
             ]
         ], $config->getScopes());
 
@@ -239,8 +254,8 @@ XML;
         if (strpos($provider, 'servers.') === false) {
             $servers = <<<XML
 <servers>
-    <server url="https://api.example.com/v1" description="Production" />
-    <server url="https://api.example.local/v1" description="Development" />
+    <server url="https://api.example.com" description="Production" />
+    <server url="https://api.example.local" description="Development" />
 </servers>
 XML;
         }
@@ -277,11 +292,20 @@ XML;
         if (strpos($provider, 'authentication.') === false) {
             $authentication = <<<XML
 <authentication>
+    <flows>
+        <bearer format="bearer" />
+
+        <oauth2>
+            <authorizationCode url="/oauth/authorize" tokenUrl="/oauth/access_token" />
+            <clientCredentials url="/oauth/authorize/client" />
+        </oauth2>
+    </flows>
+
     <scopes>
-        <scope name="create" />
-        <scope name="delete" />
-        <scope name="edit" />
-        <scope name="public" />
+        <scope name="create" description="Create" />
+        <scope name="delete" description="Delete" />
+        <scope name="edit" description="Edit" />
+        <scope name="public" description="Public" />
     </scopes>
 </authentication>
 XML;

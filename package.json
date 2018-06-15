@@ -1,7 +1,7 @@
 {
   "scripts": {
     "test": "npm run test-openapi; npm run test-apiblueprint",
-    "test-openapi": "find resources/examples/Showtimes/compiled/ -name 'api.yaml' -exec speccy lint {} true \\;",
+    "test-openapi": "find resources/examples/Showtimes/compiled -name 'api.yaml' -exec speccy lint {} true \\;",
     "test-apiblueprint": "find resources/examples/Showtimes/compiled/ -name 'api.apib' -exec api-blueprint-validator-module {} true \\;"
   },
   "devDependencies": {

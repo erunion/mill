@@ -17,8 +17,8 @@
     </info>
 
     <servers>
-        <server url="https://api.example.com/v1" description="Production" />
-        <server url="https://api.example.local/v1" description="Development" />
+        <server url="https://api.example.com" description="Production" />
+        <server url="https://api.example.local" description="Development" />
     </servers>
 
     <versions>
@@ -70,11 +70,20 @@
     </representations>
 
     <authentication>
+        <flows>
+            <bearer format="bearer" />
+
+            <oauth2>
+                <authorizationCode url="/oauth/authorize" tokenUrl="/oauth/access_token" />
+                <clientCredentials url="/oauth/authorize/client" />
+            </oauth2>
+        </flows>
+
         <scopes>
-            <scope name="create" description="create new content" />
-            <scope name="delete" />
-            <scope name="edit" />
-            <scope name="public" />
+            <scope name="create" description="Create" />
+            <scope name="delete" description="Delete" />
+            <scope name="edit" description="Edit" />
+            <scope name="public" description="Public" />
         </scopes>
     </authentication>
 

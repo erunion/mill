@@ -13,10 +13,10 @@ tags:
     name: Theaters
 servers:
   -
-    url: 'https://api.example.com/v1'
+    url: 'https://api.example.com'
     description: Production
   -
-    url: 'https://api.example.local/v1'
+    url: 'https://api.example.local'
     description: Development
 paths:
   '/movie/{id}':
@@ -196,7 +196,7 @@ paths:
                 $ref: '#/components/schemas/error'
       security:
         -
-          OAuth2:
+          oauth2:
             - create
   '/theaters/{id}':
     get:
@@ -294,7 +294,7 @@ paths:
                 $ref: '#/components/schemas/coded-error'
       security:
         -
-          OAuth2:
+          oauth2:
             - create
     delete:
       summary: 'Delete a movie theater.'
@@ -322,7 +322,7 @@ paths:
                 $ref: '#/components/schemas/error'
       security:
         -
-          OAuth2:
+          oauth2:
             - delete
   /theaters:
     get:
@@ -398,9 +398,32 @@ paths:
                 $ref: '#/components/schemas/error'
       security:
         -
-          OAuth2:
+          oauth2:
             - create
 components:
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: bearer
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth/authorize
+          tokenUrl: /oauth/access_token
+          scopes:
+            create: Create
+            delete: Delete
+            edit: Edit
+            public: Public
+        clientCredentials:
+          tokenUrl: /oauth/authorize/client
+          scopes:
+            create: Create
+            delete: Delete
+            edit: Edit
+            public: Public
   schemas:
     coded-error:
       properties:
@@ -529,16 +552,8 @@ components:
           type: string
 security:
   -
-    OAuth2:
-      create:
-        name: create
-        description: 'create new content'
-      delete:
-        name: delete
-        description: false
-      edit:
-        name: edit
-        description: false
-      public:
-        name: public
-        description: false
+    oauth2:
+      - create
+      - delete
+      - edit
+      - public
