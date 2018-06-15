@@ -220,6 +220,8 @@ paths:
         -
           oauth2:
             - delete
+      x-mill-vendortags:
+        - 'tag:DELETE_CONTENT'
   /movies:
     get:
       summary: 'Get movies.'

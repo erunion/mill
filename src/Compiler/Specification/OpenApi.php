@@ -11,6 +11,7 @@ use Mill\Parser\Annotations\PathParamAnnotation;
 use Mill\Parser\Annotations\QueryParamAnnotation;
 use Mill\Parser\Annotations\ReturnAnnotation;
 use Mill\Parser\Annotations\ScopeAnnotation;
+use Mill\Parser\Annotations\VendorTagAnnotation;
 use Mill\Parser\Representation\Documentation;
 use Mill\Parser\Resource\Action;
 
@@ -133,10 +134,17 @@ class OpenApi extends Compiler\Specification
                             'parameters' => $this->processParameters($action),
                             'requestBody' => $this->processRequest($action),
                             'responses' => $this->processResponses($action),
-                            'security' => $this->processSecurity($action)
+                            'security' => $this->processSecurity($action),
+                            'x-mill-vendortags' => $this->processVendorTags($action)
                         ];
 
-                        foreach (['description', 'parameters', 'requestBody', 'security'] as $key) {
+                        foreach ([
+                            'description',
+                            'parameters',
+                            'requestBody',
+                            'security',
+                            'x-mill-vendortags'
+                        ] as $key) {
                             if (empty($spec[$key])) {
                                 unset($spec[$key]);
                             }
@@ -166,6 +174,9 @@ class OpenApi extends Compiler\Specification
         return $specifications;
     }
 
+    /**
+     * @return array
+     */
     protected function processSecuritySchemes(): array
     {
         $spec = [];
@@ -376,6 +387,22 @@ class OpenApi extends Compiler\Specification
                 }, $scopes)
             ]
         ];
+    }
+
+    /**
+     * @param Action\Documentation $action
+     * @return array
+     */
+    protected function processVendorTags(Action\Documentation $action): array
+    {
+        $vendor_tags = $action->getVendorTags();
+        if (empty($vendor_tags)) {
+            return [];
+        }
+
+        return array_map(function (VendorTagAnnotation $vendor_tag): string {
+            return $vendor_tag->getVendorTag();
+        }, $vendor_tags);
     }
 
     /**
