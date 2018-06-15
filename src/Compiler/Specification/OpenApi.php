@@ -136,7 +136,8 @@ class OpenApi extends Compiler\Specification
                             'responses' => $this->processResponses($action),
                             'security' => $this->processSecurity($action),
                             'x-mill-vendortags' => $this->processVendorTags($action),
-                            'x-mill-visibility-private' => $action->getPath()->isVisible()
+                            'x-mill-visibility-private' => $action->getPath()->isVisible(),
+                            'x-mill-deprecated' => $action->getPath()->isDeprecated()
                         ];
 
                         foreach ([
@@ -154,6 +155,11 @@ class OpenApi extends Compiler\Specification
                         // Only include the `x-mill-visibility-private` tag if the action is private.
                         if (!$spec['x-mill-visibility-private']) {
                             unset($spec['x-mill-visibility-private']);
+                        }
+
+                        // Only include the `x-mill-deprecated` tag if the action is deprecated.
+                        if (!$spec['x-mill-deprecated']) {
+                            unset($spec['x-mill-deprecated']);
                         }
 
                         $specifications[$this->version]['paths'][$identifier][$method] = $spec;
