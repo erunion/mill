@@ -1,4 +1,33 @@
 # Changelog
+## [4.0.0] - 2018-06-17
+### Added
+* OpenAPI compilation support. [#16](https://github.com/vimeo/mill/issues/16)
+* A new `@api-vendortag` annotation, replacing `@api-capability`. [#148](https://github.com/vimeo/mill/issues/148)
+* `@api-maxversion`. Same as `@api-minversion`, but the opposite. [#161](https://github.com/vimeo/mill/issues/161)
+* Added additional relevant data to request parameters in JSON-generated changelogs. [#107](https://github.com/vimeo/mill/issues/107)
+* Support for subtypes to `@api-param`. [#159](https://github.com/vimeo/mill/issues/159)
+* A new `@api-queryparam` annotation for documenting parameters that are to be used in query strings. `@api-param` now represents body payloads. [#109](https://github.com/vimeo/mill/issues/109)
+* New configurations: `authentication`, `info` and `servers` [#173](https://github.com/vimeo/mill/pull/173)
+
+### Changed
+* The `generate` command is now called `compile`. [#16](https://github.com/vimeo/mill/issues/16)
+* Renamed `@api-throws` to `@api-error`. [#141](https://github.com/vimeo/mill/issues/141)
+* `@api-error` annotations now have a new MSON syntax. [#155](https://github.com/vimeo/mill/pull/155)
+* `@api-uri` is now `@api-path`. [#162](https://github.com/vimeo/mill/pull/162)
+* `@api-urisegment` is now `@api-pathparam`. [#162](https://github.com/vimeo/mill/pull/162)
+* The `scopes` config is now nested within `authentication`. [#173](https://github.com/vimeo/mill/pull/173)
+* The `generators` config is now called `compilers`. [#16](https://github.com/vimeo/mill/issues/16)
+
+### Fixed
+* Now throwing an exception when `enum` annotations (annotations with member values) are written as `string`. [#150](https://github.com/vimeo/mill/issues/150)
+* Subtypes are now being properly converted to API Blueprint-compatible types during API Blueprint compilation. [#147](https://github.com/vimeo/mill/issues/147)
+* Scopes are now passed down through `@api-see` annotations, much like `@api-version` is already. [#140](https://github.com/vimeo/mill/issues/140)
+* Multi-line enum descriptions are now supported. [#160](https://github.com/vimeo/mill/issues/160)
+* Non-aliased paths can no longer be selected as the primary path for a resource action. [#139](https://github.com/vimeo/mill/issues/139)
+
+### Removed
+* `@api-capability` has been removed and replaced with a new `@api-vendorTag` system. [#148](https://github.com/vimeo/mill/issues/148)
+
 ## [3.0.2] - 2018-03-21
 ### Fixed
 - Cleaned up some API Blueprint verbage surrounding representation scopes.
@@ -223,6 +252,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[4.0.0]: https://github.com/vimeo/mill/compare/3.0.2...4.0.0
 [3.0.2]: https://github.com/vimeo/mill/compare/3.0.1...3.0.2
 [3.0.1]: https://github.com/vimeo/mill/compare/3.0.0...3.0.1
 [3.0.0]: https://github.com/vimeo/mill/compare/2.6.4...3.0.0
