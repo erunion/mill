@@ -1,6 +1,0 @@
-# Errors: Mill unit test API, Showtimes
-
-## Movies
-| Error Code | URI | Method | HTTP Code | Description |
-| :--- | :--- | :--- | :--- | :--- |
-| 666 | /movies/{id} | PATCH | 403 Forbidden | If the user is not allowed to edit that movie. |

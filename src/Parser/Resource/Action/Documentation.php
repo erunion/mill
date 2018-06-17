@@ -1,88 +1,64 @@
 <?php
 namespace Mill\Parser\Resource\Action;
 
+use Dflydev\DotAccessData\Data;
+use Mill\Application;
+use Mill\Contracts\Arrayable;
 use Mill\Exceptions\Annotations\MultipleAnnotationsException;
 use Mill\Exceptions\Annotations\RequiredAnnotationException;
 use Mill\Exceptions\Resource\MissingVisibilityDecoratorException;
 use Mill\Exceptions\Resource\NoAnnotationsException;
 use Mill\Exceptions\Resource\PublicDecoratorOnPrivateActionException;
-use Mill\Exceptions\Resource\TooManyAliasedUrisException;
+use Mill\Exceptions\Resource\TooManyAliasedPathsException;
 use Mill\Parser;
-use Mill\Parser\Annotations\UriAnnotation;
+use Mill\Parser\Annotations\PathAnnotation;
 use Mill\Parser\Version;
 
-/**
- * Class for parsing a docblock on a given class and method for resource action documentation.
- *
- */
-class Documentation
+class Documentation implements Arrayable
 {
-    /**
-     * Class we're parsing.
-     *
-     * @var string
-     */
-    protected $class;
-
-    /**
-     * Class method we're parsing.
-     *
-     * @var string
-     */
-    protected $method;
-
-    /**
-     * Short description/label/title of the action.
-     *
-     * @var string
-     */
-    protected $label;
-
-    /**
-     * Fuller description of the action. This should normally consist of Markdown.
-     *
-     * @var null|string
-     */
-    protected $description = null;
-
-    /**
-     * Content types that this action might return. Multiple may be returned because of versioning.
-     *
-     * @var array
-     */
-    protected $content_types = [];
-
-    /**
-     * Array of parsed annotations that exist on this action.
-     *
-     * @var array
-     */
-    protected $annotations = [];
-
-    /**
-     * Array of required annotations.
-     *
-     * @var array
-     */
-    protected static $REQUIRED_ANNOTATIONS = [
-        'uri'
+    /** @var array Array of required annotations. */
+    const REQUIRED_ANNOTATIONS = [
+        'path'
     ];
 
     /**
-     * Array of accepted annotations (excluding those that must have a visibility decorator).
+     * Array of accepted annotations (excluding those that must have a visibility decorator, or have special handling).
      *
      * @var array
      */
-    protected static $ACCEPTED_ANNOTATIONS = [
-        'capability',
+    const ACCEPTED_ANNOTATIONS = [
+        'error',
         'param',
-        'minVersion',
+        'maxversion',
+        'minversion',
+        'queryparam',
         'return',
         'scope',
-        'throws',
-        'uri',
-        'uriSegment'
+        'path',
+        'pathparam',
+        'vendortag'
     ];
+
+    /** @var string Class we're parsing. */
+    protected $class;
+
+    /** @var string Class method we're parsing. */
+    protected $method;
+
+    /** @var string Short description/label/title of the action. */
+    protected $label;
+
+    /** @var null|string Fuller description of the action. This should normally consist of Markdown. */
+    protected $description = null;
+
+    /** @var string Group that this action belongs to. Used for grouping compiled documentation. */
+    protected $group;
+
+    /** @var array Content types that this action might return. Multiple may be returned because of versioning. */
+    protected $content_types = [];
+
+    /** @var array Array of parsed annotations that exist on this action. */
+    protected $annotations = [];
 
     /**
      * @param string $class
@@ -97,8 +73,14 @@ class Documentation
     /**
      * Parse the instance class and method into actionable annotations and documentation.
      *
-     * @return self
-     * @throws NoAnnotationsException If no annotations were found.
+     * @return Documentation
+     * @throws MissingVisibilityDecoratorException
+     * @throws MultipleAnnotationsException
+     * @throws NoAnnotationsException
+     * @throws PublicDecoratorOnPrivateActionException
+     * @throws RequiredAnnotationException
+     * @throws TooManyAliasedPathsException
+     * @throws \Mill\Exceptions\Resource\UnsupportedDecoratorException
      */
     public function parse(): self
     {
@@ -116,12 +98,12 @@ class Documentation
      * Parse an array of annotation objects and set them to the instance resource action documentation.
      *
      * @param array $annotations
-     * @return self
+     * @return Documentation
      * @throws MissingVisibilityDecoratorException
      * @throws MultipleAnnotationsException
      * @throws PublicDecoratorOnPrivateActionException
      * @throws RequiredAnnotationException
-     * @throws TooManyAliasedUrisException
+     * @throws TooManyAliasedPathsException
      */
     public function parseAnnotations(array $annotations = []): self
     {
@@ -143,16 +125,27 @@ class Documentation
             $this->description = $annotation->getDescription();
         }
 
-        // Parse out the `@api-contentType` annotation.
-        if (!isset($annotations['contentType'])) {
-            throw RequiredAnnotationException::create('contentType', $this->class, $this->method);
+        // Parse out the `@api-group` annotation.
+        if (!isset($annotations['group'])) {
+            throw RequiredAnnotationException::create('group', $this->class, $this->method);
+        } elseif (count($annotations['group']) > 1) {
+            throw MultipleAnnotationsException::create('group', $this->class, $this->method);
         } else {
-            $this->content_types = $annotations['contentType'];
+            /** @var \Mill\Parser\Annotations\GroupAnnotation $annotation */
+            $annotation = reset($annotations['group']);
+            $this->group = $annotation->getGroup();
+        }
+
+        // Parse out the `@api-contenttype` annotation.
+        if (!isset($annotations['contenttype'])) {
+            throw RequiredAnnotationException::create('contenttype', $this->class, $this->method);
+        } else {
+            $this->content_types = $annotations['contenttype'];
         }
 
         // Parse out any remaining annotations.
         foreach ($annotations as $key => $data) {
-            if (!in_array($key, self::$ACCEPTED_ANNOTATIONS)) {
+            if (!in_array($key, self::ACCEPTED_ANNOTATIONS)) {
                 continue;
             }
 
@@ -168,8 +161,8 @@ class Documentation
 
                 // If we're dealing with parameter annotations, let's set us up the ability to later sort them in
                 // alphabetical order by keying their annotation array off the parameter field name.
-                if ($key === 'param') {
-                    /** @var Parser\Annotations\ParamAnnotation $annotation */
+                if (in_array($key, ['param', 'pathparam', 'queryparam'])) {
+                    /** @var Parser\Annotations\ParamAnnotation|Parser\Annotations\QueryParamAnnotation $annotation */
                     $this->annotations[$key][$annotation->getField()] = $annotation;
                 } else {
                     $this->annotations[$key][] = $annotation;
@@ -182,35 +175,43 @@ class Documentation
             ksort($this->annotations['param']);
         }
 
+        if (isset($this->annotations['pathparam'])) {
+            ksort($this->annotations['pathparam']);
+        }
+
+        if (isset($this->annotations['queryparam'])) {
+            ksort($this->annotations['queryparam']);
+        }
+
         // Run through the parsed annotations and verify that we aren't missing any required annotations.
-        foreach (self::$REQUIRED_ANNOTATIONS as $required) {
+        foreach (self::REQUIRED_ANNOTATIONS as $required) {
             if (!isset($this->annotations[$required])) {
                 throw RequiredAnnotationException::create($required, $this->class, $this->method);
             }
         }
 
-        // Process any URI aliases, and also verify that we don't have any public annotations on a private action.
+        // Process any path aliases, and also verify that we don't have any public annotations on a private action.
         $visibilities = [];
         $aliases = [];
 
-        /** @var \Mill\Parser\Annotations\UriAnnotation $uri */
-        foreach ($this->annotations['uri'] as $uri) {
-            $visibilities[] = ($uri->isVisible()) ? 'public' : 'private';
+        /** @var \Mill\Parser\Annotations\PathAnnotation $path */
+        foreach ($this->annotations['path'] as $path) {
+            $visibilities[] = ($path->isVisible()) ? 'public' : 'private';
 
-            if ($uri->isAliased()) {
-                $aliases[] = $uri;
+            if ($path->isAliased()) {
+                $aliases[] = $path;
             }
         }
 
         if (!empty($aliases)) {
-            if (count($aliases) >= count($this->annotations['uri'])) {
-                throw TooManyAliasedUrisException::create($this->class, $this->method);
+            if (count($aliases) >= count($this->annotations['path'])) {
+                throw TooManyAliasedPathsException::create($this->class, $this->method);
             }
 
-            /** @var \Mill\Parser\Annotations\UriAnnotation $uri */
-            foreach ($this->annotations['uri'] as $uri) {
-                if (!$uri->isAliased()) {
-                    $uri->setAliases($aliases);
+            /** @var \Mill\Parser\Annotations\PathAnnotation $path */
+            foreach ($this->annotations['path'] as $path) {
+                if (!$path->isAliased()) {
+                    $path->setAliases($aliases);
                 }
             }
         }
@@ -221,7 +222,7 @@ class Documentation
             return $this;
         } elseif (in_array('private', $visibilities)) {
             foreach ($this->annotations as $key => $data) {
-                if ($key === 'uri') {
+                if ($key === 'path') {
                     continue;
                 }
 
@@ -252,16 +253,6 @@ class Documentation
     }
 
     /**
-     * Get the class method documented label.
-     *
-     * @return string
-     */
-    public function getLabel(): string
-    {
-        return $this->label;
-    }
-
-    /**
      * Get the HTTP method that we're parsing.
      *
      * @return string
@@ -282,6 +273,36 @@ class Documentation
     }
 
     /**
+     * Get the class method documented label.
+     *
+     * @return string
+     */
+    public function getLabel(): string
+    {
+        return $this->label;
+    }
+
+    /**
+     * Get the description of this action.
+     *
+     * @return null|string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Get the group that this action belongs to.
+     *
+     * @return string
+     */
+    public function getGroup(): string
+    {
+        return $this->group;
+    }
+
+    /**
      * Get the HTTP Content-Types that have been set up for this action, regardless of their version.
      *
      * @return array
@@ -293,7 +314,7 @@ class Documentation
 
     /**
      * @param array $content_types
-     * @return self
+     * @return Documentation
      */
     public function setContentTypes(array $content_types): self
     {
@@ -330,78 +351,86 @@ class Documentation
     }
 
     /**
-     * Get the description of this action.
-     *
-     * @return null|string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * Get the raw URI annotations that are part of this action.
+     * Get the raw path annotations that are part of this action.
      *
      * @return array
      */
-    public function getUris(): array
+    public function getPaths(): array
     {
-        return $this->annotations['uri'];
+        return $this->annotations['path'];
     }
 
     /**
-     * Get the current URI for this action.
+     * Get the current path for this action.
      *
-     * @return UriAnnotation
+     * @return PathAnnotation
      */
-    public function getUri(): UriAnnotation
+    public function getPath(): PathAnnotation
     {
-        $uris = $this->getUris();
-        return array_shift($uris);
+        $paths = [];
+
+        /** @var PathAnnotation $path */
+        foreach ($this->getPaths() as $k => $path) {
+            if (!$path->isAliased()) {
+                $paths[] = $path;
+            }
+        }
+
+        if (empty($paths)) {
+            throw new \Exception(
+                sprintf(
+                    'There were zero non-aliased paths detected in this %s::%s.',
+                    $this->getClass(),
+                    $this->getMethod()
+                )
+            );
+        }
+
+        return array_shift($paths);
     }
 
     /**
-     * Set the lone URI that this action runs under for a specific namespace.
+     * Set the lone path that this action runs under for a specific group.
      *
-     * This is used in the Compiler system when grouping actions under namespaces. If an action runs on the `Me\Videos`
-     * and `Users\Videos` namespaces, we don't want the action in the `Me\Videos` namespace to have actions with
-     * `Users\Videos` URIs.
+     * This is used in the Compiler system when grouping actions under groups. If an action runs on the `Me\Videos`
+     * and `Users\Videos` groups, we don't want the action in the `Me\Videos` group to have actions with `Users\Videos`
+     * URIs.
      *
-     * @param UriAnnotation $uri
+     * @param PathAnnotation $path
      */
-    public function setUri(UriAnnotation $uri): void
+    public function setPath(PathAnnotation $path): void
     {
-        $this->annotations['uri'] = [$uri];
+        $this->annotations['path'] = [$path];
     }
 
     /**
-     * Get a combined array of the resource action URI and any URI aliases that it might have.
+     * Get a combined array of the resource action path and any path aliases that it might have.
      *
      * @return array
      */
-    public function getUriAndAliases()
+    public function getPathAndAliases()
     {
-        $uri = $this->getUri();
-        $uris = array_merge([
-            $uri->getCleanPath() => $uri
-        ], $this->getUriAliases());
+        $path = $this->getPath();
+        $paths = array_merge([
+            $path->getCleanPath() => $path
+        ], $this->getPathAliases());
 
-        ksort($uris);
+        ksort($paths);
 
-        return $uris;
+        return $paths;
     }
 
     /**
-     * Get a path-keyed array of any URI aliases that this action might have.
+     * Get a path-keyed array of any path aliases that this action might have.
      *
      * @return array
      */
-    public function getUriAliases()
+    public function getPathAliases()
     {
         $aliases = [];
 
-        /** @var UriAnnotation $alias */
-        foreach ($this->getUri()->getAliases() as $alias) {
+        /** @var PathAnnotation $alias */
+        foreach ($this->getPath()->getAliases() as $alias) {
             $aliases[$alias->getCleanPath()] = $alias;
         }
 
@@ -409,37 +438,37 @@ class Documentation
     }
 
     /**
-     * Get the raw URI segment annotations that are part of this action.
+     * Get the raw path param annotations that are part of this action.
      *
      * @return array
      */
-    public function getUriSegments(): array
+    public function getPathParameters(): array
     {
-        return (isset($this->annotations['uriSegment'])) ? $this->annotations['uriSegment'] : [];
+        return (isset($this->annotations['pathparam'])) ? $this->annotations['pathparam'] : [];
     }
 
     /**
-     * Set the URI segments that this action has.
+     * Set the path params that this action has.
      *
-     * This is used in the Compiler system when grouping actions under namespaces. If an action broadcasts on
-     * `/me/videos` and `/users/:id/videos`, we don't want the URI segments for `/users/:id/videos` to be a part of the
-     * compiled `/me/videos` action.
+     * This is used in the Compiler system when grouping actions under groups. If an action broadcasts on `/me/videos`
+     * and `/users/:id/videos`, we don't want the params for `/users/:id/videos` to be a part of the compiled
+     * `/me/videos` action.
      *
-     * @param array $segments
+     * @param array $params
      */
-    public function setUriSegments(array $segments = []): void
+    public function setPathParams(array $params = []): void
     {
-        $this->annotations['uriSegment'] = $segments;
+        $this->annotations['pathparam'] = $params;
     }
 
     /**
-     * Get back any application capabilities that this action has set as being required.
+     * Get back any application vendor tags that this action has set.
      *
      * @return array
      */
-    public function getCapabilities(): array
+    public function getVendorTags(): array
     {
-        return (isset($this->annotations['capability'])) ? $this->annotations['capability'] : [];
+        return (isset($this->annotations['vendortag'])) ? $this->annotations['vendortag'] : [];
     }
 
     /**
@@ -463,28 +492,57 @@ class Documentation
     }
 
     /**
+     * Get back any query parameters that this action has available.
+     *
+     * @return array
+     */
+    public function getQueryParameters(): array
+    {
+        return (isset($this->annotations['queryparam'])) ? $this->annotations['queryparam'] : [];
+    }
+
+    /**
+     * Get back all parameters that this action has available.
+     *
+     * @return array
+     */
+    public function getAllParameters(): array
+    {
+        return array_merge($this->getPathParameters(), $this->getParameters(), $this->getQueryParameters());
+    }
+
+    /**
      * Get back any responses that this action can throw. This will include both returns (`@api-return`) and exceptions
-     * (`@api-throws`).
+     * (`@api-error`).
      *
      * @return array
      */
     public function getResponses(): array
     {
         $return = (isset($this->annotations['return'])) ? $this->annotations['return'] : [];
-        $throws = (isset($this->annotations['throws'])) ? $this->annotations['throws'] : [];
+        $error = (isset($this->annotations['error'])) ? $this->annotations['error'] : [];
 
-        return array_merge($return, $throws);
+        return array_merge($return, $error);
     }
 
     /**
      * Get the (absolute) minimum version that this action is supported on.
      *
-    /**
      * @return null|Parser\Annotations\MinVersionAnnotation
      */
     public function getMinimumVersion(): ?Parser\Annotations\MinVersionAnnotation
     {
-        return (isset($this->annotations['minVersion'])) ? $this->annotations['minVersion'][0] : null;
+        return (isset($this->annotations['minversion'])) ? $this->annotations['minversion'][0] : null;
+    }
+
+    /**
+     * Get the (absolute) maximum version that this action is supported on.
+     *
+     * @return null|Parser\Annotations\MaxVersionAnnotation
+     */
+    public function getMaximumVersion(): ?Parser\Annotations\MaxVersionAnnotation
+    {
+        return (isset($this->annotations['maxversion'])) ? $this->annotations['maxversion'][0] : null;
     }
 
     /**
@@ -514,30 +572,30 @@ class Documentation
 
     /**
      * Filter down, and return, all annotations on this action that match a specific visibility. This can either be
-     * public, public+private, or capability-locked.
+     * public, public+private, or vendor tagged.
      *
      * @psalm-suppress RedundantCondition
      * @param bool $allow_private
-     * @param array|null $only_capabilities
+     * @param array|null $only_vendor_tags
      * @return array
      */
-    public function filterAnnotationsForVisibility(bool $allow_private, ?array $only_capabilities): array
+    public function filterAnnotationsForVisibility(bool $allow_private, ?array $only_vendor_tags): array
     {
-        if ($allow_private && empty($only_capabilities)) {
+        if ($allow_private && empty($only_vendor_tags)) {
             return $this->annotations;
         }
 
-        $method_capabilities = $this->getCapabilities();
+        $method_vendor_tags = $this->getVendorTags();
 
         foreach ($this->annotations as $name => $data) {
             /** @var Parser\Annotation $annotation */
             foreach ($data as $k => $annotation) {
-                // While URI annotations are already filtered within the generator, so we don't need to further filter
+                // While URI annotations are already filtered within the compiler, so we don't need to further filter
                 // them out, we do need to filter URI aliases as those can have their independent visibilities.
-                if ($annotation instanceof UriAnnotation) {
+                if ($annotation instanceof PathAnnotation) {
                     $aliases = $annotation->getAliases();
                     if (!empty($aliases)) {
-                        /** @var UriAnnotation $alias */
+                        /** @var PathAnnotation $alias */
                         foreach ($aliases as $k => $alias) {
                             // If this annotation isn't visible, and we don't want private documentation, filter it out.
                             if (!$allow_private && $alias->hasVisibility() && !$alias->isVisible()) {
@@ -551,38 +609,32 @@ class Documentation
                     continue;
                 }
 
-                // If this annotation has a capability, but that capability isn't in the set of capabilities we're
-                // generating documentation for, filter it out.
-                $capability = $annotation->getCapability();
-                if (!empty($capability) || !empty($method_capabilities)) {
-                    // If we don't even have capabilities to look for, then filter this annotation out completely.
-                    if (!is_null($only_capabilities) && empty($only_capabilities)) {
+                // If this annotation has vendor tags, but those vendor tags aren't in the set of vendor tags we're
+                // compiling documentation for, filter it out.
+                $vendor_tags = $annotation->getVendorTags();
+                if (!empty($vendor_tags) || !empty($method_vendor_tags)) {
+                    // If we don't even have vendor tags to look for, then filter this annotation out completely.
+                    if (!is_null($only_vendor_tags) && empty($only_vendor_tags)) {
                         unset($this->annotations[$name][$k]);
                         continue;
                     }
 
                     $all_found = true;
 
-                    /** @var Parser\Annotations\CapabilityAnnotation $method_capability */
-                    foreach ($method_capabilities as $method_capability) {
-                        /** @var string $capability */
-                        $capability = $method_capability->getCapability();
-                        if (!is_null($only_capabilities) && !in_array($capability, $only_capabilities)) {
+                    /** @var Parser\Annotations\VendorTagAnnotation $method_vendor_tag */
+                    foreach ($method_vendor_tags as $method_vendor_tag) {
+                        $vendor_tag = $method_vendor_tag->getVendorTag();
+                        if (!is_null($only_vendor_tags) && !in_array($vendor_tag, $only_vendor_tags)) {
                             $all_found = false;
                         }
                     }
 
-                    if (!$all_found ||
-                        (
-                            !empty($capability) &&
-                            (!is_null($only_capabilities) && !in_array($capability, $only_capabilities))
-                        )
-                    ) {
+                    if (!$all_found) {
                         unset($this->annotations[$name][$k]);
                         continue;
                     }
 
-                    // Capabilities override individual annotation visibility.
+                    // Vendor tag requirements override individual annotation visibility.
                     continue;
                 }
 
@@ -597,55 +649,73 @@ class Documentation
     }
 
     /**
-     * Hydrate a new resource action documentation object with an array of data generated from `toArray`.
+     * Convert the parsed parameter documentation content dot notation field names into an exploded array.
      *
-     * @param array $data
-     * @return self
+     * @return array
      */
-    public static function hydrate(array $data): self
+    public function getExplodedParameterDotNotation(): array
     {
-        $annotations = [];
-        $parser = new Parser($data['class']);
-        $action = new self($data['class'], $data['method']);
-
-        $annotations['label'][] = $parser->hydrateAnnotation('label', $data['class'], $data['method'], $data);
-
-        if (!empty($data['description'])) {
-            $annotations['description'][] = $parser->hydrateAnnotation(
-                'description',
-                $data['class'],
-                $data['method'],
-                $data
-            );
-        }
-
-        foreach ($data['content_types'] as $content_type) {
-            $annotations['contentType'][] = $parser->hydrateAnnotation(
-                'content_type',
-                $data['class'],
-                $data['method'],
-                $content_type
-            );
-        }
-
-        foreach ($data['annotations'] as $name => $datas) {
-            foreach ($datas as $annotation_data) {
-                $annotations[$name][] = $parser->hydrateAnnotation(
-                    $name,
-                    $data['class'],
-                    $data['method'],
-                    $annotation_data
-                );
-            }
-        }
-
-        return $action->parseAnnotations($annotations);
+        return $this->buildExplodedDotNotation($this->getParameters());
     }
 
     /**
-     * Convert the parsed resource action documentation into an array.
+     * Convert the parsed query parameter documentation content dot notation field names into an exploded array.
      *
      * @return array
+     */
+    public function getExplodedQueryParameterDotNotation(): array
+    {
+        return $this->buildExplodedDotNotation($this->getQueryParameters());
+    }
+
+    /**
+     * Convert the parsed path parameter documentation content dot notation field names into an exploded array.
+     *
+     * @return array
+     */
+    public function getExplodedPathParameterDotNotation(): array
+    {
+        return $this->buildExplodedDotNotation($this->getPathParameters());
+    }
+
+    /**
+     * Convert all parsed parameter (query and normal parameter) documentation content dot notation field names into an
+     * exploded array.
+     *
+     * @return array
+     */
+    public function getExplodedAllQueryParameterDotNotation(): array
+    {
+        return $this->buildExplodedDotNotation(array_merge(
+            $this->getParameters(),
+            $this->getQueryParameters()
+        ));
+    }
+
+    /**
+     * @param array $parameters
+     * @return array
+     */
+    private function buildExplodedDotNotation($parameters = []): array
+    {
+        if (empty($parameters)) {
+            return [];
+        }
+
+        $content = new Data();
+
+        /** @var Parser\Annotations\ParamAnnotation|Parser\Annotations\QueryParamAnnotation $parameter */
+        foreach ($parameters as $name => $parameter) {
+            $content->set($name, [
+                Application::DOT_NOTATION_ANNOTATION_DATA_KEY => $parameter->toArray()
+            ]);
+        }
+
+        return $content->export();
+    }
+
+    /**
+     * {{@inheritdoc}}
      */
     public function toArray(): array
     {
@@ -653,6 +723,7 @@ class Documentation
             'class' => $this->class,
             'label' => $this->label,
             'description' => $this->description,
+            'group' => $this->group,
             'content_types' => [],
             'method' => $this->method,
             'annotations' => []

@@ -25,12 +25,15 @@ This allows you to denote the minimum API version required for a resource action
 ## Examples
 ```php
 /**
- * @api-uri:public {Movies} /movies/+id
- * @api-urisegment {/movies/+id} id (integer) - Movie ID
+ * @api-label Update a movie.
+ * @api-group Movies
+ *
+ * @api-path:public /movies/+id
+ * @api-pathparam id (integer) - Movie ID
  *
  * @api-minversion 3.2
  *
- * @api-throws:private {403} \Some\ErrorErrorRepresentation If the user isn't
+ * @api-error:private 403 (\Some\ErrorErrorRepresentation) - If the user isn't
  *    allowed to do something.
  */
 public function PATCH()

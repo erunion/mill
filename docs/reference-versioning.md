@@ -25,7 +25,7 @@ On resource actions, `@api-version` is a block-level annotation. This means that
 * Anything below `@api-version >=3.4` will have `version = >=3.4`.
 * And anything that doesn't follow am `@api-version` annotation will be treated as being available across all versions.
 
-Versioning is currently only supported on [`@api-param`](reference-api-param.md), [`@api-return`](reference-api-return.md), and [`@api-throws`](reference-api-throws.md).
+Versioning is currently only supported on [`@api-param`](reference-api-param.md), [`@api-return`](reference-api-return.md), and [`@api-error`](reference-api-error.md).
 
 ### Representations
 In representations, the [`@api-version`](reference-api-version.md) annotation works as any other annotation.

@@ -1,6 +1,6 @@
 const siteConfig = {
   title: 'Mill',
-  tagline: 'A small annotation DSL for documenting a REST API.',
+  tagline: 'An annotation-based DSL for documenting a REST API',
 
   url: 'https://vimeo.github.io',
   baseUrl: '/mill/',

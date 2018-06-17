@@ -4,19 +4,16 @@ namespace Mill;
 use Mill\Exceptions\MethodNotImplementedException;
 use ReflectionClass;
 
-/**
- * Class for loading a class (or class method) and reading its docblock.
- *
- */
 class Reader
 {
     /**
      * Load, and pull, the annotations for a class or class method.
      *
      * @param string $class
-     * @param null|string $method
-     * @return false|string
+     * @param string|null $method
+     * @return bool|string
      * @throws MethodNotImplementedException If the supplied method does not exist on the supplied class.
+     * @throws \ReflectionException
      */
     public function getAnnotations(string $class, string $method = null)
     {
@@ -44,6 +41,7 @@ class Reader
      * @param string $method
      * @return string
      * @throws MethodNotImplementedException If the supplied method does not exist on the supplied class.
+     * @throws \ReflectionException
      */
     public function getRepresentationAnnotations(string $class, string $method): string
     {

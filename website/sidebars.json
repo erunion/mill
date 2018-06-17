@@ -4,7 +4,7 @@
       "installation",
       "configuration",
       "writing-documentation",
-      "generate-documentation",
+      "compile-documentation",
       "generate-changelogs"
     ],
     "Concepts": [
@@ -16,18 +16,21 @@
       "representations"
     ],
     "API Reference": [
-      "api-capability",
       "api-contenttype",
       "api-data",
+      "api-error",
+      "api-group",
       "api-label",
+      "api-maxversion",
       "api-minversion",
       "api-param",
+      "api-path",
+      "api-pathparam",
+      "api-queryparam",
       "api-return",
       "api-scope",
       "api-see",
-      "api-throws",
-      "api-uri",
-      "api-urisegment"
+      "api-vendortag"
     ]
   }
 }

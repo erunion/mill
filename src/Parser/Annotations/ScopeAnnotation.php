@@ -4,33 +4,19 @@ namespace Mill\Parser\Annotations;
 use Mill\Container;
 use Mill\Exceptions\Annotations\InvalidScopeSuppliedException;
 use Mill\Parser\Annotation;
-use Mill\Parser\Version;
 
-/**
- * Handler for the `@api-scope` annotation.
- *
- */
 class ScopeAnnotation extends Annotation
 {
-    /** @var string */
-    protected $scope;
-
-    /**
-     * Description for why this scope is required.
-     *
-     * @var false|null|string
-     */
-    protected $description = null;
-
-    /**
-     * An array of items that should be included in an array representation of this annotation.
-     *
-     * @var array
-     */
-    protected $arrayable = [
+    const ARRAYABLE = [
         'description',
         'scope'
     ];
+
+    /** @var string */
+    protected $scope;
+
+    /** @var false|null|string Description for why this scope is required. */
+    protected $description = null;
 
     /**
      * {@inheritdoc}
@@ -45,8 +31,7 @@ class ScopeAnnotation extends Annotation
 
         if (!empty($scope)) {
             // Validate the supplied scope with what has been configured as allowable.
-            $scopes = Container::getConfig()->getScopes();
-            if (!in_array($scope, $scopes)) {
+            if (!Container::getConfig()->hasScope($scope)) {
                 /** @var string $method */
                 $method = $this->method;
                 throw InvalidScopeSuppliedException::create($scope, $this->class, $method);
@@ -69,19 +54,6 @@ class ScopeAnnotation extends Annotation
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public static function hydrate(array $data = [], Version $version = null): self
-    {
-        /** @var ScopeAnnotation $annotation */
-        $annotation = parent::hydrate($data, $version);
-        $annotation->setScope($data['scope']);
-        $annotation->setDescription($data['description']);
-
-        return $annotation;
-    }
-
-    /**
      * @return string
      */
     public function getScope(): string
@@ -91,7 +63,7 @@ class ScopeAnnotation extends Annotation
 
     /**
      * @param string $scope
-     * @return self
+     * @return ScopeAnnotation
      */
     public function setScope(string $scope): self
     {
@@ -109,7 +81,7 @@ class ScopeAnnotation extends Annotation
 
     /**
      * @param false|null|string $description
-     * @return self
+     * @return ScopeAnnotation
      */
     public function setDescription($description): self
     {

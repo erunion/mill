@@ -25,27 +25,26 @@ class Movie
      * ```
      *
      * @api-label Get a single movie.
+     * @api-group Movies
      *
-     * @api-uri:private:alias {Movies} /movie/+id
-     * @api-uriSegment {/movie/+id} id (integer) - Movie ID
-     *
-     * @api-uri:public {Movies} /movies/+id
-     * @api-uriSegment {/movies/+id} id (integer) - Movie ID
+     * @api-path:private:alias /movie/+movie_id
+     * @api-path:public /movies/+movie_id
+     * @api-pathparam movie_id `1234` (integer) - Movie ID
      *
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Movie
      * @api-return:public {notmodified} If no content has been modified since the supplied Last-Modified header.
      *
-     * @api-throws:public {404} \Mill\Examples\Showtimes\Representations\Error If the movie could not be found.
+     * @api-error:public 404 (\Mill\Examples\Showtimes\Representations\Error) - If the movie could not be found.
      *
      * @api-version >=1.1.2
-     * @api-contentType application/mill.example.movie
+     * @api-contenttype application/mill.example.movie+json
      *
      * @api-version <1.1.2
-     * @api-contentType application/json
+     * @api-contenttype application/json
      *
      * @api-version >=1.1.3
-     * @api-throws:public {404} \Mill\Examples\Showtimes\Representations\Error For no reason.
-     * @api-throws:public {404} \Mill\Examples\Showtimes\Representations\Error For some other reason.
+     * @api-error:public 404 (\Mill\Examples\Showtimes\Representations\Error) - For no reason.
+     * @api-error:public 404 (\Mill\Examples\Showtimes\Representations\Error) - For some other reason.
      */
     public function GET()
     {
@@ -56,57 +55,59 @@ class Movie
      * Update a movies data.
      *
      * @api-label Update a movie.
+     * @api-group Movies
      *
-     * @api-uri:public {Movies} /movies/+id
-     * @api-uriSegment {/movies/+id} id (integer) - Movie ID
+     * @api-path:public /movies/+id
+     * @api-pathparam id `1234` (integer) - Movie ID
      *
      * @api-scope edit
-     * @api-minVersion 1.1
+     * @api-minversion 1.1
      *
-     * @api-param:public name (string, required) - Name of the movie.
+     * @api-param:public name `Demons` (string, required) - Name of the movie.
      * @api-param:public description (string, required) - Description, or tagline, for the movie.
-     * @api-param:public runtime (string, optional) - Movie runtime, in `HHhr MMmin` format.
-     * @api-param:public content_rating (enum, optional) - MPAA rating
+     * @api-param:public runtime `1hr 20min` (string, optional) - Movie runtime, in `HHhr MMmin` format.
+     * @api-param:public content_rating `NR` (enum, optional) - MPAA rating
      *  + Members
-     *      - `G`
-     *      - `PG`
-     *      - `PG-13`
-     *      - `R`
-     *      - `NC-17`
-     *      - `X`
-     *      - `NR`
-     *      - `UR`
+     *      - `G` - Rated G
+     *      - `PG` - Rated PG
+     *      - `PG-13` - Rated PG-13
+     *      - `R` - Rated R
+     *      - `NC-17` - Rated NC-17
+     *      - `X` - Rated X
+     *      - `NR` - Not rated
+     *      - `UR` - Unrated
      * @api-param:public genres (array, optional) - Array of movie genres.
-     * @api-param:public trailer (string, optional, nullable) - Trailer URL
-     * @api-param:public director (string, optional) - Name of the director.
-     * @api-param:public cast (array, optional) - Array of names of the cast.
+     * @api-param:public trailer `https://www.youtube.com/watch?v=_cNjTdFHL8E` (string, optional, nullable) - Trailer
+     *      URL
+     * @api-param:public director `Lamberto Bava` (string, optional) - Name of the director.
+     * @api-param:public cast (array<object>, optional) - Array of cast members.
+     * @api-param:public cast.name `Natasha Hovey` (string, optional) - Cast member name.
+     * @api-param:public cast.role `Cheryl` (string, optional) - Cast member role.
      * @api-param:public is_kid_friendly (boolean, optional) - Is this movie kid friendly?
-     * @api-param:public rotten_tomatoes_score (integer, optional) - Rotten Tomatoes score
+     * @api-param:public rotten_tomatoes_score `56` (integer, optional) - Rotten Tomatoes score
      *
      * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Movie
      *
-     * @api-throws:public {400} \Mill\Examples\Showtimes\Representations\Error If there is a problem with the
-     *      request.
-     * @api-throws:public {400} \Mill\Examples\Showtimes\Representations\Error If the IMDB URL could not be validated.
-     * @api-throws:public {404} \Mill\Examples\Showtimes\Representations\Error If the movie could not be found.
+     * @api-error:public 400 (\Mill\Examples\Showtimes\Representations\Error) - If there is a problem with the request.
+     * @api-error:public 400 (\Mill\Examples\Showtimes\Representations\Error) - If the IMDB URL could not be validated.
+     * @api-error:public 404 (\Mill\Examples\Showtimes\Representations\Error) - If the movie could not be found.
      *
      * @api-version >=1.1.2
-     * @api-contentType application/mill.example.movie
+     * @api-contenttype application/mill.example.movie+json
      *
      * @api-version <1.1.2
-     * @api-contentType application/json
+     * @api-contenttype application/json
      *
      * @api-version >=1.1.1
-     * @api-param:public imdb (string, optional) - IMDB URL
+     * @api-param:public imdb `https://www.imdb.com/title/tt0089013/` (string, optional) - IMDB URL
      *
      * @api-version >=1.1.3
      * @api-return:public {accepted} \Mill\Examples\Showtimes\Representations\Movie
-     * @api-throws:public {404} \Mill\Examples\Showtimes\Representations\Error If the trailer URL could not be
+     * @api-error:public 404 (\Mill\Examples\Showtimes\Representations\Error) - If the trailer URL could not be
      *      validated.
-     * @api-throws:private {403} \Mill\Examples\Showtimes\Representations\CodedError (1337) If something cool happened.
-     * @api-throws:public {403} \Mill\Examples\Showtimes\Representations\CodedError
-     *      (Mill\Examples\Showtimes\Representations\CodedError::DISALLOWED) If the user is not allowed to edit that
-     *      movie.
+     * @api-error:private 403 (\Mill\Examples\Showtimes\Representations\CodedError<1337>) - If something cool happened.
+     * @api-error:public 403 (\Mill\Examples\Showtimes\Representations\CodedError<666>) - If the user is not allowed to
+     *      edit that movie.
      */
     public function PATCH()
     {
@@ -117,18 +118,20 @@ class Movie
      * Delete a movie.
      *
      * @api-label Delete a movie.
+     * @api-group Movies
      *
-     * @api-uri:private {Movies} /movies/+id
-     * @api-uriSegment {/movies/+id} id (integer) - Movie ID
+     * @api-path:private /movies/+id
+     * @api-pathparam id `1234` (integer) - Movie ID
      *
-     * @api-contentType application/json
-     * @api-capability DELETE_CONTENT
+     * @api-contenttype application/json
+     * @api-vendortag tag:DELETE_CONTENT
      * @api-scope delete
      * @api-minVersion 1.1
+     * @api-maxVersion 1.1.2
      *
      * @api-return:private {deleted}
      *
-     * @api-throws:private {404} \Mill\Examples\Showtimes\Representations\Error If the movie could not be found.
+     * @api-error:private 404 (\Mill\Examples\Showtimes\Representations\Error) - If the movie could not be found.
      */
     public function DELETE()
     {

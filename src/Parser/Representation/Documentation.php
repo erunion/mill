@@ -2,44 +2,22 @@
 namespace Mill\Parser\Representation;
 
 use Dflydev\DotAccessData\Data;
+use Mill\Application;
+use Mill\Contracts\Arrayable;
 use Mill\Exceptions\Annotations\MultipleAnnotationsException;
 use Mill\Exceptions\Annotations\RequiredAnnotationException;
 use Mill\Exceptions\Resource\NoAnnotationsException;
 use Mill\Parser;
 
-/**
- * Class for parsing a docblock on a given representation class and method for documentation.
- *
- */
-class Documentation
+class Documentation implements Arrayable
 {
-    /**
-     * When building out dot-notation annotation keys for generating API Blueprint files (or any other generator),
-     * we use this key to designate the content of an annotations' data.
-     *
-     * @var string
-     */
-    const DOT_NOTATION_ANNOTATION_DATA_KEY = '__FIELD_DATA__';
-
-    /**
-     * Name of the representation class that we're going to be parsing for documentation.
-     *
-     * @var string
-     */
+    /** @var string Name of the representation class that we're going to be parsing for documentation. */
     protected $class;
 
-    /**
-     * Name of the representation class method that we're going to be parsing for documentation.
-     *
-     * @var string
-     */
+    /** @var string Name of the representation class method that we're going to be parsing for documentation. */
     protected $method;
 
-    /**
-     * Short description/label/title of the representation.
-     *
-     * @var string
-     */
+    /** @var string Short description/label/title of the representation. */
     protected $label;
 
     /**
@@ -49,11 +27,7 @@ class Documentation
      */
     protected $description = null;
 
-    /**
-     * Array of parsed field annotations that exist on this representation.
-     *
-     * @var array
-     */
+    /** @var array Array of parsed field annotations that exist on this representation. */
     protected $representation = [];
 
     /**
@@ -69,11 +43,13 @@ class Documentation
     /**
      * Parse the instance controller and method into actionable annotations and documentation.
      *
-     * @return self
-     * @throws NoAnnotationsException If no annotations were found on the class.
-     * @throws NoAnnotationsException If no annotations were found on the method.
-     * @throws RequiredAnnotationException If a required `@api-label` annotation is missing.
-     * @throws MultipleAnnotationsException If multiple `@api-label` annotations were found.
+     * @return Documentation
+     * @throws MultipleAnnotationsException
+     * @throws NoAnnotationsException
+     * @throws RequiredAnnotationException
+     * @throws \Mill\Exceptions\MethodNotSuppliedException
+     * @throws \Mill\Exceptions\Representation\DuplicateFieldException
+     * @throws \Mill\Exceptions\Resource\UnsupportedDecoratorException
      */
     public function parse(): self
     {
@@ -132,46 +108,47 @@ class Documentation
     }
 
     /**
-     * Filter down, and return, all annotations on this representation that match a specific visibility.
+     * Filter down, and return, all annotations on this representation that match a specific vendor tag.
      *
      * @psalm-suppress RedundantCondition
-     * @param array|null $only_capabilities
+     * @param array|null $only_vendor_tags
      * @return array
      */
-    public function filterAnnotationsForVisibility(?array $only_capabilities): array
+    public function filterAnnotationsForVisibility(?array $only_vendor_tags): array
     {
-        if (is_null($only_capabilities)) {
+        if (is_null($only_vendor_tags)) {
             return $this->representation;
         }
 
         /** @var Parser\Annotation $annotation */
         foreach ($this->representation as $name => $annotation) {
-            // If this annotation has a capability, but that capability isn't in the set of capabilities we're
-            // generating documentation for, filter it out.
-            $capability = $annotation->getCapability();
-            if (!empty($capability)) {
-                if ($capability instanceof Parser\Annotations\CapabilityAnnotation) {
-                    /** @var Parser\Annotations\CapabilityAnnotation $capability */
-                    $capability = $capability->getCapability();
-                }
-
-                // If we don't even have capabilities to look for, then filter this annotation out completely.
-                if (!is_null($only_capabilities) && empty($only_capabilities)) {
+            // If this annotation has vendor tags, but those vendor tags aren't in the set of vendor tags we're
+            // compiling documentation for, filter it out.
+            $vendor_tags = $annotation->getVendorTags();
+            if (!empty($vendor_tags)) {
+                // If we don't even have vendor tags to look for, then filter this annotation out completely.
+                if (!is_null($only_vendor_tags) && empty($only_vendor_tags)) {
                     unset($this->representation[$name]);
                     continue;
                 }
 
-                if (!empty($capability) &&
-                    (
-                        !is_null($only_capabilities) &&
-                        !in_array($capability, $only_capabilities)
-                    )
-                ) {
+                $all_found = true;
+
+                /** @var Parser\Annotations\VendorTagAnnotation $vendor_tag */
+                foreach ($vendor_tags as $vendor_tag) {
+                    $vendor_tag = $vendor_tag->getVendorTag();
+
+                    if (!is_null($only_vendor_tags) && !in_array($vendor_tag, $only_vendor_tags)) {
+                        $all_found = false;
+                    }
+                }
+
+                if (!$all_found) {
                     unset($this->representation[$name]);
                     continue;
                 }
 
-                // Capabilities override individual annotation visibility.
+                // Vendor tags requirements override individual annotation visibility.
                 continue;
             }
         }
@@ -241,7 +218,7 @@ class Documentation
         $arr = $this->toArray();
         foreach ($arr['content'] as $field => $data) {
             $content->set($field, [
-                self::DOT_NOTATION_ANNOTATION_DATA_KEY => $data
+                Application::DOT_NOTATION_ANNOTATION_DATA_KEY => $data
             ]);
         }
 
@@ -249,9 +226,7 @@ class Documentation
     }
 
     /**
-     * Convert the parsed representation method documentation into an array.
-     *
-     * @return array
+     * {{@inheritdoc}}
      */
     public function toArray(): array
     {
@@ -266,7 +241,6 @@ class Documentation
             $data['content'][$key] = $annotation->toArray();
         }
 
-        // Keep things tidy.
         ksort($data['content']);
 
         return $data;

@@ -30,13 +30,13 @@ class ChangelogTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider providerTestCommand
      * @param bool $private_objects
-     * @param array $capabilities
+     * @param array $vendor_tags
      * @param string $expected_file
      */
-    public function testCommand(bool $private_objects, array $capabilities, string $expected_file): void
+    public function testCommand(bool $private_objects, array $vendor_tags, string $expected_file): void
     {
         /** @var string $output_dir */
-        $output_dir = tempnam(sys_get_temp_dir(), 'mill-generate-test-');
+        $output_dir = tempnam(sys_get_temp_dir(), 'mill-changelog-test-');
         if (file_exists($output_dir)) {
             unlink($output_dir);
         }
@@ -53,17 +53,17 @@ class ChangelogTest extends \PHPUnit\Framework\TestCase
             $params['--private'] = $private_objects;
         }
 
-        if (!empty($capabilities)) {
-            $params['--capability'] = $capabilities;
+        if (!empty($vendor_tags)) {
+            $params['--vendor_tag'] = $vendor_tags;
         }
 
         $this->tester->execute($params);
 
-        $blueprints_dir = __DIR__ . '/../../resources/examples/Showtimes/blueprints';
+        $control_dir = __DIR__ . '/../../resources/examples/Showtimes/compiled';
         $this->assertFileEquals(
-            $blueprints_dir . '/' . $expected_file,
+            $control_dir . '/' . $expected_file,
             $output_dir . '/changelog.md',
-            'Generated changelog does not match.'
+            'Compiled changelog does not match.'
         );
     }
 
@@ -85,34 +85,34 @@ class ChangelogTest extends \PHPUnit\Framework\TestCase
             // Complete changelog. All documentation parsed.
             'complete-changelog' => [
                 'private_objects' => true,
-                'capabilities' => [],
+                'vendor_tags' => [],
                 'expected_file' => 'changelog.md'
             ],
 
-            // Changelog with public-only parsed docs and all capabilities.
-            'changelog-public-docs-with-all-capabilities' => [
+            // Changelog with public-only parsed docs and all vendor tags.
+            'changelog-public-docs-with-all-vendor-tags' => [
                 'private_objects' => false,
-                'capabilities' => [],
-                'expected' => 'changelog-public-only-all-capabilities.md'
+                'vendor_tags' => [],
+                'expected' => 'changelog-public-only-all-vendor-tags.md'
             ],
 
-            // Changelog with public-only parsed docs and matched `BUY_TICKETS` and `FEATURE_FLAG` capabilities
-            'changelog-public-only-matched-with-tickets-and-feature-capabilities' => [
+            // Changelog with public-only parsed docs and matched `tag:BUY_TICKETS` and `tag:FEATURE_FLAG` vendor tags.
+            'changelog-public-only-matched-with-tickets-and-feature-vendor-tags' => [
                 'private_objects' => false,
-                'capabilities' => [
-                    'BUY_TICKETS',
-                    'FEATURE_FLAG'
+                'vendor_tags' => [
+                    'tag:BUY_TICKETS',
+                    'tag:FEATURE_FLAG'
                 ],
-                'expected' => 'changelog-public-only-matched-with-tickets-and-feature-capabilities.md'
+                'expected' => 'changelog-public-only-matched-with-tickets-and-feature-vendor-tags.md'
             ],
 
-            // Changelog with public-only parsed docs and matched `DELETE_CONTENT` capabilities
-            'changelog-public-only-matched-with-delete-capabilities' => [
+            // Changelog with public-only parsed docs and matched the `tag:DELETE_CONTENT` vendor tag.
+            'changelog-public-only-matched-with-delete-vendor-tags' => [
                 'private_objects' => false,
-                'capabilities' => [
-                    'DELETE_CONTENT'
+                'vendor_tags' => [
+                    'tag:DELETE_CONTENT'
                 ],
-                'expected' => 'changelog-public-only-matched-with-delete-capabilities.md'
+                'expected' => 'changelog-public-only-matched-with-delete-vendor-tags.md'
             ]
         ];
     }

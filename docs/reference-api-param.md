@@ -3,11 +3,13 @@ id: api-param
 title: "@api-param"
 ---
 
-A request parameter that can be supplied to a resource action.
+A request parameter that can be supplied to a resource action via a body payload.
+
+> If you need to describe a parameter that can be used within a query string, use the [`@api-queryparam`](reference-api-queryparam.md) annotation.
 
 ## Syntax
 ```php
-@api-param:visibility fieldName `sampleData` (type, required|optional, nullable, capabilityName) - Description
+@api-param:visibility fieldName `sampleData` (type, required|optional, nullable, vendor:tagName) - Description
     + Members
         - `option` - Option description
 ```
@@ -28,13 +30,13 @@ A request parameter that can be supplied to a resource action.
 | type | × | This can be a reference to the type of variable that is being passed in (string, boolean, array, etc.), or can be one of the [tokens](#tokens) that are configured for your API. |
 | required&vert;optional | ✓ | A flag that indicates that the parameter is, well, optional. If nothing is supplied, it defaults to being `optional`. |
 | nullable | ✓ | A flag that indicates that the parameter is nullable. If nothing is supplied, it defaults to being non-nullable. |
-| capabilityName | ✓ | Defined capability that the developers application should possess. |
+| vendor:tagName | ✓ | Defined vendor tag. See the [`@api-vendortag`](reference-api-vendortag.md) documentation for more information. There is no limit to the amount of vendor tags you can specify on a parameter. |
 | Description | × | Description for what the parameter is for. |
 | Members | ✓ | If this parameter has acceptable values (like in the case of an `enum` type), you can document those values here along with a description for what the value is, or means. |
 
 ### Supported Types
 
-| Type | API Blueprint conversion |
+| Type | Specification representation |
 | :--- | :--- |
 | array | array |
 | boolean | boolean |
@@ -48,6 +50,11 @@ A request parameter that can be supplied to a resource action.
 | string | string |
 | timestamp | string |
 | uri | string |
+
+#### Subtypes
+Mill allows you, if necessary, to define a single subtype for a parameter. For example, if you have a parameter that is an array of objects, you can set the `type` as `array<object>`.
+
+Currently only `array` types are allowed to contain subtypes. To define subtypes of objects, use an `@api-param` annotation for each child parameter.
 
 ## Tokens
 Because writing out the same parameter for a large number of endpoints can get tiring, we have a system in place that allows you to configure tokens, which act as kind of a short-code for a parameter:
@@ -93,11 +100,10 @@ Using a token with available values:
         `playable`
 ```
 
-With a capability:
+With a vendor tag:
 
 ```php
-@api-param:public locked_down (string, AnotherRequiredCapability) - This is a
-    cool thing.
+@api-param:public locked_down (string, needs:SomeApplicationFeature) - This is a cool thing.
 ```
 
 Normal usage with acceptable values:

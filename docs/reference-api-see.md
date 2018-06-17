@@ -50,4 +50,5 @@ private function getPrivacy($object, $request)
 }
 ```
 
-From here, `download` will be imported into the representation documentation as `privacy.download`.
+From here, `download` will be imported into the representation documentation as
+`privacy.download`.

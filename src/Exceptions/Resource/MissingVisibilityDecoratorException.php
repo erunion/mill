@@ -7,6 +7,12 @@ class MissingVisibilityDecoratorException extends BaseException
 {
     use ResourceExceptionTrait;
 
+    /**
+     * @param string $annotation
+     * @param string $class
+     * @param string $method
+     * @return MissingVisibilityDecoratorException
+     */
     public static function create(
         string $annotation,
         string $class,

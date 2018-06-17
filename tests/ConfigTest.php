@@ -12,6 +12,31 @@ class ConfigTest extends TestCase
         $config = $this->getConfig();
 
         $this->assertSame('Mill unit test API, Showtimes', $config->getName());
+        $this->assertSame('https://example.com/terms', $config->getTerms());
+
+        $this->assertSame([
+            'name' => 'Get help!',
+            'email' => 'support@example.com',
+            'url' => 'https://developer.example.com/help'
+        ], $config->getContactInformation());
+
+        $this->assertSame([
+            [
+                'name' => 'Developer Docs',
+                'url' => 'https://developer.example.com'
+            ]
+        ], $config->getExternalDocumentation());
+
+        $this->assertSame([
+            [
+                'url' => 'https://api.example.com',
+                'description' => 'Production'
+            ],
+            [
+                'url' => 'https://api.example.local',
+                'description' => 'Development'
+            ]
+        ], $config->getServers());
 
         $this->assertSame('1.0', $config->getFirstApiVersion());
         $this->assertSame('1.1.2', $config->getDefaultApiVersion());
@@ -46,21 +71,48 @@ class ConfigTest extends TestCase
         ], $config->getApiVersions());
 
         $this->assertSame([
-            'FakeExcludeNamespace'
-        ], $config->getBlueprintNamespaceExcludes());
+            'FakeExcludeGroup'
+        ], $config->getCompilerGroupExclusions());
 
         $this->assertSame([
-            'BUY_TICKETS',
-            'DELETE_CONTENT',
-            'FEATURE_FLAG',
-            'MOVIE_RATINGS'
-        ], $config->getCapabilities());
+            'tag:BUY_TICKETS',
+            'tag:DELETE_CONTENT',
+            'tag:FEATURE_FLAG',
+            'tag:MOVIE_RATINGS'
+        ], $config->getVendorTags());
 
         $this->assertSame([
-            'create',
-            'delete',
-            'edit',
-            'public'
+            'bearer' => [
+                'format' => 'bearer'
+            ],
+            'oauth2' => [
+                'authorization_code' => [
+                    'authorization_url' => '/oauth/authorize',
+                    'token_url' => '/oauth/access_token'
+                ],
+                'client_credentials' => [
+                    'token_url' => '/oauth/authorize/client'
+                ]
+            ]
+        ], $config->getAuthenticationFlows());
+
+        $this->assertSame([
+            'create' => [
+                'name' => 'create',
+                'description' => 'Create'
+            ],
+            'delete' => [
+                'name' => 'delete',
+                'description' => 'Delete'
+            ],
+            'edit' => [
+                'name' => 'edit',
+                'description' => 'Edit'
+            ],
+            'public' => [
+                'name' => 'public',
+                'description' => 'Public'
+            ]
         ], $config->getScopes());
 
         $this->assertSame([
@@ -115,7 +167,7 @@ class ConfigTest extends TestCase
         $this->assertSame([
             'movie_id' => 'id',
             'theater_id' => 'id'
-        ], $config->getUriSegmentTranslations());
+        ], $config->getPathParamTranslations());
     }
 
     /**
@@ -164,26 +216,51 @@ XML;
 
     /**
      * @dataProvider providerLoadFromXMLFailuresOnVariousBadXMLFiles
-     * @param array $includes
      * @param array $exception_details
      * @param string $xml
      * @throws \Exception
      */
-    public function testLoadFromXMLFailuresOnVariousBadXMLFiles(
-        array $includes,
-        array $exception_details,
-        string $xml
-    ): void {
+    public function testLoadFromXMLFailuresOnVariousBadXMLFiles(array $exception_details, string $xml): void
+    {
+        /** @var string $provider */
+        $provider = $this->getName();
+
         if (isset($exception_details['exception'])) {
             $this->expectException($exception_details['exception']);
         } else {
-            $this->expectException('\DomainException');
+            $this->expectException(\DomainException::class);
             $this->expectExceptionMessageRegExp($exception_details['regex']);
         }
 
         // Customize the provider XML so we don't need to have a bunch of DRY'd XML everywhere.
-        $versions = $controllers = $representations = false;
-        if (in_array('versions', $includes)) {
+        $info = $servers = $versions = $controllers = $representations = $authentication = false;
+        if (strpos($provider, 'info.') === false) {
+            $info = <<<XML
+<info>
+    <terms url="https://example.com/terms" />
+
+    <contact
+        name="Get help!"
+        email="support@example.com"
+        url="https://developer.example.com/help" />
+
+    <externalDocs>
+        <externalDoc name="Developer Docs" url="https://developer.example.com" />
+    </externalDocs>
+</info>
+XML;
+        }
+
+        if (strpos($provider, 'servers.') === false) {
+            $servers = <<<XML
+<servers>
+    <server url="https://api.example.com" description="Production" />
+    <server url="https://api.example.local" description="Development" />
+</servers>
+XML;
+        }
+
+        if (strpos($provider, 'versions.') === false) {
             $versions = <<<XML
 <versions>
     <version name="1.0" releaseDate="2017-01-01" />
@@ -192,7 +269,7 @@ XML;
 XML;
         }
 
-        if (in_array('controllers', $includes)) {
+        if (strpos($provider, 'controllers.') === false) {
             $controllers = <<<XML
 <controllers>
     <filter>
@@ -202,7 +279,7 @@ XML;
 XML;
         }
 
-        if (in_array('representations', $includes)) {
+        if (strpos($provider, 'representations.') === false) {
             $representations = <<<XML
 <representations>
     <filter>
@@ -212,12 +289,37 @@ XML;
 XML;
         }
 
+        if (strpos($provider, 'authentication.') === false) {
+            $authentication = <<<XML
+<authentication>
+    <flows>
+        <bearer format="bearer" />
+
+        <oauth2>
+            <authorizationCode url="/oauth/authorize" tokenUrl="/oauth/access_token" />
+            <clientCredentials url="/oauth/authorize/client" />
+        </oauth2>
+    </flows>
+
+    <scopes>
+        <scope name="create" description="Create" />
+        <scope name="delete" description="Delete" />
+        <scope name="edit" description="Edit" />
+        <scope name="public" description="Public" />
+    </scopes>
+</authentication>
+XML;
+        }
+
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
-<mill bootstrap="vendor/autoload.php">
+<mill name="Test API" bootstrap="vendor/autoload.php">
+    $info
+    $servers
     $versions
     $controllers
     $representations
+    $authentication
     $xml
 </mill>
 XML;
@@ -252,7 +354,6 @@ XML;
              *
              */
             'versions.no-default' => [
-                'includes' => ['controllers', 'representations'],
                 'exception' => [
                     'regex' => '/You must set/'
                 ],
@@ -264,7 +365,6 @@ XML
             ],
 
             'versions.multiple-defaults' => [
-                'includes' => ['controllers', 'representations'],
                 'exception' => [
                     'exception' => \InvalidArgumentException::class,
                     'regex' => '/Multiple default API versions/'
@@ -278,22 +378,19 @@ XML
             ],
 
             /**
-             * <generators>
+             * <compilers>
              *
              */
-            'generators.blueprint.exclude.invalid' => [
-                'includes' => ['versions', 'controllers', 'representations'],
+            'compilers.exclude.invalid' => [
                 'exception' => [
-                    'regex' => '/invalid Blueprint generator namespace/'
+                    'regex' => '/invalid compiler group exclusion/'
                 ],
                 'xml' => <<<XML
-<generators>
-    <blueprint>
-        <excludes>
-            <exclude namespace="" />
-        </excludes>
-    </blueprint>
-</generators>
+<compilers>
+    <excludes>
+        <exclude group="" />
+    </excludes>
+</compilers>
 XML
             ],
 
@@ -302,7 +399,6 @@ XML
              *
              */
             'controllers.directory.invalid' => [
-                'includes' => ['versions', 'representations'],
                 'exception' => [
                     'exception' => \InvalidArgumentException::class,
                     'regex' => '/does not exist/'
@@ -317,7 +413,6 @@ XML
             ],
 
             'controllers.none-found' => [
-                'includes' => ['versions', 'representations'],
                 'exception' => [
                     'exception' => \InvalidArgumentException::class,
                     'regex' => '/requires a set of controllers/'
@@ -332,7 +427,6 @@ XML
             ],
 
             'controllers.class.uncallable' => [
-                'includes' => ['versions', 'representations'],
                 'exception' => [
                     'exception' => \InvalidArgumentException::class,
                     'regex' => '/could not be called/'
@@ -351,7 +445,6 @@ XML
              *
              */
             'representations.none-found' => [
-                'includes' => ['versions', 'controllers'],
                 'exception' => [
                     'exception' => \InvalidArgumentException::class,
                     'regex' => '/requires a set of representations/'
@@ -366,7 +459,6 @@ XML
             ],
 
             'representations.class.missing-method' => [
-                'includes' => ['versions', 'controllers'],
                 'exception' => [
                     'regex' => '/missing a `method`/'
                 ],
@@ -380,7 +472,6 @@ XML
             ],
 
             'representations.class.uncallable' => [
-                'includes' => ['versions', 'controllers'],
                 'exception' => [
                     'exception' => UncallableRepresentationException::class
                 ],
@@ -394,7 +485,6 @@ XML
             ],
 
             'representations.directory.invalid' => [
-                'includes' => ['versions', 'controllers'],
                 'exception' => [
                     'exception' => \InvalidArgumentException::class,
                     'regex' => '/does not exist/'
@@ -409,7 +499,6 @@ XML
             ],
 
             'representations.error.uncallable' => [
-                'includes' => ['versions', 'controllers'],
                 'exception' => [
                     'exception' => UncallableErrorRepresentationException::class
                 ],
@@ -427,7 +516,6 @@ XML
             ],
 
             'representations.error.missing-method' => [
-                'includes' => ['versions', 'controllers'],
                 'exception' => [
                     'regex' => '/missing a `method`/'
                 ],
@@ -449,7 +537,6 @@ XML
              *
              */
             'parametertokens.invalid' => [
-                'includes' => ['versions', 'controllers', 'representations'],
                 'exception' => [
                     'regex' => '/invalid parameter token/'
                 ],
@@ -461,20 +548,19 @@ XML
             ],
 
             /**
-             * <uriSegments>
+             * <pathParams>
              *
              */
-            'urisegments.invalid' => [
-                'includes' => ['versions', 'controllers', 'representations'],
+            'pathparams.invalid' => [
                 'exception' => [
                     'regex' => '/invalid translation text/'
                 ],
                 'xml' => <<<XML
-<uriSegments>
+<pathParams>
     <translations>
         <translation from="" to="" />
     </translations>
-</uriSegments>
+</pathParams>
 XML
             ]
         ];

@@ -89,5 +89,5 @@ Mill wraps important pieces of content in the JSON-encoded changelog that can th
 | Representation field | `mill-changelog_field` | `data-mill-field` |
 | Resource action method | `mill-changelog_method` | `data-mill-method` |
 | Resource action parameter| `mill-changelog_parameter` | `data-mill-parameter` |
-| Resource action URI | `mill-changelog_uri` | `data-mill-uri` |
-| Resource namespaces | `mill-changelog_resource_namespace` | `data-mill-resource-namespace` |
+| Resource action path | `mill-changelog_path` | `data-mill-path` |
+| Resource groups | `mill-changelog_resource_group` | `data-mill-resource-group` |

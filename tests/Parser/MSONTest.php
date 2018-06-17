@@ -1,6 +1,9 @@
 <?php
 namespace Mill\Tests\Parser;
 
+use Mill\Exceptions\Annotations\UnsupportedTypeException;
+use Mill\Exceptions\MSON\ImproperlyWrittenEnumException;
+use Mill\Exceptions\MSON\MissingOptionsException;
 use Mill\Parser\MSON;
 use Mill\Tests\TestCase;
 
@@ -19,9 +22,22 @@ class MSONTest extends TestCase
 
     public function testEnumFailsWithoutValues(): void
     {
-        $this->expectException('Mill\Exceptions\MSON\MissingOptionsException');
+        $this->expectException(MissingOptionsException::class);
 
         $content = 'content_rating (enum) - MPAA rating';
+        (new MSON(__CLASS__, __METHOD__))->parse($content);
+    }
+
+    public function testEnumFailsWhenWrittenAsAString(): void
+    {
+        $this->expectException(ImproperlyWrittenEnumException::class);
+
+        $content = 'content_rating `G` (string, optional) - MPAA rating
+            + Members
+                - `G` - G rated
+                - `PG` - PG rated
+                - `PG-13` - PG-13 rated';
+
         (new MSON(__CLASS__, __METHOD__))->parse($content);
     }
 
@@ -31,7 +47,7 @@ class MSONTest extends TestCase
      */
     public function testParseFailsOnInvalidTypes(string $content): void
     {
-        $this->expectException('Mill\Exceptions\Annotations\UnsupportedTypeException');
+        $this->expectException(UnsupportedTypeException::class);
         (new MSON(__CLASS__, __METHOD__))->parse($content);
     }
 
@@ -39,31 +55,33 @@ class MSONTest extends TestCase
     {
         return [
             '_complete' => [
-                'content' => 'content_rating `G` (string, optional, MOVIE_RATINGS) - MPAA rating
+                'content' => 'content_rating `G` (enum, optional, tag:MOVIE_RATINGS, needs:validUser) - MPAA rating
                     + Members
                         - `G` - G rated
                         - `PG` - PG rated
                         - `PG-13` - PG-13 rated',
                 'expected' => [
-                    'capability' => 'MOVIE_RATINGS',
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
                     'nullable' => false,
                     'required' => false,
                     'sample_data' => 'G',
                     'subtype' => false,
-                    'type' => 'string',
+                    'type' => 'enum',
                     'values' => [
                         'G' => 'G rated',
                         'PG' => 'PG rated',
                         'PG-13' => 'PG-13 rated'
+                    ],
+                    'vendor_tags' => [
+                        'tag:MOVIE_RATINGS',
+                        'needs:validUser'
                     ]
                 ]
             ],
-            'capability' => [
-                'content' => 'content_rating `G` (string, REQUIRED, MOVIE_RATINGS) - MPAA rating',
+            'vendor-tag' => [
+                'content' => 'content_rating `G` (string, REQUIRED, tag:MOVIE_RATINGS) - MPAA rating',
                 'expected' => [
-                    'capability' => 'MOVIE_RATINGS',
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
                     'nullable' => false,
@@ -71,7 +89,10 @@ class MSONTest extends TestCase
                     'sample_data' => 'G',
                     'subtype' => false,
                     'type' => 'string',
-                    'values' => []
+                    'values' => [],
+                    'vendor_tags' => [
+                        'tag:MOVIE_RATINGS'
+                    ]
                 ]
             ],
             'description-long' => [
@@ -79,7 +100,6 @@ class MSONTest extends TestCase
                     non ribeye landjaeger laboris, enim jowl culpa meatloaf dolore mollit anim. Bacon shankle eiusmod
                     hamburger enim. Laboris lorem pastrami t-bone tempor ullamco swine commodo tri-tip in sirloin.',
                 'expected' => [
-                    'capability' => false,
                     'description' => 'Voluptate culpa ex, eiusmod rump sint id. Venison non ribeye landjaeger ' .
                         'laboris, enim jowl culpa meatloaf dolore mollit anim. Bacon shankle eiusmod hamburger enim. ' .
                         'Laboris lorem pastrami t-bone tempor ullamco swine commodo tri-tip in sirloin.',
@@ -89,77 +109,115 @@ class MSONTest extends TestCase
                     'sample_data' => 'G',
                     'subtype' => false,
                     'type' => 'string',
-                    'values' => []
+                    'values' => [],
+                    'vendor_tags' => []
                 ]
             ],
             'description-markdown' => [
-                'content' => 'content_rating `G` (string, optional, nullable, MOVIE_RATINGS) - This denotes the
+                'content' => 'content_rating `G` (enum, optional, nullable, tag:MOVIE_RATINGS) - This denotes the
                     [MPAA rating](http://www.mpaa.org/film-ratings/) for the movie.
                     + Members
                         - `G` - G rated
                         - `PG` - PG rated
                         - `PG-13` - PG-13 rated',
                 'expected' => [
-                    'capability' => 'MOVIE_RATINGS',
                     'description' => 'This denotes the [MPAA rating](http://www.mpaa.org/film-ratings/) for the movie.',
                     'field' => 'content_rating',
                     'nullable' => true,
                     'required' => false,
                     'sample_data' => 'G',
                     'subtype' => false,
-                    'type' => 'string',
+                    'type' => 'enum',
                     'values' => [
                         'G' => 'G rated',
                         'PG' => 'PG rated',
                         'PG-13' => 'PG-13 rated'
+                    ],
+                    'vendor_tags' => [
+                        'tag:MOVIE_RATINGS'
                     ]
                 ]
             ],
             'description-starts-on-new-line' => [
-                'content' => 'content_rating `G` (string)
+                'content' => 'content_rating `G` (enum)
                     - MPAA Rating
                     + Members
                         - `G` - G rated
                         - `PG` - PG rated
                         - `PG-13` - PG-13 rated',
                 'expected' => [
-                    'capability' => false,
                     'description' => 'MPAA Rating',
                     'field' => 'content_rating',
                     'nullable' => false,
                     'required' => false,
                     'sample_data' => 'G',
                     'subtype' => false,
-                    'type' => 'string',
+                    'type' => 'enum',
                     'values' => [
                         'G' => 'G rated',
                         'PG' => 'PG rated',
                         'PG-13' => 'PG-13 rated'
-                    ]
+                    ],
+                    'vendor_tags' => []
+                ]
+            ],
+            'enum-with-extra-long-descriptions' => [
+                'content' => 'access_type `default` (enum) - The promotion access type, which is a purchase option
+                    that is not available on the container. VIP promotions always make the content free of charge. If
+                    you use this type, you must further define the promotion with the `download` or `stream_period`
+                    fields.
+                    + Members
+                        - `default` - Promotions grant discount on the existing purchase options for an On Demand 
+                            Container.
+                        - `optional`
+                        - `vip` - Promotions can be used to grant free access to vod content before it is released, or 
+                            to offer a purchase option that is not available on the container. "vip" promotions will 
+                            always make the content free, and must be further defined with the `download` or 
+                            `stream_period` fields.',
+                'expected' => [
+                    'description' => 'The promotion access type, which is a purchase option that is not available on ' .
+                        'the container. VIP promotions always make the content free of charge. If you use this ' .
+                        'type, you must further define the promotion with the `download` or `stream_period` fields.',
+                    'field' => 'access_type',
+                    'nullable' => false,
+                    'required' => false,
+                    'sample_data' => 'default',
+                    'subtype' => false,
+                    'type' => 'enum',
+                    'values' => [
+                        'default' => 'Promotions grant discount on the existing purchase options for an On Demand ' .
+                            'Container.',
+                        'optional' => '',
+                        'vip' => 'Promotions can be used to grant free access to vod content before it is released, ' .
+                            'or to offer a purchase option that is not available on the container. "vip" promotions ' .
+                            'will always make the content free, and must be further defined with the `download` or ' .
+                            '`stream_period` fields.',
+                    ],
+                    'vendor_tags' => []
                 ]
             ],
             'enum-without-descriptions' => [
-                'content' => 'is_kid_friendly `yes` (string, optional) - Is this movie kid friendly?
+                'content' => 'is_kid_friendly `yes` (enum, optional) - Is this movie kid friendly?
                     + Members
                         - `yes`
                         - `no`',
                 'expected' => [
-                    'capability' => false,
                     'description' => 'Is this movie kid friendly?',
                     'field' => 'is_kid_friendly',
                     'nullable' => false,
                     'required' => false,
                     'sample_data' => 'yes',
                     'subtype' => false,
-                    'type' => 'string',
+                    'type' => 'enum',
                     'values' => [
                         'no' => '',
                         'yes' => ''
-                    ]
+                    ],
+                    'vendor_tags' => []
                 ]
             ],
             'enum-without-set-default' => [
-                'content' => 'content_rating `G` (string, optional) - MPAA rating
+                'content' => 'content_rating `G` (enum, optional) - MPAA rating
                     + Members
                         - `G` - G rated
                         - `PG` - PG rated
@@ -170,14 +228,13 @@ class MSONTest extends TestCase
                         - `NR` - No rating
                         - `UR` - Unrated',
                 'expected' => [
-                    'capability' => false,
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
                     'nullable' => false,
                     'required' => false,
                     'sample_data' => 'G',
                     'subtype' => false,
-                    'type' => 'string',
+                    'type' => 'enum',
                     'values' => [
                         'G' => 'G rated',
                         'NC-17' => 'NC-17 rated',
@@ -187,13 +244,13 @@ class MSONTest extends TestCase
                         'R' => 'R rated',
                         'UR' => 'Unrated',
                         'X' => 'X-rated'
-                    ]
+                    ],
+                    'vendor_tags' => []
                 ]
             ],
             'field-dot-notation' => [
                 'content' => 'content.rating `G` (string) - MPAA rating',
                 'expected' => [
-                    'capability' => false,
                     'description' => 'MPAA rating',
                     'field' => 'content.rating',
                     'nullable' => false,
@@ -201,13 +258,13 @@ class MSONTest extends TestCase
                     'sample_data' => 'G',
                     'subtype' => false,
                     'type' => 'string',
-                    'values' => []
+                    'values' => [],
+                    'vendor_tags' => []
                 ]
             ],
             'type-array-with-subtype-object' => [
                 'content' => 'websites (array<object>) - The users\' list of websites.',
                 'expected' => [
-                    'capability' => false,
                     'description' => 'The users\' list of websites.',
                     'field' => 'websites',
                     'nullable' => false,
@@ -215,13 +272,13 @@ class MSONTest extends TestCase
                     'sample_data' => '',
                     'subtype' => 'object',
                     'type' => 'array',
-                    'values' => []
+                    'values' => [],
+                    'vendor_tags' => []
                 ]
             ],
             'type-array-with-subytpe-representation' => [
                 'content' => 'cast (array<\Mill\Examples\Showtimes\Representations\Person>) - Cast members',
                 'expected' => [
-                    'capability' => false,
                     'description' => 'Cast members',
                     'field' => 'cast',
                     'nullable' => false,
@@ -229,13 +286,13 @@ class MSONTest extends TestCase
                     'sample_data' => '',
                     'subtype' => '\Mill\Examples\Showtimes\Representations\Person',
                     'type' => 'array',
-                    'values' => []
+                    'values' => [],
+                    'vendor_tags' => []
                 ]
             ],
             'type-representation' => [
                 'content' => 'director (\Mill\Examples\Showtimes\Representations\Person) - Director',
                 'expected' => [
-                    'capability' => false,
                     'description' => 'Director',
                     'field' => 'director',
                     'nullable' => false,
@@ -243,13 +300,13 @@ class MSONTest extends TestCase
                     'sample_data' => '',
                     'subtype' => false,
                     'type' => '\Mill\Examples\Showtimes\Representations\Person',
-                    'values' => []
+                    'values' => [],
+                    'vendor_tags' => []
                 ]
             ],
-            'without-defined-requirement-but-capability' => [
-                'content' => 'content_rating `G` (string, MOVIE_RATINGS) - MPAA rating',
+            'without-defined-requirement-but-vendor-tags' => [
+                'content' => 'content_rating `G` (string, tag:MOVIE_RATINGS) - MPAA rating',
                 'expected' => [
-                    'capability' => 'MOVIE_RATINGS',
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
                     'nullable' => false,
@@ -257,13 +314,15 @@ class MSONTest extends TestCase
                     'sample_data' => 'G',
                     'subtype' => false,
                     'type' => 'string',
-                    'values' => []
+                    'values' => [],
+                    'vendor_tags' => [
+                        'tag:MOVIE_RATINGS'
+                    ]
                 ]
             ],
             'without-sample-data' => [
                 'content' => 'content_rating (string) - MPAA rating',
                 'expected' => [
-                    'capability' => false,
                     'description' => 'MPAA rating',
                     'field' => 'content_rating',
                     'nullable' => false,
@@ -271,7 +330,8 @@ class MSONTest extends TestCase
                     'sample_data' => '',
                     'subtype' => false,
                     'type' => 'string',
-                    'values' => []
+                    'values' => [],
+                    'vendor_tags' => []
                 ]
             ]
         ];

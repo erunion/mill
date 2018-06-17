@@ -21,35 +21,16 @@ class ContentTypeAnnotationTest extends AnnotationTest
         $this->assertAnnotation($annotation, $expected);
     }
 
-    /**
-     * @dataProvider providerAnnotation
-     * @param string $content
-     * @param Version|null $version
-     * @param array $expected
-     */
-    public function testHydrate(string $content, ?Version $version, array $expected): void
-    {
-        $annotation = ContentTypeAnnotation::hydrate(array_merge(
-            $expected,
-            [
-                'class' => __CLASS__,
-                'method' => __METHOD__
-            ]
-        ), $version);
-
-        $this->assertAnnotation($annotation, $expected);
-    }
-
     private function assertAnnotation(ContentTypeAnnotation $annotation, array $expected): void
     {
-        $this->assertFalse($annotation->requiresVisibilityDecorator());
-        $this->assertTrue($annotation->supportsVersioning());
         $this->assertFalse($annotation->supportsDeprecation());
-        $this->assertFalse($annotation->supportsAliasing());
+        $this->assertTrue($annotation->supportsVersioning());
+        $this->assertFalse($annotation->supportsVendorTags());
+        $this->assertFalse($annotation->requiresVisibilityDecorator());
 
         $this->assertSame($expected, $annotation->toArray());
         $this->assertSame($expected['content_type'], $annotation->getContentType());
-        $this->assertFalse($annotation->getCapability());
+        $this->assertEmpty($annotation->getVendorTags());
 
         if ($expected['version']) {
             $this->assertInstanceOf(Version::class, $annotation->getVersion());

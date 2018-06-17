@@ -19,33 +19,15 @@ class DescriptionAnnotationTest extends AnnotationTest
         $this->assertAnnotation($annotation, $expected);
     }
 
-    /**
-     * @dataProvider providerAnnotation
-     * @param string $content
-     * @param array $expected
-     */
-    public function testHydrate(string $content, array $expected): void
-    {
-        $annotation = DescriptionAnnotation::hydrate(array_merge(
-            $expected,
-            [
-                'class' => __CLASS__,
-                'method' => __METHOD__
-            ]
-        ));
-
-        $this->assertAnnotation($annotation, $expected);
-    }
-
     private function assertAnnotation(DescriptionAnnotation $annotation, array $expected): void
     {
-        $this->assertFalse($annotation->requiresVisibilityDecorator());
-        $this->assertFalse($annotation->supportsVersioning());
         $this->assertFalse($annotation->supportsDeprecation());
-        $this->assertFalse($annotation->supportsAliasing());
+        $this->assertFalse($annotation->supportsVersioning());
+        $this->assertFalse($annotation->supportsVendorTags());
+        $this->assertFalse($annotation->requiresVisibilityDecorator());
 
         $this->assertSame($expected, $annotation->toArray());
-        $this->assertFalse($annotation->getCapability());
+        $this->assertEmpty($annotation->getVendorTags());
         $this->assertFalse($annotation->getVersion());
         $this->assertEmpty($annotation->getAliases());
     }

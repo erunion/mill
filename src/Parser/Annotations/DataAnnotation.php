@@ -1,78 +1,21 @@
 <?php
 namespace Mill\Parser\Annotations;
 
+use Mill\Application;
 use Mill\Exceptions\Representation\RestrictedFieldNameException;
 use Mill\Parser\Annotation;
 use Mill\Parser\MSON;
-use Mill\Parser\Representation\Documentation;
-use Mill\Parser\Version;
 
-/**
- * Handler for the `@api-data` annotation.
- *
- */
 class DataAnnotation extends Annotation
 {
     const SUPPORTS_MSON = true;
     const SUPPORTS_SCOPES = true;
+    const SUPPORTS_VENDOR_TAGS = true;
     const SUPPORTS_VERSIONING = true;
 
-    /**
-     * Identifier for this data.
-     *
-     * @var string
-     */
-    protected $identifier;
+    const PAYLOAD_FORMAT = 'response';
 
-    /**
-     * Sample data that this might represent.
-     *
-     * @var false|string
-     */
-    protected $sample_data = false;
-
-    /**
-     * Type of data that this represents.
-     *
-     * @var string
-     */
-    protected $type;
-
-    /**
-     * Subtype of the type of data that this represents.
-     *
-     * @var false|string
-     */
-    protected $subtype = false;
-
-    /**
-     * Flag designating if this data is nullable.
-     *
-     * @var bool
-     */
-    protected $nullable = false;
-
-    /**
-     * Array of acceptable values for this data.
-     *
-     * @var array|false|null
-     */
-    protected $values = [];
-
-    /**
-     * Description of what this data represents.
-     *
-     * @var string
-     */
-    protected $description;
-
-    /**
-     * An array of items that should be included in an array representation of this annotation.
-     *
-     * @var array
-     */
-    protected $arrayable = [
-        'capability',
+    const ARRAYABLE = [
         'description',
         'identifier',
         'nullable',
@@ -82,9 +25,34 @@ class DataAnnotation extends Annotation
         'values'
     ];
 
+    /** @var string Identifier for this data. */
+    protected $identifier;
+
+    /** @var false|string Sample data that this might represent. */
+    protected $sample_data = false;
+
+    /** @var string Type of data that this represents. */
+    protected $type;
+
+    /** @var false|string Subtype of the type of data that this represents. */
+    protected $subtype = false;
+
+    /** @var bool Flag designating if this data is nullable. */
+    protected $nullable = false;
+
+    /** @var array|false|null Array of acceptable values for this data. */
+    protected $values = [];
+
+    /** @var string Description of what this data represents. */
+    protected $description;
+
     /**
      * {@inheritdoc}
-     * @throws RestrictedFieldNameException If a restricted `@api-field` name is detected.
+     * @throws RestrictedFieldNameException
+     * @throws \Mill\Exceptions\Annotations\UnknownErrorRepresentationException
+     * @throws \Mill\Exceptions\Annotations\UnsupportedTypeException
+     * @throws \Mill\Exceptions\MSON\ImproperlyWrittenEnumException
+     * @throws \Mill\Exceptions\MSON\MissingOptionsException
      */
     protected function parser(): array
     {
@@ -100,22 +68,27 @@ class DataAnnotation extends Annotation
             'type' => $mson->getType(),
             'subtype' => $mson->getSubtype(),
             'nullable' => $mson->isNullable(),
-            'capability' => $mson->getCapability(),
+            'vendor_tags' => $mson->getVendorTags(),
             'description' => $mson->getDescription(),
             'values' => $mson->getValues()
         ];
 
-        // Create a capability annotation if one was supplied.
-        if (!empty($parsed['capability'])) {
-            $parsed['capability'] = (new CapabilityAnnotation(
-                $parsed['capability'],
-                $this->class,
-                $this->method
-            ))->process();
+        if (!empty($parsed['vendor_tags'])) {
+            $parsed['vendor_tags'] = array_map(
+                /** @return Annotation */
+                function (string $tag) use ($method) {
+                    return (new VendorTagAnnotation(
+                        $tag,
+                        $this->class,
+                        $method
+                    ))->process();
+                },
+                $parsed['vendor_tags']
+            );
         }
 
         if (!empty($parsed['identifier'])) {
-            if (strtoupper($parsed['identifier']) === Documentation::DOT_NOTATION_ANNOTATION_DATA_KEY) {
+            if (strtoupper($parsed['identifier']) === Application::DOT_NOTATION_ANNOTATION_DATA_KEY) {
                 throw RestrictedFieldNameException::create($this->class, $this->method);
             }
         }
@@ -140,26 +113,8 @@ class DataAnnotation extends Annotation
         $this->description = $this->required('description');
 
         $this->values = $this->optional('values');
-        $this->capability = $this->optional('capability');
+        $this->vendor_tags = $this->optional('vendor_tags');
         $this->nullable = $this->optional('nullable');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function hydrate(array $data = [], Version $version = null): self
-    {
-        /** @var DataAnnotation $annotation */
-        $annotation = parent::hydrate($data, $version);
-        $annotation->setDescription($data['description']);
-        $annotation->setIdentifier($data['identifier']);
-        $annotation->setNullable($data['nullable']);
-        $annotation->setSampleData($data['sample_data']);
-        $annotation->setSubtype($data['subtype']);
-        $annotation->setType($data['type']);
-        $annotation->setValues($data['values']);
-
-        return $annotation;
     }
 
     /**
@@ -172,7 +127,7 @@ class DataAnnotation extends Annotation
 
     /**
      * @param string $description
-     * @return self
+     * @return DataAnnotation
      */
     public function setDescription(string $description): self
     {
@@ -190,7 +145,7 @@ class DataAnnotation extends Annotation
 
     /**
      * @param string $identifier
-     * @return self
+     * @return DataAnnotation
      */
     public function setIdentifier(string $identifier): self
     {
@@ -202,9 +157,9 @@ class DataAnnotation extends Annotation
      * Set a dot notation prefix on the identifier.
      *
      * @param string $prefix
-     * @return self
+     * @return DataAnnotation
      */
-    public function setIdentifierPrefix($prefix): self
+    public function setIdentifierPrefix(string $prefix): self
     {
         $this->identifier = $prefix . '.' . $this->identifier;
         return $this;
@@ -220,7 +175,7 @@ class DataAnnotation extends Annotation
 
     /**
      * @param bool $nullable
-     * @return self
+     * @return DataAnnotation
      */
     public function setNullable(bool $nullable): self
     {
@@ -238,29 +193,11 @@ class DataAnnotation extends Annotation
 
     /**
      * @param false|string $sample_data
-     * @return self
+     * @return DataAnnotation
      */
     public function setSampleData($sample_data): self
     {
         $this->sample_data = $sample_data;
-        return $this;
-    }
-
-    /**
-     * @return false|string
-     */
-    public function getSubtype()
-    {
-        return $this->subtype;
-    }
-
-    /**
-     * @param false|string $subtype
-     * @return self
-     */
-    public function setSubtype($subtype): self
-    {
-        $this->subtype = $subtype;
         return $this;
     }
 
@@ -274,11 +211,29 @@ class DataAnnotation extends Annotation
 
     /**
      * @param string $type
-     * @return self
+     * @return DataAnnotation
      */
     public function setType(string $type): self
     {
         $this->type = $type;
+        return $this;
+    }
+
+    /**
+     * @return false|string
+     */
+    public function getSubtype()
+    {
+        return $this->subtype;
+    }
+
+    /**
+     * @param false|string $subtype
+     * @return DataAnnotation
+     */
+    public function setSubtype($subtype): self
+    {
+        $this->subtype = $subtype;
         return $this;
     }
 
@@ -292,7 +247,7 @@ class DataAnnotation extends Annotation
 
     /**
      * @param array|false|null $values
-     * @return self
+     * @return DataAnnotation
      */
     public function setValues($values): self
     {

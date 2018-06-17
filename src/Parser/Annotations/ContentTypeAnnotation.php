@@ -2,27 +2,17 @@
 namespace Mill\Parser\Annotations;
 
 use Mill\Parser\Annotation;
-use Mill\Parser\Version;
 
-/**
- * Handler for the `@api-contentType` annotation.
- *
- */
 class ContentTypeAnnotation extends Annotation
 {
     const SUPPORTS_VERSIONING = true;
 
-    /** @var string */
-    protected $content_type;
-
-    /**
-     * An array of items that should be included in an array representation of this annotation.
-     *
-     * @var array
-     */
-    protected $arrayable = [
+    const ARRAYABLE = [
         'content_type'
     ];
+
+    /** @var string */
+    protected $content_type;
 
     /**
      * {@inheritdoc}
@@ -43,18 +33,6 @@ class ContentTypeAnnotation extends Annotation
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public static function hydrate(array $data = [], Version $version = null): self
-    {
-        /** @var ContentTypeAnnotation $annotation */
-        $annotation = parent::hydrate($data, $version);
-        $annotation->setContentType($data['content_type']);
-
-        return $annotation;
-    }
-
-    /**
      * @return string
      */
     public function getContentType(): string
@@ -64,7 +42,7 @@ class ContentTypeAnnotation extends Annotation
 
     /**
      * @param string $content_type
-     * @return self
+     * @return ContentTypeAnnotation
      */
     public function setContentType(string $content_type): self
     {

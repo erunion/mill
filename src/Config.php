@@ -20,112 +20,70 @@ use SimpleXMLElement;
 
 class Config
 {
-    /**
-     * The base directory for this configuration file.
-     *
-     * @var string
-     */
+    const SUPPORTED_AUTH_FLOWS = [
+        'bearer',
+        'oauth2'
+    ];
+
+    /** @var string The base directory for this configuration file. */
     protected $base_dir;
 
-    /**
-     * The name of your API.
-     *
-     * @var null|string
-     */
+    /** @var null|string The name of your API. */
     protected $name = null;
 
-    /**
-     * The first version of your API.
-     *
-     * @var string
-     */
+    /** @var null|string The terms of service URL for your API. */
+    protected $terms = null;
+
+    /** @var array The contact information for your API. */
+    protected $contact = [];
+
+    /** @var array External API documentation. */
+    protected $external_documentation = [];
+
+    /** @var array Your API servers. */
+    protected $servers = [];
+
+    /** @var array Your API authentication flows. */
+    protected $authentication_flows = [];
+
+    /** @var string The first version of your API. */
     public $first_api_version;
 
-    /**
-     * The default version for your API.
-     *
-     * @var string
-     */
+    /** @var string The default version for your API. */
     public $default_api_version;
 
-    /**
-     * The latest version of your API.
-     *
-     * @var string
-     */
+    /** @var string The latest version of your API. */
     public $latest_api_version;
 
-    /**
-     * Array of API versions.
-     *
-     * @var array
-     */
+    /** @var array Array of API versions. */
     protected $api_versions = [];
 
-    /**
-     * Allowable list of valid application capabilities.
-     *
-     * @var array
-     */
-    protected $capabilities = [];
+    /** @var array Allowable list of valid application vendor tags. */
+    protected $vendor_tags = [];
 
-    /**
-     * Allowable list of valid application authentication scopes.
-     *
-     * @var array
-     */
+    /** @var array Allowable list of valid application authentication scopes. */
     protected $scopes = [];
 
-    /**
-     * Array of application controllers.
-     *
-     * @var array
-     */
+    /** @var array Array of application controllers. */
     protected $controllers = [];
 
-    /**
-     * Array of application representations.
-     *
-     * @var array
-     */
+    /** @var array Array of application representations. */
     protected $representations = [];
 
-    /**
-     * Array of application error representations.
-     *
-     * @var array
-     */
+    /** @var array Array of application error representations. */
     protected $error_representations = [];
 
-    /**
-     * Array of excluded application representations.
-     *
-     * These are representations that you have, but, for whatever reason, don't want to be parsed for documentation.
-     *
-     * @var array
-     */
+    /** @var array Array of excluded application representations. */
     protected $excluded_representations = [];
 
-    /**
-     * Array of URI segment translations. (Like translating `+clip_id` to `+video_id`.)
-     *
-     * @var array
-     */
-    protected $uri_segment_translations = [];
+    /** @var array Array of path parameter translations. (Like translating `+clip_id` to `+video_id`.) */
+    protected $path_param_translations = [];
 
-    /**
-     * Array of `@api-param` configured replacement tokens.
-     *
-     * @var array
-     */
+    /** @var array Array of `@api-param` configured replacement tokens. */
     protected $parameter_tokens = [];
 
-    /**
-     * Array of API Blueprint generator resource namespace excludes.
-     *
-     * @var array
-     */
-    protected $blueprint_namespace_excludes = [];
+    /** @var array Array of compiler resource group exclusions. */
+    protected $compiler_group_exclusions = [];
 
     /**
      * Create a new configuration object from a given config file.
@@ -134,10 +92,10 @@ class Config
      * @param Filesystem $filesystem
      * @param string $config_file
      * @param bool $load_bootstrap
-     * @return self
-     * @throws InvalidArgumentException If the config file can't be read.
-     * @throws InvalidArgumentException If the config file does not exist.
-     * @throws ValidationException If there are errors validating the schema of your config file.
+     * @return Config
+     * @throws UncallableErrorRepresentationException
+     * @throws UncallableRepresentationException
+     * @throws ValidationException
      */
     public static function loadFromXML(Filesystem $filesystem, string $config_file, bool $load_bootstrap = true): self
     {
@@ -185,220 +143,193 @@ class Config
             require_once $config->base_dir . $xml['bootstrap'];
         }
 
-        if (isset($xml->capabilities)) {
-            $config->capabilities = [];
-            $config->loadCapabilities($xml->capabilities->capability);
-        }
-
-        if (isset($xml->scopes)) {
-            $config->scopes = [];
-            $config->loadScopes($xml->scopes->scope);
-        }
-
-        if (isset($xml->uriSegments) &&
-            isset($xml->uriSegments->translations)) {
-            $config->uri_segment_translations = [];
-            $config->loadUriSegmentTranslations($xml->uriSegments->translations->translation);
-        }
-
-        if (isset($xml->parameterTokens)) {
-            $config->loadParameterTokens($xml->parameterTokens->token);
-        }
-
-        if (isset($xml->generators)) {
-            $config->loadGeneratorSettings($xml->generators);
-        }
-
-        $config->api_versions = [];
-        $config->loadVersions($xml->versions->version);
-
-        $config->controllers = [];
-        $config->loadControllers($xml->controllers);
-
-        $config->representations = [];
-        $config->error_representations = [];
-        $config->excluded_representations = [];
-        $config->loadRepresentations($xml->representations);
-        $config->loadErrorRepresentations($xml->representations);
+        $config->loadAuthentication($xml);
+        $config->loadCompilerSettings($xml);
+        $config->loadControllers($xml);
+        $config->loadErrorRepresentations($xml);
+        $config->loadInfo($xml);
+        $config->loadParameterTokens($xml);
+        $config->loadPathParamTranslations($xml);
+        $config->loadRepresentations($xml);
+        $config->loadServers($xml);
+        $config->loadVendorTags($xml);
+        $config->loadVersions($xml);
 
         return $config;
     }
 
     /**
-     * Load an array of application capabilities into the configuration system.
-     *
-     * @param SimpleXMLElement $capabilities
+     * @param SimpleXMLElement $xml
      */
-    protected function loadCapabilities(SimpleXMLElement $capabilities): void
+    protected function loadVendorTags(SimpleXMLElement $xml): void
     {
-        /** @var SimpleXMLElement $capability */
-        foreach ($capabilities as $capability) {
-            $this->addCapability((string) $capability['name']);
+        if (!isset($xml->vendorTags)) {
+            return;
         }
 
-        // Keep things tidy.
-        $this->capabilities = array_unique($this->capabilities);
-    }
-
-    /**
-     * Add a new application capability into the instance config.
-     *
-     * @param string $capability
-     */
-    public function addCapability(string $capability): void
-    {
-        $this->capabilities[] = $capability;
-    }
-
-    /**
-     * Load an array of authentication scopes into the configuration system.
-     *
-     * @param SimpleXMLElement $scopes
-     */
-    protected function loadScopes(SimpleXMLElement $scopes): void
-    {
-        /** @var SimpleXMLElement $scope */
-        foreach ($scopes as $scope) {
-            $this->scopes[] = (string) $scope['name'];
+        /** @var SimpleXMLElement $vendor_tag */
+        foreach ($xml->vendorTags->vendorTag as $vendor_tag) {
+            $this->vendor_tags[] = (string) $vendor_tag['name'];
         }
 
-        // Keep things tidy.
-        $this->scopes = array_unique($this->scopes);
+        $this->vendor_tags = array_unique($this->vendor_tags);
     }
 
     /**
-     * Load an array of URI segment translations into the configuration system.
-     *
-     * @param SimpleXMLElement $translations
+     * @param SimpleXMLElement $xml
      */
-    protected function loadUriSegmentTranslations($translations): void
+    protected function loadAuthentication(SimpleXMLElement $xml): void
     {
+        /** @var SimpleXMLElement $authentication */
+        $authentication = $xml->authentication;
+
+        if (isset($authentication->flows->bearer)) {
+            $this->authentication_flows['bearer'] = [
+                'format' => (isset($authentication->flows->bearer['format']))
+                    ? (string) $authentication->flows->bearer['format']
+                    : 'bearer'
+            ];
+        }
+
+        if (isset($authentication->flows->oauth2)) {
+            $this->authentication_flows['oauth2'] = [];
+
+            if (isset($authentication->flows->oauth2->authorizationCode)) {
+                $this->authentication_flows['oauth2']['authorization_code'] = [
+                    'authorization_url' => (string) $authentication->flows->oauth2->authorizationCode['url'],
+                    'token_url' => (string) $authentication->flows->oauth2->authorizationCode['tokenUrl']
+                ];
+            }
+
+            if (isset($authentication->flows->oauth2->clientCredentials)) {
+                $this->authentication_flows['oauth2']['client_credentials'] = [
+                    'token_url' => (string) $authentication->flows->oauth2->clientCredentials['url']
+                ];
+            }
+        }
+
+        if (isset($authentication->scopes)) {
+            /** @var SimpleXMLElement $scope */
+            foreach ($authentication->scopes->scope as $scope) {
+                $name = (string) $scope['name'];
+                $this->scopes[$name] = [
+                    'name' => $name,
+                    'description' => (string) $scope['description']
+                ];
+            }
+
+            ksort($this->scopes);
+        }
+    }
+
+    /**
+     * @param SimpleXMLElement $xml
+     */
+    protected function loadPathParamTranslations(SimpleXMLElement $xml): void
+    {
+        if (!isset($xml->pathParams)) {
+            return;
+        } elseif (!isset($xml->pathParams->translations)) {
+            return;
+        }
+
         /** @var SimpleXMLElement $translation */
-        foreach ($translations as $translation) {
+        foreach ($xml->pathParams->translations->translation as $translation) {
             $translate_from = trim((string) $translation['from']);
             $translate_to = trim((string) $translation['to']);
 
-            $this->addUriSegmentTranslation($translate_from, $translate_to);
+            $this->addPathParamTranslation($translate_from, $translate_to);
         }
     }
 
     /**
-     * Add a new URI segment translation into the instance config.
-     *
-     * @param string $from
-     * @param string $to
-     * @throws DomainException If an invalid uriSegment translation text was found.
+     * @param SimpleXMLElement $xml
      */
-    public function addUriSegmentTranslation($from, $to): void
+    protected function loadParameterTokens(SimpleXMLElement $xml): void
     {
-        if (empty($from) || empty($to)) {
-            throw new DomainException(
-                'An invalid translation text was supplied in the Mill `uriSegmentTranslations` section.'
-            );
+        if (!isset($xml->parameterTokens)) {
+            return;
         }
 
-        $this->uri_segment_translations[$from] = $to;
-    }
-
-    /**
-     * Load an array of `@api-param` replacement tokens into the configuration system.
-     *
-     * @param SimpleXMLElement $tokens
-     */
-    protected function loadParameterTokens(SimpleXMLElement $tokens): void
-    {
         /** @var SimpleXMLElement $token */
-        foreach ($tokens as $token) {
+        foreach ($xml->parameterTokens->token as $token) {
             $parameter = trim((string) $token['name']);
             $annotation = trim((string) $token);
 
             $this->addParameterToken($parameter, $annotation);
         }
 
-        // Keep things tidy.
         $this->parameter_tokens = array_unique($this->parameter_tokens);
     }
 
     /**
-     * Add a new `@api-param` replacement token into the instance config.
-     *
-     * @param string $parameter
-     * @param string $annotation
-     * @throws DomainException If an invalid parameterTokens token name was found.
+     * @param SimpleXMLElement $xml
      */
-    public function addParameterToken(string $parameter, string $annotation): void
+    protected function loadCompilerSettings(SimpleXMLElement $xml): void
     {
-        if (empty($parameter) || empty($annotation)) {
-            throw new DomainException(
-                'An invalid parameter token name was supplied in the Mill `parameterTokens` section.'
-            );
+        if (!isset($xml->compilers)) {
+            return;
         }
 
-        $this->parameter_tokens['{' . $parameter . '}'] = $annotation;
-    }
+        if (isset($xml->compilers->excludes)) {
+            /** @var SimpleXMLElement $exclude */
+            foreach ($xml->compilers->excludes->exclude as $exclude) {
+                $group = trim((string) $exclude['group']);
 
-    /**
-     * Load in generator settings.
-     *
-     * @param SimpleXMLElement $generators
-     */
-    protected function loadGeneratorSettings(SimpleXMLElement $generators): void
-    {
-        if (isset($generators->blueprint)) {
-            if (isset($generators->blueprint->excludes)) {
-                /** @var SimpleXMLElement $exclude */
-                foreach ($generators->blueprint->excludes->exclude as $exclude) {
-                    $namespace = trim((string) $exclude['namespace']);
-
-                    $this->addBlueprintNamespaceExclude($namespace);
-                }
+                $this->addCompilerGroupExclusion($group);
             }
         }
     }
 
     /**
-     * Add a new API Blueprint resource namespace generator exclusion.
+     * Load in an API information configuration definition.
      *
-     * @param string $namespace
-     * @throws DomainException If an invalid Blueprint generator namespace exclude was detected.
+     * @param SimpleXMLElement $xml
      */
-    public function addBlueprintNamespaceExclude(string $namespace): void
+    protected function loadInfo(SimpleXMLElement $xml): void
     {
-        if (empty($namespace)) {
-            throw new DomainException(
-                'An invalid Blueprint generator namespace exclude was supplied in the Mill `generators` section.'
-            );
+        if (isset($xml->info->terms)) {
+            $this->terms = (string) $xml->info->terms['url'];
         }
 
-        $this->blueprint_namespace_excludes[] = $namespace;
+        foreach (['name', 'email', 'url'] as $contact_data) {
+            if (isset($xml->info->contact[$contact_data])) {
+                $this->contact[$contact_data] = (string) $xml->info->contact[$contact_data];
+            }
+        }
+
+        if (isset($xml->info->externalDocs)) {
+            foreach ($xml->info->externalDocs->externalDoc as $external_doc) {
+                $this->external_documentation[] = [
+                    'name' => (string) $external_doc['name'],
+                    'url' => (string) $external_doc['url']
+                ];
+            }
+        }
     }
 
     /**
-     * Remove a currently configured API Blueprint resource namespace generator exclusion.
-     *
-     * @param string $namespace
+     * @param SimpleXMLElement $xml
      */
-    public function removeBlueprintNamespaceExclude(string $namespace): void
+    protected function loadServers(SimpleXMLElement $xml): void
     {
-        $excludes = array_flip($this->blueprint_namespace_excludes);
-        if (isset($excludes[$namespace])) {
-            unset($excludes[$namespace]);
+        foreach ($xml->servers->server as $server) {
+            $this->servers[] = [
+                'url' => (string) $server['url'],
+                'description' => (string) $server['description']
+            ];
         }
-
-        $this->blueprint_namespace_excludes = array_flip($excludes);
     }
 
     /**
-     * Load in a versions configuration definition.
-     *
-     * @param SimpleXMLElement $versions
+     * @param SimpleXMLElement $xml
      * @throws InvalidArgumentException If multiple configured default API versions were detected.
      * @throws DomainException If no default API version was set.
      */
-    protected function loadVersions(SimpleXMLElement $versions): void
+    protected function loadVersions(SimpleXMLElement $xml): void
     {
         $api_versions = [];
-        foreach ($versions as $version) {
+        foreach ($xml->versions->version as $version) {
             $version_number = (string) $version['name'];
             $description = trim((string) $version);
 
@@ -424,7 +355,6 @@ class Config
             throw new DomainException('You must set a default API version.');
         }
 
-        // Keep things tidy.
         $sorted_numerical = Semver::sort(array_keys($api_versions));
         foreach ($sorted_numerical as $version) {
             $this->api_versions[] = $api_versions[$version];
@@ -435,16 +365,14 @@ class Config
     }
 
     /**
-     * Load in a controllers configuration definition.
-     *
-     * @param SimpleXMLElement $controllers
+     * @param SimpleXMLElement $xml
      * @throws InvalidArgumentException If a directory configured does not exist.
      * @throws InvalidArgumentException If no controllers were detected.
      */
-    protected function loadControllers(SimpleXMLElement $controllers): void
+    protected function loadControllers(SimpleXMLElement $xml): void
     {
         /** @var SimpleXMLElement $controllers */
-        $controllers = $controllers->filter;
+        $controllers = $xml->controllers->filter;
 
         $excludes = [];
         if (isset($controllers->excludes)) {
@@ -456,7 +384,6 @@ class Config
                 $excludes[] = (string) $exclude['name'];
             }
 
-            // Keep things tidy.
             $excludes = array_unique($excludes);
         }
 
@@ -480,7 +407,6 @@ class Config
             );
         }
 
-        // Keep things tidy.
         $this->controllers = array_unique($this->controllers);
         sort($this->controllers);
 
@@ -490,38 +416,16 @@ class Config
     }
 
     /**
-     * Add a new resource controller into the instance config.
-     *
-     * @param string $class
-     * @throws InvalidArgumentException If a class could not be found.
-     */
-    public function addController(string $class): void
-    {
-        if (!class_exists($class)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'The `%s` controller class could not be called. Is your bootstrap set up properly?',
-                    $class
-                )
-            );
-        }
-
-        $this->controllers[] = $class;
-    }
-
-    /**
-     * Load in a representations configuration definition.
-     *
-     * @param SimpleXMLElement $representations
+     * @param SimpleXMLElement $xml
      * @throws UncallableRepresentationException If a configured representation does not exist.
      * @throws DomainException If a representation is configured without a `method` attribute.
      * @throws InvalidArgumentException If a directory configured does not exist.
      * @throws InvalidArgumentException If no representations were detected.
      */
-    protected function loadRepresentations(SimpleXMLElement $representations): void
+    protected function loadRepresentations(SimpleXMLElement $xml): void
     {
         /** @var SimpleXMLElement $filters */
-        $filters = $representations->filter;
+        $filters = $xml->representations->filter;
 
         // Process excludes.
         if (isset($filters->excludes)) {
@@ -533,7 +437,6 @@ class Config
                 $this->addExcludedRepresentation((string) $exclude['name']);
             }
 
-            // Keep things tidy.
             $this->excluded_representations = array_unique($this->excluded_representations);
         }
 
@@ -575,7 +478,6 @@ class Config
             }
         }
 
-        // Keep things tidy
         ksort($this->representations);
 
         if (empty($this->representations)) {
@@ -584,63 +486,18 @@ class Config
     }
 
     /**
-     * Add a representation into the excluded list of representations.
-     *
-     * @param string $class
-     */
-    public function addExcludedRepresentation(string $class): void
-    {
-        $this->excluded_representations[] = $class;
-    }
-
-    /**
-     * Remove a representation that has been set up to be excluded from compilation, from being excluded.
-     *
-     * @param string $class
-     */
-    public function removeExcludedRepresentation(string $class): void
-    {
-        $excludes = array_flip($this->excluded_representations);
-        if (isset($excludes[$class])) {
-            unset($excludes[$class]);
-        }
-
-        $this->excluded_representations = array_flip($excludes);
-    }
-
-    /**
-     * Add a new representation into the instance config.
-     *
-     * @param string $class
-     * @param null|string $method
-     * @throws UncallableRepresentationException If the representation is uncallable.
-     */
-    public function addRepresentation(string $class, string $method = null): void
-    {
-        if (!class_exists($class)) {
-            throw UncallableRepresentationException::create($class);
-        }
-
-        $this->representations[$class] = [
-            'class' => $class,
-            'method' => $method
-        ];
-    }
-
-    /**
-     * Load in an error representations configuration definition.
-     *
-     * @param SimpleXMLElement $representations
+     * @param SimpleXMLElement $xml
      * @throws UncallableErrorRepresentationException If a configured error representation class does not exist.
      * @throws DomainException If an error representation is missing a `method` attribute.
      */
-    protected function loadErrorRepresentations(SimpleXMLElement $representations): void
+    protected function loadErrorRepresentations(SimpleXMLElement $xml): void
     {
-        /** @var SimpleXMLElement $errors */
-        $errors = $representations->errors;
+        if (!isset($xml->representations->errors)) {
+            return;
+        }
 
         /** @var SimpleXMLElement $class */
-        foreach ($errors->class as $class) {
+        foreach ($xml->representations->errors->class as $class) {
             $class_name = (string) $class['name'];
             $method = (string) $class['method'] ?: null;
             $needs_error_code = (string) $class['needsErrorCode'];
@@ -665,17 +522,6 @@ class Config
     }
 
     /**
-     * Check if a given representation has been configured to be excluded.
-     *
-     * @param string $class
-     * @return bool
-     */
-    public function isRepresentationExcluded(string $class): bool
-    {
-        return in_array($class, $this->getExcludedRepresentations());
-    }
-
-    /**
      * Get the name of your API.
      *
      * @return null|string
@@ -683,6 +529,46 @@ class Config
     public function getName(): ?string
     {
         return $this->name;
+    }
+
+    /**
+     * Get the terms of service URL for your API.
+     *
+     * @return null|string
+     */
+    public function getTerms(): ?string
+    {
+        return $this->terms;
+    }
+
+    /**
+     * Get the contact information for your API.
+     *
+     * @return array
+     */
+    public function getContactInformation(): array
+    {
+        return $this->contact;
+    }
+
+    /**
+     * Get external documentation for your API.
+     *
+     * @return array
+     */
+    public function getExternalDocumentation(): array
+    {
+        return $this->external_documentation;
+    }
+
+    /**
+     * Get your API servers.
+     *
+     * @return array
+     */
+    public function getServers(): array
+    {
+        return $this->servers;
     }
 
     /**
@@ -744,13 +630,23 @@ class Config
     }
 
     /**
-     * Get the array of configured application capabilities.
+     * Get the array of configured application vendor tags.
      *
      * @return array
      */
-    public function getCapabilities(): array
+    public function getVendorTags(): array
     {
-        return $this->capabilities;
+        return $this->vendor_tags;
+    }
+
+    /**
+     * Get your API authentication flows.
+     *
+     * @return array
+     */
+    public function getAuthenticationFlows(): array
+    {
+        return $this->authentication_flows;
     }
 
     /**
@@ -764,13 +660,42 @@ class Config
     }
 
     /**
-     * Get the array of configured URI segment translations.
+     * Determine if a given scope has been configured.
+     *
+     * @param string $scope
+     * @return bool
+     */
+    public function hasScope(string $scope): bool
+    {
+        return in_array($scope, array_keys($this->scopes));
+    }
+
+    /**
+     * Get the array of configured path param translations.
      *
      * @return array
      */
-    public function getUriSegmentTranslations(): array
+    public function getPathParamTranslations(): array
     {
-        return $this->uri_segment_translations;
+        return $this->path_param_translations;
+    }
+
+    /**
+     * Add a new path param translation into the instance config.
+     *
+     * @param string $from
+     * @param string $to
+     * @throws DomainException If an invalid pathParam translation text was found.
+     */
+    public function addPathParamTranslation($from, $to): void
+    {
+        if (empty($from) || empty($to)) {
+            throw new DomainException(
+                'An invalid translation text was supplied in the Mill `pathParams` `translations` section.'
+            );
+        }
+
+        $this->path_param_translations[$from] = $to;
     }
 
     /**
@@ -784,6 +709,24 @@ class Config
     }
 
     /**
+     * Add a new `@api-param` replacement token into the instance config.
+     *
+     * @param string $parameter
+     * @param string $annotation
+     * @throws DomainException If an invalid parameterTokens token name was found.
+     */
+    public function addParameterToken(string $parameter, string $annotation): void
+    {
+        if (empty($parameter) || empty($annotation)) {
+            throw new DomainException(
+                'An invalid parameter token name was supplied in the Mill `parameterTokens` section.'
+            );
+        }
+
+        $this->parameter_tokens['{' . $parameter . '}'] = $annotation;
+    }
+
+    /**
      * Get the array of configured application controllers.
      *
      * @return array
@@ -791,6 +734,26 @@ class Config
     public function getControllers(): array
     {
         return $this->controllers;
+    }
+
+    /**
+     * Add a new resource controller into the instance config.
+     *
+     * @param string $class
+     * @throws InvalidArgumentException If a class could not be found.
+     */
+    public function addController(string $class): void
+    {
+        if (!class_exists($class)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'The `%s` controller class could not be called. Is your bootstrap set up properly?',
+                    $class
+                )
+            );
+        }
+
+        $this->controllers[] = $class;
     }
 
     /**
@@ -834,13 +797,100 @@ class Config
     }
 
     /**
-     * Get the array of configured API Blueprint resource namespace excludes.
+     * Check if a given representation has been configured to be excluded.
+     *
+     * @param string $class
+     * @return bool
+     */
+    public function isRepresentationExcluded(string $class): bool
+    {
+        return in_array($class, $this->getExcludedRepresentations());
+    }
+
+    /**
+     * Add a new representation into the instance config.
+     *
+     * @param string $class
+     * @param null|string $method
+     * @throws UncallableRepresentationException If the representation is uncallable.
+     */
+    public function addRepresentation(string $class, string $method = null): void
+    {
+        if (!class_exists($class)) {
+            throw UncallableRepresentationException::create($class);
+        }
+
+        $this->representations[$class] = [
+            'class' => $class,
+            'method' => $method
+        ];
+    }
+
+    /**
+     * Add a representation into the excluded list of representations.
+     *
+     * @param string $class
+     */
+    public function addExcludedRepresentation(string $class): void
+    {
+        $this->excluded_representations[] = $class;
+    }
+
+    /**
+     * Remove a representation that has been set up to be excluded from compilation, from being excluded.
+     *
+     * @param string $class
+     */
+    public function removeExcludedRepresentation(string $class): void
+    {
+        $excludes = array_flip($this->excluded_representations);
+        if (isset($excludes[$class])) {
+            unset($excludes[$class]);
+        }
+
+        $this->excluded_representations = array_flip($excludes);
+    }
+
+    /**
+     * Get the array of configured compiler resource group exclusions.
      *
      * @return array
      */
-    public function getBlueprintNamespaceExcludes(): array
+    public function getCompilerGroupExclusions(): array
     {
-        return $this->blueprint_namespace_excludes;
+        return $this->compiler_group_exclusions;
+    }
+
+    /**
+     * Add a new compiler resource group exclusion.
+     *
+     * @param string $group
+     * @throws DomainException If an invalid compiler group exclusion was detected.
+     */
+    public function addCompilerGroupExclusion(string $group): void
+    {
+        if (empty($group)) {
+            throw new DomainException(
+                'An invalid compiler group exclusion was supplied in the Mill `compilers` section.'
+            );
+        }
+
+        $this->compiler_group_exclusions[] = $group;
+    }
+
+    /**
+     * Remove a currently configured compiler resource group exclusion.
+     *
+     * @param string $group
+     */
+    public function removeCompilerGroupExclusion(string $group): void
+    {
+        $excludes = array_flip($this->compiler_group_exclusions);
+        if (isset($excludes[$group])) {
+            unset($excludes[$group]);
+        }
+
+        $this->compiler_group_exclusions = array_flip($excludes);
     }
 
     /**

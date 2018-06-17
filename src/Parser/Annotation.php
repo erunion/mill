@@ -1,146 +1,65 @@
 <?php
 namespace Mill\Parser;
 
+use Mill\Contracts\Arrayable;
 use Mill\Exceptions\Annotations\InvalidMSONSyntaxException;
 use Mill\Exceptions\Annotations\MissingRequiredFieldException;
-use Mill\Parser\Annotations\CapabilityAnnotation;
-use Mill\Parser\Annotations\ScopeAnnotation;
-use Mill\Parser\Annotations\UriAnnotation;
 
-/**
- * Base class for supported annotations.
- *
- */
-abstract class Annotation
+abstract class Annotation implements Arrayable
 {
-    /** @var string */
-    const REGEX_CAPABILITY = '/(\+[^\+]*\+)/';
-
-    /**
-     * Does this annotation require a visibility decorator?
-     *
-     * @var bool
-     */
+    /** @var bool Does this annotation require a visibility decorator? */
     const REQUIRES_VISIBILITY_DECORATOR = false;
 
-    /**
-     * Does this annotation support aliasing?
-     *
-     * @return bool
-     */
-    const SUPPORTS_ALIASING = false;
-
-    /**
-     * Does this annotation support being deprecated?
-     *
-     * @return bool
-     */
+    /** @var bool Does this annotation support being deprecated? */
     const SUPPORTS_DEPRECATION = false;
 
-    /**
-     * Is this annotation written using MSON?
-     *
-     * @return bool
-     */
+    /** @var bool Is this annotation written using MSON? */
     const SUPPORTS_MSON = false;
 
-    /**
-     * Does this annotation support auth token scopes?
-     *
-     * @return bool
-     */
+    /** @var bool Does this annotation support auth token scopes? */
     const SUPPORTS_SCOPES = false;
 
-    /**
-     * Does this annotation support versioning?
-     *
-     * @return bool
-     */
+    /** @var bool Does this annotation support vendor tags? */
+    const SUPPORTS_VENDOR_TAGS = false;
+
+    /** @var bool Does this annotation support versioning? */
     const SUPPORTS_VERSIONING = false;
 
-    /**
-     * The raw annotation from the docblock.
-     *
-     * @var string
-     */
+    /** @var array An array of items that should be included in an array representation of this annotation. */
+    const ARRAYABLE = [];
+
+    /** @var string The raw annotation from the docblock. */
     protected $docblock;
 
-    /**
-     * Class that this annotation is within.
-     *
-     * @var string
-     */
+    /** @var string Class that this annotation is within. */
     protected $class;
 
-    /**
-     * Class method that this annotation is within.
-     *
-     * @var null|string
-     */
+    /** @var null|string Class method that this annotation is within. */
     protected $method = null;
 
-    /**
-     * Capability that this annotation requires.
-     *
-     * @var false|string
-     */
-    protected $capability = false;
+    /** @var array Vendor tags that this annotation possesses. */
+    protected $vendor_tags = [];
 
-    /**
-     * Flag designating if this annotation is visible or not.
-     *
-     * @var bool|null
-     */
+    /** @var bool|null Flag designating if this annotation is visible or not. */
     protected $visible = null;
 
-    /**
-     * Version representation that this annotation is supported on.
-     *
-     * @var false|Version
-     */
+    /** @var false|Version Version representation that this annotation is supported on. */
     protected $version = false;
 
-    /**
-     * Flag designating that this annotation is deprecated or not.
-     *
-     * @var bool
-     */
+    /** @var bool Flag designating that this annotation is deprecated or not. */
     protected $deprecated = false;
 
-    /**
-     * Array of all authentication scopes required for this annotation.
-     *
-     * @var array
-     */
+    /** @var array Array of all authentication scopes required for this annotation. */
     protected $scopes = [];
 
-    /**
-     * Array of all available aliases for this annotation.
-     *
-     * @var array<Annotation>
-     */
+    /** @var array<Annotation> Array of all available aliases for this annotation. */
     protected $aliases = [];
 
-    /**
-     * Flag designating that this annotation is aliased or not.
-     *
-     * @var bool
-     */
+    /** @var bool Flag designating that this annotation is aliased or not. */
     protected $aliased = false;
 
-    /**
-     * Array of parsed data from this annotation.
-     *
-     * @var array
-     */
+    /** @var array Array of parsed data from this annotation. */
     protected $parsed_data = [];
-
-    /**
-     * An array of items that should be included in an array representation of this annotation.
-     *
-     * @var array
-     */
-    protected $arrayable = [];
 
     /**
      * @param string $doc
@@ -162,7 +81,7 @@ abstract class Annotation
     /**
      * Process and parse the annotation docblock that was created.
      *
-     * @return self
+     * @return Annotation
      */
     public function process(): self
     {
@@ -224,6 +143,10 @@ abstract class Annotation
         if ($allow_zero && $this->parsed_data[$field] === '0') {
             return $this->parsed_data[$field];
         } elseif (empty($this->parsed_data[$field])) {
+            if (is_array($this->parsed_data[$field])) {
+                return [];
+            }
+
             return false;
         }
 
@@ -260,81 +183,6 @@ abstract class Annotation
     abstract protected function interpreter(): void;
 
     /**
-     * With an array of data that was output from an Annotation, via `toArray()`, hydrate a new Annotation object.
-     *
-     * @param array $data
-     * @param null|Version $version
-     * @return self
-     */
-    public static function hydrate(array $data = [], Version $version = null)
-    {
-        $class = get_called_class();
-
-        /** @var Annotation $annotation */
-        $annotation = new $class('', $data['class'], $data['method'], $version);
-
-        if (array_key_exists('capability', $data) && !empty($data['capability'])) {
-            // Since capability annotations have a `capability` value, let's avoid created a CapabilityAnnotation within
-            // another CapabilityAnnotation.
-            if ($annotation instanceof CapabilityAnnotation) {
-                $capability = $data['capability'];
-            } else {
-                $capability = (new CapabilityAnnotation(
-                    $data['capability'],
-                    $data['class'],
-                    $data['method'],
-                    $version
-                ))->process();
-            }
-
-            $annotation->setCapability($capability);
-        }
-
-        if ($annotation->requiresVisibilityDecorator()) {
-            $annotation->setVisibility($data['visible']);
-        }
-
-        if ($annotation->supportsAliasing()) {
-            $annotation->setAliased($data['aliased']);
-
-            $aliases = [];
-            foreach ($data['aliases'] as $alias) {
-                $aliases[] = UriAnnotation::hydrate(array_merge([
-                    'class' => $data['class'],
-                    'method' => $data['method']
-                ], $alias));
-            }
-
-            $annotation->setAliases($aliases);
-        }
-
-        if ($annotation->supportsDeprecation()) {
-            $annotation->setDeprecated($data['deprecated']);
-        }
-
-        if ($annotation->supportsScopes()) {
-            $scopes = [];
-            foreach ($data['scopes'] as $scope) {
-                $scopes[] = ScopeAnnotation::hydrate(array_merge(
-                    $scope,
-                    [
-                        'class' => __CLASS__,
-                        'method' => __METHOD__
-                    ]
-                ));
-            }
-
-            $annotation->setScopes($scopes);
-        }
-
-        if ($annotation->supportsVersioning() && $version) {
-            $annotation->setVersion($version);
-        }
-
-        return $annotation;
-    }
-
-    /**
      * Does this annotation require a visibility decorator?
      *
      * @return bool
@@ -342,16 +190,6 @@ abstract class Annotation
     public function requiresVisibilityDecorator(): bool
     {
         return static::REQUIRES_VISIBILITY_DECORATOR;
-    }
-
-    /**
-     * Does this annotation support aliasing?
-     *
-     * @return bool
-     */
-    public function supportsAliasing(): bool
-    {
-        return static::SUPPORTS_ALIASING;
     }
 
     /**
@@ -375,6 +213,16 @@ abstract class Annotation
     }
 
     /**
+     * Does this annotation support vendor tags?
+     *
+     * @return bool
+     */
+    public function supportsVendorTags(): bool
+    {
+        return static::SUPPORTS_VENDOR_TAGS;
+    }
+
+    /**
      * Does this annotation support versioning?
      *
      * @return bool
@@ -385,14 +233,12 @@ abstract class Annotation
     }
 
     /**
-     * Convert the parsed annotation into an array.
-     *
-     * @return array
+     * {{@inheritdoc}}
      */
     public function toArray(): array
     {
         $arr = [];
-        foreach ($this->arrayable as $var) {
+        foreach (static::ARRAYABLE as $var) {
             if ($this->{$var} instanceof Annotation) {
                 $arr += $this->{$var}->toArray();
             } else {
@@ -405,23 +251,10 @@ abstract class Annotation
             $arr['visible'] = $this->isVisible();
         }
 
-        // If this annotation supports aliasing, then we should include any aliasing data about it.
-        if ($this->supportsAliasing()) {
-            $arr['aliased'] = $this->isAliased();
-            $arr['aliases'] = [];
-
-            /** @var Annotation $alias */
-            foreach ($this->getAliases() as $alias) {
-                $arr['aliases'][] = $alias->toArray();
-            }
-        }
-
-        // If this annotation supports deprecation, then we should include its designation.
         if ($this->supportsDeprecation()) {
             $arr['deprecated'] = $this->isDeprecated();
         }
 
-        // If this annotation supports authentication scopes, then we should include those scopes.
         if ($this->supportsScopes()) {
             $arr['scopes'] = [];
 
@@ -431,7 +264,15 @@ abstract class Annotation
             }
         }
 
-        // If this annotation supports versioning, then we should include its version
+        if ($this->supportsVendorTags()) {
+            $arr['vendor_tags'] = [];
+
+            /** @var Annotation $scope */
+            foreach ($this->getVendorTags() as $vendor_tag) {
+                $arr['vendor_tags'][] = $vendor_tag->getVendorTag();
+            }
+        }
+
         if ($this->supportsVersioning()) {
             $arr['version'] = false;
 
@@ -485,7 +326,7 @@ abstract class Annotation
      * Set the visibility on the current annotation.
      *
      * @param bool $visibility
-     * @return self
+     * @return Annotation
      */
     public function setVisibility(bool $visibility): self
     {
@@ -507,7 +348,7 @@ abstract class Annotation
      * Set if this annotation is deprecated or not.
      *
      * @param bool $deprecated
-     * @return self
+     * @return Annotation
      */
     public function setDeprecated(bool $deprecated): self
     {
@@ -529,7 +370,7 @@ abstract class Annotation
      * Set if this annotation is an alias or not.
      *
      * @param bool $aliased
-     * @return self
+     * @return Annotation
      */
     public function setAliased(bool $aliased): self
     {
@@ -540,8 +381,8 @@ abstract class Annotation
     /**
      * Set any aliases to this annotation.
      *
-     * @param array<Annotation> $aliases
-     * @return self
+     * @param array $aliases
+     * @return Annotation
      */
     public function setAliases(array $aliases): self
     {
@@ -563,7 +404,7 @@ abstract class Annotation
      * Set any required authentication scopes to this annotation.
      *
      * @param array<Annotation> $scopes
-     * @return self
+     * @return Annotation
      */
     public function setScopes(array $scopes): self
     {
@@ -582,25 +423,23 @@ abstract class Annotation
     }
 
     /**
-     * Return the capability, if any, that has been set.
-     *
-     * @return false|string|CapabilityAnnotation
+     * Return an array of vendor tags that this annotation possesses.
+     * @return array
      */
-    public function getCapability()
+    public function getVendorTags(): array
     {
-        return $this->capability;
+        return $this->vendor_tags;
     }
 
     /**
-     * Set a capability that this annotation requires. This is specifically used in tandem with representation depth
-     * parsing.
+     * Set vendor tags that this annotation possesses.
      *
-     * @param false|string $capability
-     * @return self
+     * @param array $vendor_tags
+     * @return Annotation
      */
-    public function setCapability($capability): self
+    public function setVendorTags(array $vendor_tags = []): self
     {
-        $this->capability = $capability;
+        $this->vendor_tags = $vendor_tags;
         return $this;
     }
 
@@ -619,7 +458,7 @@ abstract class Annotation
      * depth parsing.
      *
      * @param Version $version
-     * @return self
+     * @return Annotation
      */
     public function setVersion(Version $version): self
     {

@@ -7,6 +7,14 @@ class MissingRequiredFieldException extends BaseException
 {
     use AnnotationExceptionTrait;
 
+    /**
+     * @param string $required_field
+     * @param string $annotation
+     * @param string $docblock
+     * @param string $class
+     * @param string $method
+     * @return MissingRequiredFieldException
+     */
     public static function create(
         string $required_field,
         string $annotation,

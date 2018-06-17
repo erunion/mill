@@ -11,25 +11,24 @@ use Mill\Parser\Annotations\DataAnnotation;
 use Mill\Parser\Annotations\ScopeAnnotation;
 use Mill\Parser\Version;
 
-/**
- * Class for parsing the docblock on a representation.
- *
- */
 class RepresentationParser extends Parser
 {
-    // http://stackoverflow.com/a/13114141/1886079
+    /**
+     * @link http://stackoverflow.com/a/13114141/1886079
+     * @var string
+     */
     const DOC_PATTERN = '~/\*\*(.*?)\*/~s';
 
-    // Everything between the second asterisk and the first annotation
+    /** @var string Everything between the second asterisk and the first annotation */
     const DOC_BODY_MATCH = '~\s*\*\s+(.*)~';
 
     /**
      * Locate, and parse, the annotations for a representation method.
      *
-     * @param null|string $method_name
-     * @return array An array containing all the found annotations.
-     * @throws MethodNotSuppliedException If a method is not supplied to parse.
-     * @throws MethodNotImplementedException If the supplied method does not exist on the supplied controller.
+     * @param string|null $method_name
+     * @return array
+     * @throws DuplicateFieldException
+     * @throws MethodNotSuppliedException
      */
     public function getAnnotations(string $method_name = null): array
     {
@@ -46,13 +45,12 @@ class RepresentationParser extends Parser
         $annotations = $this->parse($code);
 
         if (count($annotations) > 1) {
-            // Keep things tidy.
             ksort($annotations);
 
             // Run through all created annotations and cascade any versioning down into any present child annotations.
             /** @var DataAnnotation $annotation */
             foreach ($annotations as $identifier => $annotation) {
-                if (!$annotation->getVersion() && !$annotation->getCapability() && !$annotation->getScopes()) {
+                if (!$annotation->getVersion() && !$annotation->getVendorTags() && !$annotation->getScopes()) {
                     continue;
                 }
 
@@ -69,6 +67,9 @@ class RepresentationParser extends Parser
      * @param array $tags
      * @param string $original_content
      * @return array
+     * @throws DuplicateFieldException
+     * @throws MethodNotSuppliedException
+     * @throws \Mill\Exceptions\Version\UnrecognizedSchemaException
      */
     public function parseAnnotations(array $tags, string $original_content): array
     {
@@ -130,7 +131,7 @@ class RepresentationParser extends Parser
                 $prefix = array_shift($pointer);
 
                 // Pass in the current array (by reference) of found annotations that we have so we can do depth
-                // traversal for version and capability requirements of any implied children, by way of dot-notation.
+                // traversal for version and  requirements of any implied children, by way of dot-notation.
                 $parser = new self($see_class);
                 $see_annotations = $parser->getAnnotations($see_method);
 
@@ -160,6 +161,12 @@ class RepresentationParser extends Parser
                         }
                     }
 
+                    // If this `@api-see` is being used with `@api-scope` annotations, the scope should filter down
+                    // the pipe.
+                    if (!empty($scopes)) {
+                        $annotation->setScopes($scopes);
+                    }
+
                     // If this `@api-see` has a prefix to attach to found annotation identifiers, do so.
                     if (!empty($prefix)) {
                         $see_annotations[$prefix . '.' . $name] = $annotation->setIdentifierPrefix($prefix);
@@ -179,7 +186,8 @@ class RepresentationParser extends Parser
      *
      * @param string $code
      * @return array
-     * @throws DuplicateFieldException If a found field exists more than once.
+     * @throws DuplicateFieldException
+     * @throws \Mill\Exceptions\Resource\UnsupportedDecoratorException
      */
     public function parse(string $code): array
     {
@@ -208,7 +216,7 @@ class RepresentationParser extends Parser
     }
 
     /**
-     * Given a DataAnnotation object, carry any versioning or capabilities on it down to any dot-notation children in
+     * Given a DataAnnotation object, carry any versioning or vendor tags on it down to any dot-notation children in
      * an array of other annotations.
      *
      * @param DataAnnotation $parent
@@ -218,12 +226,10 @@ class RepresentationParser extends Parser
     {
         $parent_identifier = $parent->getIdentifier();
         $parent_version = $parent->getVersion();
+        $parent_vendor_tags = $parent->getVendorTags();
 
         /** @var array<ScopeAnnotation> $parent_scopes */
         $parent_scopes = $parent->getScopes();
-
-        /** @var string $parent_capability */
-        $parent_capability = $parent->getCapability();
 
         /** @var DataAnnotation $annotation */
         foreach ($annotations as $identifier => $annotation) {
@@ -240,8 +246,8 @@ class RepresentationParser extends Parser
                 $annotation->setVersion($parent_version);
             }
 
-            if (!empty($parent_capability) && !$annotation->getCapability()) {
-                $annotation->setCapability($parent_capability);
+            if (!empty($parent_vendor_tags) && !$annotation->getVendorTags()) {
+                $annotation->setVendorTags($parent_vendor_tags);
             }
 
             if (!empty($parent_scopes) && !$annotation->getScopes()) {

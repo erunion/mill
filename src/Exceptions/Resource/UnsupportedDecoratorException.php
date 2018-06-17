@@ -7,6 +7,13 @@ class UnsupportedDecoratorException extends BaseException
 {
     use ResourceExceptionTrait;
 
+    /**
+     * @param string $decorator
+     * @param string $annotation
+     * @param string $class
+     * @param string $method
+     * @return UnsupportedDecoratorException
+     */
     public static function create(
         string $decorator,
         string $annotation,

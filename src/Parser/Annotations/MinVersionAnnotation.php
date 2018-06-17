@@ -1,37 +1,23 @@
 <?php
 namespace Mill\Parser\Annotations;
 
-use Mill\Exceptions\Annotations\AbsoluteMinimumVersionException;
+use Mill\Exceptions\Annotations\AbsoluteVersionException;
 use Mill\Parser\Annotation;
 use Mill\Parser\Version;
 
-/**
- * Handler for the `@api-minVersion` annotation.
- *
- * This annotation, and class are named `minVersion` rather than the preferable `minimumVersion` due to a bizarre
- * issue with PHPUnit code coverage where if the full class name is `MinimumVersionAnnotation`, it shows up as having
- * 0% coverage. Change the file to `MinVersionAnnotation` or `MinAnnotation`, and it has 100%.
- *
- * ¯\_(ಠ_ಠ)_/¯
- *
- */
 class MinVersionAnnotation extends Annotation
 {
+    const ARRAYABLE = [
+        'minimum_version'
+    ];
+
     /** @var string */
     protected $minimum_version;
 
     /**
-     * An array of items that should be included in an array representation of this annotation.
-     *
-     * @var array
-     */
-    protected $arrayable = [
-        'minimum_version'
-    ];
-
-    /**
      * {@inheritdoc}
-     * @throws AbsoluteMinimumVersionException If an `@api-minVersion` annotation version is not absolute.
+     * @throws AbsoluteVersionException
+     * @throws \Mill\Exceptions\Version\UnrecognizedSchemaException
      */
     protected function parser(): array
     {
@@ -40,7 +26,7 @@ class MinVersionAnnotation extends Annotation
 
         $parsed = new Version($this->docblock, $this->class, $method);
         if ($parsed->isRange()) {
-            throw AbsoluteMinimumVersionException::create($this->docblock, $this->class, $method);
+            throw AbsoluteVersionException::create('min', $this->docblock, $this->class, $method);
         }
 
         return [
@@ -59,18 +45,6 @@ class MinVersionAnnotation extends Annotation
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public static function hydrate(array $data = [], Version $version = null): self
-    {
-        /** @var MinVersionAnnotation $annotation */
-        $annotation = parent::hydrate($data, $version);
-        $annotation->setMinimumVersion($data['minimum_version']);
-
-        return $annotation;
-    }
-
-    /**
      * @return string
      */
     public function getMinimumVersion(): string
@@ -80,7 +54,7 @@ class MinVersionAnnotation extends Annotation
 
     /**
      * @param string $minimum_version
-     * @return self
+     * @return MinVersionAnnotation
      */
     public function setMinimumVersion(string $minimum_version): self
     {

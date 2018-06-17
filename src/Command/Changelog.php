@@ -3,16 +3,12 @@ namespace Mill\Command;
 
 use Mill\Application;
 use Mill\Config;
-use Mill\Generator;
+use Mill\Compiler;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Generate command for a changelog off your API documentation.
- *
- */
 class Changelog extends Application
 {
     /**
@@ -28,20 +24,20 @@ class Changelog extends Application
                 'private',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Flag designating if you want to generate a changelog that includes private documentation.',
+                'Flag designating if you want to compile a changelog that includes private documentation.',
                 true
             )
             ->addOption(
-                'capability',
+                'vendor_tag',
                 null,
                 InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
-                'The name of a capability if you want to generate a changelog that includes capability-locked ' .
+                'The name of a vendor tag if you want to compile a changelog that includes vendor tag-bound ' .
                     'documentation.'
             )
             ->addArgument(
                 'output',
                 InputArgument::REQUIRED,
-                'Directory to output your generated `changelog.md` file in.'
+                'Directory to output your compiled `changelog.md` file in.'
             );
     }
 
@@ -49,17 +45,20 @@ class Changelog extends Application
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int
+     * @throws \Mill\Exceptions\Annotations\MultipleAnnotationsException
+     * @throws \Mill\Exceptions\Annotations\RequiredAnnotationException
+     * @throws \Mill\Exceptions\Resource\NoAnnotationsException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         parent::execute($input, $output);
 
         $private_docs = $input->getOption('private');
-        $capabilities = $input->getOption('capability');
+        $vendor_tags = $input->getOption('vendor_tag');
         $output_dir = realpath($input->getArgument('output'));
 
         $private_docs = ($private_docs === true || strtolower($private_docs) == 'true') ? true : false;
-        $capabilities = (!empty($capabilities)) ? $capabilities : null;
+        $vendor_tags = (!empty($vendor_tags)) ? $vendor_tags : null;
 
         /** @var Config $config */
         $config = $this->container['config'];
@@ -67,17 +66,14 @@ class Changelog extends Application
         /** @var \League\Flysystem\Filesystem $filesystem */
         $filesystem = $this->container['filesystem'];
 
-        $output->writeln('<comment>Generating a changelog…</comment>');
+        $output->writeln('<comment>Compiling a changelog...</comment>');
 
-        $changelog = new Generator\Changelog($config);
+        $changelog = new Compiler\Changelog($config);
         $changelog->setLoadPrivateDocs($private_docs);
-        $changelog->setLoadCapabilityDocs($capabilities);
-        $markdown = $changelog->generateMarkdown();
+        $changelog->setLoadVendorTagDocs($vendor_tags);
+        $markdown = $changelog->toMarkdown();
 
-        $filesystem->put(
-            $output_dir . self::DS . 'changelog.md',
-            trim($markdown)
-        );
+        $filesystem->put($output_dir . DIRECTORY_SEPARATOR . 'changelog.md', trim($markdown));
 
         $output->writeln(['', '<success>Done!</success>']);
 

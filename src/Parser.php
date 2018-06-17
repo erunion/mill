@@ -9,26 +9,14 @@ use Mill\Parser\MSON;
 use Mill\Parser\Version;
 use ReflectionClass;
 
-/**
- * Class for tokenizing a docblock on a given class or method.
- *
- */
 class Parser
 {
     const REGEX_DECORATOR = '/^(?P<decorator>(:\w+)+)?/u';
 
-    /**
-     * The current class that we're going to be parsing.
-     *
-     * @var string
-     */
+    /** @var string The current class that we're going to be parsing. */
     protected $class;
 
-    /**
-     * The current class method that we're parsing. Used to give better error messaging.
-     *
-     * @var null|string
-     */
+    /** @var null|string The current class method that we're parsing. Used to give better error messaging. */
     protected $method;
 
     /**
@@ -43,6 +31,7 @@ class Parser
      * Get an array of HTTP (GET, POST, PUT, PATCH, DELETE) methods that are implemented on the current class.
      *
      * @return array
+     * @throws \ReflectionException
      */
     public function getHttpMethods()
     {
@@ -63,8 +52,9 @@ class Parser
     /**
      * Locate, and parse, the annotations for a class or method.
      *
-     * @param null|string $method_name
-     * @return array An array containing all the found annotations.
+     * @param string|null $method_name
+     * @return array
+     * @throws UnsupportedDecoratorException
      */
     public function getAnnotations(string $method_name = null): array
     {
@@ -87,31 +77,32 @@ class Parser
      *
      * @link https://github.com/facebook/libphutil/blob/master/src/parser/docblock/PhutilDocblockParser.php
      * @param string $docblock
-     * @param boolean $parse_description If we want to parse out an unstructured `description` annotation.
-     * @return array Array of parsed annotations.
+     * @param bool $parse_description If we want to parse out an unstructured `description` annotation.
+     * @return array
+     * @throws UnsupportedDecoratorException
      */
     protected function parseDocblock(string $docblock, bool $parse_description = true): array
     {
         $original_docblock = $docblock;
         $annotations = [];
+        $annotation_tags = [];
         $matches = null;
 
         $parser = self::getAnnotationsFromDocblock($docblock);
         $tags = $parser->getTags();
-        if (!empty($tags)) {
-            $annotation_tags = [];
 
-            /** @var UnknownTag $tag */
-            foreach ($tags as $tag) {
-                // If this isn't a Mill annotation, then ignore it.
-                $annotation = $tag->getTagName();
-                if (substr($annotation, 0, 4) !== 'api-') {
-                    continue;
-                }
-
-                $annotation_tags[] = $tag;
+        /** @var UnknownTag $tag */
+        foreach ($tags as $tag) {
+            // If this isn't a Mill annotation, then ignore it.
+            $annotation = $tag->getTagName();
+            if (substr($annotation, 0, 4) !== 'api-') {
+                continue;
             }
 
+            $annotation_tags[] = $tag;
+        }
+
+        if (!empty($annotation_tags)) {
             $annotations = $this->parseAnnotations($annotation_tags, $original_docblock);
         }
 
@@ -140,6 +131,8 @@ class Parser
      * @param array $tags
      * @param string $original_content
      * @return array
+     * @throws Exceptions\Version\UnrecognizedSchemaException
+     * @throws UnsupportedDecoratorException
      */
     protected function parseAnnotations(array $tags, string $original_content): array
     {
@@ -179,36 +172,6 @@ class Parser
         }
 
         return $annotations;
-    }
-
-    /**
-     * Hydrate an annotation with some data.
-     *
-     * @param string $name
-     * @param string $class
-     * @param string $method
-     * @param array $data
-     * @return Annotation
-     */
-    public function hydrateAnnotation(string $name, string $class, string $method, array $data = []): Annotation
-    {
-        $annotation_class = $this->getAnnotationClass(str_replace('_', '', $name));
-
-        $version = null;
-        if (!empty($data['version'])) {
-            $version = new Version($data['version'], $class, $method);
-        }
-
-        return $annotation_class::hydrate(
-            array_merge(
-                $data,
-                [
-                    'class' => $class,
-                    'method' => $method
-                ]
-            ),
-            $version
-        );
     }
 
     /**
@@ -290,12 +253,24 @@ class Parser
                 $annotation = 'ContentType';
                 break;
 
+            case 'maxversion':
+                $annotation = 'MaxVersion';
+                break;
+
             case 'minversion':
                 $annotation = 'MinVersion';
                 break;
 
-            case 'urisegment':
-                $annotation = 'UriSegment';
+            case 'pathparam':
+                $annotation = 'PathParam';
+                break;
+
+            case 'queryparam':
+                $annotation = 'QueryParam';
+                break;
+
+            case 'vendortag':
+                $annotation = 'VendorTag';
                 break;
 
             default:
@@ -317,8 +292,8 @@ class Parser
     }
 
     /**
-     * @param null|string $method
-     * @return self
+     * @param string|null $method
+     * @return Parser
      */
     public function setMethod(string $method = null): self
     {
@@ -335,6 +310,6 @@ class Parser
     protected function getAnnotationNameFromTag(UnknownTag $tag): string
     {
         $annotation = $tag->getTagName();
-        return substr($annotation, 4);
+        return strtolower(substr($annotation, 4));
     }
 }

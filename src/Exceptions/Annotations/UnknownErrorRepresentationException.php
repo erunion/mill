@@ -7,13 +7,19 @@ class UnknownErrorRepresentationException extends BaseException
 {
     use AnnotationExceptionTrait;
 
+    /**
+     * @param string $representation
+     * @param string $class
+     * @param string $method
+     * @return UnknownErrorRepresentationException
+     */
     public static function create(
         string $representation,
         string $class,
         string $method
     ): UnknownErrorRepresentationException {
         $message = sprintf(
-            'The `@api-throws %s` in %s::%s has an unknown representation. Is it present in your config file?',
+            'The `@api-error %s` in %s::%s has an unknown representation. Is it present in your config file?',
             $representation,
             $class,
             $method

@@ -7,11 +7,15 @@ class InvalidScopeSuppliedException extends BaseException
 {
     use AnnotationExceptionTrait;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $scope;
 
+    /**
+     * @param string $scope
+     * @param string $class
+     * @param string $method
+     * @return InvalidScopeSuppliedException
+     */
     public static function create(string $scope, string $class, string $method): InvalidScopeSuppliedException
     {
         $message = sprintf(

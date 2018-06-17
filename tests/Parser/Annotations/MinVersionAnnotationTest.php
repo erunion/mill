@@ -1,7 +1,7 @@
 <?php
 namespace Mill\Tests\Parser\Annotations;
 
-use Mill\Exceptions\Annotations\AbsoluteMinimumVersionException;
+use Mill\Exceptions\Annotations\AbsoluteVersionException;
 use Mill\Exceptions\Version\UnrecognizedSchemaException;
 use Mill\Parser\Annotations\MinVersionAnnotation;
 
@@ -20,33 +20,15 @@ class MinVersionAnnotationTest extends AnnotationTest
         $this->assertAnnotation($annotation, $expected);
     }
 
-    /**
-     * @dataProvider providerAnnotation
-     * @param string $content
-     * @param array $expected
-     */
-    public function testHydrate(string $content, array $expected): void
-    {
-        $annotation = MinVersionAnnotation::hydrate(array_merge(
-            $expected,
-            [
-                'class' => __CLASS__,
-                'method' => __METHOD__
-            ]
-        ));
-
-        $this->assertAnnotation($annotation, $expected);
-    }
-
     private function assertAnnotation(MinVersionAnnotation $annotation, array $expected): void
     {
-        $this->assertFalse($annotation->requiresVisibilityDecorator());
-        $this->assertFalse($annotation->supportsVersioning());
         $this->assertFalse($annotation->supportsDeprecation());
-        $this->assertFalse($annotation->supportsAliasing());
+        $this->assertFalse($annotation->supportsVersioning());
+        $this->assertFalse($annotation->supportsVendorTags());
+        $this->assertFalse($annotation->requiresVisibilityDecorator());
 
         $this->assertSame($expected, $annotation->toArray());
-        $this->assertFalse($annotation->getCapability());
+        $this->assertEmpty($annotation->getVendorTags());
         $this->assertFalse($annotation->getVersion());
         $this->assertEmpty($annotation->getAliases());
     }
@@ -69,7 +51,7 @@ class MinVersionAnnotationTest extends AnnotationTest
             'does-not-have-an-absolute-version' => [
                 'annotation' => MinVersionAnnotation::class,
                 'content' => '~1.2',
-                'expected.exception' => AbsoluteMinimumVersionException::class,
+                'expected.exception' => AbsoluteVersionException::class,
                 'expected.exception.asserts' => [
                     'getRequiredField' => null,
                     'getAnnotation' => '~1.2',

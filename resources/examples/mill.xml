@@ -3,6 +3,24 @@
     name="Mill unit test API, Showtimes"
     bootstrap="../../vendor/autoload.php"
 >
+    <info>
+        <terms url="https://example.com/terms" />
+
+        <contact
+            name="Get help!"
+            email="support@example.com"
+            url="https://developer.example.com/help" />
+
+        <externalDocs>
+            <externalDoc name="Developer Docs" url="https://developer.example.com" />
+        </externalDocs>
+    </info>
+
+    <servers>
+        <server url="https://api.example.com" description="Production" />
+        <server url="https://api.example.local" description="Development" />
+    </servers>
+
     <versions>
         <version name="1.0" releaseDate="2017-01-01" />
         <version name="1.1" releaseDate="2017-02-01" />
@@ -36,17 +54,35 @@
         </errors>
     </representations>
 
-    <scopes>
-        <scope name="create" />
-        <scope name="delete" />
-        <scope name="edit" />
-        <scope name="public" />
-    </scopes>
+    <authentication>
+        <flows>
+            <bearer format="bearer" />
 
-    <capabilities>
-        <capability name="BUY_TICKETS" />
-        <capability name="DELETE_CONTENT" />
-        <capability name="FEATURE_FLAG" />
-        <capability name="MOVIE_RATINGS" />
-    </capabilities>
+            <oauth2>
+                <authorizationCode url="/oauth/authorize" tokenUrl="/oauth/access_token" />
+                <clientCredentials url="/oauth/authorize/client" />
+            </oauth2>
+        </flows>
+
+        <scopes>
+            <scope name="create" description="Create" />
+            <scope name="delete" description="Delete" />
+            <scope name="edit" description="Edit" />
+            <scope name="public" description="Public" />
+        </scopes>
+    </authentication>
+
+    <pathParams>
+        <translations>
+            <translation from="movie_id" to="id" />
+            <translation from="theater_id" to="id" />
+        </translations>
+    </pathParams>
+
+    <vendorTags>
+        <vendorTag name="tag:BUY_TICKETS" />
+        <vendorTag name="tag:DELETE_CONTENT" />
+        <vendorTag name="tag:FEATURE_FLAG" />
+        <vendorTag name="tag:MOVIE_RATINGS" />
+    </vendorTags>
 </mill>

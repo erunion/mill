@@ -7,6 +7,14 @@ class BadOptionsListException extends BaseException
 {
     use AnnotationExceptionTrait;
 
+    /**
+     * @param string $annotation
+     * @param string $docblock
+     * @param array $values
+     * @param string $class
+     * @param string $method
+     * @return BadOptionsListException
+     */
     public static function create(
         string $annotation,
         string $docblock,

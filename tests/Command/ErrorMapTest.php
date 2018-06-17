@@ -30,13 +30,13 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider providerTestCommand
      * @param bool $private_objects
-     * @param array $capabilities
+     * @param array $vendor_tags
      * @param string $expected_file
      */
-    public function testCommand(bool $private_objects, array $capabilities, string $expected_file): void
+    public function testCommand(bool $private_objects, array $vendor_tags, string $expected_file): void
     {
         /** @var string $output_dir */
-        $output_dir = tempnam(sys_get_temp_dir(), 'mill-generate-test-');
+        $output_dir = tempnam(sys_get_temp_dir(), 'mill-errormap-test-');
         if (file_exists($output_dir)) {
             unlink($output_dir);
         }
@@ -53,8 +53,8 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
             $params['--private'] = $private_objects;
         }
 
-        if (!empty($capabilities)) {
-            $params['--capability'] = $capabilities;
+        if (!empty($vendor_tags)) {
+            $params['--vendor_tag'] = $vendor_tags;
         }
 
         $this->tester->execute($params);
@@ -67,35 +67,18 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
         ];
 
         $output = $this->tester->getDisplay();
-        $this->assertNotContains('Running a dry run', $output);
 
         $this->assertNotContains('API version: 1.1.2', $output);
         foreach ($versions as $version) {
             $this->assertContains('API version: ' . $version, $output);
 
-            $blueprints_dir = __DIR__ . '/../../resources/examples/Showtimes/blueprints/' . $version;
+            $control_dir = __DIR__ . '/../../resources/examples/Showtimes/compiled/' . $version;
             $this->assertFileEquals(
-                $blueprints_dir . '/' . $expected_file,
+                $control_dir . '/' . $expected_file,
                 $output_dir . '/' . $version . '/errors.md',
-                'Generated error map does not match.'
+                'Compiled error map does not match.'
             );
         }
-    }
-
-    public function testCommandWithDryRun(): void
-    {
-        $this->tester->execute([
-            'command' => $this->command->getName(),
-            '--config' => $this->config_file,
-            '--dry-run' => true,
-            'output' => sys_get_temp_dir()
-        ]);
-
-        $output = $this->tester->getDisplay();
-        $this->assertContains('Running a dry run', $output);
-        $this->assertContains('API version: 1.0', $output);
-        $this->assertContains('API version: 1.1.1', $output);
-        $this->assertNotContains('API version: 1.1.2', $output);
     }
 
     public function testCommandWithDefaultVersion(): void
@@ -103,13 +86,11 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
         $this->tester->execute([
             'command' => $this->command->getName(),
             '--config' => $this->config_file,
-            '--dry-run' => true,
             '--default' => true,
             'output' => sys_get_temp_dir()
         ]);
 
         $output = $this->tester->getDisplay();
-        $this->assertContains('Running a dry run', $output);
 
         // In our test cases, there's no error codes under the default API version, so this shouldn't be creating error
         // maps.
@@ -121,13 +102,11 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
         $this->tester->execute([
             'command' => $this->command->getName(),
             '--config' => $this->config_file,
-            '--dry-run' => true,
             '--constraint' => '1.0',
             'output' => sys_get_temp_dir()
         ]);
 
         $output = $this->tester->getDisplay();
-        $this->assertContains('Running a dry run', $output);
         $this->assertContains('API version: 1.0', $output);
         $this->assertNotContains('API version: 1.1', $output);
     }
@@ -149,7 +128,6 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
         $this->tester->execute([
             'command' => $this->command->getName(),
             '--config' => $this->config_file,
-            '--dry-run' => true,
             '--constraint' => '1.^',
             'output' => sys_get_temp_dir()
         ]);
@@ -165,34 +143,34 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
             // Complete error map. All documentation parsed.
             'complete-error-map' => [
                 'private_objects' => true,
-                'capabilities' => [],
+                'vendor_tags' => [],
                 'expected_file' => 'errors.md'
             ],
 
-            // Error map with public-only parsed docs and all capabilities.
-            'error-map-public-docs-with-all-capabilities' => [
+            // Error map with public-only parsed docs and all vendor tags.
+            'error-map-public-docs-with-all-vendor-tags' => [
                 'private_objects' => false,
-                'capabilities' => [],
-                'expected' => 'errors-public-only-all-capabilities.md'
+                'vendor_tags' => [],
+                'expected' => 'errors-public-only-all-vendor-tags.md'
             ],
 
-            // Error map with public-only parsed docs and unmatched capabilities
-            'error-map-public-docs-with-unmatched-capabilities' => [
+            // Error map with public-only parsed docs and unmatched vendor tags.
+            'error-map-public-docs-with-unmatched-vendor-tags' => [
                 'private_objects' => false,
-                'capabilities' => [
-                    'BUY_TICKETS',
-                    'FEATURE_FLAG'
+                'vendor_tags' => [
+                    'tag:BUY_TICKETS',
+                    'tag:FEATURE_FLAG'
                 ],
-                'expected' => 'errors-public-only-unmatched-capabilities.md'
+                'expected' => 'errors-public-only-unmatched-vendor-tags.md'
             ],
 
-            // Error map with public-only parsed docs and matched capabilities
-            'error-map-public-docs-with-matched-capabilities' => [
+            // Error map with public-only parsed docs and matched vendor tags.
+            'error-map-public-docs-with-matched-vendor-tags' => [
                 'private_objects' => false,
-                'capabilities' => [
+                'vendor_tags' => [
                     'DELETE_CONTENT'
                 ],
-                'expected' => 'errors-public-only-matched-capabilities.md'
+                'expected' => 'errors-public-only-matched-vendor-tags.md'
             ]
         ];
     }
