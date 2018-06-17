@@ -11,6 +11,24 @@ In order to instruct Mill on where to look for documentation, and any constraint
     name="Movie showtimes API"
     bootstrap="vendor/autoload.php"
 >
+    <info>
+        <terms url="https://example.com/terms" />
+
+        <contact
+            name="Get help!"
+            email="support@example.com"
+            url="https://developer.example.com/help" />
+
+        <externalDocs>
+            <externalDoc name="Developer Docs" url="https://developer.example.com" />
+        </externalDocs>
+    </info>
+
+    <servers>
+        <server url="https://api.example.com" description="Production" />
+        <server url="https://api.example.local" description="Development" />
+    </servers>
+
     <versions>
         <version name="1.0" />
         <version name="1.1" default="true" />
@@ -51,12 +69,56 @@ In order to instruct Mill on where to look for documentation, and any constraint
 ## Settings
 > All directory paths should be relative to the location of your `mill.xml` configuration file.
 
-> If you specify a controller, representation, vendor tag, or scope in your documentation that hasn't been configured here, documentation generation will fail with errors.
+> If you specify a controller, representation, vendor tag, or authentication scope in your documentation that hasn't been configured here, documentation compiling will fail with errors.
 
-### Versions
-The `<versions>` setting lets you inform Mill on the various version of your API that exist. From here, Mill will then know what versions to compile documentation for.
+### Authentication
+The `<authentication>` element lets you configure specific authentication flows and OAuth 2 scopes for your API.
 
-To set a "default" API version, use the `default="true"` attribute. You **must** have a default version set, and there can only be one.
+```xml
+<authentication>
+    <flows>
+        <bearer format="bearer" />
+
+        <oauth2>
+            <authorizationCode url="/oauth/authorize" tokenUrl="/oauth/access_token" />
+            <clientCredentials url="/oauth/authorize/client" />
+        </oauth2>
+    </flows>
+
+    <scopes>
+        <scope name="create" description="Create" />
+        <scope name="delete" description="Delete" />
+        <scope name="edit" description="Edit" />
+        <scope name="public" description="Public" />
+    </scopes>
+</authentication>
+```
+
+#### Flows
+Currently supported authentication flows are `bearer` and `oauth2`.
+
+#### Scopes
+If your API has an authentication system that requires a specific scope(s) for using an API endpoint, use this to document those.
+
+You can find usage details for scopes in the [`@api-scope`](reference-api-scope.md) documentation.
+
+### Compilers
+The `<compilers>` element lets you control the documentation compilers that Mill supports from the [`compile`](compile-documentation.md) command.
+
+#### Excludes
+* Use `<exclude>` elements to specify a resource group that should be excluded from compiled specifications.
+    * Make sure to add a `group` attribute so Mill knows what group you're excluding.
+
+Example:
+
+```xml
+<compilers>
+    <excludes>
+        <exclude group="/" />
+        <exclude group="OAuth" />
+    </excludes>
+</compilers>
+```
 
 ### Controllers
 The `<controllers>` setting lets you inform Mill on where your API controllers live.
@@ -65,53 +127,35 @@ The `<controllers>` setting lets you inform Mill on where your API controllers l
 * Specify a `<class>` element for a specific, fully-qualified class name.
 * Add in an `<excludes>` block, with `<class>` elements for excluding specific controllers from being parsed.
 
-### Representations
-The `<representations`> setting lets you inform Mill on where your API data representations (the content that your controllers return), live.
-
-* Use `<directory>` elements to specify a directory name (and `suffix`).
-  * Add in a `method` attribute so Mill knows the method to pull representation documentation from.
-* Specify a `<class>` element for a specific, fully-qualified class name, and add a `method attribute`.
-   * If the representation doesn't have a method, or documentation, you should add it to the `excludes` block.
-* Add in an `<excludes>` block, with `<name>` elements for excluding specific controllers from being parsed.
-
-#### Errors
-The representation `<errors>` setting lets you tell Mill where your error representations are (the content that is returned from [`@api-error`](reference-api-error.md) annotations. Here you can specify a `<class>` with a fully-qualified class name.
-
-Required attributes for the `<class>` element are:
-
-* `method`: Same in the way that representations in your `<representations>` declaration have method attributes to tell Mill where your documentation lives, error representations require the same.
-* `needsErrorCode`: Informs Mill if your error representation handles, and returns, a unique error code. The way that looks in your documentation is:
-
-```php
-/**
- * …
- *
- * @api-error:public 403 (\ErrorRepresentation<7701>) - If the user isn't
- *     allowed to do something.
- */
-public function PATCH()
-{
-    …
-}
+```xml
+<controllers>
+    <filter>
+        <directory name="src/Controllers/" suffix=".php" />
+    </filter>
+</controllers>
 ```
 
-Here, `\ErrorRepresentation` would have `needsErrorCode="true"`.
+### Info
+The `<info>` element allows you to configure some information about your API:
 
-### Scopes
-If your API has an authentication system that requires a specific scope(s) for using an API endpoint, use this to document those.
-
-Example:
+* `<terms>`: A terms of service URL.
+* `<contact>`: Contact information. `name` and `email` are optional.
+* `<externalDocs>`: External API documentation you may want to surface to the end-user.
 
 ```xml
-<scopes>
-    <scope name="create" />
-    <scope name="delete" />
-    <scope name="edit" />
-    <scope name="public" />
-</scopes>
-```
+<info>
+    <terms url="https://example.com/terms" />
 
-You can find usage details for scopes in the [`@api-scope`](reference-api-scope.md) documentation.
+    <contact
+        name="Get help!"
+        email="support@example.com"
+        url="https://developer.example.com/help" />
+
+    <externalDocs>
+        <externalDoc name="Developer Docs" url="https://developer.example.com" />
+    </externalDocs>
+</info>
+```
 
 ### Parameter Tokens
 Parameter tokens allow you to create an [`@api-param`](reference-api-param.md) or [`@api-queryparam`](reference-api-queryparam.md)  shortcode to save time for common elements in your API (like paging or sorting).
@@ -142,6 +186,67 @@ Example:
 </pathParams>
 ```
 
+### Representations
+The `<representations`> setting lets you inform Mill on where your API data representations (the content that your controllers return), live.
+
+* Use `<directory>` elements to specify a directory name (and `suffix`).
+  * Add in a `method` attribute so Mill knows the method to pull representation documentation from.
+* Specify a `<class>` element for a specific, fully-qualified class name, and add a `method attribute`.
+   * If the representation doesn't have a method, or documentation, you should add it to the `excludes` block.
+* Add in an `<excludes>` block, with `<name>` elements for excluding specific controllers from being parsed.
+
+```xml
+<representations>
+    <filter>
+        <directory name="src/Representations/" method="create" suffix=".php"  />
+
+        <excludes>
+            <exclude name="\My\Application\Representations\Error" />
+            <exclude name="\My\Application\Representations\CodedError" />
+            <exclude name="\My\Application\Representations\Representation" />
+        </excludes>
+    </filter>
+
+    <errors>
+        <class name="\My\Application\Representations\Error" method="create" needsErrorCode="false" />
+        <class name="\My\Application\Representations\CodedError" method="create" needsErrorCode="true" />
+    </errors>
+</representations>
+```
+
+#### Errors
+The representation `<errors>` setting lets you tell Mill where your error representations are (the content that is returned from [`@api-error`](reference-api-error.md) annotations. Here you can specify a `<class>` with a fully-qualified class name.
+
+Required attributes for the `<class>` element are:
+
+* `method`: Same in the way that representations in your `<representations>` declaration have method attributes to tell Mill where your documentation lives, error representations require the same.
+* `needsErrorCode`: Informs Mill if your error representation handles, and returns, a unique error code. The way that looks in your documentation is:
+
+```php
+/**
+ * …
+ *
+ * @api-error:public 403 (\ErrorRepresentation<7701>) - If the user isn't
+ *     allowed to do something.
+ */
+public function PATCH()
+{
+    …
+}
+```
+
+Here, `\ErrorRepresentation` would have `needsErrorCode="true"`.
+
+### Servers
+Configure your API servers with the `<servers>` element.
+
+```xml
+    <servers>
+        <server url="https://api.example.com" description="Production" />
+        <server url="https://api.example.local" description="Development" />
+    </servers>
+```
+
 ### Vendor tags
 If you'd like to add additional metadata (that you can eventually filter your documentation against), you should use vendor tags to document those.
 
@@ -155,22 +260,17 @@ If you'd like to add additional metadata (that you can eventually filter your do
 
 You can find usage details for vendor tags in the [`@api-vendortag`](reference-api-vendortag.md), [`@api-param`](reference-api-param.md), [`@api-queryparam`](reference-api-queryparam.md), [`@api-return`](reference-api-return.md), and [`@api-error`](reference-api-error.md) documentation.
 
-### Compilers
-These settings let you control the documentation generators that Mill supports from the `./bin/mill generate` command.
+### Versions
+The `<versions>` setting lets you inform Mill on the various version of your API that exist. From here, Mill will then know what versions to compile documentation for.
 
-#### Excludes
-* Use `<exclude>` elements to specify a resource group that should be excluded from compiled specifications.
-    * Make sure to add a `group` attribute so Mill knows what group you're excluding.
-
-Example:
+To set a "default" API version, use the `default="true"` attribute. You **must** have a default version set, and there can only be one.
 
 ```xml
-<compilers>
-    <excludes>
-        <exclude group="/" />
-        <exclude group="OAuth" />
-    </excludes>
-</compilers>
+<versions>
+    <version name="1.0" />
+    <version name="1.1" default="true" />
+    <version name="1.2" />
+</versions>
 ```
 
 ## XML Schema Definition
