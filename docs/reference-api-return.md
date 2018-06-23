@@ -8,9 +8,7 @@ Like a standard [PHPDoc](https://phpdoc.org/) [`@return`](https://phpdoc.org/doc
 * Return type
 * Representation
 
-The return type should be indicative of the HTTP code that will be delivered (ex. "collection", "object", "created",
-etc.), and the representation should be representative of the type of response and data that this action deals with.
-Say if this is a user data action, it might return a `\UserRepresentation`.
+The return type should be indicative of the HTTP code that will be delivered (ex. "collection", "object", "created", etc.), and the representation should be representative of the type of response and data that this action deals with. Say if this is a user data action, it might return a `\UserRepresentation`.
 
 ## Syntax
 ```php
@@ -18,13 +16,11 @@ Say if this is a user data action, it might return a `\UserRepresentation`.
 ```
 
 ## Requirements
-
 | Required? | Needs a visibility | Supports versioning | Supports deprecation |
 | :--- | :--- | :--- | :--- |
 | × | ✓ | ✓ | × |
 
 ## Breakdown
-
 | Tag | Optional | Description |
 | :--- | :--- | :--- |
 | :visibility | ✓ | [Visibility decorator](reference-visibility.md) |
@@ -33,7 +29,6 @@ Say if this is a user data action, it might return a `\UserRepresentation`.
 | description | * | A short description describing why, or what, this response is. A description is only required when the returning HTTP code for this return is non-200. |
 
 ## Available return types
-
 | HTTP Code | Designator |
 | :--- | :--- |
 | 200 OK | collection |
@@ -53,24 +48,24 @@ Say if this is a user data action, it might return a `\UserRepresentation`.
 ## Examples
 ```php
 /**
- * …
+ * ...
  *
  * @api-return:private {accepted} \Some\Representation
  */
 public function PATCH()
 {
-    …
+    ...
 }
 ```
 
 ```php
 /**
- * …
+ * ...
  *
- * @api-public {notmodified} If no content has changed since the last modified date.
+ * @api-return:public {notmodified} If no content has changed since the last modified date.
  */
 public function GET()
 {
-    …
+    ...
 }
 ```

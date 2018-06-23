@@ -261,6 +261,10 @@ class Parser
                 $annotation = 'MinVersion';
                 break;
 
+            case 'operationid':
+                $annotation = 'OperationId';
+                break;
+
             case 'pathparam':
                 $annotation = 'PathParam';
                 break;

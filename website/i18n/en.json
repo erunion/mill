@@ -15,6 +15,7 @@
     "api-label": "@api-label",
     "api-maxversion": "@api-maxversion",
     "api-minversion": "@api-minversion",
+    "api-operationid": "@api-operationid",
     "api-param": "@api-param",
     "api-path": "@api-path",
     "api-pathparam": "@api-pathparam",

@@ -10,6 +10,7 @@ class Movies
      * Returns all movies for a specific location.
      *
      * @api-label Get movies.
+     * @api-operationid getMovies
      * @api-group Movies
      *
      * @api-path:public /movies
@@ -38,6 +39,7 @@ class Movies
      * Create a new movie.
      *
      * @api-label Create a movie.
+     * @api-operationid createMovie
      * @api-group Movies
      *
      * @api-path:public /movies

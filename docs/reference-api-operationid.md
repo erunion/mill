@@ -1,13 +1,13 @@
 ---
-id: api-label
-title: @api-label
+id: api-operationid
+title: @api-operationid
 ---
 
-A short description of what the resource, or resource action handles.
+A unique identifier for a resource action. This is used when compiling specifications.
 
 ## Syntax
 ```php
-@api-label description
+@api-operationid identifier
 ```
 
 ## Requirements
@@ -18,23 +18,9 @@ A short description of what the resource, or resource action handles.
 ## Breakdown
 | Tag | Optional | Description |
 | :--- | :--- | :--- |
-| description | × | Description of what resource, or resource action handles. |
+| identifier | × | Unique identifier for a resource action. |
 
 ## Examples
-On a resource:
-
-```php
-/**
- * @api-label Videos
- */
-class Controller
-{
-    ...
-}
-```
-
-On a resource action:
-
 ```php
 /**
  * Update a movies data.

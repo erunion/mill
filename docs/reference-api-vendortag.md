@@ -13,13 +13,11 @@ With Mill's generator commands, you can also later filter down your documentatio
 ```
 
 ## Requirements
-
 | Required? | Needs a visibility | Supports versioning | Supports deprecation |
 | :--- | :--- | :--- | :--- |
 | × | × | × | × |
 
 ## Breakdown
-
 | Tag | Optional | Description |
 | :--- | :--- | :--- |
 | vendortag | × | Name of the vendor tag |
@@ -29,13 +27,15 @@ On a resource action:
 
 ```php
 /**
- * …
+ * ...
+ *
  * @api-vendortag needs:SomeApplicationFeature
- * …
+ *
+ * ...
  */
 public function PATCH()
 {
-    …
+    ...
 }
 ```
 
@@ -43,7 +43,7 @@ On a representation field:
 
 ```php
 $representation = [
-    …
+    ...
 
     /**
      * @api-data download (boolean, needs:SomeApplicationFeature) - Download
@@ -51,7 +51,6 @@ $representation = [
      */
     'download' => true,
 
-    …
+    ...
 ];
 ```
-

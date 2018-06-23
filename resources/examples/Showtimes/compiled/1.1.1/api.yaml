@@ -23,7 +23,7 @@ paths:
     get:
       summary: 'Get a single movie.'
       description: "Return information on a specific movie.\n\nDonec id elit non mi porta gravida at eget metus. Cras mattis consectetur purus sit amet fermentum. Lorem\nipsum dolor sit amet, consectetur adipiscing elit. Etiam porta sem malesuada magna mollis euismod. Duis\nmollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Etiam porta\nsem malesuada magna mollis euismod.\n\n```\n[\n  {\"id\": \"fizzbuzz\"}\n]\n```"
-      operationId: getMovieId
+      operationId: getMovie_alt1
       tags:
         - Movies
       parameters:
@@ -54,7 +54,7 @@ paths:
     get:
       summary: 'Get a single movie.'
       description: "Return information on a specific movie.\n\nDonec id elit non mi porta gravida at eget metus. Cras mattis consectetur purus sit amet fermentum. Lorem\nipsum dolor sit amet, consectetur adipiscing elit. Etiam porta sem malesuada magna mollis euismod. Duis\nmollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Etiam porta\nsem malesuada magna mollis euismod.\n\n```\n[\n  {\"id\": \"fizzbuzz\"}\n]\n```"
-      operationId: getMoviesId
+      operationId: getMovie
       tags:
         - Movies
       parameters:
@@ -85,7 +85,7 @@ paths:
     patch:
       summary: 'Update a movie.'
       description: 'Update a movies data.'
-      operationId: patchMoviesId
+      operationId: updateMovie
       tags:
         - Movies
       parameters:
@@ -197,7 +197,7 @@ paths:
     delete:
       summary: 'Delete a movie.'
       description: 'Delete a movie.'
-      operationId: deleteMoviesId
+      operationId: deleteMovie
       tags:
         - Movies
       parameters:
@@ -265,7 +265,7 @@ paths:
     post:
       summary: 'Create a movie.'
       description: 'Create a new movie.'
-      operationId: postMovies
+      operationId: createMovie
       tags:
         - Movies
       requestBody:
@@ -363,7 +363,7 @@ paths:
     get:
       summary: 'Get a single movie theater.'
       description: 'Return information on a specific movie theater.'
-      operationId: getTheatersId
+      operationId: getTheater
       tags:
         - Theaters
       parameters:
@@ -394,7 +394,7 @@ paths:
     patch:
       summary: 'Update a movie theater.'
       description: 'Update a movie theaters'' data.'
-      operationId: patchTheatersId
+      operationId: updateTheater
       tags:
         - Theaters
       parameters:
@@ -462,7 +462,7 @@ paths:
     delete:
       summary: 'Delete a movie theater.'
       description: 'Delete a movie theater.'
-      operationId: deleteTheatersId
+      operationId: deleteTheater
       tags:
         - Theaters
       parameters:
@@ -521,7 +521,7 @@ paths:
     post:
       summary: 'Create a movie theater.'
       description: 'Create a new movie theater.'
-      operationId: postTheaters
+      operationId: createTheater
       tags:
         - Theaters
       requestBody:
