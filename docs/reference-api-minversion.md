@@ -11,13 +11,11 @@ This allows you to denote the minimum API version required for a resource action
 ```
 
 ## Requirements
-
 | Required? | Needs a visibility | Supports versioning | Supports deprecation |
 | :--- | :--- | :--- | :--- |
 | × | × | × | × |
 
 ## Breakdown
-
 | Tag | Optional | Description |
 | :--- | :--- | :--- |
 | version | × | A specific, minimum API version required for a resource action. |
@@ -26,6 +24,7 @@ This allows you to denote the minimum API version required for a resource action
 ```php
 /**
  * @api-label Update a movie.
+ * @api-operationid updateMovie
  * @api-group Movies
  *
  * @api-path:public /movies/+id
@@ -38,6 +37,6 @@ This allows you to denote the minimum API version required for a resource action
  */
 public function PATCH()
 {
-    …
+    ...
 }
 ```

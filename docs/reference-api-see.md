@@ -11,13 +11,11 @@ This is a reference pointer that allows you to pull in related documentation int
 ```
 
 ## Requirements
-
 | Required? | Needs a visibility | Supports versioning | Supports deprecation |
 | :--- | :--- | :--- | :--- |
 | × | × | × | × |
 
 ## Breakdown
-
 | Tag | Optional | Description |
 | :--- | :--- | :--- |
 | \Class::method | × | This is a fully qualified class name and method where the related representation that you want to import exists. |
@@ -26,7 +24,7 @@ This is a reference pointer that allows you to pull in related documentation int
 ## Examples
 ```php
 $representation = [
-    …
+    ...
 
     /**
      * @api-data privacy (object) - Privacy settings
@@ -34,7 +32,7 @@ $representation = [
      */
     'privacy' => $this->getPrivacy($object, $request)
 
-    …
+    ...
 ];
 ```
 
@@ -50,5 +48,4 @@ private function getPrivacy($object, $request)
 }
 ```
 
-From here, `download` will be imported into the representation documentation as
-`privacy.download`.
+From here, `download` will be imported into the representation documentation as `privacy.download`.

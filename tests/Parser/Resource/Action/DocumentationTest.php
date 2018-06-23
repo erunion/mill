@@ -35,6 +35,7 @@ class DocumentationTest extends TestCase
         $this->assertSame($class, $parser->getClass());
         $this->assertSame($method, $parser->getMethod());
 
+        $this->assertSame($expected['operation_id'], $parser->getOperationId());
         $this->assertSame($expected['label'], $parser->getLabel());
 
         $this->assertCount(count($expected['content_types']), $parser->getContentTypes());
@@ -197,6 +198,7 @@ DESCRIPTION;
             'GET' => [
                 'method' => 'GET',
                 'expected' => [
+                    'operation_id' => 'getMovie',
                     'label' => 'Get a single movie.',
                     'description' => $get_description,
                     'group' => 'Movies',
@@ -307,6 +309,7 @@ DESCRIPTION;
             'PATCH' => [
                 'method' => 'PATCH',
                 'expected' => [
+                    'operation_id' => 'updateMovie',
                     'label' => 'Update a movie.',
                     'description' => 'Update a movies data.',
                     'group' => 'Movies',
@@ -851,6 +854,7 @@ DESCRIPTION;
             'DELETE' => [
                 'method' => 'DELETE',
                 'expected' => [
+                    'operation_id' => 'deleteMovie',
                     'label' => 'Delete a movie.',
                     'description' => 'Delete a movie.',
                     'group' => 'Movies',
@@ -943,6 +947,7 @@ DESCRIPTION;
             'with-aliased-paths' => [
                 'docblock' => '/**
                   * @api-label Update a piece of content.
+                  * @api-operationid updateFoo
                   * @api-group Foo\Bar
                   *
                   * @api-path:public /foo
@@ -987,6 +992,7 @@ DESCRIPTION;
             'with-multiple-visibilities' => [
                 'docblock' => '/**
                   * @api-label Update a piece of content.
+                  * @api-operationid updateFoo
                   * @api-group Foo\Bar
                   *
                   * @api-path:public /foo
@@ -1023,6 +1029,7 @@ DESCRIPTION;
             'with-capabilities' => [
                 'docblock' => '/**
                   * @api-label Delete a piece of content.
+                  * @api-operationid deleteFoo
                   * @api-group Foo\Bar
                   *
                   * @api-path:private /foo
@@ -1056,10 +1063,34 @@ DESCRIPTION;
                 'expected.exception' => '\Mill\Exceptions\Resource\NoAnnotationsException',
                 'expected.exception.asserts' => []
             ],
+            'missing-required-operation-id-annotation' => [
+                'docblock' => '/**
+                  * Test throwing an exception when a required `@api-operationid` annotation is missing.
+                  *
+                  * @api-path /some/page
+                  */',
+                'expected.exception' => '\Mill\Exceptions\Annotations\RequiredAnnotationException',
+                'expected.exception.asserts' => [
+                    'getAnnotation' => 'operationid'
+                ]
+            ],
+            'multiple-operation-id-annotations' => [
+                'docblock' => '/**
+                  * Test throwing an exception when multiple `@api-operationid` annotations are present.
+                  *
+                  * @api-operationid testFoo
+                  * @api-operationid testFoo
+                  */',
+                'expected.exception' => '\Mill\Exceptions\Annotations\MultipleAnnotationsException',
+                'expected.exception.asserts' => [
+                    'getAnnotation' => 'operationid'
+                ]
+            ],
             'missing-required-label-annotation' => [
                 'docblock' => '/**
                   * Test throwing an exception when a required `@api-label` annotation is missing.
                   *
+                  * @api-operationid testFoo
                   * @api-path /some/page
                   */',
                 'expected.exception' => '\Mill\Exceptions\Annotations\RequiredAnnotationException',
@@ -1071,6 +1102,7 @@ DESCRIPTION;
                 'docblock' => '/**
                   * Test throwing an exception when multiple `@api-label` annotations are present.
                   *
+                  * @api-operationid testFoo
                   * @api-label Test method
                   * @api-label Test method
                   */',
@@ -1084,6 +1116,7 @@ DESCRIPTION;
                   * Test throwing an exception when a required `@api-contenttype` annotation is missing.
                   *
                   * @api-label Test Method
+                  * @api-operationid testFoo
                   * @api-group Something
                   * @api-path /some/page
                   */',
@@ -1097,6 +1130,7 @@ DESCRIPTION;
                   * Test throwing an exception when a required visibility decorator is missing on an annotation.
                   *
                   * @api-label Test method
+                  * @api-operationid testFoo
                   * @api-group Root
                   * @api-path /
                   * @api-contenttype application/json
@@ -1112,6 +1146,7 @@ DESCRIPTION;
                   * Test throwing an exception when an unsupported decorator is found.
                   *
                   * @api-label Test method
+                  * @api-operationid testFoo
                   * @api-group Root
                   * @api-path:special /
                   * @api-contenttype application/json
@@ -1128,6 +1163,7 @@ DESCRIPTION;
                   * Test throwing an exception when a required `@api-path` annotation is missing.
                   *
                   * @api-label Test method
+                  * @api-operationid testFoo
                   * @api-group Something
                   * @api-contenttype application/json
                   * @api-param:public {page}
@@ -1142,6 +1178,7 @@ DESCRIPTION;
                   * Test throwing an exception when there are private annotations on a private action.
                   *
                   * @api-label Test method
+                  * @api-operationid testFoo
                   * @api-group Search
                   * @api-path:private /search
                   * @api-contenttype application/json
@@ -1160,6 +1197,7 @@ DESCRIPTION;
                   * Test throwing an exception when there is no canonical path and only path aliases.
                   *
                   * @api-label Test method
+                  * @api-operationid testFoo
                   * @api-group Search
                   * @api-path:private:alias /search
                   * @api-path:private:alias /search2

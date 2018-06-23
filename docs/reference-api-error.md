@@ -11,13 +11,11 @@ This represents an exception that may be returned on a resource action.
 ```
 
 ## Requirements
-
 | Required? | Needs a visibility | Supports versioning | Supports deprecation |
 | :--- | :--- | :--- | :--- |
 | × | ✓ | ✓ | × |
 
 ## Breakdown
-
 | Tag | Optional | Description |
 | :--- | :--- | :--- |
 | :visibility | ✓ | [Visibility decorator](reference-visibility.md) |
@@ -49,13 +47,13 @@ Usage with a vendor tag and description type:
 
 ```php
 /**
- * …
+ * ...
  *
  * @api-error:public 404 (\ErrorRepresentation, needs:SomeApplicationFeature) - {user}
  */
 public function PATCH()
 {
-    …
+    ...
 }
 ```
 
@@ -63,14 +61,14 @@ With an error code:
 
 ```php
 /**
- * …
+ * ...
  *
  * @api-error:public 403 (\ErrorRepresentation<7701>) If the user isn't
  *     allowed to do something.
  */
 public function PATCH()
 {
-    …
+    ...
 }
 ```
 
@@ -78,13 +76,13 @@ Standard usage:
 
 ```php
 /**
- * …
+ * ...
  *
  * @api-error:public 404 (\ErrorRepresentation) - If the user isn't allowed
  *     to do something.
  */
 public function PATCH()
 {
-    …
+    ...
 }
 ```

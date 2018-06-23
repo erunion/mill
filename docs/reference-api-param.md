@@ -15,13 +15,11 @@ A request parameter that can be supplied to a resource action via a body payload
 ```
 
 ## Requirements
-
 | Required? | Needs a visibility | Supports versioning | Supports deprecation |
 | :--- | :--- | :--- | :--- |
 | × | ✓ | ✓ | ✓ |
 
 ## Breakdown
-
 | Tag | Optional | Description |
 | :--- | :--- | :--- |
 | :visibility | ✓ | [Visibility decorator](reference-visibility.md) |
@@ -35,7 +33,6 @@ A request parameter that can be supplied to a resource action via a body payload
 | Members | ✓ | If this parameter has acceptable values (like in the case of an `enum` type), you can document those values here along with a description for what the value is, or means. |
 
 ### Supported Types
-
 | Type | Specification representation |
 | :--- | :--- |
 | array | array |

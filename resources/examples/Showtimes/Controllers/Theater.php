@@ -14,6 +14,7 @@ class Theater
      * Return information on a specific movie theater.
      *
      * @api-label Get a single movie theater.
+     * @api-operationid getTheater
      * @api-group Theaters
      *
      * @api-path:public /theaters/+id
@@ -39,6 +40,7 @@ class Theater
      * Update a movie theaters' data.
      *
      * @api-label Update a movie theater.
+     * @api-operationid updateTheater
      * @api-group Theaters
      *
      * @api-path:public /theaters/+id
@@ -71,6 +73,7 @@ class Theater
      * Delete a movie theater.
      *
      * @api-label Delete a movie theater.
+     * @api-operationid deleteTheater
      * @api-group Theaters
      *
      * @api-path:private /theaters/+id

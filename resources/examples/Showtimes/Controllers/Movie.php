@@ -25,6 +25,7 @@ class Movie
      * ```
      *
      * @api-label Get a single movie.
+     * @api-operationid getMovie
      * @api-group Movies
      *
      * @api-path:private:alias /movie/+movie_id
@@ -55,6 +56,7 @@ class Movie
      * Update a movies data.
      *
      * @api-label Update a movie.
+     * @api-operationid updateMovie
      * @api-group Movies
      *
      * @api-path:public /movies/+id
@@ -118,6 +120,7 @@ class Movie
      * Delete a movie.
      *
      * @api-label Delete a movie.
+     * @api-operationid deleteMovie
      * @api-group Movies
      *
      * @api-path:private /movies/+id

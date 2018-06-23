@@ -12,6 +12,7 @@ title: "Resource Actions"
 | [`@api-maxversion`](reference-api-maxversion.md) | Maximum version required for this action. |
 | [`@api-minversion`](reference-api-minversion.md) | Minimum version required for this action. |
 | [`@api-param`](reference-api-param.md) | A request parameter for this action that can be supplied in a body payload. |
+| [`@api-operationid`](reference-api-operationid.md) | A unique identifier for a resource action. |
 | [`@api-path`](reference-api-path.md) | Denotes a path that this action services. |
 | [`@api-pathparam`](reference-api-pathparam.md) | Describes parameters for the path. |
 | [`@api-queryparam`](reference-api-queryparam.md) | A request parameter for this action that can be supplied in a query string. |

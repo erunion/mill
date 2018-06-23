@@ -118,8 +118,9 @@ class OpenApi extends Compiler\Specification
                 foreach ($data['resources'] as $identifier => $resource) {
                     /** @var Action\Documentation $action */
                     foreach ($resource['actions'] as $action) {
+                        $path = $action->getPath();
                         $method = strtolower($action->getMethod());
-                        $identifier = $action->getPath()->getCleanPath();
+                        $identifier = $path->getCleanPath();
                         if (!isset($specifications[$this->version]['paths'][$identifier])) {
                             $specifications[$this->version]['paths'][$identifier] = [];
                         }
@@ -127,7 +128,7 @@ class OpenApi extends Compiler\Specification
                         $spec = [
                             'summary' => $action->getLabel(),
                             'description' => $action->getDescription(),
-                            'operationId' => $this->transformActionIntoOperationId($action),
+                            'operationId' => $action->getOperationId(),
                             'tags' => [
                                 $group
                             ],
@@ -415,22 +416,6 @@ class OpenApi extends Compiler\Specification
         return array_map(function (VendorTagAnnotation $vendor_tag): string {
             return $vendor_tag->getVendorTag();
         }, $vendor_tags);
-    }
-
-    /**
-     * @param Action\Documentation $action
-     * @return string
-     * @throws \Exception
-     */
-    private function transformActionIntoOperationId(Action\Documentation $action): string
-    {
-        $path = $action->getPath()->getCleanPath();
-        $path = str_replace(['{', '}'], '', $path);
-        $path = str_replace('/', ' ', $path);
-        $path = ucwords($path);
-        $path = str_replace(' ', '', $path);
-
-        return strtolower($action->getMethod()) . $path;
     }
 
     /**

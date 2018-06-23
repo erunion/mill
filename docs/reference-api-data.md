@@ -13,13 +13,11 @@ This describes a piece of data within a representation that a resource action ca
 ```
 
 ## Requirements
-
 | Required? | Needs a visibility | Supports versioning | Supports deprecation |
 | :--- | :--- | :--- | :--- |
 | × | × | ✓ | × |
 
 ## Breakdown
-
 | Tag | Optional | Description |
 | :--- | :--- | :--- |
 | fieldName | × | The data in a representation that you're documenting. So if your representation has a `link`, `field_name` would be `link`. If you're documenting nested objects, you should use dot-notation to map out the field name. So say you have a `metadata[connections][albums]` array in your representation, the `field_name` would then be `metadata.connections.albums`. |
@@ -32,7 +30,6 @@ This describes a piece of data within a representation that a resource action ca
 | Members | ✓ | If this data has acceptable values (like in the case of an `enum` type), you can document those values here along with a description for what the value is, or means. |
 
 ### Supported Types
-
 | Type | Specification representation |
 | :--- | :--- |
 | array | array |
@@ -68,7 +65,7 @@ Common uses:
 
 ```php
 $representation = [
-    …
+    ...
 
     /**
      * @api-data uri (uri) - The canonical relative URI for the user.
@@ -110,7 +107,7 @@ $representation = [
         ]
     ],
 
-    …
+    ...
 ];
 ```
 
@@ -118,7 +115,7 @@ Documented enum:
 
 ```php
 $representation = [
-    …
+    ...
 
     /**
      * @api-data content_rating (enum) - MPAA rating
@@ -134,7 +131,7 @@ $representation = [
      */
     'content_rating' => $content_rating,
 
-    …
+    ...
 ];
 ```
 
@@ -142,14 +139,14 @@ Array of objects:
 
 ```php
 $representation = [
-    …
+    ...
 
     /**
      * @api-data content_ratings (array<object>) - MPAA ratings
      */
     'content_ratings' => $content_ratings,
 
-    …
+    ...
 ];
 ```
 
@@ -157,13 +154,13 @@ Representation:
 
 ```php
 $representation = [
-    …
+    ...
 
     /**
      * @api-data pictures (\PictureRepresentation) - Pictures
      */
     'pictures' => (new \PictureRepresentation)->create(),
 
-    …
+    ...
 ];
 ```

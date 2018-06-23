@@ -17,7 +17,7 @@ namespace MyApplication;
  */
 class UsersController extends \MyApplication\Controller
 {
-    …
+    ...
 }
 
 ```
@@ -44,7 +44,7 @@ namespace MyApplication;
  */
 class UsersController extends \MyApplication\Controller
 {
-    …
+    ...
 }
 ```
 
@@ -65,6 +65,7 @@ class UsersController extends \MyApplication\Controller
      * Search for users.
      *
      * @api-label Search
+     * @api-operationid searchUsers
      * @api-group Users
      *
      * @api-path:public /users
@@ -83,7 +84,7 @@ class UsersController extends \MyApplication\Controller
      */
     public function GET()
     {
-        …
+        ...
     }
 }
 ```

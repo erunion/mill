@@ -13,6 +13,7 @@ You might have instances where you need to deprecate a resource action request p
  * Return information on a specific movie.
  *
  * @api-label Get a single movie.
+ * @api-operationid getMovie
  * @api-group Movies
  *
  * @api-path:public /movies/+id
@@ -29,7 +30,7 @@ You might have instances where you need to deprecate a resource action request p
  */
 public function GET()
 {
-    …
+    ...
 }
 ```
 
