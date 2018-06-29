@@ -1,4 +1,12 @@
 # Changelog
+## [4.1.0] - 2018-06-29
+### Added
+* A new `@api-operationid` annotation for setting unique operation IDs on resource actions. [#174](https://github.com/vimeo/mill/pull/174)
+* OpenAPI compilation now generates individual specifications for each tag (`@api-group`). [#176](https://github.com/vimeo/mill/pull/176)
+
+### Fixed
+* Max/min version annotations now properly support Semver patch versions during compilation. [#176](https://github.com/vimeo/mill/pull/176)
+
 ## [4.0.0] - 2018-06-17
 ### Added
 * OpenAPI compilation support. [#16](https://github.com/vimeo/mill/issues/16)
@@ -252,6 +260,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[4.1.0]: https://github.com/vimeo/mill/compare/4.0.0...4.1.0
 [4.0.0]: https://github.com/vimeo/mill/compare/3.0.2...4.0.0
 [3.0.2]: https://github.com/vimeo/mill/compare/3.0.1...3.0.2
 [3.0.1]: https://github.com/vimeo/mill/compare/3.0.0...3.0.1
