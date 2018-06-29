@@ -1,0 +1,493 @@
+openapi: 3.0.0
+info:
+  title: 'Mill unit test API, Showtimes'
+  version: 1.1.2
+  contact:
+    name: 'Get help!'
+    email: support@example.com
+    url: 'https://developer.example.com/help'
+tags:
+  -
+    name: Movies
+servers:
+  -
+    url: 'https://api.example.com'
+    description: Production
+  -
+    url: 'https://api.example.local'
+    description: Development
+paths:
+  '/movie/{id}':
+    get:
+      summary: 'Get a single movie.'
+      description: "Return information on a specific movie.\n\nDonec id elit non mi porta gravida at eget metus. Cras mattis consectetur purus sit amet fermentum. Lorem\nipsum dolor sit amet, consectetur adipiscing elit. Etiam porta sem malesuada magna mollis euismod. Duis\nmollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Etiam porta\nsem malesuada magna mollis euismod.\n\n```\n[\n  {\"id\": \"fizzbuzz\"}\n]\n```"
+      operationId: getMovie_alt1
+      tags:
+        - Movies
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Movie ID'
+          required: true
+          schema:
+            type: number
+            example: '1234'
+      responses:
+        200:
+          description: 'Standard request.'
+          content:
+            application/mill.example.movie+json:
+              schema:
+                $ref: '#/components/schemas/movie'
+        304:
+          description: 'If no content has been modified since the supplied Last-Modified header.'
+        404:
+          description: 'If the movie could not be found.'
+          content:
+            application/mill.example.movie+json:
+              schema:
+                $ref: '#/components/schemas/error'
+  '/movies/{id}':
+    get:
+      summary: 'Get a single movie.'
+      description: "Return information on a specific movie.\n\nDonec id elit non mi porta gravida at eget metus. Cras mattis consectetur purus sit amet fermentum. Lorem\nipsum dolor sit amet, consectetur adipiscing elit. Etiam porta sem malesuada magna mollis euismod. Duis\nmollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Etiam porta\nsem malesuada magna mollis euismod.\n\n```\n[\n  {\"id\": \"fizzbuzz\"}\n]\n```"
+      operationId: getMovie
+      tags:
+        - Movies
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Movie ID'
+          required: true
+          schema:
+            type: number
+            example: '1234'
+      responses:
+        200:
+          description: 'Standard request.'
+          content:
+            application/mill.example.movie+json:
+              schema:
+                $ref: '#/components/schemas/movie'
+        304:
+          description: 'If no content has been modified since the supplied Last-Modified header.'
+        404:
+          description: 'If the movie could not be found.'
+          content:
+            application/mill.example.movie+json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-mill-visibility-private: true
+    patch:
+      summary: 'Update a movie.'
+      description: 'Update a movies data.'
+      operationId: updateMovie
+      tags:
+        - Movies
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Movie ID'
+          required: true
+          schema:
+            type: number
+            example: '1234'
+      requestBody:
+        required: true
+        content:
+          application/mill.example.movie+json:
+            schema:
+              type: object
+              properties:
+                cast:
+                  description: 'Array of cast members.'
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        description: 'Cast member name.'
+                        type: string
+                        example: 'Natasha Hovey'
+                      role:
+                        description: 'Cast member role.'
+                        type: string
+                        example: Cheryl
+                content_rating:
+                  description: "MPAA rating\n\nOption descriptions:\n * `G` - Rated G\n * `NC-17` - Rated NC-17\n * `NR` - Not rated\n * `PG` - Rated PG\n * `PG-13` - Rated PG-13\n * `R` - Rated R\n * `UR` - Unrated\n * `X` - Rated X\n"
+                  type: string
+                  example: NR
+                  enum:
+                    - G
+                    - NC-17
+                    - NR
+                    - PG
+                    - PG-13
+                    - R
+                    - UR
+                    - X
+                description:
+                  description: 'Description, or tagline, for the movie.'
+                  type: string
+                director:
+                  description: 'Name of the director.'
+                  type: string
+                  example: 'Lamberto Bava'
+                genres:
+                  description: 'Array of movie genres.'
+                  type: array
+                  items:
+                    type: string
+                imdb:
+                  description: 'IMDB URL'
+                  type: string
+                  example: 'https://www.imdb.com/title/tt0089013/'
+                is_kid_friendly:
+                  description: 'Is this movie kid friendly?'
+                  type: boolean
+                name:
+                  description: 'Name of the movie.'
+                  type: string
+                  example: Demons
+                rotten_tomatoes_score:
+                  description: 'Rotten Tomatoes score'
+                  type: number
+                  example: '56'
+                runtime:
+                  description: 'Movie runtime, in `HHhr MMmin` format.'
+                  type: string
+                  example: '1hr 20min'
+                trailer:
+                  description: 'Trailer URL'
+                  type: string
+                  example: 'https://www.youtube.com/watch?v=_cNjTdFHL8E'
+                  nullable: true
+              required:
+                - description
+                - name
+      responses:
+        200:
+          description: 'Standard request.'
+          content:
+            application/mill.example.movie+json:
+              schema:
+                $ref: '#/components/schemas/movie'
+        400:
+          description: "There are two ways that this status code can be encountered:\n * If there is a problem with the request.\n * If the IMDB URL could not be validated."
+          content:
+            application/mill.example.movie+json:
+              schema:
+                $ref: '#/components/schemas/error'
+        404:
+          description: 'If the movie could not be found.'
+          content:
+            application/mill.example.movie+json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          oauth2:
+            - edit
+      x-mill-visibility-private: true
+    delete:
+      summary: 'Delete a movie.'
+      description: 'Delete a movie.'
+      operationId: deleteMovie
+      tags:
+        - Movies
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Movie ID'
+          required: true
+          schema:
+            type: number
+            example: '1234'
+      responses:
+        204:
+          description: 'Standard request.'
+        404:
+          description: 'If the movie could not be found.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          oauth2:
+            - delete
+      x-mill-vendortags:
+        - 'tag:DELETE_CONTENT'
+  /movies:
+    get:
+      summary: 'Get movies.'
+      description: 'Returns all movies for a specific location.'
+      operationId: getMovies
+      tags:
+        - Movies
+      parameters:
+        -
+          name: location
+          in: query
+          description: 'Location you want movies for.'
+          required: true
+          schema:
+            type: string
+        -
+          name: page
+          in: query
+          description: 'Page of results to pull.'
+          required: false
+          schema:
+            type: number
+      responses:
+        200:
+          description: 'Standard request.'
+          content:
+            application/mill.example.movie+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/movie'
+        400:
+          description: 'If the location is invalid.'
+          content:
+            application/mill.example.movie+json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-mill-visibility-private: true
+    post:
+      summary: 'Create a movie.'
+      description: 'Create a new movie.'
+      operationId: createMovie
+      tags:
+        - Movies
+      requestBody:
+        required: true
+        content:
+          application/mill.example.movie+json:
+            schema:
+              type: object
+              properties:
+                cast:
+                  description: 'Array of cast members.'
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        description: 'Cast member name.'
+                        type: string
+                        example: 'Natasha Hovey'
+                      role:
+                        description: 'Cast member role.'
+                        type: string
+                        example: Cheryl
+                content_rating:
+                  description: "MPAA rating\n\nOption descriptions:\n * `G` - Rated G\n * `NC-17` - Rated NC-17\n * `NR` - Not rated\n * `PG` - Rated PG\n * `PG-13` - Rated PG-13\n * `R` - Rated R\n * `UR` - Unrated\n * `X` - Rated X\n"
+                  type: string
+                  example: NR
+                  enum:
+                    - G
+                    - NC-17
+                    - NR
+                    - PG
+                    - PG-13
+                    - R
+                    - UR
+                    - X
+                description:
+                  description: 'Description, or tagline, for the movie.'
+                  type: string
+                director:
+                  description: 'Name of the director.'
+                  type: string
+                  example: 'Lamberto Bava'
+                genres:
+                  description: 'Array of movie genres.'
+                  type: array
+                  items:
+                    type: string
+                imdb:
+                  description: 'IMDB URL'
+                  type: string
+                  example: 'https://www.imdb.com/title/tt0089013/'
+                is_kid_friendly:
+                  description: 'Is this movie kid friendly?'
+                  type: boolean
+                name:
+                  description: 'Name of the movie.'
+                  type: string
+                  example: Demons
+                rotten_tomatoes_score:
+                  description: 'Rotten Tomatoes score'
+                  type: number
+                  example: '56'
+                runtime:
+                  description: 'Movie runtime, in `HHhr MMmin` format.'
+                  type: string
+                  example: '1hr 20min'
+                trailer:
+                  description: 'Trailer URL'
+                  type: string
+                  example: 'https://www.youtube.com/watch?v=_cNjTdFHL8E'
+                  nullable: true
+              required:
+                - description
+                - name
+      responses:
+        200:
+          description: 'Standard request.'
+          content:
+            application/mill.example.movie+json:
+              schema:
+                $ref: '#/components/schemas/movie'
+        400:
+          description: "There are two ways that this status code can be encountered:\n * If there is a problem with the request.\n * If the IMDB URL could not be validated."
+          content:
+            application/mill.example.movie+json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          oauth2:
+            - create
+      x-mill-visibility-private: true
+components:
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: bearer
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth/authorize
+          tokenUrl: /oauth/access_token
+          scopes:
+            create: Create
+            delete: Delete
+            edit: Edit
+            public: Public
+        clientCredentials:
+          tokenUrl: /oauth/authorize/client
+          scopes:
+            create: Create
+            delete: Delete
+            edit: Edit
+            public: Public
+  schemas:
+    error:
+      properties:
+        error:
+          description: 'User-friendly error message'
+          type: string
+    movie:
+      properties:
+        cast:
+          description: 'Cast. This data requires a bearer token with the `public` scope.'
+          type: array
+          items:
+            type: string
+        content_rating:
+          description: 'MPAA rating'
+          type: string
+          example: G
+          enum:
+            - G
+            - NC-17
+            - NR
+            - PG
+            - PG-13
+            - R
+            - UR
+            - X
+        description:
+          description: Description
+          type: string
+        director:
+          description: 'Director. This data requires a bearer token with the `public` scope.'
+          allOf:
+            -
+              $ref: '#/components/schemas/person'
+        external_urls:
+          description: 'External URLs. This data requires a bearer token with the `public` scope.'
+          type: array
+          items:
+            type: object
+            properties:
+              imdb:
+                description: 'IMDB URL. This data requires a bearer token with the `public` scope.'
+                type: string
+              tickets:
+                description: 'Tickets URL. This data requires a bearer token with the `public` scope.'
+                type: string
+              trailer:
+                description: 'Trailer URL. This data requires a bearer token with the `public` scope.'
+                type: string
+        genres:
+          description: Genres
+          type: array
+          items:
+            type: string
+        id:
+          description: 'Unique ID'
+          type: number
+        kid_friendly:
+          description: 'Kid friendly?'
+          type: boolean
+          example: 'false'
+        name:
+          description: Name
+          type: string
+        purchase:
+          type: object
+          properties:
+            url:
+              description: 'URL to purchase the film.'
+              type: string
+        rotten_tomatoes_score:
+          description: 'Rotten Tomatoes score'
+          type: number
+        runtime:
+          description: Runtime
+          type: string
+        showtimes:
+          description: 'Non-theater specific showtimes'
+          type: array
+          items:
+            type: string
+        theaters:
+          description: 'Theaters the movie is currently showing in'
+          type: array
+          items:
+            type: string
+        uri:
+          description: 'Movie URI'
+          type: string
+    person:
+      properties:
+        id:
+          description: 'Unique ID'
+          type: number
+        imdb:
+          description: 'IMDB URL'
+          type: string
+        name:
+          description: Name
+          type: string
+        uri:
+          description: 'Person URI'
+          type: string
+security:
+  -
+    oauth2:
+      - create
+      - delete
+      - edit
+      - public

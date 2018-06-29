@@ -1,0 +1,283 @@
+openapi: 3.0.0
+info:
+  title: 'Mill unit test API, Showtimes'
+  version: 1.1.2
+  contact:
+    name: 'Get help!'
+    email: support@example.com
+    url: 'https://developer.example.com/help'
+tags:
+  -
+    name: Theaters
+servers:
+  -
+    url: 'https://api.example.com'
+    description: Production
+  -
+    url: 'https://api.example.local'
+    description: Development
+paths:
+  '/theaters/{id}':
+    get:
+      summary: 'Get a single movie theater.'
+      description: 'Return information on a specific movie theater.'
+      operationId: getTheater
+      tags:
+        - Theaters
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Theater ID'
+          required: true
+          schema:
+            type: number
+            example: '1234'
+      responses:
+        200:
+          description: 'Standard request.'
+          content:
+            application/mill.example.theater+json:
+              schema:
+                $ref: '#/components/schemas/theater'
+        304:
+          description: 'If no content has been modified since the supplied Last-Modified header.'
+        404:
+          description: 'If the movie theater could not be found.'
+          content:
+            application/mill.example.theater+json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-mill-visibility-private: true
+    patch:
+      summary: 'Update a movie theater.'
+      description: 'Update a movie theaters'' data.'
+      operationId: updateTheater
+      tags:
+        - Theaters
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Theater ID'
+          required: true
+          schema:
+            type: number
+            example: '1234'
+      requestBody:
+        required: true
+        content:
+          application/mill.example.theater+json:
+            schema:
+              type: object
+              properties:
+                address:
+                  description: 'Theater address'
+                  type: string
+                  example: '2548 Central Park Ave, Yonkers, NY 10710'
+                name:
+                  description: 'Name of the theater.'
+                  type: string
+                  example: 'Alamo Drafthouse Cinema - Yonkers'
+                phone_number:
+                  description: 'Theater phone number'
+                  type: string
+                  example: '(914) 226-3082'
+              required:
+                - address
+                - name
+                - phone_number
+      responses:
+        200:
+          description: 'Standard request.'
+          content:
+            application/mill.example.theater+json:
+              schema:
+                $ref: '#/components/schemas/theater'
+        400:
+          description: 'If there is a problem with the request.'
+          content:
+            application/mill.example.theater+json:
+              schema:
+                $ref: '#/components/schemas/error'
+        404:
+          description: 'If the movie movie could not be found.'
+          content:
+            application/mill.example.theater+json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          oauth2:
+            - create
+      x-mill-visibility-private: true
+    delete:
+      summary: 'Delete a movie theater.'
+      description: 'Delete a movie theater.'
+      operationId: deleteTheater
+      tags:
+        - Theaters
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Theater ID'
+          required: true
+          schema:
+            type: number
+            example: '1234'
+      responses:
+        204:
+          description: 'Standard request.'
+        404:
+          description: 'If the movie theater could not be found.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          oauth2:
+            - delete
+  /theaters:
+    get:
+      summary: 'Get movie theaters.'
+      description: 'Returns all movie theatres for a specific location.'
+      operationId: getTheaters
+      tags:
+        - Theaters
+      parameters:
+        -
+          name: location
+          in: query
+          description: 'Location you want theaters in.'
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'Standard request.'
+          content:
+            application/mill.example.theater+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/theater'
+        400:
+          description: 'If the location is invalid.'
+          content:
+            application/mill.example.theater+json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-mill-visibility-private: true
+    post:
+      summary: 'Create a movie theater.'
+      description: 'Create a new movie theater.'
+      operationId: createTheater
+      tags:
+        - Theaters
+      requestBody:
+        required: true
+        content:
+          application/mill.example.theater+json:
+            schema:
+              type: object
+              properties:
+                address:
+                  description: 'Theater address'
+                  type: string
+                  example: '2548 Central Park Ave, Yonkers, NY 10710'
+                name:
+                  description: 'Name of the theater.'
+                  type: string
+                  example: 'Alamo Drafthouse Cinema - Yonkers'
+                phone_number:
+                  description: 'Theater phone number'
+                  type: string
+                  example: '(914) 226-3082'
+              required:
+                - address
+                - name
+                - phone_number
+      responses:
+        200:
+          description: 'Standard request.'
+          content:
+            application/mill.example.theater+json:
+              schema:
+                $ref: '#/components/schemas/theater'
+        400:
+          description: 'If there is a problem with the request.'
+          content:
+            application/mill.example.theater+json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          oauth2:
+            - create
+      x-mill-visibility-private: true
+components:
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: bearer
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth/authorize
+          tokenUrl: /oauth/access_token
+          scopes:
+            create: Create
+            delete: Delete
+            edit: Edit
+            public: Public
+        clientCredentials:
+          tokenUrl: /oauth/authorize/client
+          scopes:
+            create: Create
+            delete: Delete
+            edit: Edit
+            public: Public
+  schemas:
+    error:
+      properties:
+        error:
+          description: 'User-friendly error message'
+          type: string
+    theater:
+      properties:
+        address:
+          description: Address
+          type: string
+        id:
+          description: 'Unique ID'
+          type: number
+        movies:
+          description: 'Movies currently playing'
+          type: array
+          items:
+            type: string
+        name:
+          description: Name
+          type: string
+        phone_number:
+          description: 'Phone number'
+          type: string
+        showtimes:
+          description: 'Non-movie specific showtimes'
+          type: array
+          items:
+            type: string
+        uri:
+          description: 'Theater URI'
+          type: string
+security:
+  -
+    oauth2:
+      - create
+      - delete
+      - edit
+      - public

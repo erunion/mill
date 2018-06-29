@@ -14,7 +14,8 @@ class ApiBlueprintTest extends TestCase
         $compiled = $compiler->compile();
 
         foreach ($compiled as $version => $section) {
-            $version_dir = $control_dir . $version . DIRECTORY_SEPARATOR;
+            $version_dir = $control_dir . $version . DIRECTORY_SEPARATOR . 'apiblueprint' . DIRECTORY_SEPARATOR;
+
             foreach ($section['groups'] as $group => $content) {
                 $file = $version_dir . 'resources' . DIRECTORY_SEPARATOR . str_replace('\\', '-', ucwords($group));
                 $expected = file_get_contents($file . '.apib');

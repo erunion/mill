@@ -14,6 +14,7 @@ use Mill\Parser\Annotations\ScopeAnnotation;
 use Mill\Parser\Annotations\VendorTagAnnotation;
 use Mill\Parser\Representation\Documentation;
 use Mill\Parser\Resource\Action;
+use Symfony\Component\Yaml\Yaml;
 
 class OpenApi extends Compiler\Specification
 {
@@ -40,58 +41,15 @@ class OpenApi extends Compiler\Specification
             $this->version = $version;
             $this->representations = $this->getRepresentations($this->version);
 
-            $specifications[$this->version] = [
+            $specification = [
                 'openapi' => '3.0.0',
                 'info' => [
                     'title' => $this->config->getName(),
                     'version' => $this->version,
-                    'contact' => (function (): array {
-                        $contact = $this->config->getContactInformation();
-                        $spec = [];
-
-                        foreach (['name', 'email'] as $data) {
-                            if (isset($contact[$data])) {
-                                $spec[$data] = $contact[$data];
-                            }
-                        }
-
-                        $spec['url'] = $contact['url'];
-                        return $spec;
-                    })()
+                    'contact' => $this->processContact()
                 ],
-                'tags' => (function () use ($groups, $group_excludes): array {
-                    $tags = array_filter(
-                        array_map(
-                            function (string $group) use ($group_excludes): ?array {
-                                if (in_array($group, $group_excludes)) {
-                                    return [];
-                                }
-
-                                return [
-                                    'name' => $group
-                                ];
-                            },
-                            array_keys($groups)
-                        )
-                    );
-
-                    // Excluding some groups and filtering off empty arrays will leave gaps in the keys of the tags
-                    // array, resulting in some funky looking compiled YAML.
-                    sort($tags);
-
-                    return $tags;
-                })(),
-                'servers' => (function (): array {
-                    $spec = [];
-                    foreach ($this->config->getServers() as $server) {
-                        $spec[] = [
-                            'url' => $server['url'],
-                            'description' => $server['description']
-                        ];
-                    }
-
-                    return $spec;
-                })(),
+                'tags' => $this->processTags($groups, $group_excludes),
+                'servers' => $this->processServers(),
                 'paths' => [],
                 'components' => [
                     'securitySchemes' => $this->processSecuritySchemes()
@@ -121,11 +79,11 @@ class OpenApi extends Compiler\Specification
                         $path = $action->getPath();
                         $method = strtolower($action->getMethod());
                         $identifier = $path->getCleanPath();
-                        if (!isset($specifications[$this->version]['paths'][$identifier])) {
-                            $specifications[$this->version]['paths'][$identifier] = [];
+                        if (!isset($specification['paths'][$identifier])) {
+                            $specification['paths'][$identifier] = [];
                         }
 
-                        $spec = [
+                        $schema = [
                             'summary' => $action->getLabel(),
                             'description' => $action->getDescription(),
                             'operationId' => $action->getOperationId(),
@@ -148,22 +106,22 @@ class OpenApi extends Compiler\Specification
                             'security',
                             'x-mill-vendortags'
                         ] as $key) {
-                            if (empty($spec[$key])) {
-                                unset($spec[$key]);
+                            if (empty($schema[$key])) {
+                                unset($schema[$key]);
                             }
                         }
 
                         // Only include the `x-mill-visibility-private` tag if the action is private.
-                        if (!$spec['x-mill-visibility-private']) {
-                            unset($spec['x-mill-visibility-private']);
+                        if (!$schema['x-mill-visibility-private']) {
+                            unset($schema['x-mill-visibility-private']);
                         }
 
                         // Only include the `x-mill-deprecated` tag if the action is deprecated.
-                        if (!$spec['x-mill-deprecated']) {
-                            unset($spec['x-mill-deprecated']);
+                        if (!$schema['x-mill-deprecated']) {
+                            unset($schema['x-mill-deprecated']);
                         }
 
-                        $specifications[$this->version]['paths'][$identifier][$method] = $spec;
+                        $specification['paths'][$identifier][$method] = $schema;
                     }
                 }
             }
@@ -177,14 +135,79 @@ class OpenApi extends Compiler\Specification
                     }
 
                     $identifier = $this->getReferenceName($representation->getLabel());
-                    $specifications[$this->version]['components']['schemas'][$identifier] = [
+                    $specification['components']['schemas'][$identifier] = [
                         'properties' => $this->processMSON(DataAnnotation::PAYLOAD_FORMAT, $fields)
                     ];
                 }
             }
+
+            $specifications[$this->version] = $specification;
         }
 
         return $specifications;
+    }
+
+    /**
+     * @return array
+     */
+    protected function processContact(): array
+    {
+        $contact = $this->config->getContactInformation();
+        $spec = [];
+
+        foreach (['name', 'email'] as $data) {
+            if (isset($contact[$data])) {
+                $spec[$data] = $contact[$data];
+            }
+        }
+
+        $spec['url'] = $contact['url'];
+        return $spec;
+    }
+
+    /**
+     * @param array $groups
+     * @param array $group_excludes
+     * @return array
+     */
+    protected function processTags(array $groups, array $group_excludes): array
+    {
+        $tags = array_filter(
+            array_map(
+                function (string $group) use ($group_excludes): ?array {
+                    if (in_array($group, $group_excludes)) {
+                        return [];
+                    }
+
+                    return [
+                        'name' => $group
+                    ];
+                },
+                array_keys($groups)
+            )
+        );
+
+        // Excluding some groups and filtering off empty arrays will leave gaps in the keys of the tags array,
+        // resulting in some funky looking compiled YAML.
+        sort($tags);
+
+        return $tags;
+    }
+
+    /**
+     * @return array
+     */
+    protected function processServers(): array
+    {
+        $spec = [];
+        foreach ($this->config->getServers() as $server) {
+            $spec[] = [
+                'url' => $server['url'],
+                'description' => $server['description']
+            ];
+        }
+
+        return $spec;
     }
 
     /**
@@ -661,5 +684,14 @@ class OpenApi extends Compiler\Specification
     private function getReferenceName(string $name): string
     {
         return (new Slugify())->slugify($name);
+    }
+
+    /**
+     * @param array $specification
+     * @return string
+     */
+    public static function getYaml(array $specification): string
+    {
+        return Yaml::dump($specification, PHP_INT_MAX, 2, true);
     }
 }
