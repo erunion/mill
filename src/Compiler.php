@@ -182,8 +182,8 @@ class Compiler
                         // an acceptable version, skip it.
                         $min_version = $action->getMinimumVersion();
                         $max_version = $action->getMaximumVersion();
-                        if (($min_version && $min_version->getMinimumVersion() > $version) ||
-                            ($max_version && $max_version->getMaximumVersion() < $version)
+                        if ($min_version && !$min_version->matches($version)
+                            || $max_version && !$max_version->matches($version)
                         ) {
                             continue;
                         }
