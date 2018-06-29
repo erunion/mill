@@ -94,12 +94,18 @@ class Compiler
             foreach ($docs->getMethods() as $method) {
                 $group = $method->getGroup();
 
+                // Set the amount of aliases that we've accrued here so we can properly enforce uniqueness of operation
+                // IDs on aliased paths.
+                $aliases = 0;
+
                 /** @var \Mill\Parser\Annotations\PathAnnotation $path */
                 foreach ($method->getPaths() as $path) {
                     // Are we compiling documentation for a private or protected resource?
                     if (!$this->shouldParsePath($method, $path)) {
                         continue;
                     }
+
+                    $is_aliased = $path->isAliased();
 
                     // We're always going to be compiling documentation for this path, regardless if it's an alias or
                     // not, so let's strip any awareness of that.
@@ -130,6 +136,10 @@ class Compiler
                     $action->setPath($path);
                     $action->setPathParams($params);
                     $action->filterAnnotationsForVisibility($this->load_private_docs, $this->load_vendor_tag_docs);
+
+                    if ($is_aliased) {
+                        $action->incrementOperationId(++$aliases);
+                    }
 
                     // Hash the action so we don't happen to double up and end up with dupes.
                     $identifier = $action->getPath()->getPath() . '::' . $action->getMethod();
@@ -172,8 +182,8 @@ class Compiler
                         // an acceptable version, skip it.
                         $min_version = $action->getMinimumVersion();
                         $max_version = $action->getMaximumVersion();
-                        if (($min_version && $min_version->getMinimumVersion() > $version) ||
-                            ($max_version && $max_version->getMaximumVersion() < $version)
+                        if ($min_version && !$min_version->matches($version)
+                            || $max_version && !$max_version->matches($version)
                         ) {
                             continue;
                         }

@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Parser\Annotations;
 
+use Composer\Semver\Semver;
 use Mill\Exceptions\Annotations\AbsoluteVersionException;
 use Mill\Parser\Annotation;
 use Mill\Parser\Version;
@@ -60,5 +61,16 @@ class MinVersionAnnotation extends Annotation
     {
         $this->minimum_version = $minimum_version;
         return $this;
+    }
+
+    /**
+     * Assert that a given version string is greater than the minimum version.
+     *
+     * @param string $version
+     * @return bool
+     */
+    public function matches(string $version): bool
+    {
+        return Semver::satisfies($version, '>=' . $this->minimum_version);
     }
 }

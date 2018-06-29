@@ -31,18 +31,18 @@ Help:
 Example usage:
 
 ```shell
-$ ./vendor/bin/mill changelog blueprints/
-Generating a changelog…
+$ ./vendor/bin/mill changelog specs/
+Compiling a changelog...
 
 Done!
 ```
 
-This will compile a `changelog.md` file into the `blueprints/` directory.
+This will compile a `changelog.md` file into the `specs/` directory.
 
 Looking at that file, we can see that we have changelog!
 
 ```shell
-$ cat resources/examples/Showtimes/blueprints/changelog.md
+$ cat resources/examples/Showtimes/specs/changelog.md | less
 # Changelog: Mill unit test API, Showtimes
 
 ## 1.1.3
@@ -62,7 +62,6 @@ $ cat resources/examples/Showtimes/blueprints/changelog.md
 ### Removed
 #### Representations
 - `external_urls.tickets` has been removed from the `Movie` representation.
-…
 ```
 
 ## JSON

@@ -10,6 +10,7 @@ class Theaters
      * Returns all movie theatres for a specific location.
      *
      * @api-label Get movie theaters.
+     * @api-operationid getTheaters
      * @api-group Theaters
      *
      * @api-path:public /theaters
@@ -35,6 +36,7 @@ class Theaters
      * Create a new movie theater.
      *
      * @api-label Create a movie theater.
+     * @api-operationid createTheater
      * @api-group Theaters
      *
      * @api-path:public /theaters

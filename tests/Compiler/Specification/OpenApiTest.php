@@ -3,7 +3,6 @@ namespace Mill\Tests\Compiler\Specification;
 
 use Mill\Compiler\Specification\OpenApi;
 use Mill\Tests\TestCase;
-use Symfony\Component\Yaml\Yaml;
 
 class OpenApiTest extends TestCase
 {
@@ -15,8 +14,10 @@ class OpenApiTest extends TestCase
         $compiled = $compiler->compile();
 
         foreach ($compiled as $version => $spec) {
-            $expected = file_get_contents($control_dir . $version . DIRECTORY_SEPARATOR . 'api.yaml');
-            $content = Yaml::dump($spec, PHP_INT_MAX, 2, true);
+            $version_dir = $control_dir . $version . DIRECTORY_SEPARATOR . 'openapi';
+
+            $expected = file_get_contents($version_dir . DIRECTORY_SEPARATOR . 'api.yaml');
+            $content = OpenApi::getYaml($spec);
 
             $this->assertSame(
                 $expected,
@@ -26,6 +27,28 @@ class OpenApiTest extends TestCase
                     $version
                 )
             );
+
+            $reducer = new OpenApi\TagReducer($spec);
+            $reduced = $reducer->reduce();
+            foreach ($reduced as $tag => $content) {
+                $tag = str_replace('\\', DIRECTORY_SEPARATOR, $tag);
+                $tag = str_replace('/', DIRECTORY_SEPARATOR, $tag);
+
+                $file = $version_dir . DIRECTORY_SEPARATOR . 'tags' . DIRECTORY_SEPARATOR . $tag;
+                $expected = file_get_contents($file . '.yaml');
+
+                $content = OpenApi::getYaml($content);
+
+                $this->assertSame(
+                    $expected,
+                    $content,
+                    sprintf(
+                        'The compiled tag `%s`, on version %s does not match the expected content.',
+                        $tag,
+                        $version
+                    )
+                );
+            }
         }
     }
 

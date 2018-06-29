@@ -11,13 +11,11 @@ A short description of what the resource, or resource action handles.
 ```
 
 ## Requirements
-
 | Required? | Needs a visibility | Supports versioning | Supports deprecation |
 | :--- | :--- | :--- | :--- |
 | ✓ | × | × | × |
 
 ## Breakdown
-
 | Tag | Optional | Description |
 | :--- | :--- | :--- |
 | description | × | Description of what resource, or resource action handles. |
@@ -31,7 +29,7 @@ On a resource:
  */
 class Controller
 {
-    …
+    ...
 }
 ```
 
@@ -39,11 +37,19 @@ On a resource action:
 
 ```php
 /**
- * @api-label Update data on a group of videos.
- * …
+ * Update a movies data.
+ *
+ * @api-label Update a movie.
+ * @api-operationid updateMovie
+ * @api-group Movies
+ *
+ * @api-path:public /movies/+id
+ * @api-pathparam id `1234` (integer) - Movie ID
+ *
+ * ...
  */
 public function PATCH()
 {
-    …
+    ...
 }
 ```

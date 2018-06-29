@@ -23,6 +23,7 @@
       "api-label",
       "api-maxversion",
       "api-minversion",
+      "api-operationid",
       "api-param",
       "api-path",
       "api-pathparam",

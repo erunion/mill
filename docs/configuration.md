@@ -224,14 +224,14 @@ Required attributes for the `<class>` element are:
 
 ```php
 /**
- * …
+ * ...
  *
  * @api-error:public 403 (\ErrorRepresentation<7701>) - If the user isn't
  *     allowed to do something.
  */
 public function PATCH()
 {
-    …
+    ...
 }
 ```
 

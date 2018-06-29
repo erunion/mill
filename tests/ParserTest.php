@@ -118,6 +118,10 @@ These actions will allow you to pull information on a specific movie.', $annotat
                         'class' => Parser\Annotations\MinVersionAnnotation::class,
                         'count' => 1
                     ],
+                    'operationid' => [
+                        'class' => Parser\Annotations\OperationIdAnnotation::class,
+                        'count' => 1
+                    ],
                     'path' => [
                         'class' => Parser\Annotations\PathAnnotation::class,
                         'count' => 2
@@ -157,6 +161,10 @@ These actions will allow you to pull information on a specific movie.', $annotat
                     ],
                     'minversion' => [
                         'class' => Parser\Annotations\MinVersionAnnotation::class,
+                        'count' => 1
+                    ],
+                    'operationid' => [
+                        'class' => Parser\Annotations\OperationIdAnnotation::class,
                         'count' => 1
                     ],
                     'param' => [
@@ -210,6 +218,10 @@ These actions will allow you to pull information on a specific movie.', $annotat
                     ],
                     'minversion' => [
                         'class' => Parser\Annotations\MinVersionAnnotation::class,
+                        'count' => 1
+                    ],
+                    'operationid' => [
+                        'class' => Parser\Annotations\OperationIdAnnotation::class,
                         'count' => 1
                     ],
                     'pathparam' => [

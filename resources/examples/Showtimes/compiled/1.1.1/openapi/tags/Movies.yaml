@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: 'Mill unit test API, Showtimes'
-  version: 1.1.2
+  version: 1.1.1
   contact:
     name: 'Get help!'
     email: support@example.com
@@ -9,8 +9,6 @@ info:
 tags:
   -
     name: Movies
-  -
-    name: Theaters
 servers:
   -
     url: 'https://api.example.com'
@@ -23,7 +21,7 @@ paths:
     get:
       summary: 'Get a single movie.'
       description: "Return information on a specific movie.\n\nDonec id elit non mi porta gravida at eget metus. Cras mattis consectetur purus sit amet fermentum. Lorem\nipsum dolor sit amet, consectetur adipiscing elit. Etiam porta sem malesuada magna mollis euismod. Duis\nmollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Etiam porta\nsem malesuada magna mollis euismod.\n\n```\n[\n  {\"id\": \"fizzbuzz\"}\n]\n```"
-      operationId: getMovieId
+      operationId: getMovie_alt1
       tags:
         - Movies
       parameters:
@@ -39,7 +37,7 @@ paths:
         200:
           description: 'Standard request.'
           content:
-            application/mill.example.movie+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/movie'
         304:
@@ -47,14 +45,14 @@ paths:
         404:
           description: 'If the movie could not be found.'
           content:
-            application/mill.example.movie+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/error'
   '/movies/{id}':
     get:
       summary: 'Get a single movie.'
       description: "Return information on a specific movie.\n\nDonec id elit non mi porta gravida at eget metus. Cras mattis consectetur purus sit amet fermentum. Lorem\nipsum dolor sit amet, consectetur adipiscing elit. Etiam porta sem malesuada magna mollis euismod. Duis\nmollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Etiam porta\nsem malesuada magna mollis euismod.\n\n```\n[\n  {\"id\": \"fizzbuzz\"}\n]\n```"
-      operationId: getMoviesId
+      operationId: getMovie
       tags:
         - Movies
       parameters:
@@ -70,7 +68,7 @@ paths:
         200:
           description: 'Standard request.'
           content:
-            application/mill.example.movie+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/movie'
         304:
@@ -78,14 +76,14 @@ paths:
         404:
           description: 'If the movie could not be found.'
           content:
-            application/mill.example.movie+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/error'
       x-mill-visibility-private: true
     patch:
       summary: 'Update a movie.'
       description: 'Update a movies data.'
-      operationId: patchMoviesId
+      operationId: updateMovie
       tags:
         - Movies
       parameters:
@@ -100,7 +98,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/mill.example.movie+json:
+          application/json:
             schema:
               type: object
               properties:
@@ -174,19 +172,19 @@ paths:
         200:
           description: 'Standard request.'
           content:
-            application/mill.example.movie+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/movie'
         400:
           description: "There are two ways that this status code can be encountered:\n * If there is a problem with the request.\n * If the IMDB URL could not be validated."
           content:
-            application/mill.example.movie+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/error'
         404:
           description: 'If the movie could not be found.'
           content:
-            application/mill.example.movie+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/error'
       security:
@@ -197,7 +195,7 @@ paths:
     delete:
       summary: 'Delete a movie.'
       description: 'Delete a movie.'
-      operationId: deleteMoviesId
+      operationId: deleteMovie
       tags:
         - Movies
       parameters:
@@ -250,7 +248,7 @@ paths:
         200:
           description: 'Standard request.'
           content:
-            application/mill.example.movie+json:
+            application/json:
               schema:
                 type: array
                 items:
@@ -258,20 +256,20 @@ paths:
         400:
           description: 'If the location is invalid.'
           content:
-            application/mill.example.movie+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/error'
       x-mill-visibility-private: true
     post:
       summary: 'Create a movie.'
       description: 'Create a new movie.'
-      operationId: postMovies
+      operationId: createMovie
       tags:
         - Movies
       requestBody:
         required: true
         content:
-          application/mill.example.movie+json:
+          application/json:
             schema:
               type: object
               properties:
@@ -345,213 +343,13 @@ paths:
         200:
           description: 'Standard request.'
           content:
-            application/mill.example.movie+json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/movie'
         400:
           description: "There are two ways that this status code can be encountered:\n * If there is a problem with the request.\n * If the IMDB URL could not be validated."
           content:
-            application/mill.example.movie+json:
-              schema:
-                $ref: '#/components/schemas/error'
-      security:
-        -
-          oauth2:
-            - create
-      x-mill-visibility-private: true
-  '/theaters/{id}':
-    get:
-      summary: 'Get a single movie theater.'
-      description: 'Return information on a specific movie theater.'
-      operationId: getTheatersId
-      tags:
-        - Theaters
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Theater ID'
-          required: true
-          schema:
-            type: number
-            example: '1234'
-      responses:
-        200:
-          description: 'Standard request.'
-          content:
-            application/mill.example.theater+json:
-              schema:
-                $ref: '#/components/schemas/theater'
-        304:
-          description: 'If no content has been modified since the supplied Last-Modified header.'
-        404:
-          description: 'If the movie theater could not be found.'
-          content:
-            application/mill.example.theater+json:
-              schema:
-                $ref: '#/components/schemas/error'
-      x-mill-visibility-private: true
-    patch:
-      summary: 'Update a movie theater.'
-      description: 'Update a movie theaters'' data.'
-      operationId: patchTheatersId
-      tags:
-        - Theaters
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Theater ID'
-          required: true
-          schema:
-            type: number
-            example: '1234'
-      requestBody:
-        required: true
-        content:
-          application/mill.example.theater+json:
-            schema:
-              type: object
-              properties:
-                address:
-                  description: 'Theater address'
-                  type: string
-                  example: '2548 Central Park Ave, Yonkers, NY 10710'
-                name:
-                  description: 'Name of the theater.'
-                  type: string
-                  example: 'Alamo Drafthouse Cinema - Yonkers'
-                phone_number:
-                  description: 'Theater phone number'
-                  type: string
-                  example: '(914) 226-3082'
-              required:
-                - address
-                - name
-                - phone_number
-      responses:
-        200:
-          description: 'Standard request.'
-          content:
-            application/mill.example.theater+json:
-              schema:
-                $ref: '#/components/schemas/theater'
-        400:
-          description: 'If there is a problem with the request.'
-          content:
-            application/mill.example.theater+json:
-              schema:
-                $ref: '#/components/schemas/error'
-        404:
-          description: 'If the movie movie could not be found.'
-          content:
-            application/mill.example.theater+json:
-              schema:
-                $ref: '#/components/schemas/error'
-      security:
-        -
-          oauth2:
-            - create
-      x-mill-visibility-private: true
-    delete:
-      summary: 'Delete a movie theater.'
-      description: 'Delete a movie theater.'
-      operationId: deleteTheatersId
-      tags:
-        - Theaters
-      parameters:
-        -
-          name: id
-          in: path
-          description: 'Theater ID'
-          required: true
-          schema:
-            type: number
-            example: '1234'
-      responses:
-        204:
-          description: 'Standard request.'
-        404:
-          description: 'If the movie theater could not be found.'
-          content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/error'
-      security:
-        -
-          oauth2:
-            - delete
-  /theaters:
-    get:
-      summary: 'Get movie theaters.'
-      description: 'Returns all movie theatres for a specific location.'
-      operationId: getTheaters
-      tags:
-        - Theaters
-      parameters:
-        -
-          name: location
-          in: query
-          description: 'Location you want theaters in.'
-          required: true
-          schema:
-            type: string
-      responses:
-        200:
-          description: 'Standard request.'
-          content:
-            application/mill.example.theater+json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/theater'
-        400:
-          description: 'If the location is invalid.'
-          content:
-            application/mill.example.theater+json:
-              schema:
-                $ref: '#/components/schemas/error'
-      x-mill-visibility-private: true
-    post:
-      summary: 'Create a movie theater.'
-      description: 'Create a new movie theater.'
-      operationId: postTheaters
-      tags:
-        - Theaters
-      requestBody:
-        required: true
-        content:
-          application/mill.example.theater+json:
-            schema:
-              type: object
-              properties:
-                address:
-                  description: 'Theater address'
-                  type: string
-                  example: '2548 Central Park Ave, Yonkers, NY 10710'
-                name:
-                  description: 'Name of the theater.'
-                  type: string
-                  example: 'Alamo Drafthouse Cinema - Yonkers'
-                phone_number:
-                  description: 'Theater phone number'
-                  type: string
-                  example: '(914) 226-3082'
-              required:
-                - address
-                - name
-                - phone_number
-      responses:
-        200:
-          description: 'Standard request.'
-          content:
-            application/mill.example.theater+json:
-              schema:
-                $ref: '#/components/schemas/theater'
-        400:
-          description: 'If there is a problem with the request.'
-          content:
-            application/mill.example.theater+json:
               schema:
                 $ref: '#/components/schemas/error'
       security:
@@ -584,14 +382,6 @@ components:
             edit: Edit
             public: Public
   schemas:
-    coded-error:
-      properties:
-        error:
-          description: 'User-friendly error message'
-          type: string
-        error_code:
-          description: 'Error code'
-          type: number
     error:
       properties:
         error:
@@ -693,33 +483,6 @@ components:
           type: string
         uri:
           description: 'Person URI'
-          type: string
-    theater:
-      properties:
-        address:
-          description: Address
-          type: string
-        id:
-          description: 'Unique ID'
-          type: number
-        movies:
-          description: 'Movies currently playing'
-          type: array
-          items:
-            type: string
-        name:
-          description: Name
-          type: string
-        phone_number:
-          description: 'Phone number'
-          type: string
-        showtimes:
-          description: 'Non-movie specific showtimes'
-          type: array
-          items:
-            type: string
-        uri:
-          description: 'Theater URI'
           type: string
 security:
   -

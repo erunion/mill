@@ -25,7 +25,7 @@ If we look at the versioned directories that it created, `docs/1.1`, we'll see t
 
 ```shell
 $ ls specs/1.1
-api.yaml
+api.yaml tags
 
 $ cat specs/1.1/api.yaml | less
 openapi: 3.0.0
@@ -42,6 +42,15 @@ paths:
         get:
             summary: 'Get a single movie.'
 ```
+
+Mill also generates individual specifications for each of your tags.
+
+```shell
+$ ls specs/1.1/tags
+Movies.yaml   Theaters.yaml
+```
+
+These tagged specifications contain only resources and representations that are incorporated within that tag.
 
 ## API Blueprint
 Mill will compile your documentation into an [API Blueprint](https://apiblueprint.org/) specification.

@@ -11,13 +11,11 @@ Name of the group that this action should be grouped under when generating docum
 ```
 
 ## Requirements
-
 | Required? | Needs a visibility | Supports versioning | Supports deprecation |
 | :--- | :--- | :--- | :--- |
 | ✓ | × | × | × |
 
 ## Breakdown
-
 | Tag | Optional | Description |
 | :--- | :--- | :--- |
 | groupName | × | Group name |
@@ -27,15 +25,16 @@ On a resource action:
 
 ```php
 /**
- * @api-label Update data on a group of videos.
+ * @api-label Update data on a group of users.
+ * @api-operationid updateUsers
  * @api-group Users
  *
  * @api-path:public /users
  *
- * …
+ * ...
  */
 public function PATCH()
 {
-    …
+    ...
 }
 ```

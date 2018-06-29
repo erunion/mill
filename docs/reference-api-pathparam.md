@@ -13,13 +13,11 @@ This allows you to describe the parameters of a coupled resource action path.
 ```
 
 ## Requirements
-
 | Required? | Needs a visibility | Supports versioning | Supports deprecation |
 | :--- | :--- | :--- | :--- |
 | × | × | × | × |
 
 ## Breakdown
-
 | Tag | Optional | Description |
 | :--- | :--- | :--- |
 | paramName | × | This is the name of the parameter that is used within the path. |
@@ -29,7 +27,6 @@ This allows you to describe the parameters of a coupled resource action path.
 | Members | ✓ | If this path parameter has acceptable values (like in the case of an `enum` type), you can document those values here along with a description for what the value is, or means. |
 
 ### Supported Types
-
 | Type | Specification representation |
 | :--- | :--- |
 | array | array |
@@ -48,15 +45,15 @@ This allows you to describe the parameters of a coupled resource action path.
 ## Examples
 ```php
 /**
- * …
+ * ...
  *
  * @api-path:private:deprecated /movies/+id
  * @api-pathparam id `1234` (integer) - Movie ID
  *
- * …
+ * ...
  */
 public function PATCH()
 {
-    …
+    ...
 }
 ```

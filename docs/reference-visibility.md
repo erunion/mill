@@ -12,8 +12,10 @@ To choose what visibility your annotation should have, suffix your annotation wi
 
 ```php
 /**
+ * @api-label Update a movie
+ * @api-operationid updateMovie
  * @api-group Movies
-
+ *
  * @api-path:public /movies/+id
  * @api-path:private /films/+id
  * @api-pathparam id (integer) - Movie ID
@@ -23,7 +25,7 @@ To choose what visibility your annotation should have, suffix your annotation wi
  */
 public function PATCH()
 {
-    …
+    ...
 }
 ```
 

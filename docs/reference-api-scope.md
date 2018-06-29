@@ -11,13 +11,11 @@ This corresponds to an available user authentication token scope (ex. "create", 
 ```
 
 ## Requirements
-
 | Required? | Needs a visibility | Supports versioning | Supports deprecation |
 | :--- | :--- | :--- | :--- |
 | × | × | × | × |
 
 ## Breakdown
-
 | Tag | Optional | Description |
 | :--- | :--- | :--- |
 | scope | × | Authentication scope required for the resource action. |
@@ -27,6 +25,7 @@ This corresponds to an available user authentication token scope (ex. "create", 
 ```php
 /**
  * @api-label Update a movie
+ * @api-operationid updateMovie
  * @api-group Movies
  *
  * @api-path:public /movies/+id
@@ -39,7 +38,7 @@ This corresponds to an available user authentication token scope (ex. "create", 
  */
 public function PATCH()
 {
-    …
+    ...
 }
 ```
 

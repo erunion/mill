@@ -45,6 +45,9 @@ class Documentation implements Arrayable
     /** @var string Class method we're parsing. */
     protected $method;
 
+    /** @var string A unique operation ID. */
+    protected $operation_id;
+
     /** @var string Short description/label/title of the action. */
     protected $label;
 
@@ -107,6 +110,17 @@ class Documentation implements Arrayable
      */
     public function parseAnnotations(array $annotations = []): self
     {
+        // Parse out the `@api-operationid` annotation.
+        if (!isset($annotations['operationid'])) {
+            throw RequiredAnnotationException::create('operationid', $this->class, $this->method);
+        } elseif (count($annotations['operationid']) > 1) {
+            throw MultipleAnnotationsException::create('operationid', $this->class, $this->method);
+        } else {
+            /** @var \Mill\Parser\Annotations\OperationIdAnnotation $annotation */
+            $annotation = reset($annotations['operationid']);
+            $this->operation_id = $annotation->getOperationId();
+        }
+
         // Parse out the `@api-label` annotation.
         if (!isset($annotations['label'])) {
             throw RequiredAnnotationException::create('label', $this->class, $this->method);
@@ -270,6 +284,29 @@ class Documentation implements Arrayable
     public function getAnnotations(): array
     {
         return $this->annotations;
+    }
+
+    /**
+     * Get the action operation ID.
+     *
+     * @return string
+     */
+    public function getOperationId(): string
+    {
+        return $this->operation_id;
+    }
+
+    /**
+     * Increment the current action operation ID. This is used to enforce uniqueness of the operation ID across aliased
+     * paths.
+     *
+     * @param int $increment
+     * @return Documentation
+     */
+    public function incrementOperationId(int $increment): self
+    {
+        $this->operation_id .= '_alt' . $increment;
+        return $this;
     }
 
     /**
