@@ -15,6 +15,19 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         '1.1.3'
     ];
 
+    protected const REPRESENTATIONS = [
+        'Coded error',
+        'Error',
+        'Movie',
+        'Person',
+        'Theater'
+    ];
+
+    protected const RESOURCES = [
+        'Movies',
+        'Theaters'
+    ];
+
     /** @var \Symfony\Component\Console\Command\Command */
     protected $command;
 
@@ -57,10 +70,18 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         $control_dir = __DIR__ . '/../../resources/examples/Showtimes/compiled/';
         foreach (self::VERSIONS as $version) {
             $this->assertFileEquals(
-                $control_dir . '/' . $version . '/api.yaml',
-                $output_dir . '/' . $version . '/api.yaml',
+                $control_dir . '/' . $version . '/openapi/api.yaml',
+                $output_dir . '/' . $version . '/openapi/api.yaml',
                 'Compiled OpenAPI spec for version `' . $version . ' does not match.'
             );
+
+            foreach (self::RESOURCES as $name) {
+                $this->assertFileEquals(
+                    $control_dir . '/' . $version . '/openapi/tags/' . $name . '.yaml',
+                    $output_dir . '/' . $version . '/openapi/tags/' . $name . '.yaml',
+                    'Compiled OpenAPI tag spec `' . $name . '.yaml` for version `' . $version . '` does not match.'
+                );
+            }
         }
     }
 
@@ -84,33 +105,21 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(array_merge(['.', '..'], self::VERSIONS), scandir($output_dir));
 
         $control_dir = __DIR__ . '/../../resources/examples/Showtimes/compiled/';
-        $representations = [
-            'Coded error',
-            'Error',
-            'Movie',
-            'Person',
-            'Theater'
-        ];
-
-        $resources = [
-            'Movies',
-            'Theaters'
-        ];
 
         foreach (self::VERSIONS as $version) {
-            foreach ($representations as $name) {
+            foreach (self::REPRESENTATIONS as $name) {
                 $this->assertFileEquals(
-                    $control_dir . '/' . $version . '/representations/' . $name . '.apib',
-                    $output_dir . '/' . $version . '/representations/' . $name . '.apib',
-                    'Compiled representation `' . $name . '.apib` for version `' . $version . '`` does not match.'
+                    $control_dir . '/' . $version . '/apiblueprint/representations/' . $name . '.apib',
+                    $output_dir . '/' . $version . '/apiblueprint/representations/' . $name . '.apib',
+                    'Compiled representation `' . $name . '.apib` for version `' . $version . '` does not match.'
                 );
             }
 
-            foreach ($resources as $name) {
+            foreach (self::RESOURCES as $name) {
                 $this->assertFileEquals(
-                    $control_dir . '/' . $version . '/resources/' . $name . '.apib',
-                    $output_dir . '/' . $version . '/resources/' . $name . '.apib',
-                    'Compiled resource `' . $name . '.apib` for version `' . $version . '`` does not match.'
+                    $control_dir . '/' . $version . '/apiblueprint/resources/' . $name . '.apib',
+                    $output_dir . '/' . $version . '/apiblueprint/resources/' . $name . '.apib',
+                    'Compiled resource `' . $name . '.apib` for version `' . $version . '` does not match.'
                 );
             }
         }

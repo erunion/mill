@@ -8,12 +8,10 @@ use Mill\Config;
 use Mill\Compiler\Specification\ApiBlueprint;
 use Mill\Exceptions\Version\UnrecognizedSchemaException;
 use Mill\Parser\Version;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Yaml\Yaml;
 
 class Compile extends Application
 {
@@ -147,6 +145,11 @@ class Compile extends Application
      */
     private function saveApiBlueprint(OutputInterface $output, string $version_dir, array $spec): void
     {
+        $version_dir .= 'apiblueprint' . DIRECTORY_SEPARATOR;
+
+        // Save a, single, combined API Blueprint file.
+        $this->filesystem->put($version_dir . 'api.apib', $spec['combined']);
+
         // Process resource groups.
         if (isset($spec['groups'])) {
             foreach ($spec['groups'] as $group => $markdown) {
@@ -173,9 +176,6 @@ class Compile extends Application
                 );
             }
         }
-
-        // Save a, single, combined API Blueprint file.
-        $this->filesystem->put($version_dir . 'api.apib', $spec['combined']);
     }
 
     /**
@@ -185,9 +185,23 @@ class Compile extends Application
      */
     private function saveOpenApi(OutputInterface $output, string $version_dir, array $spec): void
     {
-        $this->filesystem->put(
-            $version_dir . 'api.yaml',
-            Yaml::dump($spec, PHP_INT_MAX, 2, true)
-        );
+        $version_dir .= 'openapi' . DIRECTORY_SEPARATOR;
+
+        // Save the full specification.
+        $this->filesystem->put($version_dir . 'api.yaml', OpenApi::getYaml($spec));
+
+        // Save individual specs for each tag.
+        $reducer = new OpenApi\TagReducer($spec);
+        $reduced = $reducer->reduce();
+        foreach ($reduced as $tag => $tagged_spec) {
+            // Convert any nested tags, like `Me\Videos`, into a proper directory structure: `Me/Videos`.
+            $tag = str_replace('\\', DIRECTORY_SEPARATOR, $tag);
+            $tag = str_replace('/', '-', $tag);
+
+            $this->filesystem->put(
+                $version_dir . 'tags' . DIRECTORY_SEPARATOR . $tag . '.yaml',
+                OpenApi::getYaml($tagged_spec)
+            );
+        }
     }
 }

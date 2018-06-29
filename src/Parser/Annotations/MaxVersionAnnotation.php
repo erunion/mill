@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Parser\Annotations;
 
+use Composer\Semver\Semver;
 use Mill\Exceptions\Annotations\AbsoluteVersionException;
 use Mill\Parser\Annotation;
 use Mill\Parser\Version;
@@ -60,5 +61,16 @@ class MaxVersionAnnotation extends Annotation
     {
         $this->maximum_version = $maximum_version;
         return $this;
+    }
+
+    /**
+     * Assert that a given version string is less than the maximum version.
+     *
+     * @param string $version
+     * @return bool
+     */
+    public function matches(string $version): bool
+    {
+        return Semver::satisfies($version, '<=' . $this->maximum_version);
     }
 }
