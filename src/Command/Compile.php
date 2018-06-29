@@ -196,7 +196,7 @@ class Compile extends Application
         foreach ($reduced as $tag => $tagged_spec) {
             // Convert any nested tags, like `Me\Videos`, into a proper directory structure: `Me/Videos`.
             $tag = str_replace('\\', DIRECTORY_SEPARATOR, $tag);
-            $tag = str_replace('/', '-', $tag);
+            $tag = str_replace('/', DIRECTORY_SEPARATOR, $tag);
 
             $this->filesystem->put(
                 $version_dir . 'tags' . DIRECTORY_SEPARATOR . $tag . '.yaml',

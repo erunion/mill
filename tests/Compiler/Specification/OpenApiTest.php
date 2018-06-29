@@ -32,7 +32,7 @@ class OpenApiTest extends TestCase
             $reduced = $reducer->reduce();
             foreach ($reduced as $tag => $content) {
                 $tag = str_replace('\\', DIRECTORY_SEPARATOR, $tag);
-                $tag = str_replace('/', '-', $tag);
+                $tag = str_replace('/', DIRECTORY_SEPARATOR, $tag);
 
                 $file = $version_dir . DIRECTORY_SEPARATOR . 'tags' . DIRECTORY_SEPARATOR . $tag;
                 $expected = file_get_contents($file . '.yaml');
