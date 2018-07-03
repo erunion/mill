@@ -220,7 +220,7 @@ paths:
           oauth2:
             - delete
       x-mill-path-template: /movies/+id
-      x-mill-vendortags:
+      x-mill-vendor-tags:
         - 'tag:DELETE_CONTENT'
   /movies:
     get:

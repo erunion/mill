@@ -25,8 +25,8 @@ In order to instruct Mill on where to look for documentation, and any constraint
     </info>
 
     <servers>
-        <server url="https://api.example.com" description="Production" />
-        <server url="https://api.example.local" description="Development" />
+        <server environment="prod" url="https://api.example.com" description="Production" />
+        <server environment="dev" url="https://api.example.local" description="Development" />
     </servers>
 
     <versions>
@@ -242,8 +242,8 @@ Configure your API servers with the `<servers>` element.
 
 ```xml
     <servers>
-        <server url="https://api.example.com" description="Production" />
-        <server url="https://api.example.local" description="Development" />
+        <server environment="prod" url="https://api.example.com" description="Production" />
+        <server environment="dev" url="https://api.example.local" description="Development" />
     </servers>
 ```
 

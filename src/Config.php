@@ -315,6 +315,7 @@ class Config
     {
         foreach ($xml->servers->server as $server) {
             $this->servers[] = [
+                'environment' => strtolower((string) $server['environment']),
                 'url' => (string) $server['url'],
                 'description' => (string) $server['description']
             ];
@@ -569,6 +570,35 @@ class Config
     public function getServers(): array
     {
         return $this->servers;
+    }
+
+    /**
+     * Does a server environment exist in the config?
+     *
+     * @param string $environment
+     * @return bool
+     */
+    public function hasServerEnvironment(string $environment): bool
+    {
+        return !empty($this->getServerEnvironment($environment));
+    }
+
+    /**
+     * Return a configured server by its defined environment name.
+     *
+     * @param string $environment
+     * @return bool|array
+     */
+    public function getServerEnvironment(string $environment)
+    {
+        $environment = strtolower($environment);
+        foreach ($this->servers as $server) {
+            if ($server['environment'] === $environment) {
+                return $server;
+            }
+        }
+
+        return false;
     }
 
     /**

@@ -18,6 +18,9 @@ use Symfony\Component\Yaml\Yaml;
 
 class OpenApi extends Compiler\Specification
 {
+    /** @var string|null */
+    protected $environment = null;
+
     /**
      * Take compiled API documentation and create a OpenAPI specification.
      *
@@ -96,7 +99,7 @@ class OpenApi extends Compiler\Specification
                             'responses' => $this->processResponses($action),
                             'security' => $this->processSecurity($action),
                             'x-mill-path-template' => $path->getPath(),
-                            'x-mill-vendortags' => $this->processVendorTags($action),
+                            'x-mill-vendor-tags' => $this->processVendorTags($action),
                             'x-mill-visibility-private' => $path->isVisible()
                         ];
 
@@ -105,7 +108,7 @@ class OpenApi extends Compiler\Specification
                             'parameters',
                             'requestBody',
                             'security',
-                            'x-mill-vendortags'
+                            'x-mill-vendor-tags'
                         ] as $key) {
                             if (empty($schema[$key])) {
                                 unset($schema[$key]);
@@ -202,6 +205,12 @@ class OpenApi extends Compiler\Specification
     {
         $spec = [];
         foreach ($this->config->getServers() as $server) {
+            if (!empty($this->environment)) {
+                if ($server['environment'] !== $this->environment) {
+                    continue;
+                }
+            }
+
             $spec[] = [
                 'url' => $server['url'],
                 'description' => $server['description']
@@ -685,6 +694,16 @@ class OpenApi extends Compiler\Specification
     private function getReferenceName(string $name): string
     {
         return (new Slugify())->slugify($name);
+    }
+
+    /**
+     * @param string $environment
+     * @return OpenApi
+     */
+    public function setEnvironment(string $environment): self
+    {
+        $this->environment = strtolower($environment);
+        return $this;
     }
 
     /**
