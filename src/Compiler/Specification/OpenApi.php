@@ -84,6 +84,7 @@ class OpenApi extends Compiler\Specification
                         }
 
                         $schema = [
+                            'deprecated' => $path->isDeprecated(),
                             'summary' => $action->getLabel(),
                             'description' => $action->getDescription(),
                             'operationId' => $action->getOperationId(),
@@ -94,9 +95,9 @@ class OpenApi extends Compiler\Specification
                             'requestBody' => $this->processRequest($action),
                             'responses' => $this->processResponses($action),
                             'security' => $this->processSecurity($action),
+                            'x-mill-path-template' => $path->getPath(),
                             'x-mill-vendortags' => $this->processVendorTags($action),
-                            'x-mill-visibility-private' => $action->getPath()->isVisible(),
-                            'x-mill-deprecated' => $action->getPath()->isDeprecated()
+                            'x-mill-visibility-private' => $path->isVisible()
                         ];
 
                         foreach ([
@@ -111,14 +112,14 @@ class OpenApi extends Compiler\Specification
                             }
                         }
 
+                        // Only include the `deprecated` tag if the action is deprecated.
+                        if (!$schema['deprecated']) {
+                            unset($schema['deprecated']);
+                        }
+
                         // Only include the `x-mill-visibility-private` tag if the action is private.
                         if (!$schema['x-mill-visibility-private']) {
                             unset($schema['x-mill-visibility-private']);
-                        }
-
-                        // Only include the `x-mill-deprecated` tag if the action is deprecated.
-                        if (!$schema['x-mill-deprecated']) {
-                            unset($schema['x-mill-deprecated']);
                         }
 
                         $specification['paths'][$identifier][$method] = $schema;
