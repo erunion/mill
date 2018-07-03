@@ -85,6 +85,33 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         }
     }
 
+    public function testCommandForOpenApiOnSpecificEnvironment(): void
+    {
+        $output_dir = $this->getTempOutputDirectory('openapi');
+
+        $this->tester->execute([
+            'command' => $this->command->getName(),
+            '--config' => $this->config_file,
+            '--format' => Compile::FORMAT_OPENAPI,
+            '--environment' => 'prod',
+            'output' => $output_dir
+        ]);
+
+        $output = $this->tester->getDisplay();
+
+        $this->assertContains('`prod` environment', $output);
+
+        foreach (self::VERSIONS as $version) {
+            $output = file_get_contents($output_dir . '/' . $version . '/openapi/api.yaml');
+
+            $this->assertContains("url: 'https://api.example.com'", $output);
+            $this->assertContains('Production', $output);
+
+            $this->assertNotContains("url: 'https://api.example.local'", $output);
+            $this->assertNotContains('Development', $output);
+        }
+    }
+
     public function testCommandForApiBlueprint(): void
     {
         $output_dir = $this->getTempOutputDirectory('apiblueprint');
@@ -201,6 +228,20 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         $output = $this->tester->getDisplay();
         $this->assertContains('raml', $output);
         $this->assertContains('unknown compilation format', $output);
+    }
+
+    public function testCommandFailsOnInvalidEnvironment(): void
+    {
+        $this->tester->execute([
+            'command' => $this->command->getName(),
+            '--config' => $this->config_file,
+            '--format' => 'openapi',
+            '--environment' => 'production',
+            'output' => sys_get_temp_dir()
+        ]);
+
+        $output = $this->tester->getDisplay();
+        $this->assertContains('environment has not been configured', $output);
     }
 
     /**

@@ -17,8 +17,8 @@
     </info>
 
     <servers>
-        <server url="https://api.example.com" description="Production" />
-        <server url="https://api.example.local" description="Development" />
+        <server environment="prod" url="https://api.example.com" description="Production" />
+        <server environment="dev" url="https://api.example.local" description="Development" />
     </servers>
 
     <versions>

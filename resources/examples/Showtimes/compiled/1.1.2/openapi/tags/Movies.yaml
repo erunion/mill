@@ -48,6 +48,7 @@ paths:
             application/mill.example.movie+json:
               schema:
                 $ref: '#/components/schemas/error'
+      x-mill-path-template: /movie/+id
   '/movies/{id}':
     get:
       summary: 'Get a single movie.'
@@ -79,6 +80,7 @@ paths:
             application/mill.example.movie+json:
               schema:
                 $ref: '#/components/schemas/error'
+      x-mill-path-template: /movies/+id
       x-mill-visibility-private: true
     patch:
       summary: 'Update a movie.'
@@ -191,6 +193,7 @@ paths:
         -
           oauth2:
             - edit
+      x-mill-path-template: /movies/+id
       x-mill-visibility-private: true
     delete:
       summary: 'Delete a movie.'
@@ -220,7 +223,8 @@ paths:
         -
           oauth2:
             - delete
-      x-mill-vendortags:
+      x-mill-path-template: /movies/+id
+      x-mill-vendor-tags:
         - 'tag:DELETE_CONTENT'
   /movies:
     get:
@@ -259,6 +263,7 @@ paths:
             application/mill.example.movie+json:
               schema:
                 $ref: '#/components/schemas/error'
+      x-mill-path-template: /movies
       x-mill-visibility-private: true
     post:
       summary: 'Create a movie.'
@@ -356,6 +361,7 @@ paths:
         -
           oauth2:
             - create
+      x-mill-path-template: /movies
       x-mill-visibility-private: true
 components:
   securitySchemes:

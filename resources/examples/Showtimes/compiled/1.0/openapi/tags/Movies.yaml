@@ -48,6 +48,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
+      x-mill-path-template: /movie/+id
   '/movies/{id}':
     get:
       summary: 'Get a single movie.'
@@ -79,6 +80,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
+      x-mill-path-template: /movies/+id
       x-mill-visibility-private: true
   /movies:
     get:
@@ -110,6 +112,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
+      x-mill-path-template: /movies
       x-mill-visibility-private: true
     post:
       summary: 'Create a movie.'
@@ -198,6 +201,7 @@ paths:
         -
           oauth2:
             - create
+      x-mill-path-template: /movies
       x-mill-visibility-private: true
 components:
   securitySchemes:

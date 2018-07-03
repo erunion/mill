@@ -50,6 +50,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
+      x-mill-path-template: /movie/+id
   '/movies/{id}':
     get:
       summary: 'Get a single movie.'
@@ -81,6 +82,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
+      x-mill-path-template: /movies/+id
       x-mill-visibility-private: true
   /movies:
     get:
@@ -112,6 +114,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
+      x-mill-path-template: /movies
       x-mill-visibility-private: true
     post:
       summary: 'Create a movie.'
@@ -200,6 +203,7 @@ paths:
         -
           oauth2:
             - create
+      x-mill-path-template: /movies
       x-mill-visibility-private: true
   '/theaters/{id}':
     get:
@@ -232,6 +236,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
+      x-mill-path-template: /theaters/+id
       x-mill-visibility-private: true
     patch:
       summary: 'Update a movie theater.'
@@ -300,6 +305,7 @@ paths:
         -
           oauth2:
             - create
+      x-mill-path-template: /theaters/+id
       x-mill-visibility-private: true
     delete:
       summary: 'Delete a movie theater.'
@@ -329,6 +335,7 @@ paths:
         -
           oauth2:
             - delete
+      x-mill-path-template: /theaters/+id
   /theaters:
     get:
       summary: 'Get movie theaters.'
@@ -359,6 +366,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
+      x-mill-path-template: /theaters
       x-mill-visibility-private: true
     post:
       summary: 'Create a movie theater.'
@@ -406,6 +414,7 @@ paths:
         -
           oauth2:
             - create
+      x-mill-path-template: /theaters
       x-mill-visibility-private: true
 components:
   securitySchemes:

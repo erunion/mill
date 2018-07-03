@@ -58,9 +58,14 @@ class Compile extends Application
                 'default',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Compile just the configured default API version documentation. `defaultApiVersion` in your ' .
-                    '`mill.xml` file.',
+                'Compile just the configured default API version documentation.',
                 false
+            )
+            ->addOption(
+                'environment',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Compile documentation for a specific server environment. Only available for `openapi` compilations.'
             )
             ->addArgument('output', InputArgument::REQUIRED, 'Directory to output your compiled documentation in.');
     }
@@ -78,6 +83,7 @@ class Compile extends Application
         $output_dir = realpath($input->getArgument('output'));
         $format = strtolower($input->getOption('format'));
         $version = $input->getOption('constraint');
+        $environment = $input->getOption('environment');
 
         if (!in_array($format, ['apiblueprint', 'openapi'])) {
             $output->writeLn('<error>`' . $format . '` is an unknown compilation format.</error>');
@@ -102,11 +108,25 @@ class Compile extends Application
         $config = $this->container['config'];
         $this->filesystem = $this->container['filesystem'];
 
+        if (!empty($environment) && $format === self::FORMAT_OPENAPI) {
+            if (!$config->hasServerEnvironment($environment)) {
+                $output->writeLn('<error>The `' . $environment . '` environment has not been configured.</error>');
+                return 1;
+            }
+
+            $output->writeln(
+                '<comment>Compiling documentation for the `' . $environment . '` environment...</comment>'
+            );
+        }
+
         $output->writeln('<comment>Compiling controllers and representations...</comment>');
         if ($format === self::FORMAT_API_BLUEPRINT) {
             $compiler = new ApiBlueprint($config, $version);
         } else {
             $compiler = new OpenApi($config, $version);
+            if (!empty($environment)) {
+                $compiler->setEnvironment($environment);
+            }
         }
 
         $output->writeln(

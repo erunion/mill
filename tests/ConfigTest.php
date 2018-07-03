@@ -29,14 +29,26 @@ class ConfigTest extends TestCase
 
         $this->assertSame([
             [
+                'environment' => 'prod',
                 'url' => 'https://api.example.com',
                 'description' => 'Production'
             ],
             [
+                'environment' => 'dev',
                 'url' => 'https://api.example.local',
                 'description' => 'Development'
             ]
         ], $config->getServers());
+
+        $this->assertTrue($config->hasServerEnvironment('prod'));
+        $this->assertTrue($config->hasServerEnvironment('dev'));
+        $this->assertFalse($config->hasServerEnvironment('local'));
+
+        $this->assertSame([
+            'environment' => 'prod',
+            'url' => 'https://api.example.com',
+            'description' => 'Production'
+        ], $config->getServerEnvironment('prod'));
 
         $this->assertSame('1.0', $config->getFirstApiVersion());
         $this->assertSame('1.1.2', $config->getDefaultApiVersion());
@@ -254,8 +266,8 @@ XML;
         if (strpos($provider, 'servers.') === false) {
             $servers = <<<XML
 <servers>
-    <server url="https://api.example.com" description="Production" />
-    <server url="https://api.example.local" description="Development" />
+    <server environment="prod" url="https://api.example.com" description="Production" />
+    <server environment="dev" url="https://api.example.local" description="Development" />
 </servers>
 XML;
         }
