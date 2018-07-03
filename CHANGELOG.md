@@ -1,4 +1,14 @@
 # Changelog
+## [4.2.0] - 2018-07-03
+### Added
+* Adding `x-mill-path-template` for outputting the raw path template to the specification. Can be helpful if you want to utilize [RFC 6570](https://tools.ietf.org/html/rfc6570) templates in your specification usage. [#177](https://github.com/vimeo/mill/pull/177)
+* A new `environment` attribute on `server` config entries. [#177](https://github.com/vimeo/mill/pull/177)
+* New `--environment` flag on `./bin/mill compile` that lets you compile OpenAPI specifications for specifically configured server environments. [#177](https://github.com/vimeo/mill/pull/177)
+
+### Changed
+* Renaming `x-mill-deprecated` to `deprecated`. [#177](https://github.com/vimeo/mill/pull/177)
+* Renaming `x-mill-vendortags` to `x-mill-vendor-tags`. [#177](https://github.com/vimeo/mill/pull/177)
+
 ## [4.1.0] - 2018-06-29
 ### Added
 * A new `@api-operationid` annotation for setting unique operation IDs on resource actions. [#174](https://github.com/vimeo/mill/pull/174)
