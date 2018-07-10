@@ -1,4 +1,8 @@
 # Changelog
+## [4.2.1] - 2018-07-10
+### Changed
+* Loosened the [symfony/yaml](https://packagist.org/packages/symfony/yaml) requirements to allow `^2.0|^3.0|^4.0` instead of only `^2.0`. [#179](https://github.com/vimeo/mill/pull/179)
+
 ## [4.2.0] - 2018-07-03
 ### Added
 * Adding `x-mill-path-template` for outputting the raw path template to the specification. Can be helpful if you want to utilize [RFC 6570](https://tools.ietf.org/html/rfc6570) templates in your specification usage. [#177](https://github.com/vimeo/mill/pull/177)
@@ -270,6 +274,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[4.2.1]: https://github.com/vimeo/mill/compare/4.2.0...4.2.1
 [4.2.0]: https://github.com/vimeo/mill/compare/4.1.0...4.2.0
 [4.1.0]: https://github.com/vimeo/mill/compare/4.0.0...4.1.0
 [4.0.0]: https://github.com/vimeo/mill/compare/3.0.2...4.0.0
