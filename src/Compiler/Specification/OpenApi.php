@@ -712,6 +712,6 @@ class OpenApi extends Compiler\Specification
      */
     public static function getYaml(array $specification): string
     {
-        return Yaml::dump($specification, PHP_INT_MAX, 2, true);
+        return Yaml::dump($specification, PHP_INT_MAX, 2);
     }
 }
