@@ -130,6 +130,8 @@ class OpenApi extends Compiler\Specification
                 }
             }
 
+            ksort($specification['paths']);
+
             // Process representation data structures.
             if (!empty($this->representations)) {
                 foreach ($this->representations as $representation) {

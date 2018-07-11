@@ -17,6 +17,86 @@ servers:
     url: 'https://api.example.local'
     description: Development
 paths:
+  /theaters:
+    get:
+      summary: 'Get movie theaters.'
+      description: 'Returns all movie theatres for a specific location.'
+      operationId: getTheaters
+      tags:
+        - Theaters
+      parameters:
+        -
+          name: location
+          in: query
+          description: 'Location you want theaters in.'
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'Standard request.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/theater'
+        400:
+          description: 'If the location is invalid.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-mill-path-template: /theaters
+      x-mill-visibility-private: true
+    post:
+      summary: 'Create a movie theater.'
+      description: 'Create a new movie theater.'
+      operationId: createTheater
+      tags:
+        - Theaters
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                address:
+                  description: 'Theater address'
+                  type: string
+                  example: '2548 Central Park Ave, Yonkers, NY 10710'
+                name:
+                  description: 'Name of the theater.'
+                  type: string
+                  example: 'Alamo Drafthouse Cinema - Yonkers'
+                phone_number:
+                  description: 'Theater phone number'
+                  type: string
+                  example: '(914) 226-3082'
+              required:
+                - address
+                - name
+                - phone_number
+      responses:
+        200:
+          description: 'Standard request.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/theater'
+        400:
+          description: 'If there is a problem with the request.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          oauth2:
+            - create
+      x-mill-path-template: /theaters
+      x-mill-visibility-private: true
   '/theaters/{id}':
     get:
       summary: 'Get a single movie theater.'
@@ -148,86 +228,6 @@ paths:
           oauth2:
             - delete
       x-mill-path-template: /theaters/+id
-  /theaters:
-    get:
-      summary: 'Get movie theaters.'
-      description: 'Returns all movie theatres for a specific location.'
-      operationId: getTheaters
-      tags:
-        - Theaters
-      parameters:
-        -
-          name: location
-          in: query
-          description: 'Location you want theaters in.'
-          required: true
-          schema:
-            type: string
-      responses:
-        200:
-          description: 'Standard request.'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/theater'
-        400:
-          description: 'If the location is invalid.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error'
-      x-mill-path-template: /theaters
-      x-mill-visibility-private: true
-    post:
-      summary: 'Create a movie theater.'
-      description: 'Create a new movie theater.'
-      operationId: createTheater
-      tags:
-        - Theaters
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                address:
-                  description: 'Theater address'
-                  type: string
-                  example: '2548 Central Park Ave, Yonkers, NY 10710'
-                name:
-                  description: 'Name of the theater.'
-                  type: string
-                  example: 'Alamo Drafthouse Cinema - Yonkers'
-                phone_number:
-                  description: 'Theater phone number'
-                  type: string
-                  example: '(914) 226-3082'
-              required:
-                - address
-                - name
-                - phone_number
-      responses:
-        200:
-          description: 'Standard request.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/theater'
-        400:
-          description: 'If there is a problem with the request.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error'
-      security:
-        -
-          oauth2:
-            - create
-      x-mill-path-template: /theaters
-      x-mill-visibility-private: true
 components:
   securitySchemes:
     bearer:
