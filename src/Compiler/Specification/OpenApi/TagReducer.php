@@ -45,7 +45,7 @@ class TagReducer
             function (array $spec_tag) use ($tag, $match_prefix_only): bool {
                 $spec_tag = strtolower($spec_tag['name']);
 
-                return $spec_tag === $tag || ($match_prefix_only && strpos($tag . '\\', $spec_tag) !== false);
+                return $spec_tag === $tag || ($match_prefix_only && strpos($spec_tag, $tag . '\\') !== false);
             }
         );
 
@@ -69,7 +69,7 @@ class TagReducer
 
                 if ($match_prefix_only) {
                     $tag_matches = array_filter($tags, function (string $path_tag) use ($tag): bool {
-                        return ($path_tag === $tag || strpos($tag . '\\', $path_tag) !== false);
+                        return ($path_tag === $tag || strpos($path_tag, $tag . '\\') !== false);
                     });
 
                     if (empty($tag_matches)) {
