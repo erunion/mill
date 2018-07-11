@@ -23,7 +23,7 @@ class TagReducer
         foreach ($this->specification['tags'] as $tag) {
             $tag = $tag['name'];
 
-            $tagged_specs[$tag] = $this->reduceForTag($tag, $this->specification);
+            $tagged_specs[$tag] = $this->reduceForTag($tag);
         }
 
         return $tagged_specs;
@@ -31,15 +31,21 @@ class TagReducer
 
     /**
      * @param string $tag
-     * @param array $specification
+     * @param bool $match_prefix_only
      * @return array
      */
-    public function reduceForTag(string $tag, array $specification): array
+    public function reduceForTag(string $tag, $match_prefix_only = false): array
     {
+        $specification = $this->specification;
+
         // Filter tags down to just what we're looking for.
         $specification['tags'] = array_filter(
             $specification['tags'],
-            function (array $spec_tag) use ($tag): bool {
+            function (array $spec_tag) use ($tag, $match_prefix_only): bool {
+                if ($match_prefix_only) {
+                    return ($spec_tag['name'] === $tag || strpos($tag . '\\', $spec_tag['name']) !== false);
+                }
+
                 return $spec_tag['name'] === $tag;
             }
         );
@@ -58,7 +64,16 @@ class TagReducer
         $paths = $specification['paths'];
         foreach ($paths as $path => $methods) {
             foreach ($methods as $method => $schema) {
-                if (!in_array($tag, $schema['tags'])) {
+                if ($match_prefix_only) {
+                    $tag_matches = array_filter($schema['tags'], function (string $path_tag) use ($tag): bool {
+                        return ($path_tag === $tag || strpos($tag . '\\', $path_tag) !== false);
+                    });
+
+                    if (empty($tag_matches)) {
+                        unset($paths[$path][$method]);
+                        continue;
+                    }
+                } elseif (!in_array($tag, $schema['tags'])) {
                     unset($paths[$path][$method]);
                     continue;
                 }
