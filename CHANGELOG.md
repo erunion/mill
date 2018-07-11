@@ -1,4 +1,8 @@
 # Changelog
+## [4.2.2] - 2018-07-11
+### Fixed
+* Paths in compiled OpenAPI specification are now in alphabetical order. [#180](https://github.com/vimeo/mill/pull/180)
+
 ## [4.2.1] - 2018-07-10
 ### Changed
 * Loosened the [symfony/yaml](https://packagist.org/packages/symfony/yaml) requirements to allow `^2.0|^3.0|^4.0` instead of only `^2.0`. [#179](https://github.com/vimeo/mill/pull/179)
@@ -274,6 +278,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[4.2.2]: https://github.com/vimeo/mill/compare/4.2.1...4.2.2
 [4.2.1]: https://github.com/vimeo/mill/compare/4.2.0...4.2.1
 [4.2.0]: https://github.com/vimeo/mill/compare/4.1.0...4.2.0
 [4.1.0]: https://github.com/vimeo/mill/compare/4.0.0...4.1.0
