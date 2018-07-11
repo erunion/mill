@@ -36,17 +36,16 @@ class TagReducer
      */
     public function reduceForTag(string $tag, $match_prefix_only = false): array
     {
+        $tag = strtolower($tag);
         $specification = $this->specification;
 
         // Filter tags down to just what we're looking for.
         $specification['tags'] = array_filter(
             $specification['tags'],
             function (array $spec_tag) use ($tag, $match_prefix_only): bool {
-                if ($match_prefix_only) {
-                    return ($spec_tag['name'] === $tag || strpos($tag . '\\', $spec_tag['name']) !== false);
-                }
+                $spec_tag = strtolower($spec_tag['name']);
 
-                return $spec_tag['name'] === $tag;
+                return $spec_tag === $tag || ($match_prefix_only && strpos($tag . '\\', $spec_tag) !== false);
             }
         );
 
@@ -64,8 +63,12 @@ class TagReducer
         $paths = $specification['paths'];
         foreach ($paths as $path => $methods) {
             foreach ($methods as $method => $schema) {
+                $tags = array_map(function (string $path_tag): string {
+                    return strtolower($path_tag);
+                }, $schema['tags']);
+
                 if ($match_prefix_only) {
-                    $tag_matches = array_filter($schema['tags'], function (string $path_tag) use ($tag): bool {
+                    $tag_matches = array_filter($tags, function (string $path_tag) use ($tag): bool {
                         return ($path_tag === $tag || strpos($tag . '\\', $path_tag) !== false);
                     });
 
@@ -73,7 +76,7 @@ class TagReducer
                         unset($paths[$path][$method]);
                         continue;
                     }
-                } elseif (!in_array($tag, $schema['tags'])) {
+                } elseif (!in_array($tag, $tags)) {
                     unset($paths[$path][$method]);
                     continue;
                 }

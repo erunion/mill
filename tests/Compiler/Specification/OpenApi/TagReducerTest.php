@@ -55,5 +55,15 @@ class TagReducerTest extends TestCase
             '/movies',
             '/movies/{id}'
         ], array_keys($reduced['paths']));
+
+        // `Movies\Core` isn't a tag that actually exits, but what we really want here is to pull back tags that match
+        // `Movies`.
+        $reduced = $reducer->reduceForTag('movies', true);
+        $this->assertCount(1, $reduced['tags']);
+        $this->assertSame([
+            '/movie/{id}',
+            '/movies',
+            '/movies/{id}'
+        ], array_keys($reduced['paths']));
     }
 }
