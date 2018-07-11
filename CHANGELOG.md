@@ -1,4 +1,8 @@
 # Changelog
+## [4.2.5] - 2018-07-11
+## Fixed
+* Removed some bad `TagReducer` unit tests. [d7c2c2c](https://github.com/vimeo/mill/commit/d7c2c2cc6fe9abfb770dab72b11f4b920a87c8e1)
+
 ## [4.2.4] - 2018-07-11
 ## Fixed
 * Loose tag reductions through the `TagReducer` are no longer case-sensitive. [#182](https://github.com/vimeo/mill/pull/182)
@@ -286,6 +290,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[4.2.5]: https://github.com/vimeo/mill/compare/4.2.4...4.2.5
 [4.2.4]: https://github.com/vimeo/mill/compare/4.2.3...4.2.4
 [4.2.3]: https://github.com/vimeo/mill/compare/4.2.2...4.2.3
 [4.2.2]: https://github.com/vimeo/mill/compare/4.2.1...4.2.2
