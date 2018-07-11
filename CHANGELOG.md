@@ -1,4 +1,8 @@
 # Changelog
+## [4.2.4] - 2018-07-11
+## Fixed
+* Loose tag reductions through the `TagReducer` are no longer case-sensitive. [#182](https://github.com/vimeo/mill/pull/182)
+
 ## [4.2.3] - 2018-07-11
 ## Added
 * Allowing OpenAPI specs to be reduced, with the `TagReducer`, with looser tag names. [#181](https://github.com/vimeo/mill/pull/181)
@@ -282,6 +286,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[4.2.4]: https://github.com/vimeo/mill/compare/4.2.3...4.2.4
 [4.2.3]: https://github.com/vimeo/mill/compare/4.2.2...4.2.3
 [4.2.2]: https://github.com/vimeo/mill/compare/4.2.1...4.2.2
 [4.2.1]: https://github.com/vimeo/mill/compare/4.2.0...4.2.1
