@@ -1,4 +1,8 @@
 # Changelog
+## [4.2.6] - 2018-07-14
+## Added
+* Added `x-mill-path-aliased` and `x-mill-path-aliases` extensions to compiled OpenAPI specs. [#183](https://github.com/vimeo/mill/pull/183)
+
 ## [4.2.5] - 2018-07-11
 ## Fixed
 * Removed some bad `TagReducer` unit tests. [d7c2c2c](https://github.com/vimeo/mill/commit/d7c2c2cc6fe9abfb770dab72b11f4b920a87c8e1)
@@ -290,6 +294,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[4.2.6]: https://github.com/vimeo/mill/compare/4.2.5...4.2.6
 [4.2.5]: https://github.com/vimeo/mill/compare/4.2.4...4.2.5
 [4.2.4]: https://github.com/vimeo/mill/compare/4.2.3...4.2.4
 [4.2.3]: https://github.com/vimeo/mill/compare/4.2.2...4.2.3
