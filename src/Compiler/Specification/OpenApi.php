@@ -7,6 +7,7 @@ use Mill\Compiler;
 use Mill\Parser\Annotations\DataAnnotation;
 use Mill\Parser\Annotations\ErrorAnnotation;
 use Mill\Parser\Annotations\ParamAnnotation;
+use Mill\Parser\Annotations\PathAnnotation;
 use Mill\Parser\Annotations\PathParamAnnotation;
 use Mill\Parser\Annotations\QueryParamAnnotation;
 use Mill\Parser\Annotations\ReturnAnnotation;
@@ -97,32 +98,25 @@ class OpenApi extends Compiler\Specification
                             'parameters' => $this->processParameters($action),
                             'requestBody' => $this->processRequest($action),
                             'responses' => $this->processResponses($action),
-                            'security' => $this->processSecurity($action),
-                            'x-mill-path-template' => $path->getPath(),
-                            'x-mill-vendor-tags' => $this->processVendorTags($action),
-                            'x-mill-visibility-private' => $path->isVisible()
+                            'security' => $this->processSecurity($action)
                         ];
 
+                        $schema += $this->processExtensions($action, $path);
+
                         foreach ([
+                            'deprecated',
                             'description',
                             'parameters',
                             'requestBody',
                             'security',
-                            'x-mill-vendor-tags'
+                            'x-mill-path-aliased',
+                            'x-mill-path-aliases',
+                            'x-mill-vendor-tags',
+                            'x-mill-visibility-private'
                         ] as $key) {
                             if (empty($schema[$key])) {
                                 unset($schema[$key]);
                             }
-                        }
-
-                        // Only include the `deprecated` tag if the action is deprecated.
-                        if (!$schema['deprecated']) {
-                            unset($schema['deprecated']);
-                        }
-
-                        // Only include the `x-mill-visibility-private` tag if the action is private.
-                        if (!$schema['x-mill-visibility-private']) {
-                            unset($schema['x-mill-visibility-private']);
                         }
 
                         $specification['paths'][$identifier][$method] = $schema;
@@ -435,6 +429,29 @@ class OpenApi extends Compiler\Specification
                 }, $scopes)
             ]
         ];
+    }
+
+    /**
+     * @param Action\Documentation $action
+     * @param PathAnnotation $path
+     * @return array
+     */
+    protected function processExtensions(Action\Documentation $action, PathAnnotation $path): array
+    {
+        $schema = [
+            'x-mill-path-aliased' => $path->isAliased(),
+            'x-mill-path-aliases' => array_map(
+                function (PathAnnotation $alias): string {
+                    return $alias->getCleanPath();
+                },
+                $path->getAliases()
+            ),
+            'x-mill-path-template' => $path->getPath(),
+            'x-mill-vendor-tags' => $this->processVendorTags($action),
+            'x-mill-visibility-private' => $path->isVisible()
+        ];
+
+        return $schema;
     }
 
     /**

@@ -48,6 +48,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
+      x-mill-path-aliased: true
       x-mill-path-template: /movie/+id
   /movies:
     get:
@@ -201,6 +202,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
+      x-mill-path-aliases:
+        - '/movie/{id}'
       x-mill-path-template: /movies/+id
       x-mill-visibility-private: true
 components:
