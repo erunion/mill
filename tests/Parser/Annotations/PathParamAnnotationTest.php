@@ -35,7 +35,6 @@ class PathParamAnnotationTest extends AnnotationTest
         $this->assertSame($expected['description'], $annotation->getDescription());
         $this->assertEmpty($annotation->getVendorTags());
         $this->assertFalse($annotation->getVersion());
-        $this->assertEmpty($annotation->getAliases());
     }
 
     public function providerAnnotation(): array

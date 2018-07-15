@@ -44,8 +44,6 @@ class ReturnAnnotationTest extends AnnotationTest
         } else {
             $this->assertFalse($annotation->getVersion());
         }
-
-        $this->assertEmpty($annotation->getAliases());
     }
 
     public function providerAnnotation(): array

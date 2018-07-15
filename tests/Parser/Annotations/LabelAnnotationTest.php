@@ -29,7 +29,6 @@ class LabelAnnotationTest extends AnnotationTest
         $this->assertSame($expected, $annotation->toArray());
         $this->assertEmpty($annotation->getVendorTags());
         $this->assertFalse($annotation->getVersion());
-        $this->assertEmpty($annotation->getAliases());
     }
 
     public function providerAnnotation(): array

@@ -414,13 +414,17 @@ class Documentation implements Arrayable
         }
 
         if (empty($paths)) {
-            throw new \Exception(
-                sprintf(
-                    'There were zero non-aliased paths detected in this %s::%s.',
-                    $this->getClass(),
-                    $this->getMethod()
-                )
-            );
+            if (count($this->getPaths()) > 1) {
+                throw new \Exception(
+                    sprintf(
+                        'There were zero non-aliased paths detected in this %s::%s.',
+                        $this->getClass(),
+                        $this->getMethod()
+                    )
+                );
+            }
+
+            $paths = $this->getPaths();
         }
 
         return array_shift($paths);

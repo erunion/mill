@@ -52,12 +52,6 @@ abstract class Annotation implements Arrayable
     /** @var array Array of all authentication scopes required for this annotation. */
     protected $scopes = [];
 
-    /** @var array<Annotation> Array of all available aliases for this annotation. */
-    protected $aliases = [];
-
-    /** @var bool Flag designating that this annotation is aliased or not. */
-    protected $aliased = false;
-
     /** @var array Array of parsed data from this annotation. */
     protected $parsed_data = [];
 
@@ -354,50 +348,6 @@ abstract class Annotation implements Arrayable
     {
         $this->deprecated = $deprecated;
         return $this;
-    }
-
-    /**
-     * Is this annotation an alias?
-     *
-     * @return bool
-     */
-    public function isAliased(): bool
-    {
-        return $this->aliased;
-    }
-
-    /**
-     * Set if this annotation is an alias or not.
-     *
-     * @param bool $aliased
-     * @return Annotation
-     */
-    public function setAliased(bool $aliased): self
-    {
-        $this->aliased = $aliased;
-        return $this;
-    }
-
-    /**
-     * Set any aliases to this annotation.
-     *
-     * @param array $aliases
-     * @return Annotation
-     */
-    public function setAliases(array $aliases): self
-    {
-        $this->aliases = $aliases;
-        return $this;
-    }
-
-    /**
-     * Get all available aliases for this annotation.
-     *
-     * @return array<Annotation>
-     */
-    public function getAliases(): array
-    {
-        return $this->aliases;
     }
 
     /**

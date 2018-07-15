@@ -30,7 +30,6 @@ class VendorTagAnnotationTest extends AnnotationTest
         $this->assertSame($expected, $annotation->toArray());
         $this->assertSame($expected['vendor_tag'], $annotation->getVendorTag());
         $this->assertFalse($annotation->getVersion());
-        $this->assertEmpty($annotation->getAliases());
     }
 
     public function providerAnnotation(): array

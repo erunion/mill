@@ -105,13 +105,6 @@ class Compiler
                         continue;
                     }
 
-                    $is_aliased = $path->isAliased();
-
-                    // We're always going to be compiling documentation for this path, regardless if it's an alias or
-                    // not, so let's strip any awareness of that.
-                    $path->setAliased(false);
-                    $path->setAliases([]);
-
                     $resource_label = $annotations['label'];
                     if (!isset($resources[$group]['resources'][$resource_label])) {
                         $resources[$group]['resources'][$resource_label] = [
@@ -137,7 +130,7 @@ class Compiler
                     $action->setPathParams($params);
                     $action->filterAnnotationsForVisibility($this->load_private_docs, $this->load_vendor_tag_docs);
 
-                    if ($is_aliased) {
+                    if ($path->isAliased()) {
                         $action->incrementOperationId(++$aliases);
                     }
 
