@@ -16,6 +16,12 @@ class PathAnnotation extends Annotation
     /** @var string URI path that this annotation represents. */
     protected $path;
 
+    /** @var array<PathAnnotation> Array of all available aliases for this annotation. */
+    protected $aliases = [];
+
+    /** @var bool Flag designating that this annotation is aliased or not. */
+    protected $aliased = false;
+
     /**
      * {@inheritdoc}
      */
@@ -79,6 +85,50 @@ class PathAnnotation extends Annotation
     public function doesPathHaveParam(PathParamAnnotation $param): bool
     {
         return strpos($this->getCleanPath(), '{' . $param->getField() . '}') !== false;
+    }
+
+    /**
+     * Is this annotation an alias?
+     *
+     * @return bool
+     */
+    public function isAliased(): bool
+    {
+        return $this->aliased;
+    }
+
+    /**
+     * Set if this annotation is an alias or not.
+     *
+     * @param bool $aliased
+     * @return PathAnnotation
+     */
+    public function setAliased(bool $aliased): self
+    {
+        $this->aliased = $aliased;
+        return $this;
+    }
+
+    /**
+     * Set any aliases to this annotation.
+     *
+     * @param array $aliases
+     * @return PathAnnotation
+     */
+    public function setAliases(array $aliases): self
+    {
+        $this->aliases = $aliases;
+        return $this;
+    }
+
+    /**
+     * Get all available aliases for this annotation.
+     *
+     * @return array<PathAnnotation>
+     */
+    public function getAliases(): array
+    {
+        return $this->aliases;
     }
 
     /**

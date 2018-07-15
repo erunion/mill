@@ -5,6 +5,7 @@ use gossi\docblock\Docblock;
 use gossi\docblock\tags\UnknownTag;
 use Mill\Exceptions\Resource\UnsupportedDecoratorException;
 use Mill\Parser\Annotation;
+use Mill\Parser\Annotations\PathAnnotation;
 use Mill\Parser\MSON;
 use Mill\Parser\Version;
 use ReflectionClass;
@@ -218,7 +219,9 @@ class Parser
                         break;
 
                     case 'alias':
-                        $annotation->setAliased(true);
+                        if ($annotation instanceof PathAnnotation) {
+                            $annotation->setAliased(true);
+                        }
                         break;
 
                     default:
