@@ -1,4 +1,8 @@
 # Changelog
+## [4.2.7] - 2018-07-17
+## Changed
+* Component schemas are now sorted alphabetically in compiled OpenAPI specifications. [#184](https://github.com/vimeo/mill/pull/184)
+
 ## [4.2.6] - 2018-07-14
 ## Added
 * Added `x-mill-path-aliased` and `x-mill-path-aliases` extensions to compiled OpenAPI specs. [#183](https://github.com/vimeo/mill/pull/183)
@@ -294,6 +298,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[4.2.7]: https://github.com/vimeo/mill/compare/4.2.6...4.2.7
 [4.2.6]: https://github.com/vimeo/mill/compare/4.2.5...4.2.6
 [4.2.5]: https://github.com/vimeo/mill/compare/4.2.4...4.2.5
 [4.2.4]: https://github.com/vimeo/mill/compare/4.2.3...4.2.4
