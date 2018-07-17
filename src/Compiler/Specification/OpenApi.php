@@ -136,7 +136,7 @@ class OpenApi extends Compiler\Specification
 
                     $identifier = $this->getReferenceName($representation->getLabel());
                     $specification['components']['schemas'][$identifier] = [
-                        'properties' => $this->processMSON(DataAnnotation::PAYLOAD_FORMAT, $fields)
+                        'properties' => $this->processDataModel(DataAnnotation::PAYLOAD_FORMAT, $fields)
                     ];
                 }
 
@@ -274,8 +274,14 @@ class OpenApi extends Compiler\Specification
     protected function processParameters(Action\Documentation $action): array
     {
         return array_merge(
-            $this->processMSON(PathParamAnnotation::PAYLOAD_FORMAT, $action->getExplodedPathParameterDotNotation()),
-            $this->processMSON(QueryParamAnnotation::PAYLOAD_FORMAT, $action->getExplodedQueryParameterDotNotation())
+            $this->processDataModel(
+                PathParamAnnotation::PAYLOAD_FORMAT,
+                $action->getExplodedPathParameterDotNotation()
+            ),
+            $this->processDataModel(
+                QueryParamAnnotation::PAYLOAD_FORMAT,
+                $action->getExplodedQueryParameterDotNotation()
+            )
         );
     }
 
@@ -310,7 +316,7 @@ class OpenApi extends Compiler\Specification
                     'schema' => (function () use ($params): array {
                         $spec = [
                             'type' => 'object',
-                            'properties' => $this->processMSON(ParamAnnotation::PAYLOAD_FORMAT, $params)
+                            'properties' => $this->processDataModel(ParamAnnotation::PAYLOAD_FORMAT, $params)
                         ];
 
                         $spec = $this->extractRequiredFields($spec);
@@ -477,7 +483,7 @@ class OpenApi extends Compiler\Specification
      * @param array $fields
      * @return array
      */
-    private function processMSON(string $payload_format, array $fields = []): array
+    private function processDataModel(string $payload_format, array $fields = []): array
     {
         $schema = [];
 
@@ -564,6 +570,10 @@ class OpenApi extends Compiler\Specification
                         $spec['description'] .= $addendum;
                     }
                 }
+
+                if (isset($data['vendor_tags']) && !empty($data['vendor_tags'])) {
+                    $spec['x-mill-vendor-tags'] = $data['vendor_tags'];
+                }
             } else {
                 $spec = [
                     'name' => $field_name,
@@ -593,16 +603,16 @@ class OpenApi extends Compiler\Specification
             unset($field[Application::DOT_NOTATION_ANNOTATION_DATA_KEY]);
             if (!empty($field)) {
                 if (empty($data)) {
-                    $spec['properties'] = $this->processMSON($payload_format, $field);
+                    $spec['properties'] = $this->processDataModel($payload_format, $field);
                 } elseif ($data['type'] === 'array' && $data['subtype'] === 'object') {
                     $spec['items'] = [
                         'type' => 'object',
-                        'properties' => $this->processMSON($payload_format, $field)
+                        'properties' => $this->processDataModel($payload_format, $field)
                     ];
                 } elseif ($data['type'] === 'object') {
-                    $spec['properties'] = $this->processMSON($payload_format, $field);
+                    $spec['properties'] = $this->processDataModel($payload_format, $field);
                 } else {
-                    $spec['items'] = $this->processMSON($payload_format, $field);
+                    $spec['items'] = $this->processDataModel($payload_format, $field);
                 }
             } elseif ($data['type'] === 'array') {
                 $spec['items'] = [
@@ -614,6 +624,8 @@ class OpenApi extends Compiler\Specification
             if ($payload_format === ParamAnnotation::PAYLOAD_FORMAT) {
                 $spec = $this->extractRequiredFields($spec);
             }
+
+            ksort($spec);
 
             // Path and query parameters should not be keyed off the field name.
             if (in_array($payload_format, [

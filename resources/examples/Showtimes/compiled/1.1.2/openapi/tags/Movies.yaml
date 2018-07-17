@@ -26,9 +26,9 @@ paths:
         - Movies
       parameters:
         -
-          name: id
-          in: path
           description: 'Movie ID'
+          in: path
+          name: id
           required: true
           schema:
             type: number
@@ -59,16 +59,16 @@ paths:
         - Movies
       parameters:
         -
-          name: location
-          in: query
           description: 'Location you want movies for.'
+          in: query
+          name: location
           required: true
           schema:
             type: string
         -
-          name: page
-          in: query
           description: 'Page of results to pull.'
+          in: query
+          name: page
           required: false
           schema:
             type: number
@@ -104,22 +104,20 @@ paths:
               properties:
                 cast:
                   description: 'Array of cast members.'
-                  type: array
                   items:
                     type: object
                     properties:
                       name:
                         description: 'Cast member name.'
-                        type: string
                         example: 'Natasha Hovey'
+                        type: string
                       role:
                         description: 'Cast member role.'
-                        type: string
                         example: Cheryl
+                        type: string
+                  type: array
                 content_rating:
                   description: "MPAA rating\n\nOption descriptions:\n * `G` - Rated G\n * `NC-17` - Rated NC-17\n * `NR` - Not rated\n * `PG` - Rated PG\n * `PG-13` - Rated PG-13\n * `R` - Rated R\n * `UR` - Unrated\n * `X` - Rated X\n"
-                  type: string
-                  example: NR
                   enum:
                     - G
                     - NC-17
@@ -129,42 +127,44 @@ paths:
                     - R
                     - UR
                     - X
+                  example: NR
+                  type: string
                 description:
                   description: 'Description, or tagline, for the movie.'
                   type: string
                 director:
                   description: 'Name of the director.'
-                  type: string
                   example: 'Lamberto Bava'
+                  type: string
                 genres:
                   description: 'Array of movie genres.'
-                  type: array
                   items:
                     type: string
+                  type: array
                 imdb:
                   description: 'IMDB URL'
-                  type: string
                   example: 'https://www.imdb.com/title/tt0089013/'
+                  type: string
                 is_kid_friendly:
                   description: 'Is this movie kid friendly?'
                   type: boolean
                 name:
                   description: 'Name of the movie.'
-                  type: string
                   example: Demons
+                  type: string
                 rotten_tomatoes_score:
                   description: 'Rotten Tomatoes score'
-                  type: number
                   example: '56'
+                  type: number
                 runtime:
                   description: 'Movie runtime, in `HHhr MMmin` format.'
-                  type: string
                   example: '1hr 20min'
+                  type: string
                 trailer:
                   description: 'Trailer URL'
-                  type: string
                   example: 'https://www.youtube.com/watch?v=_cNjTdFHL8E'
                   nullable: true
+                  type: string
               required:
                 - description
                 - name
@@ -196,9 +196,9 @@ paths:
         - Movies
       parameters:
         -
-          name: id
-          in: path
           description: 'Movie ID'
+          in: path
+          name: id
           required: true
           schema:
             type: number
@@ -230,9 +230,9 @@ paths:
         - Movies
       parameters:
         -
-          name: id
-          in: path
           description: 'Movie ID'
+          in: path
+          name: id
           required: true
           schema:
             type: number
@@ -246,22 +246,20 @@ paths:
               properties:
                 cast:
                   description: 'Array of cast members.'
-                  type: array
                   items:
                     type: object
                     properties:
                       name:
                         description: 'Cast member name.'
-                        type: string
                         example: 'Natasha Hovey'
+                        type: string
                       role:
                         description: 'Cast member role.'
-                        type: string
                         example: Cheryl
+                        type: string
+                  type: array
                 content_rating:
                   description: "MPAA rating\n\nOption descriptions:\n * `G` - Rated G\n * `NC-17` - Rated NC-17\n * `NR` - Not rated\n * `PG` - Rated PG\n * `PG-13` - Rated PG-13\n * `R` - Rated R\n * `UR` - Unrated\n * `X` - Rated X\n"
-                  type: string
-                  example: NR
                   enum:
                     - G
                     - NC-17
@@ -271,42 +269,44 @@ paths:
                     - R
                     - UR
                     - X
+                  example: NR
+                  type: string
                 description:
                   description: 'Description, or tagline, for the movie.'
                   type: string
                 director:
                   description: 'Name of the director.'
-                  type: string
                   example: 'Lamberto Bava'
+                  type: string
                 genres:
                   description: 'Array of movie genres.'
-                  type: array
                   items:
                     type: string
+                  type: array
                 imdb:
                   description: 'IMDB URL'
-                  type: string
                   example: 'https://www.imdb.com/title/tt0089013/'
+                  type: string
                 is_kid_friendly:
                   description: 'Is this movie kid friendly?'
                   type: boolean
                 name:
                   description: 'Name of the movie.'
-                  type: string
                   example: Demons
+                  type: string
                 rotten_tomatoes_score:
                   description: 'Rotten Tomatoes score'
-                  type: number
                   example: '56'
+                  type: number
                 runtime:
                   description: 'Movie runtime, in `HHhr MMmin` format.'
-                  type: string
                   example: '1hr 20min'
+                  type: string
                 trailer:
                   description: 'Trailer URL'
-                  type: string
                   example: 'https://www.youtube.com/watch?v=_cNjTdFHL8E'
                   nullable: true
+                  type: string
               required:
                 - description
                 - name
@@ -343,9 +343,9 @@ paths:
         - Movies
       parameters:
         -
-          name: id
-          in: path
           description: 'Movie ID'
+          in: path
+          name: id
           required: true
           schema:
             type: number
@@ -400,13 +400,11 @@ components:
       properties:
         cast:
           description: 'Cast. This data requires a bearer token with the `public` scope.'
-          type: array
           items:
             type: string
+          type: array
         content_rating:
           description: 'MPAA rating'
-          type: string
-          example: G
           enum:
             - G
             - NC-17
@@ -416,17 +414,18 @@ components:
             - R
             - UR
             - X
+          example: G
+          type: string
         description:
           description: Description
           type: string
         director:
-          description: 'Director. This data requires a bearer token with the `public` scope.'
           allOf:
             -
               $ref: '#/components/schemas/person'
+          description: 'Director. This data requires a bearer token with the `public` scope.'
         external_urls:
           description: 'External URLs. This data requires a bearer token with the `public` scope.'
-          type: array
           items:
             type: object
             properties:
@@ -436,30 +435,33 @@ components:
               tickets:
                 description: 'Tickets URL. This data requires a bearer token with the `public` scope.'
                 type: string
+                x-mill-vendor-tags:
+                  - 'tag:BUY_TICKETS'
               trailer:
                 description: 'Trailer URL. This data requires a bearer token with the `public` scope.'
                 type: string
+          type: array
         genres:
           description: Genres
-          type: array
           items:
             type: string
+          type: array
         id:
           description: 'Unique ID'
           type: number
         kid_friendly:
           description: 'Kid friendly?'
-          type: boolean
           example: 'false'
+          type: boolean
         name:
           description: Name
           type: string
         purchase:
-          type: object
           properties:
             url:
               description: 'URL to purchase the film.'
               type: string
+          type: object
         rotten_tomatoes_score:
           description: 'Rotten Tomatoes score'
           type: number
@@ -468,14 +470,14 @@ components:
           type: string
         showtimes:
           description: 'Non-theater specific showtimes'
-          type: array
           items:
             type: string
+          type: array
         theaters:
           description: 'Theaters the movie is currently showing in'
-          type: array
           items:
             type: string
+          type: array
         uri:
           description: 'Movie URI'
           type: string
