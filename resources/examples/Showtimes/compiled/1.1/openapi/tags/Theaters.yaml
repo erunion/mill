@@ -26,9 +26,9 @@ paths:
         - Theaters
       parameters:
         -
-          name: location
-          in: query
           description: 'Location you want theaters in.'
+          in: query
+          name: location
           required: true
           schema:
             type: string
@@ -64,16 +64,16 @@ paths:
               properties:
                 address:
                   description: 'Theater address'
-                  type: string
                   example: '2548 Central Park Ave, Yonkers, NY 10710'
+                  type: string
                 name:
                   description: 'Name of the theater.'
-                  type: string
                   example: 'Alamo Drafthouse Cinema - Yonkers'
+                  type: string
                 phone_number:
                   description: 'Theater phone number'
-                  type: string
                   example: '(914) 226-3082'
+                  type: string
               required:
                 - address
                 - name
@@ -106,9 +106,9 @@ paths:
         - Theaters
       parameters:
         -
-          name: id
-          in: path
           description: 'Theater ID'
+          in: path
+          name: id
           required: true
           schema:
             type: number
@@ -138,9 +138,9 @@ paths:
         - Theaters
       parameters:
         -
-          name: id
-          in: path
           description: 'Theater ID'
+          in: path
+          name: id
           required: true
           schema:
             type: number
@@ -154,16 +154,16 @@ paths:
               properties:
                 address:
                   description: 'Theater address'
-                  type: string
                   example: '2548 Central Park Ave, Yonkers, NY 10710'
+                  type: string
                 name:
                   description: 'Name of the theater.'
-                  type: string
                   example: 'Alamo Drafthouse Cinema - Yonkers'
+                  type: string
                 phone_number:
                   description: 'Theater phone number'
-                  type: string
                   example: '(914) 226-3082'
+                  type: string
               required:
                 - address
                 - name
@@ -207,9 +207,9 @@ paths:
         - Theaters
       parameters:
         -
-          name: id
-          in: path
           description: 'Theater ID'
+          in: path
+          name: id
           required: true
           schema:
             type: number
@@ -276,9 +276,9 @@ components:
           type: number
         movies:
           description: 'Movies currently playing'
-          type: array
           items:
             type: string
+          type: array
         name:
           description: Name
           type: string
@@ -287,9 +287,9 @@ components:
           type: string
         showtimes:
           description: 'Non-movie specific showtimes'
-          type: array
           items:
             type: string
+          type: array
         uri:
           description: 'Theater URI'
           type: string
