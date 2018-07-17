@@ -139,6 +139,8 @@ class OpenApi extends Compiler\Specification
                         'properties' => $this->processMSON(DataAnnotation::PAYLOAD_FORMAT, $fields)
                     ];
                 }
+
+                ksort($specification['components']['schemas']);
             }
 
             $specifications[$this->version] = $specification;
