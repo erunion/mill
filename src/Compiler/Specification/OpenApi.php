@@ -632,6 +632,16 @@ class OpenApi extends Compiler\Specification
                 PathParamAnnotation::PAYLOAD_FORMAT,
                 QueryParamAnnotation::PAYLOAD_FORMAT
             ])) {
+                // Fix up any quirks left behind on processing these data models because we can't have a `schema`
+                // element present with `items` and/or `properties`.
+                if (isset($spec['items'])) {
+                    $spec['schema']['items'] = $spec['items'];
+                    unset($spec['items']);
+                } elseif (isset($spec['properties'])) {
+                    $spec['schema']['properties'] = $spec['properties'];
+                    unset($spec['properties']);
+                }
+
                 $schema[] = $spec;
             } else {
                 $schema[$field_name] = $spec;
