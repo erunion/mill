@@ -1,4 +1,9 @@
 # Changelog
+## [4.2.10] - 2018-07-19
+## Fixed
+- Fixing a logic bug where `x-mill-visibility-private` extensions were set to `true` on paths that were public, and private not having them at all. [#178](https://github.com/vimeo/mill/pull/186)
+- No longer removing nested property declarations in data models, fixing a bug where required fields would sometimes lose their requirement tags. [#187](https://github.com/vimeo/mill/pull/187)
+
 ## [4.2.9] - 2018-07-18
 ## Fixed
 * Fixed some quirks with query parameters that had subtypes sometimes being compiled into invalid OpenAPI files. [#186](https://github.com/vimeo/mill/pull/186)
@@ -309,6 +314,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[4.2.10]: https://github.com/vimeo/mill/compare/4.2.9...4.2.10
 [4.2.9]: https://github.com/vimeo/mill/compare/4.2.8...4.2.9
 [4.2.8]: https://github.com/vimeo/mill/compare/4.2.7...4.2.8
 [4.2.7]: https://github.com/vimeo/mill/compare/4.2.6...4.2.7
