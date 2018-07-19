@@ -672,6 +672,12 @@ class OpenApi extends Compiler\Specification
                     continue;
                 } elseif ($property['required']) {
                     $required[] = $name;
+
+                    // If the required property at this level is an array, then it contains nested properties that are
+                    // required for this current property. Don't remove it.
+                    if (is_array($property['required'])) {
+                        continue;
+                    }
                 }
 
                 unset($properties[$name]['required']);
