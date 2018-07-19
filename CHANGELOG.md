@@ -1,4 +1,8 @@
 # Changelog
+## [4.2.9] - 2018-07-18
+## Fixed
+* Fixed some quirks with query parameters that had subtypes sometimes being compiled into invalid OpenAPI files. [#186](https://github.com/vimeo/mill/pull/186)
+
 ## [4.2.8] - 2018-07-17
 ## Added
 * Compiled OpenAPI specifications now have vendor tags, `x-mill-vendor-tag`, added to any parameters, request body, or response data that have them. [#185](https://github.com/vimeo/mill/pull/185)
@@ -305,6 +309,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[4.2.9]: https://github.com/vimeo/mill/compare/4.2.8...4.2.9
 [4.2.8]: https://github.com/vimeo/mill/compare/4.2.7...4.2.8
 [4.2.7]: https://github.com/vimeo/mill/compare/4.2.6...4.2.7
 [4.2.6]: https://github.com/vimeo/mill/compare/4.2.5...4.2.6
