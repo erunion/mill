@@ -456,7 +456,7 @@ class OpenApi extends Compiler\Specification
             ),
             'x-mill-path-template' => $path->getPath(),
             'x-mill-vendor-tags' => $this->processVendorTags($action),
-            'x-mill-visibility-private' => $path->isVisible()
+            'x-mill-visibility-private' => !$path->isVisible()
         ];
 
         return $schema;

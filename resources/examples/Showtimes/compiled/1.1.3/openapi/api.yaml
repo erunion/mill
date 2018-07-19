@@ -52,6 +52,7 @@ paths:
                 $ref: '#/components/schemas/error'
       x-mill-path-aliased: true
       x-mill-path-template: /movie/+id
+      x-mill-visibility-private: true
   /movies:
     get:
       summary: 'Get movies.'
@@ -90,7 +91,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/error'
       x-mill-path-template: /movies
-      x-mill-visibility-private: true
     post:
       summary: 'Create a movie.'
       description: 'Create a new movie.'
@@ -190,7 +190,6 @@ paths:
           oauth2:
             - create
       x-mill-path-template: /movies
-      x-mill-visibility-private: true
   '/movies/{id}':
     get:
       summary: 'Get a single movie.'
@@ -225,7 +224,6 @@ paths:
       x-mill-path-aliases:
         - '/movie/{id}'
       x-mill-path-template: /movies/+id
-      x-mill-visibility-private: true
     patch:
       summary: 'Update a movie.'
       description: 'Update a movies data.'
@@ -350,7 +348,6 @@ paths:
           oauth2:
             - edit
       x-mill-path-template: /movies/+id
-      x-mill-visibility-private: true
   /theaters:
     get:
       summary: 'Get movie theaters.'
@@ -382,7 +379,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/error'
       x-mill-path-template: /theaters
-      x-mill-visibility-private: true
     post:
       summary: 'Create a movie theater.'
       description: 'Create a new movie theater.'
@@ -430,7 +426,6 @@ paths:
           oauth2:
             - create
       x-mill-path-template: /theaters
-      x-mill-visibility-private: true
   '/theaters/{id}':
     get:
       summary: 'Get a single movie theater.'
@@ -463,7 +458,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/error'
       x-mill-path-template: /theaters/+id
-      x-mill-visibility-private: true
     patch:
       summary: 'Update a movie theater.'
       description: 'Update a movie theaters'' data.'
@@ -526,7 +520,6 @@ paths:
           oauth2:
             - create
       x-mill-path-template: /theaters/+id
-      x-mill-visibility-private: true
     delete:
       summary: 'Delete a movie theater.'
       description: 'Delete a movie theater.'
@@ -556,6 +549,7 @@ paths:
           oauth2:
             - delete
       x-mill-path-template: /theaters/+id
+      x-mill-visibility-private: true
 components:
   securitySchemes:
     bearer:
