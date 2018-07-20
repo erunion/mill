@@ -1,4 +1,8 @@
 # Changelog
+## [4.2.11] - 2018-07-20
+## Changed
+- Making the TagReducer prefix matching a little less generous [#188](https://github.com/vimeo/mill/pull/188)
+
 ## [4.2.10] - 2018-07-19
 ## Fixed
 - Fixing a logic bug where `x-mill-visibility-private` extensions were set to `true` on paths that were public, and private not having them at all. [#178](https://github.com/vimeo/mill/pull/186)
@@ -314,6 +318,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[4.2.11]: https://github.com/vimeo/mill/compare/4.2.10...4.2.11
 [4.2.10]: https://github.com/vimeo/mill/compare/4.2.9...4.2.10
 [4.2.9]: https://github.com/vimeo/mill/compare/4.2.8...4.2.9
 [4.2.8]: https://github.com/vimeo/mill/compare/4.2.7...4.2.8
