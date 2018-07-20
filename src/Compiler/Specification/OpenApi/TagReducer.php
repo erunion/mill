@@ -45,7 +45,7 @@ class TagReducer
             function (array $spec_tag) use ($tag, $match_prefix_only): bool {
                 $spec_tag = strtolower($spec_tag['name']);
 
-                return $spec_tag === $tag || ($match_prefix_only && strpos($spec_tag, $tag . '\\') !== false);
+                return $spec_tag === $tag || ($match_prefix_only && current(explode('\\', $tag)) === $spec_tag);
             }
         );
 
