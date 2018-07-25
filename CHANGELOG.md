@@ -1,4 +1,8 @@
 # Changelog
+## [4.2.12] - 2018-07-25
+## Added
+- Added operation IDs into compiled changelog `<span>` elements. [#189](https://github.com/vimeo/mill/pull/189)
+
 ## [4.2.11] - 2018-07-20
 ## Changed
 - Making the TagReducer prefix matching a little less generous [#188](https://github.com/vimeo/mill/pull/188)
@@ -318,6 +322,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[4.2.12]: https://github.com/vimeo/mill/compare/4.2.11...4.2.12
 [4.2.11]: https://github.com/vimeo/mill/compare/4.2.10...4.2.11
 [4.2.10]: https://github.com/vimeo/mill/compare/4.2.9...4.2.10
 [4.2.9]: https://github.com/vimeo/mill/compare/4.2.8...4.2.9
