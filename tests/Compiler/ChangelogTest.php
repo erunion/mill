@@ -64,6 +64,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Movies',
                                 'method' => 'GET',
                                 'path' => '/movie/{id}',
+                                'operation_id' => 'getMovie_alt1',
                                 'http_code' => '404 Not Found',
                                 'representation' => 'Error',
                                 'description' => 'For no reason.'
@@ -72,6 +73,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Movies',
                                 'method' => 'GET',
                                 'path' => '/movie/{id}',
+                                'operation_id' => 'getMovie_alt1',
                                 'http_code' => '404 Not Found',
                                 'representation' => 'Error',
                                 'description' => 'For some other reason.'
@@ -86,6 +88,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Movies',
                                 'method' => 'POST',
                                 'path' => '/movies',
+                                'operation_id' => 'createMovie',
                                 'http_code' => '201 Created',
                                 'representation' => false
                             ]
@@ -99,6 +102,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Movies',
                                 'method' => 'GET',
                                 'path' => '/movies/{id}',
+                                'operation_id' => 'getMovie',
                                 'http_code' => '404 Not Found',
                                 'representation' => 'Error',
                                 'description' => 'For no reason.'
@@ -107,6 +111,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Movies',
                                 'method' => 'GET',
                                 'path' => '/movies/{id}',
+                                'operation_id' => 'getMovie',
                                 'http_code' => '404 Not Found',
                                 'representation' => 'Error',
                                 'description' => 'For some other reason.'
@@ -117,6 +122,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Movies',
                                 'method' => 'PATCH',
                                 'path' => '/movies/{id}',
+                                'operation_id' => 'updateMovie',
                                 'http_code' => '404 Not Found',
                                 'representation' => 'Error',
                                 'description' => 'If the trailer URL could not be validated.'
@@ -125,6 +131,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Movies',
                                 'method' => 'PATCH',
                                 'path' => '/movies/{id}',
+                                'operation_id' => 'updateMovie',
                                 'http_code' => '403 Forbidden',
                                 'representation' => 'Coded error',
                                 'description' => 'If the user is not allowed to edit that movie.'
@@ -137,6 +144,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Movies',
                                 'method' => 'PATCH',
                                 'path' => '/movies/{id}',
+                                'operation_id' => 'updateMovie',
                                 'http_code' => '202 Accepted',
                                 'representation' => 'Movie'
                             ]
@@ -152,6 +160,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Movies',
                                 'method' => 'GET',
                                 'path' => '/movie/{id}',
+                                'operation_id' => 'getMovie_alt1',
                                 'content_type' => 'application/mill.example.movie+json'
                             ]
                         ]
@@ -164,6 +173,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Movies',
                                 'method' => 'GET',
                                 'path' => '/movies',
+                                'operation_id' => 'getMovies',
                                 'content_type' => 'application/mill.example.movie+json'
                             ]
                         ],
@@ -172,6 +182,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Movies',
                                 'method' => 'POST',
                                 'path' => '/movies',
+                                'operation_id' => 'createMovie',
                                 'content_type' => 'application/mill.example.movie+json'
                             ]
                         ]
@@ -184,6 +195,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Movies',
                                 'method' => 'GET',
                                 'path' => '/movies/{id}',
+                                'operation_id' => 'getMovie',
                                 'content_type' => 'application/mill.example.movie+json'
                             ]
                         ],
@@ -192,6 +204,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Movies',
                                 'method' => 'PATCH',
                                 'path' => '/movies/{id}',
+                                'operation_id' => 'updateMovie',
                                 'content_type' => 'application/mill.example.movie+json'
                             ]
                         ]
@@ -204,6 +217,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Theaters',
                                 'method' => 'GET',
                                 'path' => '/theaters',
+                                'operation_id' => 'getTheaters',
                                 'content_type' => 'application/mill.example.theater+json'
                             ]
                         ],
@@ -212,6 +226,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Theaters',
                                 'method' => 'POST',
                                 'path' => '/theaters',
+                                'operation_id' => 'createTheater',
                                 'content_type' => 'application/mill.example.theater+json'
                             ]
                         ]
@@ -224,6 +239,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Theaters',
                                 'method' => 'PATCH',
                                 'path' => '/theaters/{id}',
+                                'operation_id' => 'updateTheater',
                                 'http_code' => '403 Forbidden',
                                 'representation' => 'Coded error',
                                 'description' => 'If something cool happened.'
@@ -236,6 +252,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Theaters',
                                 'method' => 'GET',
                                 'path' => '/theaters/{id}',
+                                'operation_id' => 'getTheater',
                                 'content_type' => 'application/mill.example.theater+json'
                             ]
                         ],
@@ -244,6 +261,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Theaters',
                                 'method' => 'PATCH',
                                 'path' => '/theaters/{id}',
+                                'operation_id' => 'updateTheater',
                                 'content_type' => 'application/mill.example.theater+json'
                             ]
                         ]
@@ -258,6 +276,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Movies',
                                 'method' => 'PATCH',
                                 'path' => '/movies/{id}',
+                                'operation_id' => 'updateMovie',
                                 'parameter' => 'imdb',
                                 'description' => 'IMDB URL'
                             ]
@@ -273,6 +292,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Movies',
                                 'method' => 'GET',
                                 'path' => '/movies',
+                                'operation_id' => 'getMovies',
                                 'parameter' => 'page',
                                 'description' => 'Page of results to pull.'
                             ]
@@ -282,6 +302,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Movies',
                                 'method' => 'POST',
                                 'path' => '/movies',
+                                'operation_id' => 'createMovie',
                                 'parameter' => 'imdb',
                                 'description' => 'IMDB URL'
                             ],
@@ -289,6 +310,7 @@ class ChangelogTest extends TestCase
                                 'resource_group' => 'Movies',
                                 'method' => 'POST',
                                 'path' => '/movies',
+                                'operation_id' => 'createMovie',
                                 'parameter' => 'trailer',
                                 'description' => 'Trailer URL'
                             ]
@@ -301,12 +323,14 @@ class ChangelogTest extends TestCase
                             [
                                 'resource_group' => 'Movies',
                                 'method' => 'PATCH',
-                                'path' => '/movies/{id}'
+                                'path' => '/movies/{id}',
+                                'operation_id' => 'updateMovie'
                             ],
                             [
                                 'resource_group' => 'Movies',
                                 'method' => 'DELETE',
-                                'path' => '/movies/{id}'
+                                'path' => '/movies/{id}',
+                                'operation_id' => 'deleteMovie'
                             ]
                         ]
                     ]
@@ -391,6 +415,7 @@ class ChangelogTest extends TestCase
                                                         'resource_group' => 'Movies',
                                                         'method' => 'PATCH',
                                                         'path' => '/movies/{id}',
+                                                        'operation_id' => 'updateMovie',
                                                         'http_code' => '403 Forbidden',
                                                         'representation' => 'Coded error',
                                                         'description' => 'If something cool happened.'
