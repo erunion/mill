@@ -43,17 +43,19 @@ class JsonTest extends TestCase
                                 [
                                     '<span class="mill-changelog_http_code" data-mill-resource-group="Movies" ' .
                                         'data-mill-method="GET" data-mill-path="/movie/{id}" ' .
-                                        'data-mill-http-code="404 Not Found" data-mill-representation="Error">404 ' .
-                                        'Not Found</span> with a <span class="mill-changelog_representation" ' .
-                                        'data-mill-resource-group="Movies" data-mill-method="GET" ' .
-                                        'data-mill-path="/movie/{id}" data-mill-http-code="404 Not Found" ' .
+                                        'data-mill-operation-id="getMovie_alt1" data-mill-http-code="404 Not Found" ' .
+                                        'data-mill-representation="Error">404 Not Found</span> with a <span ' .
+                                        'class="mill-changelog_representation" data-mill-resource-group="Movies" ' .
+                                        'data-mill-method="GET" data-mill-path="/movie/{id}" ' .
+                                        'data-mill-operation-id="getMovie_alt1" data-mill-http-code="404 Not Found" ' .
                                         'data-mill-representation="Error">Error</span> representation: For no reason.',
                                     '<span class="mill-changelog_http_code" data-mill-resource-group="Movies" ' .
                                         'data-mill-method="GET" data-mill-path="/movie/{id}" ' .
-                                        'data-mill-http-code="404 Not Found" data-mill-representation="Error">404 ' .
-                                        'Not Found</span> with a <span class="mill-changelog_representation" ' .
-                                        'data-mill-resource-group="Movies" data-mill-method="GET" ' .
-                                        'data-mill-path="/movie/{id}" data-mill-http-code="404 Not Found" ' .
+                                        'data-mill-operation-id="getMovie_alt1" data-mill-http-code="404 Not Found" ' .
+                                        'data-mill-representation="Error">404 Not Found</span> with a <span ' .
+                                        'class="mill-changelog_representation" data-mill-resource-group="Movies" ' .
+                                        'data-mill-method="GET" data-mill-path="/movie/{id}" ' .
+                                        'data-mill-operation-id="getMovie_alt1" data-mill-http-code="404 Not Found" ' .
                                         'data-mill-representation="Error">Error</span> representation: For some ' .
                                         'other reason.'
                                 ]
@@ -67,17 +69,19 @@ class JsonTest extends TestCase
                                 [
                                     '<span class="mill-changelog_http_code" data-mill-resource-group="Movies" ' .
                                         'data-mill-method="GET" data-mill-path="/movies/{id}" ' .
-                                        'data-mill-http-code="404 Not Found" data-mill-representation="Error">404 ' .
-                                        'Not Found</span> with a <span class="mill-changelog_representation" ' .
-                                        'data-mill-resource-group="Movies" data-mill-method="GET" ' .
-                                        'data-mill-path="/movies/{id}" data-mill-http-code="404 Not Found" ' .
+                                        'data-mill-operation-id="getMovie" data-mill-http-code="404 Not Found" ' .
+                                        'data-mill-representation="Error">404 Not Found</span> with a <span ' .
+                                        'class="mill-changelog_representation" data-mill-resource-group="Movies" ' .
+                                        'data-mill-method="GET" data-mill-path="/movies/{id}" ' .
+                                        'data-mill-operation-id="getMovie" data-mill-http-code="404 Not Found" ' .
                                         'data-mill-representation="Error">Error</span> representation: For no reason.',
                                     '<span class="mill-changelog_http_code" data-mill-resource-group="Movies" ' .
                                         'data-mill-method="GET" data-mill-path="/movies/{id}" ' .
-                                        'data-mill-http-code="404 Not Found" data-mill-representation="Error">404 ' .
-                                        'Not Found</span> with a <span class="mill-changelog_representation" ' .
-                                        'data-mill-resource-group="Movies" data-mill-method="GET" ' .
-                                        'data-mill-path="/movies/{id}" data-mill-http-code="404 Not Found" ' .
+                                        'data-mill-operation-id="getMovie" data-mill-http-code="404 Not Found" ' .
+                                        'data-mill-representation="Error">404 Not Found</span> with a <span ' .
+                                        'class="mill-changelog_representation" data-mill-resource-group="Movies" ' .
+                                        'data-mill-method="GET" data-mill-path="/movies/{id}" ' .
+                                        'data-mill-operation-id="getMovie" data-mill-http-code="404 Not Found" ' .
                                         'data-mill-representation="Error">Error</span> representation: For some ' .
                                         'other reason.'
                                 ]
@@ -91,52 +95,59 @@ class JsonTest extends TestCase
                                 [
                                     '<span class="mill-changelog_http_code" data-mill-resource-group="Movies" ' .
                                         'data-mill-method="PATCH" data-mill-path="/movies/{id}" ' .
-                                        'data-mill-http-code="404 Not Found" data-mill-representation="Error">404 ' .
-                                        'Not Found</span> with a <span class="mill-changelog_representation" ' .
-                                        'data-mill-resource-group="Movies" data-mill-method="PATCH" ' .
-                                        'data-mill-path="/movies/{id}" data-mill-http-code="404 Not Found" ' .
+                                        'data-mill-operation-id="updateMovie" data-mill-http-code="404 Not Found" ' .
+                                        'data-mill-representation="Error">404 Not Found</span> with a <span ' .
+                                        'class="mill-changelog_representation" data-mill-resource-group="Movies" ' .
+                                        'data-mill-method="PATCH" data-mill-path="/movies/{id}" ' .
+                                        'data-mill-operation-id="updateMovie" data-mill-http-code="404 Not Found" ' .
                                         'data-mill-representation="Error">Error</span> representation: If the ' .
                                         'trailer URL could not be validated.',
                                     '<span class="mill-changelog_http_code" data-mill-resource-group="Movies" ' .
                                         'data-mill-method="PATCH" data-mill-path="/movies/{id}" ' .
-                                        'data-mill-http-code="403 Forbidden" data-mill-representation="Coded error">' .
-                                        '403 Forbidden</span> with a <span class="mill-changelog_representation" ' .
-                                        'data-mill-resource-group="Movies" data-mill-method="PATCH" ' .
-                                        'data-mill-path="/movies/{id}" data-mill-http-code="403 Forbidden" ' .
+                                        'data-mill-operation-id="updateMovie" data-mill-http-code="403 Forbidden" ' .
+                                        'data-mill-representation="Coded error">403 Forbidden</span> with a <span ' .
+                                        'class="mill-changelog_representation" data-mill-resource-group="Movies" ' .
+                                        'data-mill-method="PATCH" data-mill-path="/movies/{id}" ' .
+                                        'data-mill-operation-id="updateMovie" data-mill-http-code="403 Forbidden" ' .
                                         'data-mill-representation="Coded error">Coded error</span> representation: ' .
                                         'If something cool happened.',
                                     '<span class="mill-changelog_http_code" data-mill-resource-group="Movies" ' .
                                         'data-mill-method="PATCH" data-mill-path="/movies/{id}" ' .
-                                        'data-mill-http-code="403 Forbidden" data-mill-representation="Coded error">' .
-                                        '403 Forbidden</span> with a <span class="mill-changelog_representation" ' .
-                                        'data-mill-resource-group="Movies" data-mill-method="PATCH" ' .
-                                        'data-mill-path="/movies/{id}" data-mill-http-code="403 Forbidden" ' .
+                                        'data-mill-operation-id="updateMovie" data-mill-http-code="403 Forbidden" ' .
+                                        'data-mill-representation="Coded error">403 Forbidden</span> with a <span ' .
+                                        'class="mill-changelog_representation" data-mill-resource-group="Movies" ' .
+                                        'data-mill-method="PATCH" data-mill-path="/movies/{id}" ' .
+                                        'data-mill-operation-id="updateMovie" data-mill-http-code="403 Forbidden" ' .
                                         'data-mill-representation="Coded error">Coded error</span> representation: ' .
                                         'If the user is not allowed to edit that movie.'
                                 ]
                             ],
                             'On <span class="mill-changelog_path" data-mill-resource-group="Movies" ' .
                                 'data-mill-method="PATCH" data-mill-path="/movies/{id}" ' .
-                                'data-mill-http-code="202 Accepted" data-mill-representation="Movie">/movies/{id}' .
-                                '</span>, <span class="mill-changelog_method" data-mill-resource-group="Movies" ' .
+                                'data-mill-operation-id="updateMovie" data-mill-http-code="202 Accepted" ' .
+                                'data-mill-representation="Movie">/movies/{id}</span>, <span ' .
+                                'class="mill-changelog_method" data-mill-resource-group="Movies" ' .
                                 'data-mill-method="PATCH" data-mill-path="/movies/{id}" ' .
-                                'data-mill-http-code="202 Accepted" data-mill-representation="Movie">PATCH</span> ' .
-                                'requests now return a <span class="mill-changelog_http_code" ' .
-                                'data-mill-resource-group="Movies" data-mill-method="PATCH" ' .
-                                'data-mill-path="/movies/{id}" data-mill-http-code="202 Accepted" ' .
+                                'data-mill-operation-id="updateMovie" data-mill-http-code="202 Accepted" ' .
+                                'data-mill-representation="Movie">PATCH</span> requests now return a <span ' .
+                                'class="mill-changelog_http_code" data-mill-resource-group="Movies" ' .
+                                'data-mill-method="PATCH" data-mill-path="/movies/{id}" ' .
+                                'data-mill-operation-id="updateMovie" data-mill-http-code="202 Accepted" ' .
                                 'data-mill-representation="Movie">202 Accepted</span> with a <span ' .
                                 'class="mill-changelog_representation" data-mill-resource-group="Movies" ' .
                                 'data-mill-method="PATCH" data-mill-path="/movies/{id}" ' .
-                                'data-mill-http-code="202 Accepted" data-mill-representation="Movie">Movie</span> ' .
-                                'representation.',
+                                'data-mill-operation-id="updateMovie" data-mill-http-code="202 Accepted" ' .
+                                'data-mill-representation="Movie">Movie</span> representation.',
                             '<span class="mill-changelog_method" data-mill-resource-group="Movies" ' .
-                                'data-mill-method="POST" data-mill-path="/movies" data-mill-http-code="201 Created" ' .
+                                'data-mill-method="POST" data-mill-path="/movies" ' .
+                                'data-mill-operation-id="createMovie" data-mill-http-code="201 Created" ' .
                                 'data-mill-representation="">POST</span> on <span class="mill-changelog_path" ' .
                                 'data-mill-resource-group="Movies" data-mill-method="POST" ' .
-                                'data-mill-path="/movies" data-mill-http-code="201 Created" ' .
-                                'data-mill-representation="">/movies</span> now returns a <span ' .
-                                'class="mill-changelog_http_code" data-mill-resource-group="Movies" ' .
-                                'data-mill-method="POST" data-mill-path="/movies" data-mill-http-code="201 Created" ' .
+                                'data-mill-path="/movies" data-mill-operation-id="createMovie" ' .
+                                'data-mill-http-code="201 Created" data-mill-representation="">/movies</span> now ' .
+                                'returns a <span class="mill-changelog_http_code" data-mill-resource-group="Movies" ' .
+                                'data-mill-method="POST" data-mill-path="/movies" ' .
+                                'data-mill-operation-id="createMovie" data-mill-http-code="201 Created" ' .
                                 'data-mill-representation="">201 Created</span>.'
                         ]
                     ]
@@ -165,57 +176,65 @@ class JsonTest extends TestCase
                         [
                             'On <span class="mill-changelog_path" data-mill-resource-group="Movies" ' .
                                 'data-mill-method="GET" data-mill-path="/movie/{id}" ' .
+                                'data-mill-operation-id="getMovie_alt1" ' .
                                 'data-mill-content-type="application/mill.example.movie+json">/movie/{id}</span>, ' .
                                 '<span class="mill-changelog_method" data-mill-resource-group="Movies" ' .
                                 'data-mill-method="GET" data-mill-path="/movie/{id}" ' .
+                                'data-mill-operation-id="getMovie_alt1" ' .
                                 'data-mill-content-type="application/mill.example.movie+json">GET</span> requests ' .
                                 'now return a <span class="mill-changelog_content_type" ' .
                                 'data-mill-resource-group="Movies" data-mill-method="GET" ' .
-                                'data-mill-path="/movie/{id}" ' .
+                                'data-mill-path="/movie/{id}" data-mill-operation-id="getMovie_alt1" ' .
                                 'data-mill-content-type="application/mill.example.movie+json">' .
                                 'application/mill.example.movie+json</span> Content-Type header.',
                             'On <span class="mill-changelog_path" data-mill-resource-group="Movies" ' .
                                 'data-mill-method="GET" data-mill-path="/movies/{id}" ' .
+                                'data-mill-operation-id="getMovie" ' .
                                 'data-mill-content-type="application/mill.example.movie+json">/movies/{id}</span>, ' .
                                 '<span class="mill-changelog_method" data-mill-resource-group="Movies" ' .
                                 'data-mill-method="GET" data-mill-path="/movies/{id}" ' .
+                                'data-mill-operation-id="getMovie" ' .
                                 'data-mill-content-type="application/mill.example.movie+json">GET</span> requests ' .
                                 'now return a <span class="mill-changelog_content_type" ' .
                                 'data-mill-resource-group="Movies" data-mill-method="GET" ' .
-                                'data-mill-path="/movies/{id}" ' .
+                                'data-mill-path="/movies/{id}" data-mill-operation-id="getMovie" ' .
                                 'data-mill-content-type="application/mill.example.movie+json">' .
                                 'application/mill.example.movie+json</span> Content-Type header.',
                             'On <span class="mill-changelog_path" data-mill-resource-group="Movies" ' .
                                 'data-mill-method="PATCH" data-mill-path="/movies/{id}" ' .
+                                'data-mill-operation-id="updateMovie" ' .
                                 'data-mill-content-type="application/mill.example.movie+json">/movies/{id}</span>, ' .
                                 '<span class="mill-changelog_method" data-mill-resource-group="Movies" ' .
                                 'data-mill-method="PATCH" data-mill-path="/movies/{id}" ' .
+                                'data-mill-operation-id="updateMovie" ' .
                                 'data-mill-content-type="application/mill.example.movie+json">PATCH</span> requests ' .
                                 'now return a <span class="mill-changelog_content_type" ' .
                                 'data-mill-resource-group="Movies" data-mill-method="PATCH" ' .
-                                'data-mill-path="/movies/{id}" ' .
+                                'data-mill-path="/movies/{id}" data-mill-operation-id="updateMovie" ' .
                                 'data-mill-content-type="application/mill.example.movie+json">' .
                                 'application/mill.example.movie+json</span> Content-Type header.',
                             'On <span class="mill-changelog_path" data-mill-resource-group="Movies" ' .
-                                'data-mill-method="GET" data-mill-path="/movies" ' .
+                                'data-mill-method="GET" data-mill-path="/movies" data-mill-operation-id="getMovies" ' .
                                 'data-mill-content-type="application/mill.example.movie+json">/movies</span>, <span ' .
                                 'class="mill-changelog_method" data-mill-resource-group="Movies" ' .
-                                'data-mill-method="GET" data-mill-path="/movies" ' .
+                                'data-mill-method="GET" data-mill-path="/movies" data-mill-operation-id="getMovies" ' .
                                 'data-mill-content-type="application/mill.example.movie+json">GET</span> requests ' .
                                 'now return a <span class="mill-changelog_content_type" ' .
-                                'data-mill-resource-group="Movies" data-mill-method="GET" ' .
-                                'data-mill-path="/movies" ' .
+                                'data-mill-resource-group="Movies" data-mill-method="GET" data-mill-path="/movies" ' .
+                                'data-mill-operation-id="getMovies" ' .
                                 'data-mill-content-type="application/mill.example.movie+json">' .
                                 'application/mill.example.movie+json</span> Content-Type header.',
                             'On <span class="mill-changelog_path" data-mill-resource-group="Movies" ' .
                                 'data-mill-method="POST" data-mill-path="/movies" ' .
+                                'data-mill-operation-id="createMovie" ' .
                                 'data-mill-content-type="application/mill.example.movie+json">/movies</span>, <span ' .
                                 'class="mill-changelog_method" data-mill-resource-group="Movies" ' .
                                 'data-mill-method="POST" data-mill-path="/movies" ' .
+                                'data-mill-operation-id="createMovie" ' .
                                 'data-mill-content-type="application/mill.example.movie+json">POST</span> requests ' .
                                 'now return a <span class="mill-changelog_content_type" ' .
-                                'data-mill-resource-group="Movies" data-mill-method="POST" ' .
-                                'data-mill-path="/movies" ' .
+                                'data-mill-resource-group="Movies" data-mill-method="POST" data-mill-path="/movies" ' .
+                                'data-mill-operation-id="createMovie" ' .
                                 'data-mill-content-type="application/mill.example.movie+json">' .
                                 'application/mill.example.movie+json</span> Content-Type header.'
                         ]
@@ -226,46 +245,54 @@ class JsonTest extends TestCase
                         [
                             'On <span class="mill-changelog_path" data-mill-resource-group="Theaters" ' .
                                 'data-mill-method="GET" data-mill-path="/theaters/{id}" ' .
+                                'data-mill-operation-id="getTheater" ' .
                                 'data-mill-content-type="application/mill.example.theater+json">/theaters/{id}' .
                                 '</span>, <span class="mill-changelog_method" data-mill-resource-group="Theaters" ' .
                                 'data-mill-method="GET" data-mill-path="/theaters/{id}" ' .
+                                'data-mill-operation-id="getTheater" ' .
                                 'data-mill-content-type="application/mill.example.theater+json">GET</span> requests ' .
                                 'now return a <span class="mill-changelog_content_type" ' .
                                 'data-mill-resource-group="Theaters" data-mill-method="GET" ' .
-                                'data-mill-path="/theaters/{id}" ' .
+                                'data-mill-path="/theaters/{id}" data-mill-operation-id="getTheater" ' .
                                 'data-mill-content-type="application/mill.example.theater+json">' .
                                 'application/mill.example.theater+json</span> Content-Type header.',
                             'On <span class="mill-changelog_path" data-mill-resource-group="Theaters" ' .
                                 'data-mill-method="PATCH" data-mill-path="/theaters/{id}" ' .
+                                'data-mill-operation-id="updateTheater" ' .
                                 'data-mill-content-type="application/mill.example.theater+json">/theaters/{id}' .
                                 '</span>, <span class="mill-changelog_method" data-mill-resource-group="Theaters" ' .
                                 'data-mill-method="PATCH" data-mill-path="/theaters/{id}" ' .
+                                'data-mill-operation-id="updateTheater" ' .
                                 'data-mill-content-type="application/mill.example.theater+json">PATCH</span> ' .
                                 'requests now return a <span class="mill-changelog_content_type" ' .
                                 'data-mill-resource-group="Theaters" data-mill-method="PATCH" ' .
-                                'data-mill-path="/theaters/{id}" ' .
+                                'data-mill-path="/theaters/{id}" data-mill-operation-id="updateTheater" ' .
                                 'data-mill-content-type="application/mill.example.theater+json">' .
                                 'application/mill.example.theater+json</span> Content-Type header.',
                             'On <span class="mill-changelog_path" data-mill-resource-group="Theaters" ' .
                                 'data-mill-method="GET" data-mill-path="/theaters" ' .
+                                'data-mill-operation-id="getTheaters" ' .
                                 'data-mill-content-type="application/mill.example.theater+json">/theaters</span>, ' .
                                 '<span class="mill-changelog_method" data-mill-resource-group="Theaters" ' .
                                 'data-mill-method="GET" data-mill-path="/theaters" ' .
+                                'data-mill-operation-id="getTheaters" ' .
                                 'data-mill-content-type="application/mill.example.theater+json">GET</span> requests ' .
                                 'now return a <span class="mill-changelog_content_type" ' .
                                 'data-mill-resource-group="Theaters" data-mill-method="GET" ' .
-                                'data-mill-path="/theaters" ' .
+                                'data-mill-path="/theaters" data-mill-operation-id="getTheaters" ' .
                                 'data-mill-content-type="application/mill.example.theater+json">' .
                                 'application/mill.example.theater+json</span> Content-Type header.',
                             'On <span class="mill-changelog_path" data-mill-resource-group="Theaters" ' .
                                 'data-mill-method="POST" data-mill-path="/theaters" ' .
+                                'data-mill-operation-id="createTheater" ' .
                                 'data-mill-content-type="application/mill.example.theater+json">/theaters</span>, ' .
                                 '<span class="mill-changelog_method" data-mill-resource-group="Theaters" ' .
                                 'data-mill-method="POST" data-mill-path="/theaters" ' .
-                                'data-mill-content-type="application/mill.example.theater+json">POST</span> requests ' .
-                                'now return a <span class="mill-changelog_content_type" ' .
+                                'data-mill-operation-id="createTheater" ' .
+                                'data-mill-content-type="application/mill.example.theater+json">POST</span> ' .
+                                'requests now return a <span class="mill-changelog_content_type" ' .
                                 'data-mill-resource-group="Theaters" data-mill-method="POST" ' .
-                                'data-mill-path="/theaters" ' .
+                                'data-mill-path="/theaters" data-mill-operation-id="createTheater" ' .
                                 'data-mill-content-type="application/mill.example.theater+json">' .
                                 'application/mill.example.theater+json</span> Content-Type header.'
                         ]
@@ -280,17 +307,19 @@ class JsonTest extends TestCase
                         [
                             '<span class="mill-changelog_method" data-mill-resource-group="Theaters" ' .
                                 'data-mill-method="PATCH" data-mill-path="/theaters/{id}" ' .
-                                'data-mill-http-code="403 Forbidden" data-mill-representation="Coded error">PATCH' .
-                                '</span> requests to <span class="mill-changelog_path" ' .
-                                'data-mill-resource-group="Theaters" data-mill-method="PATCH" ' .
-                                'data-mill-path="/theaters/{id}" data-mill-http-code="403 Forbidden" ' .
+                                'data-mill-operation-id="updateTheater" data-mill-http-code="403 Forbidden" ' .
+                                'data-mill-representation="Coded error">PATCH</span> requests to <span ' .
+                                'class="mill-changelog_path" data-mill-resource-group="Theaters" ' .
+                                'data-mill-method="PATCH" data-mill-path="/theaters/{id}" ' .
+                                'data-mill-operation-id="updateTheater" data-mill-http-code="403 Forbidden" ' .
                                 'data-mill-representation="Coded error">/theaters/{id}</span> no longer returns a ' .
                                 '<span class="mill-changelog_http_code" data-mill-resource-group="Theaters" ' .
                                 'data-mill-method="PATCH" data-mill-path="/theaters/{id}" ' .
-                                'data-mill-http-code="403 Forbidden" data-mill-representation="Coded error">403 ' .
-                                'Forbidden</span> with a <span class="mill-changelog_representation" ' .
-                                'data-mill-resource-group="Theaters" data-mill-method="PATCH" ' .
-                                'data-mill-path="/theaters/{id}" data-mill-http-code="403 Forbidden" ' .
+                                'data-mill-operation-id="updateTheater" data-mill-http-code="403 Forbidden" ' .
+                                'data-mill-representation="Coded error">403 Forbidden</span> with a <span ' .
+                                'class="mill-changelog_representation" data-mill-resource-group="Theaters" ' .
+                                'data-mill-method="PATCH" data-mill-path="/theaters/{id}" ' .
+                                'data-mill-operation-id="updateTheater" data-mill-http-code="403 Forbidden" ' .
                                 'data-mill-representation="Coded error">Coded error</span> representation: If ' .
                                 'something cool happened.'
                         ]
@@ -311,13 +340,15 @@ class JsonTest extends TestCase
                             'data-mill-resource-group="Movies">Movies</span> resources have added:',
                         [
                             'A <span class="mill-changelog_parameter" data-mill-resource-group="Movies" ' .
-                                'data-mill-method="PATCH" data-mill-path="/movies/{id}" data-mill-parameter="imdb">' .
-                                'imdb</span> request parameter was added to <span class="mill-changelog_method" ' .
+                                'data-mill-method="PATCH" data-mill-path="/movies/{id}" ' .
+                                'data-mill-operation-id="updateMovie" data-mill-parameter="imdb">imdb</span> request ' .
+                                'parameter was added to <span class="mill-changelog_method" ' .
                                 'data-mill-resource-group="Movies" data-mill-method="PATCH" ' .
-                                'data-mill-path="/movies/{id}" data-mill-parameter="imdb">PATCH</span> on <span ' .
-                                'class="mill-changelog_path" data-mill-resource-group="Movies" ' .
-                                'data-mill-method="PATCH" data-mill-path="/movies/{id}" data-mill-parameter="imdb">' .
-                                '/movies/{id}</span>.'
+                                'data-mill-path="/movies/{id}" data-mill-operation-id="updateMovie" ' .
+                                'data-mill-parameter="imdb">PATCH</span> on <span class="mill-changelog_path" ' .
+                                'data-mill-resource-group="Movies" data-mill-method="PATCH" ' .
+                                'data-mill-path="/movies/{id}" data-mill-operation-id="updateMovie" ' .
+                                'data-mill-parameter="imdb">/movies/{id}</span>.'
                         ]
                     ]
                 ]
@@ -358,19 +389,22 @@ class JsonTest extends TestCase
                                     'for the following HTTP methods:',
                                 [
                                     '<span class="mill-changelog_method" data-mill-resource-group="Movies" ' .
-                                        'data-mill-method="PATCH" data-mill-path="/movies/{id}">PATCH</span>',
+                                        'data-mill-method="PATCH" data-mill-path="/movies/{id}" ' .
+                                        'data-mill-operation-id="updateMovie">PATCH</span>',
                                     '<span class="mill-changelog_method" data-mill-resource-group="Movies" ' .
-                                        'data-mill-method="DELETE" data-mill-path="/movies/{id}">DELETE</span>'
+                                        'data-mill-method="DELETE" data-mill-path="/movies/{id}" ' .
+                                        'data-mill-operation-id="deleteMovie">DELETE</span>'
                                 ]
                             ],
                             'A <span class="mill-changelog_parameter" data-mill-resource-group="Movies" ' .
-                                'data-mill-method="GET" data-mill-path="/movies" data-mill-parameter="page">page' .
-                                '</span> request parameter was added to <span class="mill-changelog_method" ' .
-                                'data-mill-resource-group="Movies" data-mill-method="GET" ' .
-                                'data-mill-path="/movies" data-mill-parameter="page">GET</span> on <span ' .
+                                'data-mill-method="GET" data-mill-path="/movies" ' .
+                                'data-mill-operation-id="getMovies" data-mill-parameter="page">page</span> request ' .
+                                'parameter was added to <span class="mill-changelog_method" ' .
+                                'data-mill-resource-group="Movies" data-mill-method="GET" data-mill-path="/movies" ' .
+                                'data-mill-operation-id="getMovies" data-mill-parameter="page">GET</span> on <span ' .
                                 'class="mill-changelog_path" data-mill-resource-group="Movies" ' .
-                                'data-mill-method="GET" data-mill-path="/movies" data-mill-parameter="page">' .
-                                '/movies</span>.',
+                                'data-mill-method="GET" data-mill-path="/movies" data-mill-operation-id="getMovies" ' .
+                                'data-mill-parameter="page">/movies</span>.',
                             [
                                 'The following parameters have been added to <span class="mill-changelog_method" ' .
                                     'data-mill-resource-group="Movies" data-mill-method="POST" ' .
@@ -433,6 +467,7 @@ class JsonTest extends TestCase
                                                     'resource_group' => 'Movies',
                                                     'method' => 'POST',
                                                     'path' => '/movies',
+                                                    'operation_id' => 'createMovie',
                                                     'http_code' => '201 Created',
                                                     'representation' => false
                                                 ],
@@ -440,6 +475,7 @@ class JsonTest extends TestCase
                                                     'resource_group' => 'Movies',
                                                     'method' => 'POST',
                                                     'path' => '/movies',
+                                                    'operation_id' => 'createMovie',
                                                     'http_code' => '200 OK',
                                                     'representation' => 'Movie'
                                                 ]
@@ -449,6 +485,7 @@ class JsonTest extends TestCase
                                                     'resource_group' => 'Movies',
                                                     'method' => 'GET',
                                                     'path' => '/movies',
+                                                    'operation_id' => 'getMovies',
                                                     'http_code' => '200 OK',
                                                     'representation' => 'Movie'
                                                 ]
@@ -473,38 +510,43 @@ class JsonTest extends TestCase
                                                 'data-mill-resource-group="Movies" data-mill-method="POST" ' .
                                                 'data-mill-path="/movies">POST</span> on <span ' .
                                                 'class="mill-changelog_path" data-mill-resource-group="Movies" ' .
-                                                'data-mill-method="POST" data-mill-path="/movies">/movies</span> now ' .
-                                                'returns the following responses:',
+                                                'data-mill-method="POST" data-mill-path="/movies">/movies</span> ' .
+                                                'now returns the following responses:',
                                             [
                                                 '<span class="mill-changelog_http_code" ' .
                                                     'data-mill-resource-group="Movies" data-mill-method="POST" ' .
-                                                    'data-mill-path="/movies" data-mill-http-code="201 Created" ' .
-                                                    'data-mill-representation="">201 Created</span>',
+                                                    'data-mill-path="/movies" data-mill-operation-id="createMovie" ' .
+                                                    'data-mill-http-code="201 Created" data-mill-representation="">' .
+                                                    '201 Created</span>',
                                                 '<span class="mill-changelog_http_code" ' .
                                                     'data-mill-resource-group="Movies" data-mill-method="POST" ' .
-                                                    'data-mill-path="/movies" data-mill-http-code="200 OK" ' .
-                                                    'data-mill-representation="Movie">200 OK</span> with a <span ' .
+                                                    'data-mill-path="/movies" data-mill-operation-id="createMovie" ' .
+                                                    'data-mill-http-code="200 OK" data-mill-representation="Movie">' .
+                                                    '200 OK</span> with a <span ' .
                                                     'class="mill-changelog_representation" ' .
                                                     'data-mill-resource-group="Movies" data-mill-method="POST" ' .
-                                                    'data-mill-path="/movies" data-mill-http-code="200 OK" ' .
-                                                    'data-mill-representation="Movie">Movie</span> representation'
+                                                    'data-mill-path="/movies" data-mill-operation-id="createMovie" ' .
+                                                    'data-mill-http-code="200 OK" data-mill-representation="Movie">' .
+                                                    'Movie</span> representation'
                                             ]
                                         ],
                                         'On <span class="mill-changelog_path" data-mill-resource-group="Movies" ' .
                                             'data-mill-method="GET" data-mill-path="/movies" ' .
-                                            'data-mill-http-code="200 OK" data-mill-representation="Movie">/movies' .
-                                            '</span>, <span class="mill-changelog_method" ' .
-                                            'data-mill-resource-group="Movies" data-mill-method="GET" ' .
-                                            'data-mill-path="/movies" data-mill-http-code="200 OK" ' .
+                                            'data-mill-operation-id="getMovies" data-mill-http-code="200 OK" ' .
+                                            'data-mill-representation="Movie">/movies</span>, <span ' .
+                                            'class="mill-changelog_method" data-mill-resource-group="Movies" ' .
+                                            'data-mill-method="GET" data-mill-path="/movies" ' .
+                                            'data-mill-operation-id="getMovies" data-mill-http-code="200 OK" ' .
                                             'data-mill-representation="Movie">GET</span> requests now return a ' .
                                             '<span class="mill-changelog_http_code" ' .
                                             'data-mill-resource-group="Movies" data-mill-method="GET" ' .
-                                            'data-mill-path="/movies" data-mill-http-code="200 OK" ' .
-                                            'data-mill-representation="Movie">200 OK</span> with a <span ' .
-                                            'class="mill-changelog_representation" ' .
+                                            'data-mill-path="/movies" data-mill-operation-id="getMovies" ' .
+                                            'data-mill-http-code="200 OK" data-mill-representation="Movie">200 OK' .
+                                            '</span> with a <span class="mill-changelog_representation" ' .
                                             'data-mill-resource-group="Movies" data-mill-method="GET" ' .
-                                            'data-mill-path="/movies" data-mill-http-code="200 OK" ' .
-                                            'data-mill-representation="Movie">Movie</span> representation.'
+                                            'data-mill-path="/movies" data-mill-operation-id="getMovies" ' .
+                                            'data-mill-http-code="200 OK" data-mill-representation="Movie">Movie' .
+                                            '</span> representation.'
                                     ]
                                 ]
                             ]
@@ -525,6 +567,7 @@ class JsonTest extends TestCase
                                                     'resource_group' => 'Movies',
                                                     'method' => 'POST',
                                                     'path' => '/movies',
+                                                    'operation_id' => 'createMovie',
                                                     'http_code' => '201 Created',
                                                     'representation' => false
                                                 ],
@@ -532,6 +575,7 @@ class JsonTest extends TestCase
                                                     'resource_group' => 'Movies',
                                                     'method' => 'POST',
                                                     'path' => '/movies',
+                                                    'operation_id' => 'createMovie',
                                                     'http_code' => '200 OK',
                                                     'representation' => 'Movie'
                                                 ]
@@ -541,6 +585,7 @@ class JsonTest extends TestCase
                                                     'resource_group' => 'Movies',
                                                     'method' => 'GET',
                                                     'path' => '/movies',
+                                                    'operation_id' => 'getMovies',
                                                     'http_code' => '200 OK',
                                                     'representation' => 'Movie'
                                                 ]
@@ -570,33 +615,38 @@ class JsonTest extends TestCase
                                             [
                                                 '<span class="mill-changelog_http_code" ' .
                                                     'data-mill-resource-group="Movies" data-mill-method="POST" ' .
-                                                    'data-mill-path="/movies" data-mill-http-code="201 Created" ' .
-                                                    'data-mill-representation="">201 Created</span>',
+                                                    'data-mill-path="/movies" data-mill-operation-id="createMovie" ' .
+                                                    'data-mill-http-code="201 Created" data-mill-representation="">' .
+                                                    '201 Created</span>',
                                                 '<span class="mill-changelog_http_code" ' .
                                                     'data-mill-resource-group="Movies" data-mill-method="POST" ' .
-                                                    'data-mill-path="/movies" data-mill-http-code="200 OK" ' .
-                                                    'data-mill-representation="Movie">200 OK</span> with a <span ' .
+                                                    'data-mill-path="/movies" data-mill-operation-id="createMovie" ' .
+                                                    'data-mill-http-code="200 OK" data-mill-representation="Movie">' .
+                                                    '200 OK</span> with a <span ' .
                                                     'class="mill-changelog_representation" ' .
                                                     'data-mill-resource-group="Movies" data-mill-method="POST" ' .
-                                                    'data-mill-path="/movies" data-mill-http-code="200 OK" ' .
+                                                    'data-mill-path="/movies" data-mill-operation-id="createMovie" ' .
+                                                    'data-mill-http-code="200 OK" ' .
                                                     'data-mill-representation="Movie">Movie</span> representation'
                                             ]
                                         ],
                                         'On <span class="mill-changelog_path" data-mill-resource-group="Movies" ' .
                                             'data-mill-method="GET" data-mill-path="/movies" ' .
-                                            'data-mill-http-code="200 OK" data-mill-representation="Movie">/movies' .
-                                            '</span>, <span class="mill-changelog_method" ' .
-                                            'data-mill-resource-group="Movies" data-mill-method="GET" ' .
-                                            'data-mill-path="/movies" data-mill-http-code="200 OK" ' .
+                                            'data-mill-operation-id="getMovies" data-mill-http-code="200 OK" ' .
+                                            'data-mill-representation="Movie">/movies</span>, <span ' .
+                                            'class="mill-changelog_method" data-mill-resource-group="Movies" ' .
+                                            'data-mill-method="GET" data-mill-path="/movies" ' .
+                                            'data-mill-operation-id="getMovies" data-mill-http-code="200 OK" ' .
                                             'data-mill-representation="Movie">GET</span> requests no longer return ' .
                                             'a <span class="mill-changelog_http_code" ' .
                                             'data-mill-resource-group="Movies" data-mill-method="GET" ' .
-                                            'data-mill-path="/movies" data-mill-http-code="200 OK" ' .
-                                            'data-mill-representation="Movie">200 OK</span> with a <span ' .
-                                            'class="mill-changelog_representation" ' .
+                                            'data-mill-path="/movies" data-mill-operation-id="getMovies" ' .
+                                            'data-mill-http-code="200 OK" data-mill-representation="Movie">200 OK' .
+                                            '</span> with a <span class="mill-changelog_representation" ' .
                                             'data-mill-resource-group="Movies" data-mill-method="GET" ' .
-                                            'data-mill-path="/movies" data-mill-http-code="200 OK" ' .
-                                            'data-mill-representation="Movie">Movie</span> representation.'
+                                            'data-mill-path="/movies" data-mill-operation-id="getMovies" ' .
+                                            'data-mill-http-code="200 OK" data-mill-representation="Movie">Movie' .
+                                            '</span> representation.'
                                     ]
                                 ]
                             ]

@@ -181,7 +181,8 @@ class Changelog extends Compiler
                             [
                                 'resource_group' => $group,
                                 'method' => $action->getMethod(),
-                                'path' => $action->getPath()->getCleanPath()
+                                'path' => $action->getPath()->getCleanPath(),
+                                'operation_id' => $action->getOperationId()
                             ]
                         );
                     }
@@ -200,6 +201,7 @@ class Changelog extends Compiler
                                     'resource_group' => $group,
                                     'method' => $action->getMethod(),
                                     'path' => $action->getPath()->getCleanPath(),
+                                    'operation_id' => $action->getOperationId(),
                                     'content_type' => $content_type->getContentType()
                                 ]
                             );
@@ -223,7 +225,8 @@ class Changelog extends Compiler
                             $data = [
                                 'resource_group' => $group,
                                 'method' => $action->getMethod(),
-                                'path' => $action->getPath()->getCleanPath()
+                                'path' => $action->getPath()->getCleanPath(),
+                                'operation_id' => $action->getOperationId()
                             ];
 
                             if ($annotation instanceof ParamAnnotation) {
