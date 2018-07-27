@@ -97,9 +97,7 @@ class TagReducer
         $refs = [];
         foreach ($path_refs as $ref) {
             $refs[] = $ref;
-            if (!empty($linked_refs[$ref])) {
-                $refs = array_merge($refs, $linked_refs[$ref]);
-            }
+            $refs = $this->getLinkedRefs($ref, $linked_refs, $refs);
         }
 
         $refs = array_unique($refs);
@@ -112,6 +110,26 @@ class TagReducer
         }
 
         return $specification;
+    }
+
+    /**
+     * @param string $ref
+     * @param array $refs
+     * @param array $linked
+     * @return array
+     */
+    private function getLinkedRefs(string $ref, array $refs, array &$linked = []): array
+    {
+        foreach ($refs[$ref] as $linked_ref) {
+            if (in_array($linked_ref, $linked)) {
+                continue;
+            }
+
+            $linked[] = $linked_ref;
+            $linked = $this->getLinkedRefs($linked_ref, $refs, $linked);
+        }
+
+        return $linked;
     }
 
     /**

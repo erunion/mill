@@ -615,9 +615,23 @@ class OpenApi extends Compiler\Specification
                     $spec['items'] = $this->processDataModel($payload_format, $field);
                 }
             } elseif ($data['type'] === 'array') {
-                $spec['items'] = [
-                    'type' => 'string'
-                ];
+                // @todo Array subtypes are not yet required. https://github.com/vimeo/mill/issues/190
+                if (!empty($data['subtype'])) {
+                    $representation = $this->getRepresentation($data['subtype']);
+                    if ($representation) {
+                        $ref = '#/components/schemas/' . $this->getReferenceName($representation->getLabel());
+
+                        $spec['items']['$ref'] = $ref;
+                    } else {
+                        $spec['items'] = [
+                            'type' => 'string'
+                        ];
+                    }
+                } else {
+                    $spec['items'] = [
+                        'type' => 'string'
+                    ];
+                }
             }
 
             // Request body requirement definitions need to be separate from the item schema.
