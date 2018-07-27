@@ -399,7 +399,7 @@ components:
         cast:
           description: 'Cast. This data requires a bearer token with the `public` scope.'
           items:
-            type: string
+            $ref: '#/components/schemas/person'
           type: array
         content_rating:
           description: 'MPAA rating'
@@ -474,7 +474,7 @@ components:
         theaters:
           description: 'Theaters the movie is currently showing in'
           items:
-            type: string
+            $ref: '#/components/schemas/theater'
           type: array
         uri:
           description: 'Movie URI'
@@ -492,6 +492,33 @@ components:
           type: string
         uri:
           description: 'Person URI'
+          type: string
+    theater:
+      properties:
+        address:
+          description: Address
+          type: string
+        id:
+          description: 'Unique ID'
+          type: number
+        movies:
+          description: 'Movies currently playing'
+          items:
+            $ref: '#/components/schemas/movie'
+          type: array
+        name:
+          description: Name
+          type: string
+        phone_number:
+          description: 'Phone number'
+          type: string
+        showtimes:
+          description: 'Non-movie specific showtimes'
+          items:
+            type: string
+          type: array
+        uri:
+          description: 'Theater URI'
           type: string
 security:
   -

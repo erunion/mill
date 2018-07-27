@@ -263,6 +263,105 @@ components:
         error:
           description: 'User-friendly error message'
           type: string
+    movie:
+      properties:
+        cast:
+          description: 'Cast. This data requires a bearer token with the `public` scope.'
+          items:
+            $ref: '#/components/schemas/person'
+          type: array
+        content_rating:
+          description: 'MPAA rating'
+          enum:
+            - G
+            - NC-17
+            - NR
+            - PG
+            - PG-13
+            - R
+            - UR
+            - X
+          example: G
+          type: string
+        description:
+          description: Description
+          type: string
+        director:
+          allOf:
+            -
+              $ref: '#/components/schemas/person'
+          description: 'Director. This data requires a bearer token with the `public` scope.'
+        external_urls:
+          description: 'External URLs. This data requires a bearer token with the `public` scope.'
+          items:
+            type: object
+            properties:
+              imdb:
+                description: 'IMDB URL. This data requires a bearer token with the `public` scope.'
+                type: string
+              tickets:
+                description: 'Tickets URL. This data requires a bearer token with the `public` scope.'
+                type: string
+                x-mill-vendor-tags:
+                  - 'tag:BUY_TICKETS'
+              trailer:
+                description: 'Trailer URL. This data requires a bearer token with the `public` scope.'
+                type: string
+          type: array
+        genres:
+          description: Genres
+          items:
+            type: string
+          type: array
+        id:
+          description: 'Unique ID'
+          type: number
+        kid_friendly:
+          description: 'Kid friendly?'
+          example: 'false'
+          type: boolean
+        name:
+          description: Name
+          type: string
+        purchase:
+          properties:
+            url:
+              description: 'URL to purchase the film.'
+              type: string
+          type: object
+        rotten_tomatoes_score:
+          description: 'Rotten Tomatoes score'
+          type: number
+        runtime:
+          description: Runtime
+          type: string
+        showtimes:
+          description: 'Non-theater specific showtimes'
+          items:
+            type: string
+          type: array
+        theaters:
+          description: 'Theaters the movie is currently showing in'
+          items:
+            $ref: '#/components/schemas/theater'
+          type: array
+        uri:
+          description: 'Movie URI'
+          type: string
+    person:
+      properties:
+        id:
+          description: 'Unique ID'
+          type: number
+        imdb:
+          description: 'IMDB URL'
+          type: string
+        name:
+          description: Name
+          type: string
+        uri:
+          description: 'Person URI'
+          type: string
     theater:
       properties:
         address:
@@ -274,7 +373,7 @@ components:
         movies:
           description: 'Movies currently playing'
           items:
-            type: string
+            $ref: '#/components/schemas/movie'
           type: array
         name:
           description: Name
