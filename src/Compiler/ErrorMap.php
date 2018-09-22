@@ -31,29 +31,27 @@ class ErrorMap extends Compiler
                     $group = array_shift($parts);
                 }
 
-                foreach ($data['resources'] as $resource_name => $resource) {
-                    /** @var Action\Documentation $action */
-                    foreach ($resource['actions'] as $identifier => $action) {
-                        /** @var ReturnAnnotation|ErrorAnnotation $response */
-                        foreach ($action->getResponses() as $response) {
-                            if (!$response instanceof ErrorAnnotation) {
-                                continue;
-                            }
-
-                            $error_code = $response->getErrorCode();
-                            if (empty($error_code)) {
-                                continue;
-                            }
-
-                            $path = $action->getPath();
-                            $this->error_map[$version][$group][$error_code][] = [
-                                'path' => $path->getCleanPath(),
-                                'method' => $action->getMethod(),
-                                'http_code' => $response->getHttpCode(),
-                                'error_code' => $error_code,
-                                'description' => $response->getDescription()
-                            ];
+                /** @var Action\Documentation $action */
+                foreach ($data['actions'] as $identifier => $action) {
+                    /** @var ReturnAnnotation|ErrorAnnotation $response */
+                    foreach ($action->getResponses() as $response) {
+                        if (!$response instanceof ErrorAnnotation) {
+                            continue;
                         }
+
+                        $error_code = $response->getErrorCode();
+                        if (empty($error_code)) {
+                            continue;
+                        }
+
+                        $path = $action->getPath();
+                        $this->error_map[$version][$group][$error_code][] = [
+                            'path' => $path->getCleanPath(),
+                            'method' => $action->getMethod(),
+                            'http_code' => $response->getHttpCode(),
+                            'error_code' => $error_code,
+                            'description' => $response->getDescription()
+                        ];
                     }
                 }
             }

@@ -13,19 +13,7 @@ class ParserTest extends TestCase
         $class = '\Mill\Examples\Showtimes\Controllers\Movie';
         $docs = (new Parser($class))->getAnnotations();
 
-        $this->assertCount(2, $docs);
-        $this->assertCount(1, $docs['description']);
-        $this->assertCount(1, $docs['label']);
-
-        /** @var \Mill\Parser\Annotations\LabelAnnotation $annotation */
-        $annotation = $docs['label'][0];
-        $this->assertSame('Movies', $annotation->toArray()['label']);
-
-        /** @var \Mill\Parser\Annotations\DescriptionAnnotation $annotation */
-        $annotation = $docs['description'][0];
-        $this->assertSame('Information on a specific movie.
-
-These actions will allow you to pull information on a specific movie.', $annotation->toArray()['description']);
+        $this->assertCount(0, $docs);
     }
 
     /**

@@ -1,13 +1,6 @@
 <?php
 namespace Mill\Examples\Showtimes\Controllers;
 
-/**
- * Information on a specific movie theater.
- *
- * These actions will allow you to pull information on a specific movie theater.
- *
- * @api-label Movie Theaters
- */
 class Theater
 {
     /**

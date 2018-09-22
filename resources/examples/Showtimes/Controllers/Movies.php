@@ -1,9 +1,6 @@
 <?php
 namespace Mill\Examples\Showtimes\Controllers;
 
-/**
- * @api-label Movies
- */
 class Movies
 {
     /**

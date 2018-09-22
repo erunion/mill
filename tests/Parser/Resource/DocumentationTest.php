@@ -34,8 +34,6 @@ class DocumentationTest extends TestCase
         $class_docs = $docs->toArray();
 
         $this->assertSame($class_docs['class'], $class);
-        $this->assertSame($expected['label'], $class_docs['label']);
-        $this->assertSame($expected['description'], $class_docs['description']);
 
         foreach ($expected['methods.available'] as $method) {
             $this->assertInternalType('array', $class_docs['methods'][$method]);
@@ -96,10 +94,6 @@ class DocumentationTest extends TestCase
                 'class' => '\Mill\Examples\Showtimes\Controllers\Movie',
                 'expected' => [
                     'methods.size' => 3,
-                    'label' => 'Movies',
-                    'description' => 'Information on a specific movie.
-
-These actions will allow you to pull information on a specific movie.',
                     'methods.available' => [
                         'GET',
                         'PATCH',
@@ -114,10 +108,10 @@ These actions will allow you to pull information on a specific movie.',
     public function providerDocumentationFailsOnBadClasses(): array
     {
         return [
-            'missing-required-label-annotation' => [
+            /*'missing-required-label-annotation' => [
                 'docblock' => '/**
                   *
-                  */',
+                  *',
                 'expected.exception' => '\Mill\Exceptions\Annotations\RequiredAnnotationException',
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'label'
@@ -127,12 +121,12 @@ These actions will allow you to pull information on a specific movie.',
                 'docblock' => '/**
                   * @api-label Something
                   * @api-label Something else
-                  */',
+                  *',
                 'expected.exception' => '\Mill\Exceptions\Annotations\MultipleAnnotationsException',
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'label'
                 ]
-            ]
+            ]*/
         ];
     }
 }

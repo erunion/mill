@@ -15,12 +15,6 @@ class Documentation implements Arrayable
     /** @var array Array of parsed method documentation for the current resource. */
     protected $methods = [];
 
-    /** @var string Short description/label/title of the resource. */
-    protected $label;
-
-    /** @var null|string Fuller description of what this resource handles. This should normally consist of Markdown. */
-    protected $description = null;
-
     /** @var Parser Current Parser instance. */
     protected $parser;
 
@@ -37,13 +31,11 @@ class Documentation implements Arrayable
      * Parse the instance class into actionable annotations and documentation.
      *
      * @return Documentation
-     * @throws MultipleAnnotationsException
-     * @throws RequiredAnnotationException
      * @throws \Mill\Exceptions\Resource\UnsupportedDecoratorException
      */
     public function parse(): self
     {
-        $annotations = $this->parser->getAnnotations();
+        /*$annotations = $this->parser->getAnnotations();
 
         if (!isset($annotations['label'])) {
             throw RequiredAnnotationException::create('label', $this->class);
@@ -51,15 +43,15 @@ class Documentation implements Arrayable
             throw MultipleAnnotationsException::create('label', $this->class);
         }
 
-        /** @var \Mill\Parser\Annotations\LabelAnnotation $annotation */
+        /** @var \Mill\Parser\Annotations\LabelAnnotation $annotation
         $annotation = reset($annotations['label']);
         $this->label = $annotation->getLabel();
 
         if (!empty($annotations['description'])) {
-            /** @var \Mill\Parser\Annotations\DescriptionAnnotation $annotation */
+            /** @var \Mill\Parser\Annotations\DescriptionAnnotation $annotation
             $annotation = reset($annotations['description']);
             $this->description = $annotation->getDescription();
-        }
+        }*/
 
         return $this;
     }
@@ -157,8 +149,6 @@ class Documentation implements Arrayable
     {
         $data = [
             'class' => $this->class,
-            'description' => $this->description,
-            'label' => $this->label,
             'methods' => []
         ];
 

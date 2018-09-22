@@ -166,112 +166,110 @@ class Changelog extends Compiler
     private function buildResourceChangelog(array $resources = []): void
     {
         foreach ($resources as $group => $data) {
-            foreach ($data['resources'] as $resource_name => $resource) {
-                /** @var Action\Documentation $action */
-                foreach ($resource['actions'] as $identifier => $action) {
-                    // When was this action introduced?
-                    $min_version = $action->getMinimumVersion();
-                    if ($min_version) {
-                        $min_version = $min_version->getMinimumVersion();
+            /** @var Action\Documentation $action */
+            foreach ($data['actions'] as $identifier => $action) {
+                // When was this action introduced?
+                $min_version = $action->getMinimumVersion();
+                if ($min_version) {
+                    $min_version = $min_version->getMinimumVersion();
+                    $this->record(
+                        self::DEFINITION_ADDED,
+                        $min_version,
+                        self::CHANGESET_TYPE_ACTION,
+                        $group,
+                        [
+                            'resource_group' => $group,
+                            'method' => $action->getMethod(),
+                            'path' => $action->getPath()->getCleanPath(),
+                            'operation_id' => $action->getOperationId()
+                        ]
+                    );
+                }
+
+                // Diff action content types.
+                /** @var ContentTypeAnnotation $content_type */
+                foreach ($action->getContentTypes() as $content_type) {
+                    $introduced = $this->getVersionIntroduced($content_type);
+                    if ($introduced) {
                         $this->record(
-                            self::DEFINITION_ADDED,
-                            $min_version,
-                            self::CHANGESET_TYPE_ACTION,
+                            self::DEFINITION_CHANGED,
+                            $introduced,
+                            self::CHANGESET_TYPE_CONTENT_TYPE,
                             $group,
                             [
                                 'resource_group' => $group,
                                 'method' => $action->getMethod(),
                                 'path' => $action->getPath()->getCleanPath(),
-                                'operation_id' => $action->getOperationId()
+                                'operation_id' => $action->getOperationId(),
+                                'content_type' => $content_type->getContentType()
                             ]
                         );
                     }
+                }
 
-                    // Diff action content types.
-                    /** @var ContentTypeAnnotation $content_type */
-                    foreach ($action->getContentTypes() as $content_type) {
-                        $introduced = $this->getVersionIntroduced($content_type);
-                        if ($introduced) {
-                            $this->record(
-                                self::DEFINITION_CHANGED,
-                                $introduced,
-                                self::CHANGESET_TYPE_CONTENT_TYPE,
-                                $group,
-                                [
-                                    'resource_group' => $group,
-                                    'method' => $action->getMethod(),
-                                    'path' => $action->getPath()->getCleanPath(),
-                                    'operation_id' => $action->getOperationId(),
-                                    'content_type' => $content_type->getContentType()
-                                ]
-                            );
+                // Diff action `param`, `return` and `error` annotations.
+                foreach ($action->getAnnotations() as $annotation_name => $annotations) {
+                    /** @var Annotation $annotation */
+                    foreach ($annotations as $annotation) {
+                        if (!$annotation->supportsVersioning()) {
+                            continue;
                         }
-                    }
 
-                    // Diff action `param`, `return` and `error` annotations.
-                    foreach ($action->getAnnotations() as $annotation_name => $annotations) {
-                        /** @var Annotation $annotation */
-                        foreach ($annotations as $annotation) {
-                            if (!$annotation->supportsVersioning()) {
-                                continue;
-                            }
+                        $introduced = $this->getVersionIntroduced($annotation);
+                        $removed = $this->getVersionRemoved($annotation);
+                        if (!$introduced && !$removed) {
+                            continue;
+                        }
 
-                            $introduced = $this->getVersionIntroduced($annotation);
-                            $removed = $this->getVersionRemoved($annotation);
-                            if (!$introduced && !$removed) {
-                                continue;
-                            }
+                        $data = [
+                            'resource_group' => $group,
+                            'method' => $action->getMethod(),
+                            'path' => $action->getPath()->getCleanPath(),
+                            'operation_id' => $action->getOperationId()
+                        ];
 
-                            $data = [
-                                'resource_group' => $group,
-                                'method' => $action->getMethod(),
-                                'path' => $action->getPath()->getCleanPath(),
-                                'operation_id' => $action->getOperationId()
-                            ];
+                        if ($annotation instanceof ParamAnnotation) {
+                            $change_type = self::CHANGESET_TYPE_ACTION_PARAM;
 
-                            if ($annotation instanceof ParamAnnotation) {
-                                $change_type = self::CHANGESET_TYPE_ACTION_PARAM;
+                            /** @var ParamAnnotation $annotation */
+                            $data['parameter'] = $annotation->getField();
+                            $data['description'] = $annotation->getDescription();
+                        } elseif ($annotation instanceof ReturnAnnotation) {
+                            $change_type = self::CHANGESET_TYPE_ACTION_RETURN;
 
-                                /** @var ParamAnnotation $annotation */
-                                $data['parameter'] = $annotation->getField();
-                                $data['description'] = $annotation->getDescription();
-                            } elseif ($annotation instanceof ReturnAnnotation) {
-                                $change_type = self::CHANGESET_TYPE_ACTION_RETURN;
+                            /** @var ReturnAnnotation $annotation */
+                            $data['http_code'] = $annotation->getHttpCode();
 
-                                /** @var ReturnAnnotation $annotation */
-                                $data['http_code'] = $annotation->getHttpCode();
-
-                                if ($annotation->getRepresentation()) {
-                                    $representation = $annotation->getRepresentation();
-
-                                    /** @var Documentation $representation */
-                                    $representation = $this->parsed['representations'][$representation];
-                                    $data['representation'] = $representation->getLabel();
-                                } else {
-                                    $data['representation'] = false;
-                                }
-                            } elseif ($annotation instanceof ErrorAnnotation) {
-                                $change_type = self::CHANGESET_TYPE_ACTION_ERROR;
+                            if ($annotation->getRepresentation()) {
+                                $representation = $annotation->getRepresentation();
 
                                 /** @var Documentation $representation */
-                                $representation = $this->parsed['representations'][$annotation->getRepresentation()];
-
-                                /** @var ErrorAnnotation $annotation */
-                                $data['http_code'] = $annotation->getHttpCode();
+                                $representation = $this->parsed['representations'][$representation];
                                 $data['representation'] = $representation->getLabel();
-                                $data['description'] = $annotation->getDescription();
                             } else {
-                                // This annotation isn't yet supported in changelog compilation.
-                                continue;
+                                $data['representation'] = false;
                             }
+                        } elseif ($annotation instanceof ErrorAnnotation) {
+                            $change_type = self::CHANGESET_TYPE_ACTION_ERROR;
 
-                            if ($introduced) {
-                                $this->record(self::DEFINITION_ADDED, $introduced, $change_type, $group, $data);
-                            }
+                            /** @var Documentation $representation */
+                            $representation = $this->parsed['representations'][$annotation->getRepresentation()];
 
-                            if ($removed) {
-                                $this->record(self::DEFINITION_REMOVED, $removed, $change_type, $group, $data);
-                            }
+                            /** @var ErrorAnnotation $annotation */
+                            $data['http_code'] = $annotation->getHttpCode();
+                            $data['representation'] = $representation->getLabel();
+                            $data['description'] = $annotation->getDescription();
+                        } else {
+                            // This annotation isn't yet supported in changelog compilation.
+                            continue;
+                        }
+
+                        if ($introduced) {
+                            $this->record(self::DEFINITION_ADDED, $introduced, $change_type, $group, $data);
+                        }
+
+                        if ($removed) {
+                            $this->record(self::DEFINITION_REMOVED, $removed, $change_type, $group, $data);
                         }
                     }
                 }
