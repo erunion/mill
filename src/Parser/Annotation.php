@@ -287,6 +287,7 @@ abstract class Annotation implements Arrayable
      * For example on `ParamAnnotation`, this returns `param`.
      *
      * @return string
+     * @psalm-suppress PossiblyFalseArgument
      */
     protected function getAnnotationName(): string
     {
