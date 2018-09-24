@@ -99,7 +99,7 @@ $representation = [
                 'options' => ['GET'],
 
                 /**
-                 * @api-label total (number) - Total number of items on
+                 * @api-data total (number) - Total number of items on
                  *     this connection.
                  */
                 'total' => $user->getAlbums()->total

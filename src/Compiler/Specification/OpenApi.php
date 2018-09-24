@@ -74,53 +74,50 @@ class OpenApi extends Compiler\Specification
                 }
 
                 // Sort the resources so they're alphabetical.
-                ksort($data['resources']);
+                ksort($data['actions']);
 
-                /** @var array $resource */
-                foreach ($data['resources'] as $identifier => $resource) {
-                    /** @var Action\Documentation $action */
-                    foreach ($resource['actions'] as $action) {
-                        $path = $action->getPath();
-                        $method = strtolower($action->getMethod());
-                        $identifier = $path->getCleanPath();
-                        if (!isset($specification['paths'][$identifier])) {
-                            $specification['paths'][$identifier] = [];
-                        }
-
-                        $schema = [
-                            'deprecated' => $path->isDeprecated(),
-                            'summary' => $action->getLabel(),
-                            'description' => $action->getDescription(),
-                            'operationId' => $action->getOperationId(),
-                            'tags' => [
-                                $group
-                            ],
-                            'parameters' => $this->processParameters($action),
-                            'requestBody' => $this->processRequest($action),
-                            'responses' => $this->processResponses($action),
-                            'security' => $this->processSecurity($action)
-                        ];
-
-                        $schema += $this->processExtensions($action, $path);
-
-                        foreach ([
-                            'deprecated',
-                            'description',
-                            'parameters',
-                            'requestBody',
-                            'security',
-                            'x-mill-path-aliased',
-                            'x-mill-path-aliases',
-                            'x-mill-vendor-tags',
-                            'x-mill-visibility-private'
-                        ] as $key) {
-                            if (empty($schema[$key])) {
-                                unset($schema[$key]);
-                            }
-                        }
-
-                        $specification['paths'][$identifier][$method] = $schema;
+                /** @var Action\Documentation $action */
+                foreach ($data['actions'] as $identifier => $action) {
+                    $path = $action->getPath();
+                    $method = strtolower($action->getMethod());
+                    $identifier = $path->getCleanPath();
+                    if (!isset($specification['paths'][$identifier])) {
+                        $specification['paths'][$identifier] = [];
                     }
+
+                    $schema = [
+                        'deprecated' => $path->isDeprecated(),
+                        'summary' => $action->getLabel(),
+                        'description' => $action->getDescription(),
+                        'operationId' => $action->getOperationId(),
+                        'tags' => [
+                            $group
+                        ],
+                        'parameters' => $this->processParameters($action),
+                        'requestBody' => $this->processRequest($action),
+                        'responses' => $this->processResponses($action),
+                        'security' => $this->processSecurity($action)
+                    ];
+
+                    $schema += $this->processExtensions($action, $path);
+
+                    foreach ([
+                        'deprecated',
+                        'description',
+                        'parameters',
+                        'requestBody',
+                        'security',
+                        'x-mill-path-aliased',
+                        'x-mill-path-aliases',
+                        'x-mill-vendor-tags',
+                        'x-mill-visibility-private'
+                    ] as $key) {
+                        if (empty($schema[$key])) {
+                            unset($schema[$key]);
+                        }
+                    }
+
+                    $specification['paths'][$identifier][$method] = $schema;
                 }
             }
 

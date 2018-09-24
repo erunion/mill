@@ -1,8 +1,5 @@
 # Group Movies
 ## Movies [/movie/{id}]
-Information on a specific movie.
-
-These actions will allow you to pull information on a specific movie.
 
 ### Get a single movie. [GET]
 Return information on a specific movie.
@@ -27,9 +24,17 @@ sem malesuada magna mollis euismod.
     + Attributes (Error)
 
 ## Movies [/movies/{id}]
-Information on a specific movie.
 
-These actions will allow you to pull information on a specific movie.
+### Delete a movie. [DELETE]
+Delete a movie.
+
+This action requires a bearer token with the `delete` scope.
+
++ Parameters
+    - `id` (number, required) - Movie ID
++ Response 204 (application/json)
++ Response 404 (application/json)
+    + Attributes (Error)
 
 ### Get a single movie. [GET]
 Return information on a specific movie.
@@ -95,21 +100,7 @@ This action requires a bearer token with the `edit` scope.
 + Response 404 (application/mill.example.movie+json)
     + Attributes (Error)
 
-### Delete a movie. [DELETE]
-Delete a movie.
-
-This action requires a bearer token with the `delete` scope.
-
-+ Parameters
-    - `id` (number, required) - Movie ID
-+ Response 204 (application/json)
-+ Response 404 (application/json)
-    + Attributes (Error)
-
 ## Movies [/movies]
-Information on a specific movie.
-
-These actions will allow you to pull information on a specific movie.
 
 ### Get movies. [GET]
 Returns all movies for a specific location.

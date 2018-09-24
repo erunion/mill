@@ -47,49 +47,45 @@ class ApiBlueprint extends Compiler\Specification
                 $contents .= $this->line();
 
                 // Sort the resources so they're alphabetical.
-                ksort($data['resources']);
+                ksort($data['actions']);
 
                 $resource_contents = [];
 
-                /** @var array $resource */
-                foreach ($data['resources'] as $identifier => $resource) {
-                    /** @var Action\Documentation $action */
-                    foreach ($resource['actions'] as $action) {
-                        $resource_key = sprintf('%s [%s]', $identifier, $action->getPath()->getCleanPath());
-                        if (!isset($resource_contents[$resource_key])) {
-                            $resource_contents[$resource_key] = [
-                                'description' => $resource['description'],
-                                'actions' => []
-                            ];
-                        }
-
-                        $action_contents = '';
-
-                        $description = $action->getDescription();
-                        if (!empty($description)) {
-                            $action_contents .= $description;
-                            $action_contents .= $this->line(2);
-                        }
-
-                        $action_contents .= $this->processScopes($action);
-                        $action_contents .= $this->processParameters($action);
-                        $action_contents .= $this->processRequest($action);
-
-                        $coded_responses = [];
-                        /** @var ReturnAnnotation|ErrorAnnotation $response */
-                        foreach ($action->getResponses() as $response) {
-                            $coded_responses[$response->getHttpCode()][] = $response;
-                        }
-
-                        ksort($coded_responses);
-
-                        foreach ($coded_responses as $http_code => $responses) {
-                            $action_contents .= $this->processResponses($action, $http_code, $responses);
-                        }
-
-                        $action_key = sprintf('%s [%s]', $action->getLabel(), $action->getMethod());
-                        $resource_contents[$resource_key]['actions'][$action_key] = $action_contents;
+                /** @var Action\Documentation $action */
+                foreach ($data['actions'] as $identifier => $action) {
+                    $resource_key = sprintf('%s [%s]', $group, $action->getPath()->getCleanPath());
+                    if (!isset($resource_contents[$resource_key])) {
+                        $resource_contents[$resource_key] = [
+                            'actions' => []
+                        ];
                     }
+
+                    $action_contents = '';
+
+                    $description = $action->getDescription();
+                    if (!empty($description)) {
+                        $action_contents .= $description;
+                        $action_contents .= $this->line(2);
+                    }
+
+                    $action_contents .= $this->processScopes($action);
+                    $action_contents .= $this->processParameters($action);
+                    $action_contents .= $this->processRequest($action);
+
+                    $coded_responses = [];
+                    /** @var ReturnAnnotation|ErrorAnnotation $response */
+                    foreach ($action->getResponses() as $response) {
+                        $coded_responses[$response->getHttpCode()][] = $response;
+                    }
+
+                    ksort($coded_responses);
+
+                    foreach ($coded_responses as $http_code => $responses) {
+                        $action_contents .= $this->processResponses($action, $http_code, $responses);
+                    }
+
+                    $action_key = sprintf('%s [%s]', $action->getLabel(), $action->getMethod());
+                    $resource_contents[$resource_key]['actions'][$action_key] = $action_contents;
                 }
 
                 // Since there are instances where the same resource might be used with multiple endpoints, and on the
@@ -100,11 +96,6 @@ class ApiBlueprint extends Compiler\Specification
                 foreach ($resource_contents as $identifier => $resource) {
                     $contents .= sprintf('## %s', $identifier);
                     $contents .= $this->line();
-
-                    if (!is_null($resource['description'])) {
-                        $contents .= $resource['description'];
-                        $contents .= $this->line();
-                    }
 
                     foreach ($resource['actions'] as $action_identifier => $markdown) {
                         $contents .= $this->line();

@@ -88,7 +88,6 @@ class Compiler
         $resources = [];
         foreach ($this->config->getControllers() as $controller) {
             $docs = (new Resource\Documentation($controller))->parse();
-            $annotations = $docs->toArray();
 
             /** @var \Mill\Parser\Resource\Action\Documentation $method */
             foreach ($docs->getMethods() as $method) {
@@ -105,13 +104,8 @@ class Compiler
                         continue;
                     }
 
-                    $resource_label = $annotations['label'];
-                    if (!isset($resources[$group]['resources'][$resource_label])) {
-                        $resources[$group]['resources'][$resource_label] = [
-                            'label' => $annotations['label'],
-                            'description' => $annotations['description'],
-                            'actions' => []
-                        ];
+                    if (!isset($resources[$group]['actions'])) {
+                        $resources[$group]['actions'] = [];
                     }
 
                     // Set any params that belong to this path on onto this action.
@@ -137,7 +131,7 @@ class Compiler
                     // Hash the action so we don't happen to double up and end up with dupes.
                     $identifier = $action->getPath()->getPath() . '::' . $action->getMethod();
 
-                    $resources[$group]['resources'][$resource_label]['actions'][$identifier] = $action;
+                    $resources[$group]['actions'][$identifier] = $action;
                 }
             }
         }
@@ -158,56 +152,50 @@ class Compiler
     {
         $resources = [];
         foreach ($parsed as $group => $group_data) {
-            foreach ($group_data['resources'] as $resource_label => $resource) {
-                /** @var Resource\Action\Documentation $action */
-                foreach ($resource['actions'] as $identifier => $action) {
-                    // Run through every supported API version and flatten out documentation for it.
-                    foreach ($this->supported_versions as $supported_version) {
-                        $version = $supported_version['version'];
+            /** @var Resource\Action\Documentation $action */
+            foreach ($group_data['actions'] as $identifier => $action) {
+                // Run through every supported API version and flatten out documentation for it.
+                foreach ($this->supported_versions as $supported_version) {
+                    $version = $supported_version['version'];
 
-                        // If we're compiling documentation for a specific version range, and this doesn't fall in
-                        // that, then skip it.
-                        if ($this->version && !$this->version->matches($version)) {
-                            continue;
-                        }
-
-                        // If this method has either a minimum or maximum version specified, and we aren't compiling
-                        // an acceptable version, skip it.
-                        $min_version = $action->getMinimumVersion();
-                        $max_version = $action->getMaximumVersion();
-                        if ($min_version && !$min_version->matches($version)
-                            || $max_version && !$max_version->matches($version)
-                        ) {
-                            continue;
-                        }
-
-                        if (!isset($resources[$version])) {
-                            $resources[$version] = [];
-                        } elseif (!isset($resources[$version][$group])) {
-                            $resources[$version][$group] = [
-                                'resources' => []
-                            ];
-                        }
-
-                        // Filter down the annotations on this action for just those of the current version we're
-                        // compiling documentation for.
-                        $cloned = clone $action;
-                        $cloned->filterAnnotationsForVersion($version);
-
-                        if (!isset($resources[$version][$group]['resources'][$resource_label])) {
-                            $resources[$version][$group]['resources'][$resource_label] = [
-                                'label' => $resource['label'],
-                                'description' => $resource['description'],
-                                'actions' => []
-                            ];
-                        }
-
-                        // Hash the action so we don't happen to double up and end up with dupes, and then remove the
-                        // currently non-hash index from the action array.
-                        $identifier = $cloned->getPath()->getPath() . '::' . $cloned->getMethod();
-
-                        $resources[$version][$group]['resources'][$resource_label]['actions'][$identifier] = $cloned;
+                    // If we're compiling documentation for a specific version range, and this doesn't fall in that,
+                    // then skip it.
+                    if ($this->version && !$this->version->matches($version)) {
+                        continue;
                     }
+
+                    // If this method has either a minimum or maximum version specified, and we aren't compiling an
+                    // acceptable version, skip it.
+                    $min_version = $action->getMinimumVersion();
+                    $max_version = $action->getMaximumVersion();
+                    if ($min_version && !$min_version->matches($version)
+                        || $max_version && !$max_version->matches($version)
+                    ) {
+                        continue;
+                    }
+
+                    if (!isset($resources[$version])) {
+                        $resources[$version] = [];
+                    } elseif (!isset($resources[$version][$group])) {
+                        $resources[$version][$group] = [
+                            'resources' => []
+                        ];
+                    }
+
+                    // Filter down the annotations on this action for just those of the current version we're compiling
+                    // documentation for.
+                    $cloned = clone $action;
+                    $cloned->filterAnnotationsForVersion($version);
+
+                    if (!isset($resources[$version][$group]['actions'])) {
+                        $resources[$version][$group]['actions'] = [];
+                    }
+
+                    // Hash the action so we don't happen to double up and end up with dupes, and then remove the
+                    // currently non-hash index from the action array.
+                    $identifier = $cloned->getPath()->getPath() . '::' . $cloned->getMethod();
+
+                    $resources[$version][$group]['actions'][$identifier] = $cloned;
                 }
             }
         }

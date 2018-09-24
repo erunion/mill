@@ -68,88 +68,70 @@ class CompilerTest extends TestCase
 
         $resources = $resources[$version];
         $this->assertSame($resources, $compiler->getResources($version));
-        foreach ($expected_resources as $group => $data) {
+        foreach ($expected_resources as $group => $expected_group) {
             $this->assertArrayHasKey($group, $resources);
 
-            $actual = $resources[$group];
+            $actual_group = $resources[$group];
 
+            $this->assertSame(array_keys($expected_group['actions']), array_keys($actual_group['actions']));
             $this->assertCount(
-                count($data['resources']),
-                $actual['resources'],
-                $group . ' was not compiled with the right amount of resources.'
+                count($expected_group['actions']),
+                $actual_group['actions'],
+                $group . ' was not compiled with the right amount of resource actions.'
             );
 
-            foreach ($data['resources'] as $expected) {
-                $resource_name = $expected['resource.name'];
+            foreach ($expected_group['actions'] as $expected) {
+                $identifier = $expected['path'] . '::' . $expected['method'];
+                $this->assertArrayHasKey($identifier, $actual_group['actions']);
 
-                $this->assertArrayHasKey($resource_name, $actual['resources']);
-                $actual_resource = $actual['resources'][$resource_name];
+                /** @var Documentation $actual */
+                $actual = $actual_group['actions'][$identifier];
+                $this->assertInstanceOf(Documentation::class, $actual);
 
-                $this->assertSame($expected['resource.name'], $actual_resource['label']);
-                $this->assertSame($expected['description.length'], strlen($actual_resource['description']));
+                // We don't need to test every facet of the compiled MethodDocumentation, because we're doing that in
+                // other tests, we just want to make sure that these actions were grouped and compiled properly.
+                $annotations = $actual->toArray()['annotations'];
 
-                $this->assertSame(array_keys($expected['actions.data']), array_keys($actual_resource['actions']));
-                $this->assertCount(
-                    count($expected['actions.data']),
-                    $actual_resource['actions'],
-                    $group . ' does not have the right amount of actions.'
+                $this->assertSame($expected['method'], $actual->getMethod());
+                $this->assertSame($annotations['path'][0]['path'], $expected['path']);
+                $this->assertSame(
+                    $annotations['path'][0]['visible'],
+                    $expected['path.visible'],
+                    $expected['path'] . '::' . $expected['method']
                 );
 
-                /** @var Documentation $action */
-                foreach ($actual_resource['actions'] as $identifier => $action) {
-                    $this->assertInstanceOf(Documentation::class, $action);
+                if ($expected['pathparam'] === false) {
+                    $this->assertArrayNotHasKey('pathparam', $annotations, $expected['path'] . ' has a path param');
+                } else {
+                    $this->assertSame($annotations['pathparam'], $expected['pathparam']);
+                }
 
-                    // We don't need to test every facet of the compiled MethodDocumentation, because we're doing
-                    // that in other tests, we just want to make sure that these actions were grouped and compiled
-                    // properly.
-                    $annotations = $action->toArray()['annotations'];
-                    $expected_action = $expected['actions.data'][$identifier];
+                $this->assertSame(
+                    $expected['params.keys'],
+                    array_keys($actual->getParameters()),
+                    $identifier . ' does not have the right parameters.'
+                );
 
-                    $this->assertSame($expected_action['method'], $action->getMethod());
-                    $this->assertSame($annotations['path'][0]['path'], $expected_action['path']);
-                    $this->assertSame(
-                        $annotations['path'][0]['visible'],
-                        $expected_action['path.visible'],
-                        $expected_action['path'] . '::' . $expected_action['method']
+                $this->assertSame(
+                    $expected['queryparams.keys'],
+                    array_keys($actual->getQueryParameters()),
+                    $identifier . ' does not have the right query parameters.'
+                );
+
+                // Verify that we've compiled the right public/private/protected annotations for this action.
+                ksort($annotations);
+                $this->assertSame(
+                    array_keys($expected['annotations.sum']),
+                    array_keys($annotations),
+                    $identifier . ' is missing annotations.'
+                );
+
+                foreach ($expected['annotations.sum'] as $name => $sum) {
+                    $this->assertCount(
+                        $sum,
+                        $annotations[$name],
+                        $identifier . ' does not have the right amount of `' . $name . '` annotations.'
                     );
-
-                    if ($expected_action['pathparam'] === false) {
-                        $this->assertArrayNotHasKey(
-                            'pathparam',
-                            $annotations,
-                            $expected_action['path'] . ' has a path param'
-                        );
-                    } else {
-                        $this->assertSame($annotations['pathparam'], $expected_action['pathparam']);
-                    }
-
-                    $this->assertSame(
-                        $expected_action['params.keys'],
-                        array_keys($action->getParameters()),
-                        $identifier . ' does not have the right parameters.'
-                    );
-
-                    $this->assertSame(
-                        $expected_action['queryparams.keys'],
-                        array_keys($action->getQueryParameters()),
-                        $identifier . ' does not have the right query parameters.'
-                    );
-
-                    // Verify that we've compiled the right public/private/protected annotations for this action.
-                    ksort($annotations);
-                    $this->assertSame(
-                        array_keys($expected_action['annotations.sum']),
-                        array_keys($annotations),
-                        $identifier . ' is missing annotations.'
-                    );
-
-                    foreach ($expected_action['annotations.sum'] as $name => $sum) {
-                        $this->assertCount(
-                            $sum,
-                            $annotations[$name],
-                            $identifier . ' does not have the right amount of `' . $name . '` annotations.'
-                        );
-                    }
                 }
             }
         }
@@ -535,32 +517,20 @@ class CompilerTest extends TestCase
                 ]),
                 'expected.resources' => [
                     'Movies' => [
-                        'resources' => [
-                            [
-                                'resource.name' => 'Movies',
-                                'description.length' => 103,
-                                'actions.data' => [
-                                    '/movie/+id::GET' => $actions['/movie/+id::GET'],
-                                    '/movies/+id::GET' => $actions['/movies/+id::GET'],
-                                    '/movies::GET' => $actions['/movies::GET'],
-                                    '/movies::POST' => $actions['/movies::POST']
-                                ]
-                            ]
+                        'actions' => [
+                            '/movie/+id::GET' => $actions['/movie/+id::GET'],
+                            '/movies/+id::GET' => $actions['/movies/+id::GET'],
+                            '/movies::GET' => $actions['/movies::GET'],
+                            '/movies::POST' => $actions['/movies::POST']
                         ]
                     ],
                     'Theaters' => [
-                        'resources' => [
-                            [
-                                'resource.name' => 'Movie Theaters',
-                                'description.length' => 119,
-                                'actions.data' => [
-                                    '/theaters/+id::GET' => $actions['/theaters/+id::GET'],
-                                    '/theaters/+id::PATCH' => $actions['/theaters/+id::PATCH'],
-                                    '/theaters/+id::DELETE' => $actions['/theaters/+id::DELETE'],
-                                    '/theaters::GET' => $actions['/theaters::GET'],
-                                    '/theaters::POST' => $actions['/theaters::POST']
-                                ]
-                            ]
+                        'actions' => [
+                            '/theaters/+id::GET' => $actions['/theaters/+id::GET'],
+                            '/theaters/+id::PATCH' => $actions['/theaters/+id::PATCH'],
+                            '/theaters/+id::DELETE' => $actions['/theaters/+id::DELETE'],
+                            '/theaters::GET' => $actions['/theaters::GET'],
+                            '/theaters::POST' => $actions['/theaters::POST']
                         ]
                     ]
                 ]
@@ -593,30 +563,18 @@ class CompilerTest extends TestCase
                 ]),
                 'expected.resources' => [
                     'Movies' => [
-                        'resources' => [
-                            [
-                                'resource.name' => 'Movies',
-                                'description.length' => 103,
-                                'actions.data' => [
-                                    '/movies/+id::GET' => $actions['/movies/+id::GET'],
-                                    '/movies::GET' => $actions['/movies::GET'],
-                                    '/movies::POST' => $actions['/movies::POST']
-                                ]
-                            ]
+                        'actions' => [
+                            '/movies/+id::GET' => $actions['/movies/+id::GET'],
+                            '/movies::GET' => $actions['/movies::GET'],
+                            '/movies::POST' => $actions['/movies::POST']
                         ]
                     ],
                     'Theaters' => [
-                        'resources' => [
-                            [
-                                'resource.name' => 'Movie Theaters',
-                                'description.length' => 119,
-                                'actions.data' => [
-                                    '/theaters/+id::GET' => $actions['/theaters/+id::GET'],
-                                    '/theaters/+id::PATCH' => $actions['/theaters/+id::PATCH'],
-                                    '/theaters::GET' => $actions['/theaters::GET'],
-                                    '/theaters::POST' => $actions['/theaters::POST']
-                                ]
-                            ]
+                        'actions' => [
+                            '/theaters/+id::GET' => $actions['/theaters/+id::GET'],
+                            '/theaters/+id::PATCH' => $actions['/theaters/+id::PATCH'],
+                            '/theaters::GET' => $actions['/theaters::GET'],
+                            '/theaters::POST' => $actions['/theaters::POST']
                         ]
                     ]
                 ]
@@ -647,51 +605,39 @@ class CompilerTest extends TestCase
                 ]),
                 'expected.resources' => [
                     'Movies' => [
-                        'resources' => [
-                            [
-                                'resource.name' => 'Movies',
-                                'description.length' => 103,
-                                'actions.data' => [
-                                    '/movie/+id::GET' => $actions['/movie/+id::GET'],
-                                    '/movies/+id::GET' => $actions['/movies/+id::GET'],
-                                    '/movies/+id::PATCH' => $actions['/movies/+id::PATCH'],
-                                    '/movies/+id::DELETE' => $actions['/movies/+id::DELETE'],
-                                    '/movies::GET' => call_user_func(function () use ($actions): array {
-                                        $action = $actions['/movies::GET'];
-                                        $action['queryparams.keys'][] = 'page';
-                                        $action['annotations.sum']['queryparam']++;
+                        'actions' => [
+                            '/movie/+id::GET' => $actions['/movie/+id::GET'],
+                            '/movies/+id::GET' => $actions['/movies/+id::GET'],
+                            '/movies/+id::PATCH' => $actions['/movies/+id::PATCH'],
+                            '/movies/+id::DELETE' => $actions['/movies/+id::DELETE'],
+                            '/movies::GET' => call_user_func(function () use ($actions): array {
+                                $action = $actions['/movies::GET'];
+                                $action['queryparams.keys'][] = 'page';
+                                $action['annotations.sum']['queryparam']++;
 
-                                        return $action;
-                                    }),
-                                    '/movies::POST' => call_user_func(function () use ($actions): array {
-                                        $action = $actions['/movies::POST'];
-                                        $action['params.keys'][] = 'imdb';
-                                        $action['params.keys'][] = 'trailer';
+                                return $action;
+                            }),
+                            '/movies::POST' => call_user_func(function () use ($actions): array {
+                                $action = $actions['/movies::POST'];
+                                $action['params.keys'][] = 'imdb';
+                                $action['params.keys'][] = 'trailer';
 
-                                        $action['annotations.sum']['param']++;
-                                        $action['annotations.sum']['param']++;
+                                $action['annotations.sum']['param']++;
+                                $action['annotations.sum']['param']++;
 
-                                        sort($action['params.keys']);
+                                sort($action['params.keys']);
 
-                                        return $action;
-                                    })
-                                ]
-                            ]
+                                return $action;
+                            })
                         ]
                     ],
                     'Theaters' => [
-                        'resources' => [
-                            [
-                                'resource.name' => 'Movie Theaters',
-                                'description.length' => 119,
-                                'actions.data' => [
-                                    '/theaters/+id::GET' => $actions['/theaters/+id::GET'],
-                                    '/theaters/+id::PATCH' => $actions['/theaters/+id::PATCH'],
-                                    '/theaters/+id::DELETE' => $actions['/theaters/+id::DELETE'],
-                                    '/theaters::GET' => $actions['/theaters::GET'],
-                                    '/theaters::POST' => $actions['/theaters::POST']
-                                ]
-                            ]
+                        'actions' => [
+                            '/theaters/+id::GET' => $actions['/theaters/+id::GET'],
+                            '/theaters/+id::PATCH' => $actions['/theaters/+id::PATCH'],
+                            '/theaters/+id::DELETE' => $actions['/theaters/+id::DELETE'],
+                            '/theaters::GET' => $actions['/theaters::GET'],
+                            '/theaters::POST' => $actions['/theaters::POST']
                         ]
                     ]
                 ]
@@ -725,48 +671,36 @@ class CompilerTest extends TestCase
                 ]),
                 'expected.resources' => [
                     'Movies' => [
-                        'resources' => [
-                            [
-                                'resource.name' => 'Movies',
-                                'description.length' => 103,
-                                'actions.data' => [
-                                    '/movies/+id::GET' => $actions['/movies/+id::GET'],
-                                    '/movies/+id::PATCH' => $actions['/movies/+id::PATCH'],
-                                    '/movies::GET' => call_user_func(function () use ($actions): array {
-                                        $action = $actions['/movies::GET'];
-                                        $action['queryparams.keys'][] = 'page';
-                                        $action['annotations.sum']['queryparam']++;
+                        'actions' => [
+                            '/movies/+id::GET' => $actions['/movies/+id::GET'],
+                            '/movies/+id::PATCH' => $actions['/movies/+id::PATCH'],
+                            '/movies::GET' => call_user_func(function () use ($actions): array {
+                                $action = $actions['/movies::GET'];
+                                $action['queryparams.keys'][] = 'page';
+                                $action['annotations.sum']['queryparam']++;
 
-                                        return $action;
-                                    }),
-                                    '/movies::POST' => call_user_func(function () use ($actions): array {
-                                        $action = $actions['/movies::POST'];
-                                        $action['params.keys'][] = 'imdb';
-                                        $action['params.keys'][] = 'trailer';
+                                return $action;
+                            }),
+                            '/movies::POST' => call_user_func(function () use ($actions): array {
+                                $action = $actions['/movies::POST'];
+                                $action['params.keys'][] = 'imdb';
+                                $action['params.keys'][] = 'trailer';
 
-                                        $action['annotations.sum']['param']++;
-                                        $action['annotations.sum']['param']++;
+                                $action['annotations.sum']['param']++;
+                                $action['annotations.sum']['param']++;
 
-                                        sort($action['params.keys']);
+                                sort($action['params.keys']);
 
-                                        return $action;
-                                    })
-                                ]
-                            ]
+                                return $action;
+                            })
                         ]
                     ],
                     'Theaters' => [
-                        'resources' => [
-                            [
-                                'resource.name' => 'Movie Theaters',
-                                'description.length' => 119,
-                                'actions.data' => [
-                                    '/theaters/+id::GET' => $actions['/theaters/+id::GET'],
-                                    '/theaters/+id::PATCH' => $actions['/theaters/+id::PATCH'],
-                                    '/theaters::GET' => $actions['/theaters::GET'],
-                                    '/theaters::POST' => $actions['/theaters::POST']
-                                ]
-                            ]
+                        'actions' => [
+                            '/theaters/+id::GET' => $actions['/theaters/+id::GET'],
+                            '/theaters/+id::PATCH' => $actions['/theaters/+id::PATCH'],
+                            '/theaters::GET' => $actions['/theaters::GET'],
+                            '/theaters::POST' => $actions['/theaters::POST']
                         ]
                     ]
                 ]
@@ -798,49 +732,37 @@ class CompilerTest extends TestCase
                 ]),
                 'expected.resources' => [
                     'Movies' => [
-                        'resources' => [
-                            [
-                                'resource.name' => 'Movies',
-                                'description.length' => 103,
-                                'actions.data' => [
-                                    '/movies/+id::GET' => $actions['/movies/+id::GET'],
-                                    '/movies/+id::PATCH' => $actions['/movies/+id::PATCH'],
-                                    '/movies/+id::DELETE' => $actions['/movies/+id::DELETE'],
-                                    '/movies::GET' => call_user_func(function () use ($actions): array {
-                                        $action = $actions['/movies::GET'];
-                                        $action['queryparams.keys'][] = 'page';
-                                        $action['annotations.sum']['queryparam']++;
+                        'actions' => [
+                            '/movies/+id::GET' => $actions['/movies/+id::GET'],
+                            '/movies/+id::PATCH' => $actions['/movies/+id::PATCH'],
+                            '/movies/+id::DELETE' => $actions['/movies/+id::DELETE'],
+                            '/movies::GET' => call_user_func(function () use ($actions): array {
+                                $action = $actions['/movies::GET'];
+                                $action['queryparams.keys'][] = 'page';
+                                $action['annotations.sum']['queryparam']++;
 
-                                        return $action;
-                                    }),
-                                    '/movies::POST' => call_user_func(function () use ($actions): array {
-                                        $action = $actions['/movies::POST'];
-                                        $action['params.keys'][] = 'imdb';
-                                        $action['params.keys'][] = 'trailer';
+                                return $action;
+                            }),
+                            '/movies::POST' => call_user_func(function () use ($actions): array {
+                                $action = $actions['/movies::POST'];
+                                $action['params.keys'][] = 'imdb';
+                                $action['params.keys'][] = 'trailer';
 
-                                        $action['annotations.sum']['param']++;
-                                        $action['annotations.sum']['param']++;
+                                $action['annotations.sum']['param']++;
+                                $action['annotations.sum']['param']++;
 
-                                        sort($action['params.keys']);
+                                sort($action['params.keys']);
 
-                                        return $action;
-                                    }),
-                                ]
-                            ]
+                                return $action;
+                            }),
                         ]
                     ],
                     'Theaters' => [
-                        'resources' => [
-                            [
-                                'resource.name' => 'Movie Theaters',
-                                'description.length' => 119,
-                                'actions.data' => [
-                                    '/theaters/+id::GET' => $actions['/theaters/+id::GET'],
-                                    '/theaters/+id::PATCH' => $actions['/theaters/+id::PATCH'],
-                                    '/theaters::GET' => $actions['/theaters::GET'],
-                                    '/theaters::POST' => $actions['/theaters::POST']
-                                ]
-                            ]
+                        'actions' => [
+                            '/theaters/+id::GET' => $actions['/theaters/+id::GET'],
+                            '/theaters/+id::PATCH' => $actions['/theaters/+id::PATCH'],
+                            '/theaters::GET' => $actions['/theaters::GET'],
+                            '/theaters::POST' => $actions['/theaters::POST']
                         ]
                     ]
                 ]
@@ -871,60 +793,48 @@ class CompilerTest extends TestCase
                 ]),
                 'expected.resources' => [
                     'Movies' => [
-                        'resources' => [
-                            [
-                                'resource.name' => 'Movies',
-                                'description.length' => 103,
-                                'actions.data' => [
-                                    '/movie/+id::GET' => $actions['/movie/+id::GET'],
-                                    '/movies/+id::GET' => $actions['/movies/+id::GET'],
-                                    '/movies/+id::PATCH' => call_user_func(function () use ($actions): array {
-                                        $action = $actions['/movies/+id::PATCH'];
-                                        $action['params.keys'][] = 'imdb';
+                        'actions' => [
+                            '/movie/+id::GET' => $actions['/movie/+id::GET'],
+                            '/movies/+id::GET' => $actions['/movies/+id::GET'],
+                            '/movies/+id::PATCH' => call_user_func(function () use ($actions): array {
+                                $action = $actions['/movies/+id::PATCH'];
+                                $action['params.keys'][] = 'imdb';
 
-                                        $action['annotations.sum']['param']++;
+                                $action['annotations.sum']['param']++;
 
-                                        sort($action['params.keys']);
+                                sort($action['params.keys']);
 
-                                        return $action;
-                                    }),
-                                    '/movies/+id::DELETE' => $actions['/movies/+id::DELETE'],
-                                    '/movies::GET' => call_user_func(function () use ($actions): array {
-                                        $action = $actions['/movies::GET'];
-                                        $action['queryparams.keys'][] = 'page';
-                                        $action['annotations.sum']['queryparam']++;
+                                return $action;
+                            }),
+                            '/movies/+id::DELETE' => $actions['/movies/+id::DELETE'],
+                            '/movies::GET' => call_user_func(function () use ($actions): array {
+                                $action = $actions['/movies::GET'];
+                                $action['queryparams.keys'][] = 'page';
+                                $action['annotations.sum']['queryparam']++;
 
-                                        return $action;
-                                    }),
-                                    '/movies::POST' => call_user_func(function () use ($actions): array {
-                                        $action = $actions['/movies::POST'];
-                                        $action['params.keys'][] = 'imdb';
-                                        $action['params.keys'][] = 'trailer';
+                                return $action;
+                            }),
+                            '/movies::POST' => call_user_func(function () use ($actions): array {
+                                $action = $actions['/movies::POST'];
+                                $action['params.keys'][] = 'imdb';
+                                $action['params.keys'][] = 'trailer';
 
-                                        $action['annotations.sum']['param']++;
-                                        $action['annotations.sum']['param']++;
+                                $action['annotations.sum']['param']++;
+                                $action['annotations.sum']['param']++;
 
-                                        sort($action['params.keys']);
+                                sort($action['params.keys']);
 
-                                        return $action;
-                                    })
-                                ]
-                            ]
+                                return $action;
+                            })
                         ]
                     ],
                     'Theaters' => [
-                        'resources' => [
-                            [
-                                'resource.name' => 'Movie Theaters',
-                                'description.length' => 119,
-                                'actions.data' => [
-                                    '/theaters/+id::GET' => $actions['/theaters/+id::GET'],
-                                    '/theaters/+id::PATCH' => $actions['/theaters/+id::PATCH'],
-                                    '/theaters/+id::DELETE' => $actions['/theaters/+id::DELETE'],
-                                    '/theaters::GET' => $actions['/theaters::GET'],
-                                    '/theaters::POST' => $actions['/theaters::POST']
-                                ]
-                            ]
+                        'actions' => [
+                            '/theaters/+id::GET' => $actions['/theaters/+id::GET'],
+                            '/theaters/+id::PATCH' => $actions['/theaters/+id::PATCH'],
+                            '/theaters/+id::DELETE' => $actions['/theaters/+id::DELETE'],
+                            '/theaters::GET' => $actions['/theaters::GET'],
+                            '/theaters::POST' => $actions['/theaters::POST']
                         ]
                     ]
                 ]
@@ -954,59 +864,47 @@ class CompilerTest extends TestCase
                 ]),
                 'expected.resources' => [
                     'Movies' => [
-                        'resources' => [
-                            [
-                                'resource.name' => 'Movies',
-                                'description.length' => 103,
-                                'actions.data' => [
-                                    '/movie/+id::GET' => $actions['/movie/+id::GET'],
-                                    '/movies/+id::GET' => $actions['/movies/+id::GET'],
-                                    '/movies/+id::PATCH' => call_user_func(function () use ($actions): array {
-                                        $action = $actions['/movies/+id::PATCH'];
-                                        $action['params.keys'][] = 'imdb';
+                        'actions' => [
+                            '/movie/+id::GET' => $actions['/movie/+id::GET'],
+                            '/movies/+id::GET' => $actions['/movies/+id::GET'],
+                            '/movies/+id::PATCH' => call_user_func(function () use ($actions): array {
+                                $action = $actions['/movies/+id::PATCH'];
+                                $action['params.keys'][] = 'imdb';
 
-                                        $action['annotations.sum']['param']++;
+                                $action['annotations.sum']['param']++;
 
-                                        sort($action['params.keys']);
+                                sort($action['params.keys']);
 
-                                        return $action;
-                                    }),
-                                    '/movies::GET' => call_user_func(function () use ($actions): array {
-                                        $action = $actions['/movies::GET'];
-                                        $action['queryparams.keys'][] = 'page';
-                                        $action['annotations.sum']['queryparam']++;
+                                return $action;
+                            }),
+                            '/movies::GET' => call_user_func(function () use ($actions): array {
+                                $action = $actions['/movies::GET'];
+                                $action['queryparams.keys'][] = 'page';
+                                $action['annotations.sum']['queryparam']++;
 
-                                        return $action;
-                                    }),
-                                    '/movies::POST' => call_user_func(function () use ($actions): array {
-                                        $action = $actions['/movies::POST'];
-                                        $action['params.keys'][] = 'imdb';
-                                        $action['params.keys'][] = 'trailer';
+                                return $action;
+                            }),
+                            '/movies::POST' => call_user_func(function () use ($actions): array {
+                                $action = $actions['/movies::POST'];
+                                $action['params.keys'][] = 'imdb';
+                                $action['params.keys'][] = 'trailer';
 
-                                        $action['annotations.sum']['param']++;
-                                        $action['annotations.sum']['param']++;
+                                $action['annotations.sum']['param']++;
+                                $action['annotations.sum']['param']++;
 
-                                        sort($action['params.keys']);
+                                sort($action['params.keys']);
 
-                                        return $action;
-                                    })
-                                ]
-                            ]
+                                return $action;
+                            })
                         ]
                     ],
                     'Theaters' => [
-                        'resources' => [
-                            [
-                                'resource.name' => 'Movie Theaters',
-                                'description.length' => 119,
-                                'actions.data' => [
-                                    '/theaters/+id::GET' => $actions['/theaters/+id::GET'],
-                                    '/theaters/+id::PATCH' => $actions['/theaters/+id::PATCH'],
-                                    '/theaters/+id::DELETE' => $actions['/theaters/+id::DELETE'],
-                                    '/theaters::GET' => $actions['/theaters::GET'],
-                                    '/theaters::POST' => $actions['/theaters::POST']
-                                ]
-                            ]
+                        'actions' => [
+                            '/theaters/+id::GET' => $actions['/theaters/+id::GET'],
+                            '/theaters/+id::PATCH' => $actions['/theaters/+id::PATCH'],
+                            '/theaters/+id::DELETE' => $actions['/theaters/+id::DELETE'],
+                            '/theaters::GET' => $actions['/theaters::GET'],
+                            '/theaters::POST' => $actions['/theaters::POST']
                         ]
                     ]
                 ]

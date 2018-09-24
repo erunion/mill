@@ -1,9 +1,6 @@
 <?php
 namespace Mill\Examples\Showtimes\Controllers;
 
-/**
- * @api-label Movie Theaters
- */
 class Theaters
 {
     /**

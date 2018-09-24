@@ -96,6 +96,36 @@ paths:
             - create
       x-mill-path-template: /theaters
   '/theaters/{id}':
+    delete:
+      summary: 'Delete a movie theater.'
+      description: 'Delete a movie theater.'
+      operationId: deleteTheater
+      tags:
+        - Theaters
+      parameters:
+        -
+          description: 'Theater ID'
+          in: path
+          name: id
+          required: true
+          schema:
+            type: number
+            example: '1234'
+      responses:
+        204:
+          description: 'Standard request.'
+        404:
+          description: 'If the movie theater could not be found.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          oauth2:
+            - delete
+      x-mill-path-template: /theaters/+id
+      x-mill-visibility-private: true
     get:
       summary: 'Get a single movie theater.'
       description: 'Return information on a specific movie theater.'
@@ -195,36 +225,6 @@ paths:
           oauth2:
             - create
       x-mill-path-template: /theaters/+id
-    delete:
-      summary: 'Delete a movie theater.'
-      description: 'Delete a movie theater.'
-      operationId: deleteTheater
-      tags:
-        - Theaters
-      parameters:
-        -
-          description: 'Theater ID'
-          in: path
-          name: id
-          required: true
-          schema:
-            type: number
-            example: '1234'
-      responses:
-        204:
-          description: 'Standard request.'
-        404:
-          description: 'If the movie theater could not be found.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error'
-      security:
-        -
-          oauth2:
-            - delete
-      x-mill-path-template: /theaters/+id
-      x-mill-visibility-private: true
 components:
   securitySchemes:
     bearer:
