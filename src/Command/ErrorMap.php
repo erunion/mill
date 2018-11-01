@@ -1,7 +1,6 @@
 <?php
 namespace Mill\Command;
 
-use Mill\Application;
 use Mill\Config;
 use Mill\Compiler;
 use Mill\Exceptions\Version\UnrecognizedSchemaException;
@@ -11,7 +10,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ErrorMap extends Application
+class ErrorMap extends \Mill\Command
 {
     /**
      * @return void

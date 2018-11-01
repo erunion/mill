@@ -2,7 +2,6 @@
 namespace Mill\Command;
 
 use League\Flysystem\Filesystem;
-use Mill\Application;
 use Mill\Compiler\Specification\OpenApi;
 use Mill\Config;
 use Mill\Compiler\Specification\ApiBlueprint;
@@ -13,7 +12,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class Compile extends Application
+class Compile extends \Mill\Command
 {
     const FORMAT_API_BLUEPRINT = 'apiblueprint';
     const FORMAT_OPENAPI = 'openapi';
