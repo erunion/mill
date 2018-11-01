@@ -14,7 +14,7 @@ class MinVersionAnnotationTest extends AnnotationTest
      */
     public function testAnnotation(string $content, array $expected): void
     {
-        $annotation = new MinVersionAnnotation($content, __CLASS__, __METHOD__);
+        $annotation = new MinVersionAnnotation($this->getApplication(), $content, __CLASS__, __METHOD__);
         $annotation->process();
 
         $this->assertAnnotation($annotation, $expected);

@@ -8,9 +8,9 @@ class ApiBlueprintTest extends TestCase
 {
     public function testCompilation(): void
     {
-        $control_dir = static::$resourcesDir . 'examples/Showtimes/compiled/';
+        $control_dir = static::RESOURCES_DIR . 'examples/Showtimes/compiled/';
 
-        $compiler = new ApiBlueprint($this->getConfig());
+        $compiler = new ApiBlueprint($this->getApplication());
         $compiled = $compiler->compile();
 
         foreach ($compiled as $version => $section) {
@@ -52,7 +52,7 @@ class ApiBlueprintTest extends TestCase
     {
         $this->getConfig()->addCompilerGroupExclusion('Movies');
 
-        $compiler = new ApiBlueprint($this->getConfig());
+        $compiler = new ApiBlueprint($this->getApplication());
         $compiled = $compiler->compile();
 
         $this->assertSame([

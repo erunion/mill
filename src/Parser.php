@@ -20,12 +20,17 @@ class Parser
     /** @var null|string The current class method that we're parsing. Used to give better error messaging. */
     protected $method;
 
+    /** @var Application */
+    protected $application;
+
     /**
      * @param string $class
+     * @param Application $application
      */
-    public function __construct(string $class)
+    public function __construct(string $class, Application $application)
     {
         $this->class = $class;
+        $this->application = $application;
     }
 
     /**
@@ -202,7 +207,7 @@ class Parser
         }
 
         /** @var Annotation $annotation */
-        $annotation = (new $class($content, $this->class, $this->method, $version))->process();
+        $annotation = (new $class($this->application, $content, $this->class, $this->method, $version))->process();
 
         if (!empty($decorators)) {
             $decorators = explode(':', ltrim($decorators, ':'));

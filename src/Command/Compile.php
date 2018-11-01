@@ -120,9 +120,9 @@ class Compile extends \Mill\Command
 
         $output->writeln('<comment>Compiling controllers and representations...</comment>');
         if ($format === self::FORMAT_API_BLUEPRINT) {
-            $compiler = new ApiBlueprint($config, $version);
+            $compiler = new ApiBlueprint($this->app, $version);
         } else {
-            $compiler = new OpenApi($config, $version);
+            $compiler = new OpenApi($this->app, $version);
             if (!empty($environment)) {
                 $compiler->setEnvironment($environment);
             }

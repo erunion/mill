@@ -74,7 +74,7 @@ class ParamAnnotation extends Annotation
 
         /** @var string $method */
         $method = $this->method;
-        $mson = (new MSON($this->class, $method))->parse($content);
+        $mson = (new MSON($this->class, $method, $this->application->getConfig()))->parse($content);
         $parsed = [
             'field' => $mson->getField(),
             'sample_data' => $mson->getSampleData(),
@@ -98,6 +98,7 @@ class ParamAnnotation extends Annotation
                 /** @return Annotation */
                 function (string $tag) use ($method) {
                     return (new VendorTagAnnotation(
+                        $this->application,
                         $tag,
                         $this->class,
                         $method

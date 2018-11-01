@@ -11,7 +11,7 @@ class ParserTest extends TestCase
     public function testParseAnnotationsOnClassWithNoMethod(): void
     {
         $class = '\Mill\Examples\Showtimes\Controllers\Movie';
-        $docs = (new Parser($class))->getAnnotations();
+        $docs = (new Parser($class, $this->getApplication()))->getAnnotations();
 
         $this->assertCount(0, $docs);
     }
@@ -24,7 +24,7 @@ class ParserTest extends TestCase
     public function testParseAnnotationsOnClassMethod(string $method, array $expected): void
     {
         $class = '\Mill\Examples\Showtimes\Controllers\Movie';
-        $annotations = (new Parser($class))->getAnnotations($method);
+        $annotations = (new Parser($class, $this->getApplication()))->getAnnotations($method);
         if (empty($annotations)) {
             $this->fail('No parsed annotations for ' . $class);
         }
@@ -57,7 +57,7 @@ class ParserTest extends TestCase
           * @api-return:public {ok}
           */');
 
-        $annotations = (new Parser(__CLASS__))->getAnnotations(__METHOD__);
+        $annotations = (new Parser(__CLASS__, $this->getApplication()))->getAnnotations(__METHOD__);
 
         $this->assertArrayHasKey('path', $annotations);
         $this->assertFalse($annotations['path'][0]->isDeprecated());
@@ -69,7 +69,7 @@ class ParserTest extends TestCase
         $class = '\Mill\Examples\Showtimes\Controllers\Movie';
 
         try {
-            (new Parser($class))->getAnnotations('POST');
+            (new Parser($class, $this->getApplication()))->getAnnotations('POST');
         } catch (MethodNotImplementedException $e) {
             $this->assertSame($class, $e->getClass());
             $this->assertSame('POST', $e->getMethod());

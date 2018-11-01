@@ -9,8 +9,10 @@ class JsonTest extends TestCase
 {
     public function testCompiler(): void
     {
-        $compiler = new Json($this->getConfig());
-        $compiler->setChangelog((new Changelog($this->getConfig()))->compile());
+        $application = $this->getApplication();
+
+        $compiler = new Json($application);
+        $compiler->setChangelog((new Changelog($application))->compile());
         $compiled = $compiler->compile();
         $compiled = array_shift($compiled);
         $compiled = json_decode($compiled, true);
@@ -442,7 +444,7 @@ class JsonTest extends TestCase
      */
     public function testCompilerCases(array $changelog, array $expected): void
     {
-        $compiler = new Json($this->getConfig());
+        $compiler = new Json($this->getApplication());
         $compiler->setChangelog($changelog);
         $compiled = $compiler->compile();
         $compiled = array_shift($compiled);

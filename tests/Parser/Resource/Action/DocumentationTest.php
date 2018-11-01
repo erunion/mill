@@ -21,7 +21,7 @@ class DocumentationTest extends TestCase
     public function testParseMethodDocumentation(string $method, array $expected): void
     {
         $class_stub = '\Mill\Examples\Showtimes\Controllers\Movie';
-        $parser = (new Documentation($class_stub, $method))->parse();
+        $parser = (new Documentation($class_stub, $method, $this->getApplication()))->parse();
 
         $this->assertMethodDocumentation($parser, $class_stub, $method, $expected);
     }
@@ -142,7 +142,7 @@ class DocumentationTest extends TestCase
     {
         $this->overrideReadersWithFakeDocblockReturn($docblock);
 
-        $parser = (new Documentation(__CLASS__, __METHOD__))->parse();
+        $parser = (new Documentation(__CLASS__, __METHOD__, $this->getApplication()))->parse();
 
         $docs = $parser->toArray();
         $annotations = $docs['annotations'];
@@ -166,7 +166,7 @@ class DocumentationTest extends TestCase
         $this->overrideReadersWithFakeDocblockReturn($docblock);
 
         try {
-            (new Documentation(__CLASS__, __METHOD__))->parse()->toArray();
+            (new Documentation(__CLASS__, __METHOD__, $this->getApplication()))->parse()->toArray();
         } catch (BaseException $e) {
             if ('\\' . get_class($e) !== $exception) {
                 $this->fail('Unrecognized exception (' . get_class($e) . ') thrown.');

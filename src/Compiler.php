@@ -9,6 +9,9 @@ use Mill\Parser\Version;
 
 class Compiler
 {
+    /** @var Application */
+    protected $application;
+
     /** @var Config */
     protected $config;
 
@@ -42,12 +45,13 @@ class Compiler
     protected $load_vendor_tag_docs = null;
 
     /**
-     * @param Config $config
-     * @param null|Version $version
+     * @param Application $application
+     * @param Version|null $version
      */
-    public function __construct(Config $config, Version $version = null)
+    public function __construct(Application $application, Version $version = null)
     {
-        $this->config = $config;
+        $this->application = $application;
+        $this->config = $application->getConfig();
         $this->version = $version;
 
         $this->supported_versions = $this->config->getApiVersions();
@@ -87,7 +91,7 @@ class Compiler
     {
         $resources = [];
         foreach ($this->config->getControllers() as $controller) {
-            $docs = (new Resource\Documentation($controller))->parse();
+            $docs = (new Resource\Documentation($controller, $this->application))->parse();
 
             /** @var \Mill\Parser\Resource\Action\Documentation $method */
             foreach ($docs->getMethods() as $method) {
@@ -227,7 +231,7 @@ class Compiler
                 }
             }
 
-            $parsed = (new Representation\Documentation($class, $representation['method']))->parse();
+            $parsed = (new Representation\Documentation($class, $representation['method'], $this->application))->parse();
             $parsed->filterAnnotationsForVisibility($this->load_vendor_tag_docs);
 
             $representations[$class] = $parsed;

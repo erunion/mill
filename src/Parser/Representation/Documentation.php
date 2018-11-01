@@ -17,6 +17,9 @@ class Documentation implements Arrayable
     /** @var string Name of the representation class method that we're going to be parsing for documentation. */
     protected $method;
 
+    /** @var Application */
+    protected $application;
+
     /** @var string Short description/label/title of the representation. */
     protected $label;
 
@@ -33,11 +36,13 @@ class Documentation implements Arrayable
     /**
      * @param string $class
      * @param string $method
+     * @param Application $application
      */
-    public function __construct(string $class, string $method)
+    public function __construct(string $class, string $method, Application $application)
     {
         $this->class = $class;
         $this->method = $method;
+        $this->application = $application;
     }
 
     /**
@@ -53,9 +58,9 @@ class Documentation implements Arrayable
      */
     public function parse(): self
     {
-        $annotations = (new Parser($this->class))->setMethod($this->method)->getAnnotations();
+        $annotations = (new Parser($this->class, $this->application))->setMethod($this->method)->getAnnotations();
 
-        $this->representation = (new RepresentationParser($this->class))->getAnnotations($this->method);
+        $this->representation = (new RepresentationParser($this->class, $this->application))->getAnnotations($this->method);
 
         if (empty($annotations)) {
             throw NoAnnotationsException::create($this->class, null);

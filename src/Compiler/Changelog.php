@@ -88,7 +88,7 @@ class Changelog extends Compiler
      */
     public function toJson(): string
     {
-        $json = new Json($this->config);
+        $json = new Json($this->application);
         $json->setChangelog($this->compile());
         $compiled = $json->compile();
 
@@ -105,7 +105,7 @@ class Changelog extends Compiler
      */
     public function toMarkdown(): string
     {
-        $markdown = new Markdown($this->config);
+        $markdown = new Markdown($this->application);
         $markdown->setChangelog($this->compile());
         $compiled = $markdown->compile();
 

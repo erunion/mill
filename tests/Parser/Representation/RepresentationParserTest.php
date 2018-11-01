@@ -20,7 +20,7 @@ class RepresentationParserTest extends TestCase
      */
     public function testParseAnnotations(string $class, string $method, array $expected): void
     {
-        $parser = new RepresentationParser($class);
+        $parser = new RepresentationParser($class, $this->getApplication());
         $annotations = $parser->getAnnotations($method);
 
         $this->assertCount(count($expected['annotations']), $annotations);
@@ -54,14 +54,15 @@ class RepresentationParserTest extends TestCase
 
         $this->overrideReadersWithFakeDocblockReturn($docblock);
 
-        $annotations = (new RepresentationParser(__CLASS__))->getAnnotations(__METHOD__);
+        $annotations = (new RepresentationParser(__CLASS__, $this->getApplication()))->getAnnotations(__METHOD__);
 
         $this->assertEmpty($annotations);
     }
 
     public function testRepresentationWithApiSee(): void
     {
-        $parser = new RepresentationParser('\Mill\Tests\Fixtures\Representations\RepresentationWithOnlyApiSee');
+        $class = '\Mill\Tests\Fixtures\Representations\RepresentationWithOnlyApiSee';
+        $parser = new RepresentationParser($class, $this->getApplication());
         $annotations = $parser->getAnnotations('create');
 
         // We're already asserting that the parser actually parses annotations, we just want to make sure that we
@@ -101,7 +102,7 @@ class RepresentationParserTest extends TestCase
         $this->overrideReadersWithFakeDocblockReturn($docblock);
 
         try {
-            (new RepresentationParser(__CLASS__))->getAnnotations(__METHOD__);
+            (new RepresentationParser(__CLASS__, $this->getApplication()))->getAnnotations(__METHOD__);
         } catch (BaseException $e) {
             if ('\\' . get_class($e) !== $exception) {
                 $this->fail('Unrecognized exception (' . get_class($e) . ') thrown.');
@@ -127,7 +128,7 @@ class RepresentationParserTest extends TestCase
         $this->expectException($exception);
 
         try {
-            (new RepresentationParser($class))->getAnnotations($method);
+            (new RepresentationParser($class, $this->getApplication()))->getAnnotations($method);
         } catch (BaseException $e) {
             if ('\\' . get_class($e) !== $exception) {
                 $this->fail('Unrecognized exception (' . get_class($e) . ') thrown.');
@@ -141,7 +142,7 @@ class RepresentationParserTest extends TestCase
     public function testRepresentationThatHasVersioningAcrossMultipleAnnotations(): void
     {
         $class = '\Mill\Tests\Fixtures\Representations\RepresentationWithVersioningAcrossMultipleAnnotations';
-        $parser = new RepresentationParser($class);
+        $parser = new RepresentationParser($class, $this->getApplication());
         $annotations = $parser->getAnnotations('create');
 
         $this->assertSame([

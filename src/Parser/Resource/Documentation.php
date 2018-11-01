@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Parser\Resource;
 
+use Mill\Application;
 use Mill\Contracts\Arrayable;
 use Mill\Exceptions\Annotations\MultipleAnnotationsException;
 use Mill\Exceptions\Annotations\RequiredAnnotationException;
@@ -15,16 +16,21 @@ class Documentation implements Arrayable
     /** @var array Array of parsed method documentation for the current resource. */
     protected $methods = [];
 
+    /** @var Application */
+    protected $application;
+
     /** @var Parser Current Parser instance. */
     protected $parser;
 
     /**
      * @param string $class
+     * @param Application $application
      */
-    public function __construct(string $class)
+    public function __construct(string $class, Application $application)
     {
         $this->class = $class;
-        $this->parser = new Parser($this->class);
+        $this->application = $application;
+        $this->parser = new Parser($this->class, $application);
     }
 
     /**
@@ -98,7 +104,7 @@ class Documentation implements Arrayable
 
         $this->methods = array_flip($this->parser->getHttpMethods());
         foreach ($this->methods as $method => $val) {
-            $this->methods[$method] = (new Action\Documentation($this->class, $method))->parse();
+            $this->methods[$method] = (new Action\Documentation($this->class, $method, $this->application))->parse();
         }
 
         return $this->methods;

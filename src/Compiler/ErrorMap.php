@@ -90,7 +90,7 @@ class ErrorMap extends Compiler
      */
     public function toMarkdown(): array
     {
-        $markdown = new Markdown($this->config);
+        $markdown = new Markdown($this->application);
         $markdown->setErrorMap($this->compile());
         return $markdown->compile();
     }

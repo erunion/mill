@@ -93,7 +93,7 @@ class ErrorMap extends \Mill\Command
 
         $output->writeln('<comment>Compiling an error map...</comment>');
 
-        $error_map = new Compiler\ErrorMap($config, $version);
+        $error_map = new Compiler\ErrorMap($this->app, $version);
         $error_map->setLoadPrivateDocs($private_docs);
         $error_map->setLoadVendorTagDocs($vendor_tags);
         $markdown = $error_map->toMarkdown();

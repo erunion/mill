@@ -15,7 +15,7 @@ class PathAnnotationTest extends AnnotationTest
      */
     public function testAnnotation(string $content, bool $visible, bool $deprecated, array $expected): void
     {
-        $annotation = new PathAnnotation($content, __CLASS__, __METHOD__);
+        $annotation = new PathAnnotation($this->getApplication(), $content, __CLASS__, __METHOD__);
         $annotation->process();
         $annotation->setVisibility($visible);
         $annotation->setDeprecated($deprecated);
@@ -41,7 +41,7 @@ class PathAnnotationTest extends AnnotationTest
     {
         $this->getConfig()->addPathParamTranslation('movie_id', 'id');
 
-        $annotation = new PathAnnotation('/movies/+movie_id/showtimes', __CLASS__, __METHOD__);
+        $annotation = new PathAnnotation($this->getApplication(), '/movies/+movie_id/showtimes', __CLASS__, __METHOD__);
         $annotation->process();
 
         $this->assertSame('/movies/{id}/showtimes', $annotation->getCleanPath());

@@ -14,7 +14,7 @@ class VendorTagAnnotationTest extends AnnotationTest
      */
     public function testAnnotation(string $content, array $expected): void
     {
-        $annotation = new VendorTagAnnotation($content, __CLASS__, __METHOD__);
+        $annotation = new VendorTagAnnotation($this->getApplication(), $content, __CLASS__, __METHOD__);
         $annotation->process();
 
         $this->assertAnnotation($annotation, $expected);

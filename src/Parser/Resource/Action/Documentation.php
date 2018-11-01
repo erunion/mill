@@ -45,6 +45,9 @@ class Documentation implements Arrayable
     /** @var string Class method we're parsing. */
     protected $method;
 
+    /** @var Application */
+    protected $application;
+
     /** @var string A unique operation ID. */
     protected $operation_id;
 
@@ -66,11 +69,13 @@ class Documentation implements Arrayable
     /**
      * @param string $class
      * @param string $method
+     * @param Application $application
      */
-    public function __construct(string $class, string $method)
+    public function __construct(string $class, string $method, Application $application)
     {
         $this->class = $class;
         $this->method = $method;
+        $this->application = $application;
     }
 
     /**
@@ -87,7 +92,7 @@ class Documentation implements Arrayable
      */
     public function parse(): self
     {
-        $parser = new Parser($this->class);
+        $parser = new Parser($this->class, $this->application);
         $annotations = $parser->getAnnotations($this->method);
 
         if (empty($annotations)) {

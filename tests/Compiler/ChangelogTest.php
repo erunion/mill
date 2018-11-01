@@ -14,7 +14,7 @@ class ChangelogTest extends TestCase
      */
     public function testCompilation(bool $private_objects, ?array $vendor_tags, array $expected): void
     {
-        $compiler = new Changelog($this->getConfig());
+        $compiler = new Changelog($this->getApplication());
         $compiler->setLoadPrivateDocs($private_objects);
         $compiler->setLoadVendorTagDocs($vendor_tags);
         $changelog = $compiler->compile();
@@ -40,7 +40,7 @@ class ChangelogTest extends TestCase
 
     public function testCompilationToJSON(): void
     {
-        $compiler = new Changelog($this->getConfig());
+        $compiler = new Changelog($this->getApplication());
         $changelog = $compiler->toJson();
         $changelog = json_decode($changelog, true);
 

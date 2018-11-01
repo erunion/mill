@@ -27,7 +27,7 @@ abstract class AnnotationTest extends TestCase
             if ($annotation === DataAnnotation::class) {
                 $this->getDataAnnotationFromDocblock($content, __CLASS__);
             } else {
-                (new $annotation($content, __CLASS__, __METHOD__))->process();
+                (new $annotation($this->getApplication(), $content, __CLASS__, __METHOD__))->process();
             }
         } catch (BaseException $e) {
             if (get_class($e) !== $exception) {

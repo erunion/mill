@@ -14,7 +14,7 @@ class ErrorMapTestTest extends TestCase
      */
     public function testCompilation(bool $private_objects, ?array $vendor_tags, array $expected): void
     {
-        $compiler = new ErrorMap($this->getConfig());
+        $compiler = new ErrorMap($this->getApplication());
         $compiler->setLoadPrivateDocs($private_objects);
         $compiler->setLoadVendorTagDocs($vendor_tags);
         $error_map = $compiler->compile();

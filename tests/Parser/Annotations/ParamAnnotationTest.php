@@ -26,7 +26,7 @@ class ParamAnnotationTest extends AnnotationTest
         bool $deprecated,
         array $expected
     ): void {
-        $annotation = new ParamAnnotation($content, __CLASS__, __METHOD__, $version);
+        $annotation = new ParamAnnotation($this->getApplication(), $content, __CLASS__, __METHOD__, $version);
         $annotation->process();
         $annotation->setVisibility($visible);
         $annotation->setDeprecated($deprecated);

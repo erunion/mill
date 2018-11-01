@@ -8,6 +8,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Command extends \Symfony\Component\Console\Command\Command
 {
+    /** @var Application */
+    protected $app;
+
     /** @var \Pimple\Container */
     protected $container;
 
@@ -37,9 +40,8 @@ class Command extends \Symfony\Component\Console\Command\Command
 
         $config_file = realpath($input->getOption('config'));
 
-        $this->container = new Container([
-            'config.path' => $config_file
-        ]);
+        $this->app = new Application($config_file);
+        $this->container = $this->app->getContainer();
 
         return 0;
     }

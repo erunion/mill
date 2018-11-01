@@ -3,6 +3,7 @@ namespace Mill\Tests;
 
 use League\Flysystem\Filesystem;
 use League\Flysystem\Memory\MemoryAdapter;
+use Mill\Application;
 use Mill\Config;
 use Mill\Container;
 use Mill\Exceptions\BaseException;
@@ -12,14 +13,11 @@ use Mill\Parser\Representation\RepresentationParser;
 
 class TestCase extends \PHPUnit\Framework\TestCase
 {
-    /** @var Container */
-    protected static $container;
+    const FIXTURES_DIR = __DIR__ . '/../tests/_fixtures/';
+    const RESOURCES_DIR = __DIR__ . '/../resources/';
 
-    /** @var string */
-    protected static $fixturesDir = __DIR__ . '/../tests/_fixtures/';
-
-    /** @var string */
-    protected static $resourcesDir = __DIR__ . '/../resources/';
+    /** @var Application */
+    protected static $application;
 
     /**
      * @psalm-suppress MissingReturnType
@@ -28,9 +26,9 @@ class TestCase extends \PHPUnit\Framework\TestCase
     {
         parent::setUpBeforeClass();
 
-        $container = new Container([
-            'config.path' => 'mill.xml',
-        ]);
+        $application = new Application('mill.xml');
+
+        $container = $application->getContainer();
 
         // Overwrite the stock library local filesystem with an in-memory file system we'll use for testing.
         $container->extend(
@@ -40,10 +38,20 @@ class TestCase extends \PHPUnit\Framework\TestCase
             }
         );
 
-        $config = file_get_contents(static::$fixturesDir . 'mill.test.xml');
+        $config = file_get_contents(self::FIXTURES_DIR . 'mill.test.xml');
         $container->getFilesystem()->write('mill.xml', $config);
 
-        static::$container = $container;
+        $application->setContainer($container);
+
+        static::$application = $application;
+    }
+
+    /**
+     * @return Application
+     */
+    protected function getApplication(): Application
+    {
+        return static::$application;
     }
 
     /**
@@ -53,7 +61,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
      */
     public function getContainer(): Container
     {
-        return self::$container;
+        return self::$application->getContainer();
     }
 
     /**
@@ -87,7 +95,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
     {
         $tags = Parser::getAnnotationsFromDocblock($docblock)->getTags()->toArray();
 
-        $parser = new RepresentationParser($class);
+        $parser = new RepresentationParser($class, $this->getApplication());
         $parser->setMethod(__METHOD__);
         $annotations = $parser->parseAnnotations($tags, $docblock);
 

@@ -67,7 +67,7 @@ class Changelog extends \Mill\Command
 
         $output->writeln('<comment>Compiling a changelog...</comment>');
 
-        $changelog = new Compiler\Changelog($config);
+        $changelog = new Compiler\Changelog($this->app);
         $changelog->setLoadPrivateDocs($private_docs);
         $changelog->setLoadVendorTagDocs($vendor_tags);
         $markdown = $changelog->toMarkdown();

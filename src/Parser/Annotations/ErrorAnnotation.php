@@ -52,7 +52,7 @@ class ErrorAnnotation extends Annotation
 
         /** @var string $method */
         $method = $this->method;
-        $mson = (new MSON($this->class, $method))->allowAllSubtypes()->parse($content);
+        $mson = (new MSON($this->class, $method, $this->application->getConfig()))->allowAllSubtypes()->parse($content);
         $parsed = [
             'http_code' => $mson->getField(),
             'representation' => $mson->getType(),
@@ -74,6 +74,7 @@ class ErrorAnnotation extends Annotation
                 /** @return Annotation */
                 function (string $tag) use ($method) {
                     return (new VendorTagAnnotation(
+                        $this->application,
                         $tag,
                         $this->class,
                         $method
