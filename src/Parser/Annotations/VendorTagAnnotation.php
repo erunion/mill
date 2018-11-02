@@ -24,7 +24,7 @@ class VendorTagAnnotation extends Annotation
 
         if (!empty($vendor_tag)) {
             // Validate the supplied vendor tag with what has been configured as allowable.
-            $vendor_tags = Container::getConfig()->getVendorTags();
+            $vendor_tags = $this->application->getConfig()->getVendorTags();
             if (!in_array($vendor_tag, $vendor_tags)) {
                 /** @var string $method */
                 $method = $this->method;

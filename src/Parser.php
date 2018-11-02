@@ -68,7 +68,7 @@ class Parser
             $this->method = $method_name;
         }
 
-        $reader = Container::getAnnotationReader();
+        $reader = $this->application->getContainer()->getAnnotationReader();
         $comments = $reader($this->class, $method_name);
 
         if (empty($comments)) {

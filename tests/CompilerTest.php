@@ -158,6 +158,9 @@ class CompilerTest extends TestCase
         }
     }
 
+    /**
+     * @return array
+     */
     public function providerWithVersion(): array
     {
         // Save us the effort of copy and pasting the same base actions over and over.

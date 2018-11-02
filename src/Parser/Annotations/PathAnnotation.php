@@ -44,7 +44,7 @@ class PathAnnotation extends Annotation
         $this->path = $this->required('path');
 
         // If we have any path param translations configured, let's process them.
-        $translations = Container::getConfig()->getPathParamTranslations();
+        $translations = $this->application->getConfig()->getPathParamTranslations();
         foreach ($translations as $from => $to) {
             if (preg_match('/([@#+*!~])' . $from . '(\/|$)/', $this->path, $matches)) {
                 $this->path = preg_replace('/([@#+*!~])' . $from . '(\/|$)/', '$1' . $to . '$2', $this->path);

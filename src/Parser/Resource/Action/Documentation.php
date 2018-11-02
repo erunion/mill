@@ -592,6 +592,23 @@ class Documentation implements Arrayable
     }
 
     /**
+     * Does this action fall within the bounds of a version?
+     *
+     * @param string $version
+     * @return bool
+     */
+    public function fallsWithinVersion(string $version): bool
+    {
+        $min_version = $this->getMinimumVersion();
+        $max_version = $this->getMaximumVersion();
+        if ($min_version && !$min_version->matches($version) || $max_version && !$max_version->matches($version)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Filter down, and return, all annotations on this action to a specific version.
      *
      * @param string $version

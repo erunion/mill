@@ -170,11 +170,7 @@ class Compiler
 
                     // If this method has either a minimum or maximum version specified, and we aren't compiling an
                     // acceptable version, skip it.
-                    $min_version = $action->getMinimumVersion();
-                    $max_version = $action->getMaximumVersion();
-                    if ($min_version && !$min_version->matches($version)
-                        || $max_version && !$max_version->matches($version)
-                    ) {
+                    if (!$action->fallsWithinVersion($version)) {
                         continue;
                     }
 
