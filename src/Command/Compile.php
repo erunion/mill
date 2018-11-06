@@ -135,7 +135,7 @@ class Compile extends \Mill\Command
             )
         );
 
-        $compiled = $compiler->compile();
+        $compiled = $compiler->getCompiled();
         foreach ($compiled as $version => $spec) {
             $version_dir = $output_dir . DIRECTORY_SEPARATOR . $version . DIRECTORY_SEPARATOR;
 

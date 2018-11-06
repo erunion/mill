@@ -1,7 +1,6 @@
 <?php
 namespace Mill\Command;
 
-use Mill\Config;
 use Mill\Compiler;
 use Mill\Exceptions\Version\UnrecognizedSchemaException;
 use Mill\Parser\Version;
@@ -84,9 +83,6 @@ class ErrorMap extends \Mill\Command
                 return 1;
             }
         }
-
-        /** @var Config $config */
-        $config = $this->container['config'];
 
         /** @var \League\Flysystem\Filesystem $filesystem */
         $filesystem = $this->container['filesystem'];

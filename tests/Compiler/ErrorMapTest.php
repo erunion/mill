@@ -17,8 +17,8 @@ class ErrorMapTestTest extends TestCase
         $compiler = new ErrorMap($this->getApplication());
         $compiler->setLoadPrivateDocs($private_objects);
         $compiler->setLoadVendorTagDocs($vendor_tags);
-        $error_map = $compiler->compile();
 
+        $error_map = $compiler->getCompiled();
         $this->assertSame(array_keys($expected), array_keys($error_map));
 
         foreach ($expected as $version => $expected_actions) {
@@ -38,6 +38,9 @@ class ErrorMapTestTest extends TestCase
         }
     }
 
+    /**
+     * @return array
+     */
     public function providerTestCompilation(): array
     {
         // Save us the effort of copy and pasting the same action data over and over.

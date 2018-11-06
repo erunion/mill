@@ -33,7 +33,6 @@ class CompilerTest extends TestCase
         $this->assertSame([
             '\Mill\Examples\Showtimes\Representations\CodedError',
             '\Mill\Examples\Showtimes\Representations\Error',
-            '\Mill\Examples\Showtimes\Representations\Person',
             '\Mill\Examples\Showtimes\Representations\Theater'
         ], array_keys($compiler->getRepresentations($version_obj->getConstraint())));
 

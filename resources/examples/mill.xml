@@ -41,11 +41,11 @@
         <filter>
             <directory name="Showtimes/Representations/" method="create" suffix=".php"  />
 
-            <excludes>
+            <!--excludes>
                 <exclude name="\Mill\Examples\Showtimes\Representations\Error" />
                 <exclude name="\Mill\Examples\Showtimes\Representations\CodedError" />
                 <exclude name="\Mill\Examples\Showtimes\Representations\Representation" />
-            </excludes>
+            </excludes-->
         </filter>
 
         <errors>

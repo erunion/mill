@@ -15,10 +15,9 @@ class ErrorMap extends Compiler
     /**
      * Take compiled API documentation and compile an error map over the life of the API.
      *
-     * @return array
      * @throws \Exception
      */
-    public function compile(): array
+    public function compile(): void
     {
         parent::compile();
 
@@ -78,6 +77,16 @@ class ErrorMap extends Compiler
                 ksort($this->error_map[$version][$group]);
             }
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function getCompiled(): array
+    {
+        if (empty($this->error_map)) {
+            $this->compile();
+        }
 
         return $this->error_map;
     }
@@ -90,8 +99,10 @@ class ErrorMap extends Compiler
      */
     public function toMarkdown(): array
     {
-        $markdown = new Markdown($this->application);
-        $markdown->setErrorMap($this->compile());
-        return $markdown->compile();
+        $markdown = new Markdown($this->application, $this->version);
+        $markdown->setLoadPrivateDocs($this->load_private_docs);
+        $markdown->setLoadVendorTagDocs($this->load_vendor_tag_docs);
+
+        return $markdown->getCompiled();
     }
 }

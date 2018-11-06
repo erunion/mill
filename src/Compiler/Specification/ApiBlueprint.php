@@ -22,14 +22,12 @@ class ApiBlueprint extends Compiler\Specification
      * @return array
      * @throws \Exception
      */
-    public function compile(): array
+    public function compile(): void
     {
         parent::compile();
 
         $group_excludes = $this->config->getCompilerGroupExclusions();
         $resources = $this->getResources();
-
-        $specifications = [];
 
         foreach ($resources as $version => $groups) {
             $this->version = $version;
@@ -109,7 +107,7 @@ class ApiBlueprint extends Compiler\Specification
                 }
 
                 $contents = trim($contents);
-                $specifications[$this->version]['groups'][$group] = $contents;
+                $this->specifications[$this->version]['groups'][$group] = $contents;
             }
 
             // Process representation data structures.
@@ -128,18 +126,16 @@ class ApiBlueprint extends Compiler\Specification
                     $contents .= $this->processMSON($fields, 0);
 
                     $contents = trim($contents);
-                    $specifications[$this->version]['structures'][$identifier] = $contents;
+                    $this->specifications[$this->version]['structures'][$identifier] = $contents;
                 }
             }
 
             // Process the combined file.
-            $specifications[$this->version]['combined'] = $this->processCombinedFile(
-                $specifications[$this->version]['groups'],
-                $specifications[$this->version]['structures']
+            $this->specifications[$this->version]['combined'] = $this->processCombinedFile(
+                $this->specifications[$this->version]['groups'],
+                $this->specifications[$this->version]['structures']
             );
         }
-
-        return $specifications;
     }
 
     /**
