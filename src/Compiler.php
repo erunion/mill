@@ -30,6 +30,12 @@ class Compiler
     /** @var array */
     protected $compiled_representations = [];
 
+    /** @var array */
+    protected $parsed_resources = [];
+
+    /** @var array */
+    protected $parsed_representations = [];
+
     /**
      * A setting to compile documentation for documentation that's been marked, through a `:private` decorator, as
      * private.
@@ -65,24 +71,6 @@ class Compiler
      *
      */
     public function compile(): void
-    {
-        $this->compileResources();
-        foreach ($this->compiled_resources as $version => $groups) {
-            ksort($this->compiled_resources[$version]);
-        }
-
-        //$this->compileRepresentations();
-        foreach ($this->compiled_representations as $version => $data) {
-            ksort($this->compiled_representations[$version]);
-        }
-    }
-
-    /**
-     * Compile resources into a versioned collection.
-     *
-     * @return void
-     */
-    protected function compileResources(): void
     {
         $controllers = $this->config->getControllers();
         foreach ($controllers as $controller) {
@@ -123,6 +111,19 @@ class Compiler
                         $action->incrementOperationId(++$aliases);
                     }
 
+                    // Hash the action so we don't happen to double up and end up with dupes, and then remove the
+                    // currently non-hash index from the action array.
+                    $identifier = $action->getPath()->getPath() . '::' . $action->getMethod();
+
+                    // Store the parsed, but not versioned, action so it can be used during changelog generation.
+                    if (!isset($this->parsed_resources[$group])) {
+                        $this->parsed_resources[$group] = [
+                            'actions' => []
+                        ];
+                    }
+
+                    $this->parsed_resources[$group]['actions'][$identifier] = $action;
+
                     // Run through every supported API version.
                     foreach ($this->supported_versions as $supported_version) {
                         $version = $supported_version['version'];
@@ -143,7 +144,7 @@ class Compiler
                             $this->compiled_resources[$version] = [];
                         } elseif (!isset($this->compiled_resources[$version][$group])) {
                             $this->compiled_resources[$version][$group] = [
-                                'resources' => []
+                                'actions' => []
                             ];
                         }
 
@@ -164,21 +165,27 @@ class Compiler
                             }
                         }
 
-                        if (!isset($this->compiled_resources[$version][$group]['actions'])) {
-                            $this->compiled_resources[$version][$group]['actions'] = [];
-                        }
-
-                        // Hash the action so we don't happen to double up and end up with dupes, and then remove the
-                        // currently non-hash index from the action array.
-                        $identifier = $cloned->getPath()->getPath() . '::' . $cloned->getMethod();
-
                         $this->compiled_resources[$version][$group]['actions'][$identifier] = $cloned;
                     }
                 }
             }
         }
+
+        foreach ($this->compiled_resources as $version => $groups) {
+            ksort($this->compiled_resources[$version]);
+        }
+
+        foreach ($this->compiled_representations as $version => $data) {
+            ksort($this->compiled_representations[$version]);
+        }
     }
 
+    /**
+     * Compile a representation for a supplied API version.
+     *
+     * @param string $version
+     * @param string $representation
+     */
     protected function compileRepresentation(string $version, string $representation): void
     {
         $representations = $this->config->getAllRepresentations();
@@ -206,6 +213,9 @@ class Compiler
 
         $parsed = (new Representation\Documentation($class, $method, $this->application))->parse();
         $parsed->filterAnnotationsForVisibility($this->load_vendor_tag_docs);
+
+        $this->parsed_representations[$class] = clone $parsed;
+
         $parsed->filterRepresentationForVersion($version);
 
         $this->compiled_representations[$version][$class] = $parsed;

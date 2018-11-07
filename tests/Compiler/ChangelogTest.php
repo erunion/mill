@@ -17,8 +17,9 @@ class ChangelogTest extends TestCase
         $compiler = new Changelog($this->getApplication());
         $compiler->setLoadPrivateDocs($private_objects);
         $compiler->setLoadVendorTagDocs($vendor_tags);
-        $changelog = $compiler->compile();
+        $compiler->compile();
 
+        $changelog = $compiler->getChangelog();
         $this->assertSame(array_keys($expected), array_keys($changelog));
 
         foreach ($expected as $version => $expected_changes) {

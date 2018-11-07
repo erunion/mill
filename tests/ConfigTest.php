@@ -134,47 +134,22 @@ class ConfigTest extends TestCase
             '\Mill\Examples\Showtimes\Controllers\Theaters'
         ], $config->getControllers());
 
-        $representations = [
-            'standard' => [
-                '\Mill\Examples\Showtimes\Representations\Movie' => [
-                    'class' => '\Mill\Examples\Showtimes\Representations\Movie',
-                    'method' => 'create'
-                ],
-                '\Mill\Examples\Showtimes\Representations\Person' => [
-                    'class' => '\Mill\Examples\Showtimes\Representations\Person',
-                    'method' => 'create'
-                ],
-                '\Mill\Examples\Showtimes\Representations\Theater' => [
-                    'class' => '\Mill\Examples\Showtimes\Representations\Theater',
-                    'method' => 'create'
-                ]
-            ],
-            'error' => [
-                '\Mill\Examples\Showtimes\Representations\Error' => [
-                    'class' => '\Mill\Examples\Showtimes\Representations\Error',
-                    'method' => 'create',
-                    'needs_error_code' => false
-                ],
-                '\Mill\Examples\Showtimes\Representations\CodedError' => [
-                    'class' => '\Mill\Examples\Showtimes\Representations\CodedError',
-                    'method' => 'create',
-                    'needs_error_code' => true
-                ]
-            ]
-        ];
-
-        $this->assertSame($representations['standard'], $config->getRepresentations());
-        $this->assertSame($representations['error'], $config->getErrorRepresentations());
-        $this->assertSame(
-            array_merge($representations['standard'], $representations['error']),
-            $config->getAllRepresentations()
-        );
-
+        $this->assertCount(6, $config->getAllRepresentations());
+        $this->assertCount(6, $config->getRepresentations());
         $this->assertSame([
-            '\Mill\Examples\Showtimes\Representations\Error',
-            '\Mill\Examples\Showtimes\Representations\CodedError',
-            '\Mill\Examples\Showtimes\Representations\Representation'
-        ], $config->getExcludedRepresentations());
+            '\Mill\Examples\Showtimes\Representations\Error' => [
+                'class' => '\Mill\Examples\Showtimes\Representations\Error',
+                'method' => 'create',
+                'needs_error_code' => false
+            ],
+            '\Mill\Examples\Showtimes\Representations\CodedError' => [
+                'class' => '\Mill\Examples\Showtimes\Representations\CodedError',
+                'method' => 'create',
+                'needs_error_code' => true
+            ]
+        ], $config->getErrorRepresentations());
+
+        $this->assertEmpty($config->getExcludedRepresentations());
 
         $this->assertSame([
             'movie_id' => 'id',

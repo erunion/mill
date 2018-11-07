@@ -36,6 +36,7 @@ class Documentation implements Arrayable
     /**
      * Parse the instance class into actionable annotations and documentation.
      *
+     * @deprecated
      * @return Documentation
      * @throws \Mill\Exceptions\Resource\UnsupportedDecoratorException
      */
