@@ -15,7 +15,7 @@ foreach ([__DIR__ . '/../../../autoload.php', __DIR__ . '/../vendor/autoload.php
 
 use Symfony\Component\Console\Application;
 
-$version = PackageVersions\Versions::getVersion('ocramius/package-versions');
+$version = PackageVersions\Versions::getVersion('vimeo/mill');
 
 $application = new Application('Mill', $version);
 $application->add(new Mill\Command\Changelog);

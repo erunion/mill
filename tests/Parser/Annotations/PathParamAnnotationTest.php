@@ -14,7 +14,7 @@ class PathParamAnnotationTest extends AnnotationTest
      */
     public function testAnnotation(string $param, array $expected): void
     {
-        $annotation = new PathParamAnnotation($param, __CLASS__, __METHOD__, null);
+        $annotation = new PathParamAnnotation($this->getApplication(), $param, __CLASS__, __METHOD__, null);
         $annotation->process();
 
         $this->assertAnnotation($annotation, $expected);

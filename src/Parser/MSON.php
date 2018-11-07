@@ -1,7 +1,7 @@
 <?php
 namespace Mill\Parser;
 
-use Mill\Container;
+use Mill\Config;
 use Mill\Contracts\Arrayable;
 use Mill\Exceptions\Annotations\UnknownErrorRepresentationException;
 use Mill\Exceptions\Annotations\UnsupportedTypeException;
@@ -72,6 +72,9 @@ class MSON implements Arrayable
     /** @var string Controller method that MSON is being parsed from. */
     protected $method;
 
+    /** @var Config */
+    protected $config;
+
     /** @var null|string Name of the field that was parsed out of the MSON content. */
     protected $field = null;
 
@@ -105,11 +108,13 @@ class MSON implements Arrayable
     /**
      * @param string $class
      * @param string $method
+     * @param Config $config
      */
-    public function __construct(string $class, string $method)
+    public function __construct(string $class, string $method, Config $config)
     {
         $this->class = $class;
         $this->method = $method;
+        $this->config = $config;
     }
 
     /**
@@ -186,17 +191,15 @@ class MSON implements Arrayable
 
         // Verify that the supplied type, and any subtype if present, is supported.
         if (!empty($this->type)) {
-            $config = Container::getConfig();
-
             if (!in_array(strtolower($this->type), self::SUPPORTED_TYPES)) {
                 try {
                     // If we're allowing all subtypes, then we're dealing with error states and the `@api-error`
                     // annotation, so we should look at error representations instead here.
                     if ($this->allow_all_subtypes) {
-                        $config->doesErrorRepresentationExist($this->type);
+                        $this->config->doesErrorRepresentationExist($this->type);
                     } else {
                         // If this isn't a valid representation, then it's an invalid type.
-                        $config->doesRepresentationExist($this->type);
+                        $this->config->doesRepresentationExist($this->type);
                     }
                 } catch (UnconfiguredRepresentationException $e) {
                     throw UnsupportedTypeException::create($content, $this->class, $this->method);
@@ -211,7 +214,7 @@ class MSON implements Arrayable
                         if (!in_array(strtolower($this->subtype), self::SUPPORTED_TYPES)) {
                             try {
                                 // If this isn't a valid representation, then it's an invalid type.
-                                $config->doesRepresentationExist($this->subtype);
+                                $this->config->doesRepresentationExist($this->subtype);
                             } catch (UnconfiguredRepresentationException $e) {
                                 throw UnsupportedTypeException::create($content, $this->class, $this->method);
                             }

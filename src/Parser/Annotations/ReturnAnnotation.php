@@ -65,7 +65,7 @@ class ReturnAnnotation extends Annotation
                 //
                 // If the class doesn't exist, this method call will throw an exception back out.
                 try {
-                    Container::getConfig()->doesRepresentationExist($representation);
+                    $this->application->getConfig()->doesRepresentationExist($representation);
                 } catch (UnconfiguredRepresentationException $e) {
                     /** @var string $method */
                     $method = $this->method;

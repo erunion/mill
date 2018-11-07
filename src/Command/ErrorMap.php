@@ -1,8 +1,6 @@
 <?php
 namespace Mill\Command;
 
-use Mill\Application;
-use Mill\Config;
 use Mill\Compiler;
 use Mill\Exceptions\Version\UnrecognizedSchemaException;
 use Mill\Parser\Version;
@@ -11,7 +9,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ErrorMap extends Application
+class ErrorMap extends \Mill\Command
 {
     /**
      * @return void
@@ -64,13 +62,24 @@ class ErrorMap extends Application
     {
         parent::execute($input, $output);
 
-        $private_docs = $input->getOption('private');
-        $vendor_tags = $input->getOption('vendor_tag');
-        $output_dir = realpath($input->getArgument('output'));
         $version = $input->getOption('constraint');
 
-        $private_docs = ($private_docs === true || strtolower($private_docs) == 'true') ? true : false;
+        /** @var array|null $vendor_tags */
+        $vendor_tags = $input->getOption('vendor_tag');
         $vendor_tags = (!empty($vendor_tags)) ? $vendor_tags : null;
+
+        /** @var string $output_dir */
+        $output_dir = $input->getArgument('output');
+        $output_dir = realpath($output_dir);
+
+        $private_docs = $input->getOption('private');
+        if (is_bool($private_docs) && $private_docs === true) {
+            $private_docs = true;
+        } elseif (is_string($private_docs) && strtolower($private_docs) == 'true') {
+            $private_docs = true;
+        } else {
+            $private_docs = false;
+        }
 
         if ($input->getOption('default')) {
             $version = $this->container['config']->getDefaultApiVersion();
@@ -86,15 +95,12 @@ class ErrorMap extends Application
             }
         }
 
-        /** @var Config $config */
-        $config = $this->container['config'];
-
         /** @var \League\Flysystem\Filesystem $filesystem */
         $filesystem = $this->container['filesystem'];
 
         $output->writeln('<comment>Compiling an error map...</comment>');
 
-        $error_map = new Compiler\ErrorMap($config, $version);
+        $error_map = new Compiler\ErrorMap($this->app, $version);
         $error_map->setLoadPrivateDocs($private_docs);
         $error_map->setLoadVendorTagDocs($vendor_tags);
         $markdown = $error_map->toMarkdown();

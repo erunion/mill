@@ -17,7 +17,7 @@ class DocumentationTest extends TestCase
      */
     public function testParseDocumentationReturnsRepresentation(string $class, string $method, array $expected): void
     {
-        $parsed = (new Documentation($class, $method))->parse();
+        $parsed = (new Documentation($class, $method, $this->getApplication()))->parse();
         $representation = $parsed->toArray();
 
         $this->assertSame($class, $parsed->getClass());
@@ -56,7 +56,7 @@ class DocumentationTest extends TestCase
     ): void {
         $this->expectException($exception);
 
-        (new Documentation($class, $method))->parse();
+        (new Documentation($class, $method, $this->getApplication()))->parse();
     }
 
     public function providerParseDocumentationReturnsRepresentation(): array

@@ -8,10 +8,10 @@ class OpenApiTest extends TestCase
 {
     public function testCompilation(): void
     {
-        $control_dir = static::$resourcesDir . 'examples/Showtimes/compiled/';
+        $control_dir = static::RESOURCES_DIR . 'examples/Showtimes/compiled/';
 
-        $compiler = new OpenApi($this->getConfig());
-        $compiled = $compiler->compile();
+        $compiler = new OpenApi($this->getApplication());
+        $compiled = $compiler->getCompiled();
 
         foreach ($compiled as $version => $spec) {
             $version_dir = $control_dir . $version . DIRECTORY_SEPARATOR . 'openapi';
@@ -56,8 +56,8 @@ class OpenApiTest extends TestCase
     {
         $this->getConfig()->addCompilerGroupExclusion('Movies');
 
-        $compiler = new OpenApi($this->getConfig());
-        $compiled = $compiler->compile();
+        $compiler = new OpenApi($this->getApplication());
+        $compiled = $compiler->getCompiled();
 
         $this->assertSame([
             '1.0',

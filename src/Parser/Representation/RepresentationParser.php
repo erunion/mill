@@ -39,7 +39,7 @@ class RepresentationParser extends Parser
         /** @var string method */
         $this->method = $method_name;
 
-        $reader = Container::getRepresentationAnnotationReader();
+        $reader = $this->application->getContainer()->getRepresentationAnnotationReader();
         $code = $reader($this->class, $this->method);
 
         $annotations = $this->parse($code);
@@ -97,7 +97,7 @@ class RepresentationParser extends Parser
                     break;
 
                 case 'scope':
-                    $scopes[] = (new ScopeAnnotation($content, $this->class, $method))->process();
+                    $scopes[] = (new ScopeAnnotation($this->application, $content, $this->class, $method))->process();
                     break;
 
                 case 'see':
@@ -111,7 +111,7 @@ class RepresentationParser extends Parser
         }
 
         foreach ($data as $content) {
-            $annotation = new DataAnnotation($content, $this->class, $method, $version);
+            $annotation = new DataAnnotation($this->application, $content, $this->class, $method, $version);
             $annotation->process();
             if (!empty($scopes)) {
                 $annotation->setScopes($scopes);
@@ -132,7 +132,7 @@ class RepresentationParser extends Parser
 
                 // Pass in the current array (by reference) of found annotations that we have so we can do depth
                 // traversal for version and  requirements of any implied children, by way of dot-notation.
-                $parser = new self($see_class);
+                $parser = new self($see_class, $this->application);
                 $see_annotations = $parser->getAnnotations($see_method);
 
                 /** @var DataAnnotation $annotation */

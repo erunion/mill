@@ -18,7 +18,7 @@ class ReturnAnnotationTest extends AnnotationTest
      */
     public function testAnnotation(string $content, bool $visible, $version, array $expected): void
     {
-        $annotation = new ReturnAnnotation($content, __CLASS__, __METHOD__, $version);
+        $annotation = new ReturnAnnotation($this->getApplication(), $content, __CLASS__, __METHOD__, $version);
         $annotation->process();
         $annotation->setVisibility($visible);
 

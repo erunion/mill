@@ -4,33 +4,20 @@ namespace Mill\Compiler\ErrorMap\Formats;
 use Mill\Compiler;
 use Mill\Compiler\Traits;
 
-class Markdown extends Compiler
+class Markdown extends Compiler\ErrorMap
 {
     use Traits\Markdown;
 
-    /** @var array Compiled error map. */
-    protected $error_map = [];
-
-    /**
-     * Set the current error map we're going to build a representation for.
-     *
-     * @param array $error_map
-     * @return Markdown
-     */
-    public function setErrorMap(array $error_map = []): self
-    {
-        $this->error_map = $error_map;
-        return $this;
-    }
+    /** @var array */
+    protected $markdown = [];
 
     /**
      * Take compiled API documentation and convert it into a Markdown-based error map over the life of the API.
      *
-     * @return array
      */
-    public function compile(): array
+    public function compile(): void
     {
-        $markdown = [];
+        parent::compile();
 
         foreach ($this->error_map as $version => $groups) {
             $content = '';
@@ -71,11 +58,19 @@ class Markdown extends Compiler
                 $content .= $this->line(1);
             }
 
-            $content = trim($content);
+            $this->markdown[$version] = trim($content);
+        }
+    }
 
-            $markdown[$version] = $content;
+    /**
+     * @return array
+     */
+    public function getCompiled(): array
+    {
+        if (empty($this->markdown)) {
+            $this->compile();
         }
 
-        return $markdown;
+        return $this->markdown;
     }
 }

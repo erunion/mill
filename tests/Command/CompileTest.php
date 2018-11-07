@@ -72,7 +72,7 @@ class CompileTest extends \PHPUnit\Framework\TestCase
             $this->assertFileEquals(
                 $control_dir . '/' . $version . '/openapi/api.yaml',
                 $output_dir . '/' . $version . '/openapi/api.yaml',
-                'Compiled OpenAPI spec for version `' . $version . ' does not match.'
+                'Compiled OpenAPI spec for version `' . $version . '` does not match.'
             );
 
             foreach (self::RESOURCES as $name) {
@@ -135,9 +135,17 @@ class CompileTest extends \PHPUnit\Framework\TestCase
 
         foreach (self::VERSIONS as $version) {
             foreach (self::REPRESENTATIONS as $name) {
+                $output_file = $output_dir . '/' . $version . '/apiblueprint/representations/' . $name . '.apib';
+
+                // Coded error is not available under 1.1.2
+                if ($name === 'Coded error' && $version === '1.1.2') {
+                    $this->assertFileNotExists($output_file);
+                    continue;
+                }
+
                 $this->assertFileEquals(
                     $control_dir . '/' . $version . '/apiblueprint/representations/' . $name . '.apib',
-                    $output_dir . '/' . $version . '/apiblueprint/representations/' . $name . '.apib',
+                    $output_file,
                     'Compiled representation `' . $name . '.apib` for version `' . $version . '` does not match.'
                 );
             }
@@ -154,6 +162,8 @@ class CompileTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider providerFormats
+     * @param string $format
+     * @param string $format_name
      */
     public function testCommandWithDefaultVersion(string $format, string $format_name): void
     {
@@ -173,6 +183,8 @@ class CompileTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider providerFormats
+     * @param string $format
+     * @param string $format_name
      */
     public function testCommandWithSpecificConstraint(string $format, string $format_name): void
     {

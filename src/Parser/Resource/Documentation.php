@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Parser\Resource;
 
+use Mill\Application;
 use Mill\Contracts\Arrayable;
 use Mill\Exceptions\Annotations\MultipleAnnotationsException;
 use Mill\Exceptions\Annotations\RequiredAnnotationException;
@@ -15,45 +16,21 @@ class Documentation implements Arrayable
     /** @var array Array of parsed method documentation for the current resource. */
     protected $methods = [];
 
+    /** @var Application */
+    protected $application;
+
     /** @var Parser Current Parser instance. */
     protected $parser;
 
     /**
      * @param string $class
+     * @param Application $application
      */
-    public function __construct(string $class)
+    public function __construct(string $class, Application $application)
     {
         $this->class = $class;
-        $this->parser = new Parser($this->class);
-    }
-
-    /**
-     * Parse the instance class into actionable annotations and documentation.
-     *
-     * @return Documentation
-     * @throws \Mill\Exceptions\Resource\UnsupportedDecoratorException
-     */
-    public function parse(): self
-    {
-        /*$annotations = $this->parser->getAnnotations();
-
-        if (!isset($annotations['label'])) {
-            throw RequiredAnnotationException::create('label', $this->class);
-        } elseif (count($annotations['label']) > 1) {
-            throw MultipleAnnotationsException::create('label', $this->class);
-        }
-
-        /** @var \Mill\Parser\Annotations\LabelAnnotation $annotation
-        $annotation = reset($annotations['label']);
-        $this->label = $annotation->getLabel();
-
-        if (!empty($annotations['description'])) {
-            /** @var \Mill\Parser\Annotations\DescriptionAnnotation $annotation
-            $annotation = reset($annotations['description']);
-            $this->description = $annotation->getDescription();
-        }*/
-
-        return $this;
+        $this->application = $application;
+        $this->parser = new Parser($this->class, $application);
     }
 
     /**
@@ -98,7 +75,7 @@ class Documentation implements Arrayable
 
         $this->methods = array_flip($this->parser->getHttpMethods());
         foreach ($this->methods as $method => $val) {
-            $this->methods[$method] = (new Action\Documentation($this->class, $method))->parse();
+            $this->methods[$method] = (new Action\Documentation($this->class, $method, $this->application))->parse();
         }
 
         return $this->methods;

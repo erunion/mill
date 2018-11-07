@@ -15,7 +15,7 @@ class ContentTypeAnnotationTest extends AnnotationTest
      */
     public function testAnnotation(string $content, ?Version $version, array $expected): void
     {
-        $annotation = new ContentTypeAnnotation($content, __CLASS__, __METHOD__, $version);
+        $annotation = new ContentTypeAnnotation($this->getApplication(), $content, __CLASS__, __METHOD__, $version);
         $annotation->process();
 
         $this->assertAnnotation($annotation, $expected);

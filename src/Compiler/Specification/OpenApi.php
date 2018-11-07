@@ -29,17 +29,14 @@ class OpenApi extends Compiler\Specification
      * @psalm-suppress InvalidScalarArgument
      * @psalm-suppress PossiblyUndefinedVariable
      * @psalm-suppress PossiblyUndefinedArrayOffset
-     * @return array
      * @throws \Exception
      */
-    public function compile(): array
+    public function compile(): void
     {
         parent::compile();
 
         $group_excludes = $this->config->getCompilerGroupExclusions();
         $resources = $this->getResources();
-
-        $specifications = [];
 
         foreach ($resources as $version => $groups) {
             $this->version = $version;
@@ -140,10 +137,8 @@ class OpenApi extends Compiler\Specification
                 ksort($specification['components']['schemas']);
             }
 
-            $specifications[$this->version] = $specification;
+            $this->specifications[$this->version] = $specification;
         }
-
-        return $specifications;
     }
 
     /**
@@ -383,7 +378,7 @@ class OpenApi extends Compiler\Specification
             $response = array_shift($responses);
             $representation = $response->getRepresentation();
             $representations = $this->getRepresentations($this->version);
-            if (isset($representations[$representation])) {
+            if ($representation && isset($representations[$representation])) {
                 /** @var Documentation $docs */
                 $docs = $representations[$representation];
                 $fields = $docs->getExplodedContentDotNotation();

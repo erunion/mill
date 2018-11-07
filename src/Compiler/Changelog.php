@@ -7,6 +7,7 @@ use Mill\Compiler\Changelog\Formats\Json;
 use Mill\Compiler\Changelog\Formats\Markdown;
 use Mill\Parser\Annotation;
 use Mill\Parser\Annotations\ContentTypeAnnotation;
+use Mill\Parser\Annotations\DataAnnotation;
 use Mill\Parser\Annotations\ErrorAnnotation;
 use Mill\Parser\Annotations\ParamAnnotation;
 use Mill\Parser\Annotations\ReturnAnnotation;
@@ -32,27 +33,17 @@ class Changelog extends Compiler
     /** @var array Compiled changelog. */
     protected $changelog = [];
 
-    /** @var array Parsed documentation. */
-    protected $parsed = [
-        'representations' => [],
-        'resources' => []
-    ];
-
     /**
      * Take compiled API documentation and convert it into a changelog over the life of the API.
      *
-     * @return array
-     * @throws \Mill\Exceptions\Annotations\MultipleAnnotationsException
-     * @throws \Mill\Exceptions\Annotations\RequiredAnnotationException
-     * @throws \Mill\Exceptions\Resource\NoAnnotationsException
+     * @throws \Exception
      */
-    public function compile(): array
+    public function compile(): void
     {
-        $this->parsed['representations'] = $this->parseRepresentations();
-        $this->parsed['resources'] = $this->parseResources();
+        parent::compile();
 
-        $this->buildRepresentationChangelog($this->parsed['representations']);
-        $this->buildResourceChangelog($this->parsed['resources']);
+        $this->buildRepresentationChangelog($this->parsed_representations);
+        $this->buildResourceChangelog($this->parsed_resources);
 
         foreach ($this->changelog as $version => $changes) {
             $version_data = $this->config->getApiVersion($version);
@@ -75,22 +66,22 @@ class Changelog extends Compiler
             $changelog[$version] = $this->changelog[$version];
         }
 
-        return $changelog;
+        $this->changelog = $changelog;
     }
 
     /**
      * Take compiled API documentation and convert it into a JSON-encoded changelog over the life of the API.
      *
      * @return string
-     * @throws \Mill\Exceptions\Annotations\MultipleAnnotationsException
-     * @throws \Mill\Exceptions\Annotations\RequiredAnnotationException
-     * @throws \Mill\Exceptions\Resource\NoAnnotationsException
+     * @throws \Exception
      */
     public function toJson(): string
     {
-        $json = new Json($this->config);
-        $json->setChangelog($this->compile());
-        $compiled = $json->compile();
+        $json = new Json($this->application);
+        $json->setLoadPrivateDocs($this->load_private_docs);
+        $json->setLoadVendorTagDocs($this->load_vendor_tag_docs);
+
+        $compiled = $json->getCompiled();
 
         return array_shift($compiled);
     }
@@ -99,15 +90,15 @@ class Changelog extends Compiler
      * Take compiled API documentation and convert it into a Markdown-based changelog over the life of the API.
      *
      * @return string
-     * @throws \Mill\Exceptions\Annotations\MultipleAnnotationsException
-     * @throws \Mill\Exceptions\Annotations\RequiredAnnotationException
-     * @throws \Mill\Exceptions\Resource\NoAnnotationsException
+     * @throws \Exception
      */
     public function toMarkdown(): string
     {
-        $markdown = new Markdown($this->config);
-        $markdown->setChangelog($this->compile());
-        $compiled = $markdown->compile();
+        $markdown = new Markdown($this->application);
+        $markdown->setLoadPrivateDocs($this->load_private_docs);
+        $markdown->setLoadVendorTagDocs($this->load_vendor_tag_docs);
+
+        $compiled = $markdown->getCompiled();
 
         return array_shift($compiled);
     }
@@ -124,7 +115,7 @@ class Changelog extends Compiler
             $representation_name = $representation->getLabel();
             $content = $representation->getRawContent();
 
-            /** @var Annotation $annotation */
+            /** @var DataAnnotation $annotation */
             foreach ($content as $field => $annotation) {
                 $introduced = $this->getVersionIntroduced($annotation);
                 if ($introduced) {
@@ -241,10 +232,11 @@ class Changelog extends Compiler
                             $data['http_code'] = $annotation->getHttpCode();
 
                             if ($annotation->getRepresentation()) {
+                                /** @var string $representation */
                                 $representation = $annotation->getRepresentation();
 
                                 /** @var Documentation $representation */
-                                $representation = $this->parsed['representations'][$representation];
+                                $representation = $this->parsed_representations[$representation];
                                 $data['representation'] = $representation->getLabel();
                             } else {
                                 $data['representation'] = false;
@@ -252,8 +244,11 @@ class Changelog extends Compiler
                         } elseif ($annotation instanceof ErrorAnnotation) {
                             $change_type = self::CHANGESET_TYPE_ACTION_ERROR;
 
+                            /** @var string $representation */
+                            $representation = $annotation->getRepresentation();
+
                             /** @var Documentation $representation */
-                            $representation = $this->parsed['representations'][$annotation->getRepresentation()];
+                            $representation = $this->parsed_representations[$representation];
 
                             /** @var ErrorAnnotation $annotation */
                             $data['http_code'] = $annotation->getHttpCode();
@@ -432,5 +427,13 @@ class Changelog extends Compiler
         }
 
         return substr(sha1(serialize($hash_data)), 0, 10);
+    }
+
+    /**
+     * @return array
+     */
+    public function getChangelog(): array
+    {
+        return $this->changelog;
     }
 }

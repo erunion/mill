@@ -21,7 +21,7 @@ class ErrorAnnotationTest extends AnnotationTest
      */
     public function testAnnotation(string $content, $version, bool $visible, array $expected): void
     {
-        $annotation = new ErrorAnnotation($content, __CLASS__, __METHOD__, $version);
+        $annotation = new ErrorAnnotation($this->getApplication(), $content, __CLASS__, __METHOD__, $version);
         $annotation->process();
         $annotation->setVisibility($visible);
 

@@ -28,11 +28,12 @@ class PathParamAnnotation extends ParamAnnotation
      */
     protected function parser(): array
     {
+        $config = $this->application->getConfig();
         $content = trim($this->docblock);
 
         /** @var string $method */
         $method = $this->method;
-        $mson = (new MSON($this->class, $method))->parse($content);
+        $mson = (new MSON($this->class, $method, $config))->parse($content);
         $parsed = [
             'field' => $mson->getField(),
             'sample_data' => $mson->getSampleData(),
@@ -43,7 +44,7 @@ class PathParamAnnotation extends ParamAnnotation
 
         if (!empty($parsed['field'])) {
             // If we have any path param translations configured, let's process them.
-            $translations = Container::getConfig()->getPathParamTranslations();
+            $translations = $config->getPathParamTranslations();
             if (isset($translations[$parsed['field']])) {
                 $parsed['field'] = $translations[$parsed['field']];
             }

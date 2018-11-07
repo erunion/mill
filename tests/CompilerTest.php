@@ -9,7 +9,7 @@ class CompilerTest extends TestCase
 {
     public function testParsesAllVersions(): void
     {
-        $compiler = new Compiler($this->getConfig());
+        $compiler = new Compiler($this->getApplication());
         $compiler->compile();
 
         $this->assertSame([
@@ -27,13 +27,12 @@ class CompilerTest extends TestCase
         $config->addExcludedRepresentation('\Mill\Examples\Showtimes\Representations\Movie');
 
         $version_obj = new Version('1.0', __CLASS__, __METHOD__);
-        $compiler = new Compiler($config, $version_obj);
+        $compiler = new Compiler($this->getApplication(), $version_obj);
         $compiler->compile();
 
         $this->assertSame([
             '\Mill\Examples\Showtimes\Representations\CodedError',
             '\Mill\Examples\Showtimes\Representations\Error',
-            '\Mill\Examples\Showtimes\Representations\Person',
             '\Mill\Examples\Showtimes\Representations\Theater'
         ], array_keys($compiler->getRepresentations($version_obj->getConstraint())));
 
@@ -57,7 +56,7 @@ class CompilerTest extends TestCase
         array $expected_resources
     ): void {
         $version_obj = new Version($version, __CLASS__, __METHOD__);
-        $compiler = new Compiler($this->getConfig(), $version_obj);
+        $compiler = new Compiler($this->getApplication(), $version_obj);
         $compiler->setLoadPrivateDocs($private_objects);
         $compiler->setLoadVendorTagDocs($vendor_tags);
         $compiler->compile();
@@ -158,6 +157,9 @@ class CompilerTest extends TestCase
         }
     }
 
+    /**
+     * @return array
+     */
     public function providerWithVersion(): array
     {
         // Save us the effort of copy and pasting the same base actions over and over.

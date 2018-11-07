@@ -16,8 +16,8 @@ class TagReducerTest extends TestCase
         parent::setUp();
 
         $version = new Version('1.1.3', __CLASS__, __METHOD__);
-        $compiler = new OpenApi($this->getConfig(), $version);
-        $compiled = $compiler->compile();
+        $compiler = new OpenApi($this->getApplication(), $version);
+        $compiled = $compiler->getCompiled();
 
         $this->spec = array_shift($compiled);
     }

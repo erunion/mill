@@ -64,17 +64,18 @@ class ParamAnnotation extends Annotation
      */
     protected function parser(): array
     {
+        $config = $this->application->getConfig();
         $content = trim($this->docblock);
 
         // Swap in shortcode tokens (if present).
-        $tokens = Container::getConfig()->getParameterTokens();
+        $tokens = $config->getParameterTokens();
         if (!empty($tokens)) {
             $content = str_replace(array_keys($tokens), array_values($tokens), $content);
         }
 
         /** @var string $method */
         $method = $this->method;
-        $mson = (new MSON($this->class, $method))->parse($content);
+        $mson = (new MSON($this->class, $method, $config))->parse($content);
         $parsed = [
             'field' => $mson->getField(),
             'sample_data' => $mson->getSampleData(),
@@ -98,6 +99,7 @@ class ParamAnnotation extends Annotation
                 /** @return Annotation */
                 function (string $tag) use ($method) {
                     return (new VendorTagAnnotation(
+                        $this->application,
                         $tag,
                         $this->class,
                         $method

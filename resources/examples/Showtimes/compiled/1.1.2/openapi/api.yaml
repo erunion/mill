@@ -593,14 +593,6 @@ components:
             edit: Edit
             public: Public
   schemas:
-    coded-error:
-      properties:
-        error:
-          description: 'User-friendly error message'
-          type: string
-        error_code:
-          description: 'Error code'
-          type: number
     error:
       properties:
         error:

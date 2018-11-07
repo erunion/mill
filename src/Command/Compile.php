@@ -2,7 +2,6 @@
 namespace Mill\Command;
 
 use League\Flysystem\Filesystem;
-use Mill\Application;
 use Mill\Compiler\Specification\OpenApi;
 use Mill\Config;
 use Mill\Compiler\Specification\ApiBlueprint;
@@ -13,7 +12,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class Compile extends Application
+class Compile extends \Mill\Command
 {
     const FORMAT_API_BLUEPRINT = 'apiblueprint';
     const FORMAT_OPENAPI = 'openapi';
@@ -80,10 +79,18 @@ class Compile extends Application
     {
         parent::execute($input, $output);
 
-        $output_dir = realpath($input->getArgument('output'));
-        $format = strtolower($input->getOption('format'));
         $version = $input->getOption('constraint');
+
+        /** @var string $environment */
         $environment = $input->getOption('environment');
+
+        /** @var string $format */
+        $format = $input->getOption('format');
+        $format = strtolower($format);
+
+        /** @var string $output_dir */
+        $output_dir = $input->getArgument('output');
+        $output_dir = realpath($output_dir);
 
         if (!in_array($format, ['apiblueprint', 'openapi'])) {
             $output->writeLn('<error>`' . $format . '` is an unknown compilation format.</error>');
@@ -121,9 +128,9 @@ class Compile extends Application
 
         $output->writeln('<comment>Compiling controllers and representations...</comment>');
         if ($format === self::FORMAT_API_BLUEPRINT) {
-            $compiler = new ApiBlueprint($config, $version);
+            $compiler = new ApiBlueprint($this->app, $version);
         } else {
-            $compiler = new OpenApi($config, $version);
+            $compiler = new OpenApi($this->app, $version);
             if (!empty($environment)) {
                 $compiler->setEnvironment($environment);
             }
@@ -136,7 +143,7 @@ class Compile extends Application
             )
         );
 
-        $compiled = $compiler->compile();
+        $compiled = $compiler->getCompiled();
         foreach ($compiled as $version => $spec) {
             $version_dir = $output_dir . DIRECTORY_SEPARATOR . $version . DIRECTORY_SEPARATOR;
 

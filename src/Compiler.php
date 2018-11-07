@@ -1,7 +1,10 @@
 <?php
 namespace Mill;
 
+use Mill\Parser\Annotations\DataAnnotation;
+use Mill\Parser\Annotations\ErrorAnnotation;
 use Mill\Parser\Annotations\PathAnnotation;
+use Mill\Parser\Annotations\ReturnAnnotation;
 use Mill\Parser\Annotations\VendorTagAnnotation;
 use Mill\Parser\Representation;
 use Mill\Parser\Resource;
@@ -9,6 +12,9 @@ use Mill\Parser\Version;
 
 class Compiler
 {
+    /** @var Application */
+    protected $application;
+
     /** @var Config */
     protected $config;
 
@@ -18,11 +24,17 @@ class Compiler
     /** @var array */
     protected $supported_versions = [];
 
-    /** @var array Compiled documentation. */
-    protected $compiled = [
-        'representations' => [],
-        'resources' => []
-    ];
+    /** @var array */
+    protected $compiled_resources = [];
+
+    /** @var array */
+    protected $compiled_representations = [];
+
+    /** @var array */
+    protected $parsed_resources = [];
+
+    /** @var array */
+    protected $parsed_representations = [];
 
     /**
      * A setting to compile documentation for documentation that's been marked, through a `:private` decorator, as
@@ -42,12 +54,13 @@ class Compiler
     protected $load_vendor_tag_docs = null;
 
     /**
-     * @param Config $config
-     * @param null|Version $version
+     * @param Application $application
+     * @param Version|null $version
      */
-    public function __construct(Config $config, Version $version = null)
+    public function __construct(Application $application, Version $version = null)
     {
-        $this->config = $config;
+        $this->application = $application;
+        $this->config = $application->getConfig();
         $this->version = $version;
 
         $this->supported_versions = $this->config->getApiVersions();
@@ -56,70 +69,40 @@ class Compiler
     /**
      * Compile API documentation into a parseable collection.
      *
-     * @return array
      */
-    public function compile(): array
+    public function compile(): void
     {
-        $resources = $this->compileResources($this->parseResources());
-        foreach ($resources as $version => $groups) {
-            ksort($resources[$version]);
-        }
+        $controllers = $this->config->getControllers();
+        foreach ($controllers as $controller) {
+            $docs = new Resource\Documentation($controller, $this->application);
 
-        $representations = $this->compileRepresentations($this->parseRepresentations());
-        foreach ($representations as $version => $data) {
-            ksort($representations[$version]);
-        }
-
-        $this->compiled['resources'] = $resources;
-        $this->compiled['representations'] = $representations;
-
-        return $this->compiled;
-    }
-
-    /**
-     * Run through configured controllers, parse them, and compile a collection of resource action documentation.
-     *
-     * @return array
-     * @throws Exceptions\Annotations\MultipleAnnotationsException
-     * @throws Exceptions\Annotations\RequiredAnnotationException
-     */
-    protected function parseResources(): array
-    {
-        $resources = [];
-        foreach ($this->config->getControllers() as $controller) {
-            $docs = (new Resource\Documentation($controller))->parse();
-
-            /** @var \Mill\Parser\Resource\Action\Documentation $method */
-            foreach ($docs->getMethods() as $method) {
-                $group = $method->getGroup();
+            /** @var Resource\Action\Documentation $resource */
+            foreach ($docs->getMethods() as $resource) {
+                $group = $resource->getGroup();
 
                 // Set the amount of aliases that we've accrued here so we can properly enforce uniqueness of operation
                 // IDs on aliased paths.
                 $aliases = 0;
 
-                /** @var \Mill\Parser\Annotations\PathAnnotation $path */
-                foreach ($method->getPaths() as $path) {
+                /** @var PathAnnotation $path */
+                foreach ($resource->getPaths() as $path) {
                     // Are we compiling documentation for a private or protected resource?
-                    if (!$this->shouldParsePath($method, $path)) {
+                    if (!$this->shouldParsePath($resource, $path)) {
                         continue;
-                    }
-
-                    if (!isset($resources[$group]['actions'])) {
-                        $resources[$group]['actions'] = [];
                     }
 
                     // Set any params that belong to this path on onto this action.
                     $params = [];
 
                     /** @var \Mill\Parser\Annotations\PathParamAnnotation $param */
-                    foreach ($method->getPathParameters() as $param) {
+                    foreach ($resource->getPathParameters() as $param) {
                         if ($path->doesPathHaveParam($param)) {
                             $params[$param->getField()] = $param;
                         }
                     }
 
                     // Set the lone path that this action and group run under.
-                    $action = clone $method;
+                    $action = clone $resource;
                     $action->setPath($path);
                     $action->setPathParams($params);
                     $action->filterAnnotationsForVisibility($this->load_private_docs, $this->load_vendor_tag_docs);
@@ -128,145 +111,125 @@ class Compiler
                         $action->incrementOperationId(++$aliases);
                     }
 
-                    // Hash the action so we don't happen to double up and end up with dupes.
+                    // Hash the action so we don't happen to double up and end up with dupes, and then remove the
+                    // currently non-hash index from the action array.
                     $identifier = $action->getPath()->getPath() . '::' . $action->getMethod();
 
-                    $resources[$group]['actions'][$identifier] = $action;
-                }
-            }
-        }
-
-        return $resources;
-    }
-
-    /**
-     * Compile parsed resources into a versioned collection.
-     *
-     * @psalm-suppress EmptyArrayAccess Psalm thinks that `$resources[$version][$group]['resources']` is an empty
-     *      value array. It is not.
-     * @param array $parsed
-     * @return array
-     * @throws \Exception
-     */
-    private function compileResources(array $parsed = []): array
-    {
-        $resources = [];
-        foreach ($parsed as $group => $group_data) {
-            /** @var Resource\Action\Documentation $action */
-            foreach ($group_data['actions'] as $identifier => $action) {
-                // Run through every supported API version and flatten out documentation for it.
-                foreach ($this->supported_versions as $supported_version) {
-                    $version = $supported_version['version'];
-
-                    // If we're compiling documentation for a specific version range, and this doesn't fall in that,
-                    // then skip it.
-                    if ($this->version && !$this->version->matches($version)) {
-                        continue;
-                    }
-
-                    // If this method has either a minimum or maximum version specified, and we aren't compiling an
-                    // acceptable version, skip it.
-                    $min_version = $action->getMinimumVersion();
-                    $max_version = $action->getMaximumVersion();
-                    if ($min_version && !$min_version->matches($version)
-                        || $max_version && !$max_version->matches($version)
-                    ) {
-                        continue;
-                    }
-
-                    if (!isset($resources[$version])) {
-                        $resources[$version] = [];
-                    } elseif (!isset($resources[$version][$group])) {
-                        $resources[$version][$group] = [
-                            'resources' => []
+                    // Store the parsed, but not versioned, action so it can be used during changelog generation.
+                    if (!isset($this->parsed_resources[$group])) {
+                        $this->parsed_resources[$group] = [
+                            'actions' => []
                         ];
                     }
 
-                    // Filter down the annotations on this action for just those of the current version we're compiling
-                    // documentation for.
-                    $cloned = clone $action;
-                    $cloned->filterAnnotationsForVersion($version);
+                    $this->parsed_resources[$group]['actions'][$identifier] = $action;
 
-                    if (!isset($resources[$version][$group]['actions'])) {
-                        $resources[$version][$group]['actions'] = [];
+                    // Run through every supported API version.
+                    foreach ($this->supported_versions as $supported_version) {
+                        $version = $supported_version['version'];
+
+                        // If we're compiling documentation for a specific version range, and this doesn't fall in that,
+                        // then skip it.
+                        if ($this->version && !$this->version->matches($version)) {
+                            continue;
+                        }
+
+                        // If this method has either a minimum or maximum version specified, and we aren't compiling an
+                        // acceptable version, skip it.
+                        if (!$action->fallsWithinVersion($version)) {
+                            continue;
+                        }
+
+                        if (!isset($this->compiled_resources[$version])) {
+                            $this->compiled_resources[$version] = [];
+                        } elseif (!isset($this->compiled_resources[$version][$group])) {
+                            $this->compiled_resources[$version][$group] = [
+                                'actions' => []
+                            ];
+                        }
+
+                        // Filter down the annotations on this action for just those of the current version we're
+                        // compiling documentation for.
+                        $cloned = clone $action;
+                        $cloned->filterAnnotationsForVersion($version);
+
+                        // Compile any representations
+                        $responses = $cloned->getResponses();
+                        if (!empty($responses)) {
+                            /** @var ReturnAnnotation|ErrorAnnotation $response */
+                            foreach ($responses as $response) {
+                                $representation = $response->getRepresentation();
+                                if (!empty($representation)) {
+                                    $this->compileRepresentation($version, $representation);
+                                }
+                            }
+                        }
+
+                        $this->compiled_resources[$version][$group]['actions'][$identifier] = $cloned;
                     }
-
-                    // Hash the action so we don't happen to double up and end up with dupes, and then remove the
-                    // currently non-hash index from the action array.
-                    $identifier = $cloned->getPath()->getPath() . '::' . $cloned->getMethod();
-
-                    $resources[$version][$group]['actions'][$identifier] = $cloned;
                 }
             }
         }
 
-        return $resources;
+        foreach ($this->compiled_resources as $version => $groups) {
+            ksort($this->compiled_resources[$version]);
+        }
+
+        foreach ($this->compiled_representations as $version => $data) {
+            ksort($this->compiled_representations[$version]);
+        }
     }
 
     /**
-     * Run through configured representations, parse them, and compile a collection of representation documentation.
+     * Compile a representation for a supplied API version.
      *
-     * @return array
-     * @throws Exceptions\Annotations\MultipleAnnotationsException
-     * @throws Exceptions\Annotations\RequiredAnnotationException
-     * @throws Exceptions\Resource\NoAnnotationsException
+     * @param string $version
+     * @param string $representation
      */
-    protected function parseRepresentations(): array
+    protected function compileRepresentation(string $version, string $representation): void
     {
-        $representations = [];
-        $error_representations = $this->config->getErrorRepresentations();
+        $representations = $this->config->getAllRepresentations();
 
-        /** @var array $representation */
-        foreach ($this->config->getAllRepresentations() as $class => $representation) {
-            // If we're running through a standard (non-error) representation, let's make sure we don't want it
-            // excluded.
-            if (!isset($error_representations[$class])) {
-                // If the representation is being excluded, then don't set it up for compilation.
-                if ($this->config->isRepresentationExcluded($class)) {
-                    continue;
-                }
-            }
-
-            $parsed = (new Representation\Documentation($class, $representation['method']))->parse();
-            $parsed->filterAnnotationsForVisibility($this->load_vendor_tag_docs);
-
-            $representations[$class] = $parsed;
+        // We don't need to worry about returning errors here if the supplied representation doesn't exist because
+        // we've already handled that within the Annotation class(es).
+        if (!isset($representations[$representation])) {
+            return;
         }
 
-        return $representations;
-    }
+        $representation = $representations[$representation];
 
-    /**
-     * Compile parsed representations into a versioned collection.
-     *
-     * @param array $parsed
-     * @return array
-     */
-    private function compileRepresentations(array $parsed = []): array
-    {
-        $representations = [];
+        $class = $representation['class'];
+        $method = $representation['method'];
 
-        foreach ($parsed as $identifier => $representation) {
-            // Run through every supported API version and flatten out documentation for it.
-            foreach ($this->supported_versions as $supported_version) {
-                $version = $supported_version['version'];
-
-                // If we're compiling documentation for a specific version range, and this doesn't fall in that, then
-                // skip it.
-                if ($this->version && !$this->version->matches($version)) {
-                    continue;
-                }
-
-                // Filter down the annotations on this action for just those of the current version we're compiling
-                // documentation for.
-                $cloned = clone $representation;
-                $cloned->filterRepresentationForVersion($version);
-
-                $representations[$version][$identifier] = $cloned;
-            }
+        // If this representation has already been compiled for the supplied version, don't compile it again.
+        if (isset($this->compiled_representations[$version][$class])) {
+            return;
         }
 
-        return $representations;
+        // If the representation is being excluded, then don't set it up for compilation.
+        if ($this->config->isRepresentationExcluded($class)) {
+            return;
+        }
+
+        $parsed = (new Representation\Documentation($class, $method, $this->application))->parse();
+        $parsed->filterAnnotationsForVisibility($this->load_vendor_tag_docs);
+
+        $this->parsed_representations[$class] = clone $parsed;
+
+        $parsed->filterRepresentationForVersion($version);
+
+        $this->compiled_representations[$version][$class] = $parsed;
+
+        // Run through this representation to see if there are any linked representations that we should also compile.
+        /** @var DataAnnotation $annotation */
+        foreach ($parsed->getRawContent() as $annotation) {
+            $this->compileRepresentation($version, $annotation->getType());
+
+            $subtype = $annotation->getSubtype();
+            if (!empty($subtype)) {
+                $this->compileRepresentation($version, $subtype);
+            }
+        }
     }
 
     /**
@@ -278,14 +241,14 @@ class Compiler
     public function getRepresentations($version = null): array
     {
         if (empty($version)) {
-            return $this->compiled['representations'];
+            return $this->compiled_representations;
         }
 
         if ($version instanceof Version) {
             $version = $version->getConstraint();
         }
 
-        return $this->compiled['representations'][$version];
+        return $this->compiled_representations[$version];
     }
 
     /**
@@ -297,10 +260,10 @@ class Compiler
     public function getResources(string $version = null): array
     {
         if (empty($version)) {
-            return $this->compiled['resources'];
+            return $this->compiled_resources;
         }
 
-        return $this->compiled['resources'][$version];
+        return $this->compiled_resources[$version];
     }
 
     /**

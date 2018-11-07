@@ -19,17 +19,14 @@ class ApiBlueprint extends Compiler\Specification
      * @psalm-suppress InvalidScalarArgument
      * @psalm-suppress PossiblyUndefinedVariable
      * @psalm-suppress PossiblyUndefinedArrayOffset
-     * @return array
      * @throws \Exception
      */
-    public function compile(): array
+    public function compile(): void
     {
         parent::compile();
 
         $group_excludes = $this->config->getCompilerGroupExclusions();
         $resources = $this->getResources();
-
-        $specifications = [];
 
         foreach ($resources as $version => $groups) {
             $this->version = $version;
@@ -109,7 +106,7 @@ class ApiBlueprint extends Compiler\Specification
                 }
 
                 $contents = trim($contents);
-                $specifications[$this->version]['groups'][$group] = $contents;
+                $this->specifications[$this->version]['groups'][$group] = $contents;
             }
 
             // Process representation data structures.
@@ -128,18 +125,16 @@ class ApiBlueprint extends Compiler\Specification
                     $contents .= $this->processMSON($fields, 0);
 
                     $contents = trim($contents);
-                    $specifications[$this->version]['structures'][$identifier] = $contents;
+                    $this->specifications[$this->version]['structures'][$identifier] = $contents;
                 }
             }
 
             // Process the combined file.
-            $specifications[$this->version]['combined'] = $this->processCombinedFile(
-                $specifications[$this->version]['groups'],
-                $specifications[$this->version]['structures']
+            $this->specifications[$this->version]['combined'] = $this->processCombinedFile(
+                $this->specifications[$this->version]['groups'],
+                $this->specifications[$this->version]['structures']
             );
         }
-
-        return $specifications;
     }
 
     /**
@@ -300,25 +295,23 @@ class ApiBlueprint extends Compiler\Specification
         $response = array_shift($responses);
         $representation = $response->getRepresentation();
         $representations = $this->getRepresentations($this->version);
-        if (!isset($representations[$representation])) {
-            return $blueprint;
-        }
+        if ($representation && isset($representations[$representation])) {
+            /** @var Documentation $docs */
+            $docs = $representations[$representation];
+            $fields = $docs->getExplodedContentDotNotation();
+            if (!empty($fields)) {
+                $blueprint .= $this->tab();
 
-        /** @var Documentation $docs */
-        $docs = $representations[$representation];
-        $fields = $docs->getExplodedContentDotNotation();
-        if (!empty($fields)) {
-            $blueprint .= $this->tab();
-
-            $attribute_type = $docs->getLabel();
-            if ($response instanceof ReturnAnnotation) {
-                if ($response->getType() === 'collection') {
-                    $attribute_type = sprintf('array[%s]', $attribute_type);
+                $attribute_type = $docs->getLabel();
+                if ($response instanceof ReturnAnnotation) {
+                    if ($response->getType() === 'collection') {
+                        $attribute_type = sprintf('array[%s]', $attribute_type);
+                    }
                 }
-            }
 
-            $blueprint .= sprintf('+ Attributes (%s)', $attribute_type);
-            $blueprint .= $this->line();
+                $blueprint .= sprintf('+ Attributes (%s)', $attribute_type);
+                $blueprint .= $this->line();
+            }
         }
 
         return $blueprint;
