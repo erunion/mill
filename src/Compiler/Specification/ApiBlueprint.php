@@ -19,7 +19,6 @@ class ApiBlueprint extends Compiler\Specification
      * @psalm-suppress InvalidScalarArgument
      * @psalm-suppress PossiblyUndefinedVariable
      * @psalm-suppress PossiblyUndefinedArrayOffset
-     * @return array
      * @throws \Exception
      */
     public function compile(): void
@@ -296,25 +295,23 @@ class ApiBlueprint extends Compiler\Specification
         $response = array_shift($responses);
         $representation = $response->getRepresentation();
         $representations = $this->getRepresentations($this->version);
-        if (!isset($representations[$representation])) {
-            return $blueprint;
-        }
+        if ($representation && isset($representations[$representation])) {
+            /** @var Documentation $docs */
+            $docs = $representations[$representation];
+            $fields = $docs->getExplodedContentDotNotation();
+            if (!empty($fields)) {
+                $blueprint .= $this->tab();
 
-        /** @var Documentation $docs */
-        $docs = $representations[$representation];
-        $fields = $docs->getExplodedContentDotNotation();
-        if (!empty($fields)) {
-            $blueprint .= $this->tab();
-
-            $attribute_type = $docs->getLabel();
-            if ($response instanceof ReturnAnnotation) {
-                if ($response->getType() === 'collection') {
-                    $attribute_type = sprintf('array[%s]', $attribute_type);
+                $attribute_type = $docs->getLabel();
+                if ($response instanceof ReturnAnnotation) {
+                    if ($response->getType() === 'collection') {
+                        $attribute_type = sprintf('array[%s]', $attribute_type);
+                    }
                 }
-            }
 
-            $blueprint .= sprintf('+ Attributes (%s)', $attribute_type);
-            $blueprint .= $this->line();
+                $blueprint .= sprintf('+ Attributes (%s)', $attribute_type);
+                $blueprint .= $this->line();
+            }
         }
 
         return $blueprint;

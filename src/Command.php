@@ -38,7 +38,9 @@ class Command extends \Symfony\Component\Console\Command\Command
         $style = new OutputFormatterStyle('green', null, ['bold']);
         $output->getFormatter()->setStyle('success', $style);
 
-        $config_file = realpath($input->getOption('config'));
+        /** @var string $config_file */
+        $config_file = $input->getOption('config');
+        $config_file = realpath($config_file);
 
         $this->app = new Application($config_file);
         $this->container = $this->app->getContainer();

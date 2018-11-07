@@ -29,7 +29,6 @@ class OpenApi extends Compiler\Specification
      * @psalm-suppress InvalidScalarArgument
      * @psalm-suppress PossiblyUndefinedVariable
      * @psalm-suppress PossiblyUndefinedArrayOffset
-     * @return array
      * @throws \Exception
      */
     public function compile(): void
@@ -379,7 +378,7 @@ class OpenApi extends Compiler\Specification
             $response = array_shift($responses);
             $representation = $response->getRepresentation();
             $representations = $this->getRepresentations($this->version);
-            if (isset($representations[$representation])) {
+            if ($representation && isset($representations[$representation])) {
                 /** @var Documentation $docs */
                 $docs = $representations[$representation];
                 $fields = $docs->getExplodedContentDotNotation();

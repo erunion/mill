@@ -34,36 +34,6 @@ class Documentation implements Arrayable
     }
 
     /**
-     * Parse the instance class into actionable annotations and documentation.
-     *
-     * @deprecated
-     * @return Documentation
-     * @throws \Mill\Exceptions\Resource\UnsupportedDecoratorException
-     */
-    public function parse(): self
-    {
-        /*$annotations = $this->parser->getAnnotations();
-
-        if (!isset($annotations['label'])) {
-            throw RequiredAnnotationException::create('label', $this->class);
-        } elseif (count($annotations['label']) > 1) {
-            throw MultipleAnnotationsException::create('label', $this->class);
-        }
-
-        /** @var \Mill\Parser\Annotations\LabelAnnotation $annotation
-        $annotation = reset($annotations['label']);
-        $this->label = $annotation->getLabel();
-
-        if (!empty($annotations['description'])) {
-            /** @var \Mill\Parser\Annotations\DescriptionAnnotation $annotation
-            $annotation = reset($annotations['description']);
-            $this->description = $annotation->getDescription();
-        }*/
-
-        return $this;
-    }
-
-    /**
      * This is a chaining accessory to help you do one-liner instances of this class.
      *
      * Example: `$documentation = (new Documentation($class))->parseMethods()->toArray();`

@@ -72,6 +72,9 @@ class MSON implements Arrayable
     /** @var string Controller method that MSON is being parsed from. */
     protected $method;
 
+    /** @var Config */
+    protected $config;
+
     /** @var null|string Name of the field that was parsed out of the MSON content. */
     protected $field = null;
 

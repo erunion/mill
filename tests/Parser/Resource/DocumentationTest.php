@@ -18,7 +18,7 @@ class DocumentationTest extends TestCase
      */
     public function testDocumentation(string $class, array $expected): void
     {
-        $docs = (new Documentation($class, $this->getApplication()))->parse();
+        $docs = new Documentation($class, $this->getApplication());
 
         $this->assertSame($class, $docs->getClass());
         $this->assertCount($expected['methods.size'], $docs->getMethods());
@@ -57,7 +57,7 @@ class DocumentationTest extends TestCase
     public function testDocumentationAndGetSpecificMethod(): void
     {
         $class = '\Mill\Examples\Showtimes\Controllers\Movie';
-        $docs = (new Documentation($class, $this->getApplication()))->parse();
+        $docs = new Documentation($class, $this->getApplication());
 
         $this->assertSame($class, $docs->getClass());
         $this->assertInstanceOf('\Mill\Parser\Resource\Action\Documentation', $docs->getMethod('GET'));

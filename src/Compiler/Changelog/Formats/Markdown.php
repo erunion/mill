@@ -11,7 +11,7 @@ class Markdown extends Json
     /** @var string */
     protected $output_format = Changelog::FORMAT_MARKDOWN;
 
-    /** @var array */
+    /** @var string */
     protected $markdown = '';
 
     /**

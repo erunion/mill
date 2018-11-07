@@ -79,10 +79,18 @@ class Compile extends \Mill\Command
     {
         parent::execute($input, $output);
 
-        $output_dir = realpath($input->getArgument('output'));
-        $format = strtolower($input->getOption('format'));
         $version = $input->getOption('constraint');
+
+        /** @var string $environment */
         $environment = $input->getOption('environment');
+
+        /** @var string $format */
+        $format = $input->getOption('format');
+        $format = strtolower($format);
+
+        /** @var string $output_dir */
+        $output_dir = $input->getArgument('output');
+        $output_dir = realpath($output_dir);
 
         if (!in_array($format, ['apiblueprint', 'openapi'])) {
             $output->writeLn('<error>`' . $format . '` is an unknown compilation format.</error>');

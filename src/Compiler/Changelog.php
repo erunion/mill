@@ -232,6 +232,7 @@ class Changelog extends Compiler
                             $data['http_code'] = $annotation->getHttpCode();
 
                             if ($annotation->getRepresentation()) {
+                                /** @var string $representation */
                                 $representation = $annotation->getRepresentation();
 
                                 /** @var Documentation $representation */
@@ -243,8 +244,11 @@ class Changelog extends Compiler
                         } elseif ($annotation instanceof ErrorAnnotation) {
                             $change_type = self::CHANGESET_TYPE_ACTION_ERROR;
 
+                            /** @var string $representation */
+                            $representation = $annotation->getRepresentation();
+
                             /** @var Documentation $representation */
-                            $representation = $this->parsed_representations[$annotation->getRepresentation()];
+                            $representation = $this->parsed_representations[$representation];
 
                             /** @var ErrorAnnotation $annotation */
                             $data['http_code'] = $annotation->getHttpCode();

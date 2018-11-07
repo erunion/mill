@@ -62,13 +62,24 @@ class ErrorMap extends \Mill\Command
     {
         parent::execute($input, $output);
 
-        $private_docs = $input->getOption('private');
-        $vendor_tags = $input->getOption('vendor_tag');
-        $output_dir = realpath($input->getArgument('output'));
         $version = $input->getOption('constraint');
 
-        $private_docs = ($private_docs === true || strtolower($private_docs) == 'true') ? true : false;
+        /** @var array|null $vendor_tags */
+        $vendor_tags = $input->getOption('vendor_tag');
         $vendor_tags = (!empty($vendor_tags)) ? $vendor_tags : null;
+
+        /** @var string $output_dir */
+        $output_dir = $input->getArgument('output');
+        $output_dir = realpath($output_dir);
+
+        $private_docs = $input->getOption('private');
+        if (is_bool($private_docs) && $private_docs === true) {
+            $private_docs = true;
+        } elseif (is_string($private_docs) && strtolower($private_docs) == 'true') {
+            $private_docs = true;
+        } else {
+            $private_docs = false;
+        }
 
         if ($input->getOption('default')) {
             $version = $this->container['config']->getDefaultApiVersion();

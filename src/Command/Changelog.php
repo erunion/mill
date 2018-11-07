@@ -44,23 +44,28 @@ class Changelog extends \Mill\Command
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int
-     * @throws \Mill\Exceptions\Annotations\MultipleAnnotationsException
-     * @throws \Mill\Exceptions\Annotations\RequiredAnnotationException
-     * @throws \Mill\Exceptions\Resource\NoAnnotationsException
+     * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         parent::execute($input, $output);
 
-        $private_docs = $input->getOption('private');
+        /** @var array|null $vendor_tags */
         $vendor_tags = $input->getOption('vendor_tag');
-        $output_dir = realpath($input->getArgument('output'));
-
-        $private_docs = ($private_docs === true || strtolower($private_docs) == 'true') ? true : false;
         $vendor_tags = (!empty($vendor_tags)) ? $vendor_tags : null;
 
-        /** @var Config $config */
-        $config = $this->container['config'];
+        /** @var string $output_dir */
+        $output_dir = $input->getArgument('output');
+        $output_dir = realpath($output_dir);
+
+        $private_docs = $input->getOption('private');
+        if (is_bool($private_docs) && $private_docs === true) {
+            $private_docs = true;
+        } elseif (is_string($private_docs) && strtolower($private_docs) == 'true') {
+            $private_docs = true;
+        } else {
+            $private_docs = false;
+        }
 
         /** @var \League\Flysystem\Filesystem $filesystem */
         $filesystem = $this->container['filesystem'];

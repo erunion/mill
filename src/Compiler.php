@@ -74,7 +74,7 @@ class Compiler
     {
         $controllers = $this->config->getControllers();
         foreach ($controllers as $controller) {
-            $docs = (new Resource\Documentation($controller, $this->application))->parse();
+            $docs = new Resource\Documentation($controller, $this->application);
 
             /** @var Resource\Action\Documentation $resource */
             foreach ($docs->getMethods() as $resource) {
