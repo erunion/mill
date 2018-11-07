@@ -386,11 +386,13 @@ components:
             public: Public
   schemas:
     error:
+      title: Error
       properties:
         error:
           description: 'User-friendly error message'
           type: string
     movie:
+      title: Movie
       properties:
         cast:
           description: 'Cast. This data requires a bearer token with the `public` scope.'
@@ -476,6 +478,7 @@ components:
           description: 'Movie URI'
           type: string
     person:
+      title: Person
       properties:
         id:
           description: 'Unique ID'
@@ -490,6 +493,7 @@ components:
           description: 'Person URI'
           type: string
     theater:
+      title: Theater
       properties:
         address:
           description: Address

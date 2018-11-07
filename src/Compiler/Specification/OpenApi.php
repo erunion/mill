@@ -128,8 +128,10 @@ class OpenApi extends Compiler\Specification
                         continue;
                     }
 
-                    $identifier = $this->getReferenceName($representation->getLabel());
+                    $schema_name = $representation->getLabel();
+                    $identifier = $this->getReferenceName($schema_name);
                     $specification['components']['schemas'][$identifier] = [
+                        'title' => $schema_name,
                         'properties' => $this->processDataModel(DataAnnotation::PAYLOAD_FORMAT, $fields)
                     ];
                 }
