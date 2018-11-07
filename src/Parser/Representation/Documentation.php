@@ -60,7 +60,8 @@ class Documentation implements Arrayable
     {
         $annotations = (new Parser($this->class, $this->application))->setMethod($this->method)->getAnnotations();
 
-        $this->representation = (new RepresentationParser($this->class, $this->application))->getAnnotations($this->method);
+        $this->representation = (new RepresentationParser($this->class, $this->application))
+            ->getAnnotations($this->method);
 
         if (empty($annotations)) {
             throw NoAnnotationsException::create($this->class, null);
