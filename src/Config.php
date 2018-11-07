@@ -1026,7 +1026,7 @@ class Config
                 break;
             }
 
-            $buffer .= fread($fp, 512);
+            $buffer .= fread($fp, 512 * 2);
 
             // Hide warnings from this that might arise from unterminated docblock comments.
             $tokens = @token_get_all($buffer);
@@ -1056,7 +1056,13 @@ class Config
                         break;
                 }
             }
+
+            if (!empty($namespace) && !empty($class)) {
+                break;
+            }
         }
+
+        fclose($fp);
 
         return implode('\\', [$namespace, $class]);
     }
