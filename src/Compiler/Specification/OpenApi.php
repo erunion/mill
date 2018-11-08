@@ -22,6 +22,9 @@ class OpenApi extends Compiler\Specification
     /** @var string|null */
     protected $environment = null;
 
+    /** @var string */
+    protected $current_content_type;
+
     /**
      * Take compiled API documentation and create a OpenAPI specification.
      *
@@ -75,6 +78,8 @@ class OpenApi extends Compiler\Specification
 
                 /** @var Action\Documentation $action */
                 foreach ($data['actions'] as $identifier => $action) {
+                    $this->current_content_type = $action->getContentType($this->version);
+
                     $path = $action->getPath();
                     $method = strtolower($action->getMethod());
                     $identifier = $path->getCleanPath();
@@ -122,6 +127,7 @@ class OpenApi extends Compiler\Specification
 
             // Process representation data structures.
             if (!empty($this->representations)) {
+                /** @var Documentation $representation */
                 foreach ($this->representations as $representation) {
                     $fields = $representation->getExplodedContentDotNotation();
                     if (empty($fields)) {
@@ -295,8 +301,7 @@ class OpenApi extends Compiler\Specification
             'required' => !empty(
                 array_reduce(
                     $action->getParameters(),
-                    /** @param mixed $carry */
-                    function ($carry, ParamAnnotation $param): ?array {
+                    function (?array $carry, ParamAnnotation $param): ?array {
                         if ($param->isRequired()) {
                             $carry[] = $param->getField();
                         }
@@ -306,7 +311,7 @@ class OpenApi extends Compiler\Specification
                 )
             ),
             'content' => [
-                $action->getContentType($this->version) => [
+                $this->current_content_type => [
                     'schema' => (function () use ($params): array {
                         $spec = [
                             'type' => 'object',
@@ -335,10 +340,28 @@ class OpenApi extends Compiler\Specification
         /** @var ReturnAnnotation|ErrorAnnotation $response */
         foreach ($action->getResponses() as $response) {
             $http_code = substr($response->getHttpCode(), 0, 3);
-            $coded_responses[$http_code][] = $response;
+            if (!isset($coded_responses[$http_code])) {
+                $coded_responses[$http_code] = [
+                    'descriptions' => [],
+                    'responses' => []
+                ];
+            }
+
+            /** @var string $description */
+            $description = $response->getDescription();
+            if ($response instanceof ErrorAnnotation) {
+                $error_code = $response->getErrorCode();
+                if ($error_code) {
+                    $description .= sprintf(' Returns a unique error code of `%s`.', $error_code);
+                }
+            }
+
+            $coded_responses[$http_code]['descriptions'][] = $description;
+            $coded_responses[$http_code]['responses'][] = $response;
         }
 
-        foreach ($coded_responses as $http_code => $responses) {
+        foreach ($coded_responses as $http_code => $data) {
+            $responses = $data['responses'];
             $total_responses = count($responses);
 
             // OpenAPI doesn't have support for multiple responses of the same HTTP code, so let's mash them down
@@ -346,30 +369,19 @@ class OpenApi extends Compiler\Specification
             if ($total_responses > 1) {
                 $description = sprintf(
                     'There are %s ways that this status code can be encountered:',
-                    (new \NumberFormatter('en', \NumberFormatter::SPELLOUT))->format(count($responses))
+                    (new \NumberFormatter('en', \NumberFormatter::SPELLOUT))->format($total_responses)
                 );
 
                 $description .= $this->line();
+                $description .= implode(
+                    $this->line(),
+                    array_map(function (string $desc): string {
+                        return sprintf(' * %s', $desc);
+                    }, $data['descriptions'])
+                );
             } else {
                 /** @var string $description */
-                $description = current($responses)->getDescription();
-            }
-
-            /** @var ReturnAnnotation|ErrorAnnotation $response */
-            foreach ($responses as $response) {
-                $response_description = $response->getDescription();
-                if ($total_responses > 1) {
-                    $description .= sprintf(' * %s', $response_description);
-                }
-
-                if ($response instanceof ErrorAnnotation) {
-                    $error_code = $response->getErrorCode();
-                    if ($error_code) {
-                        $description .= sprintf(' Returns a unique error code of `%s`.', $error_code);
-                    }
-                }
-
-                $description .= $this->line();
+                $description = current($data['descriptions']);
             }
 
             $spec = [
@@ -379,11 +391,10 @@ class OpenApi extends Compiler\Specification
             /** @var ReturnAnnotation|ErrorAnnotation $response */
             $response = array_shift($responses);
             $representation = $response->getRepresentation();
-            $representations = $this->getRepresentations($this->version);
-            if ($representation && isset($representations[$representation])) {
+            if ($representation && isset($this->representations[$representation])) {
                 /** @var Documentation $docs */
-                $docs = $representations[$representation];
-                $fields = $docs->getExplodedContentDotNotation();
+                $docs = $this->representations[$representation];
+                $fields = $docs->getRawContent();
                 if (!empty($fields)) {
                     $ref_name = $this->getReferenceName($docs->getLabel());
                     $response_schema = [
@@ -400,7 +411,7 @@ class OpenApi extends Compiler\Specification
                     }
 
                     $spec['content'] = [
-                        $action->getContentType($this->version) => [
+                        $this->current_content_type => [
                             'schema' => $response_schema
                         ]
                     ];
