@@ -53,7 +53,7 @@ class DataAnnotationTest extends AnnotationTest
         return [
             '_complete' => [
                 'content' => '/**
-                  * @api-data content_rating `G` (enum, nullable, tag:MOVIE_RATINGS) - MPAA rating
+                  * @api-data content_rating `G` (enum, required, nullable, tag:MOVIE_RATINGS) - MPAA rating
                   *  + Members
                   *    - `G`
                   *    - `PG`
@@ -71,6 +71,7 @@ class DataAnnotationTest extends AnnotationTest
                     'description' => 'MPAA rating',
                     'identifier' => 'content_rating',
                     'nullable' => true,
+                    'required' => true,
                     'sample_data' => 'G',
                     'scopes' => [
                         [
@@ -105,6 +106,7 @@ class DataAnnotationTest extends AnnotationTest
                     'description' => 'MPAA rating',
                     'identifier' => 'content_rating',
                     'nullable' => false,
+                    'required' => false,
                     'sample_data' => false,
                     'scopes' => [],
                     'subtype' => false,
@@ -124,6 +126,7 @@ class DataAnnotationTest extends AnnotationTest
                     'description' => 'MPAA rating',
                     'identifier' => 'content_rating',
                     'nullable' => false,
+                    'required' => false,
                     'sample_data' => false,
                     'scopes' => [],
                     'subtype' => false,
@@ -142,6 +145,7 @@ class DataAnnotationTest extends AnnotationTest
                     'description' => 'URL to purchase tickets',
                     'identifier' => 'tickets.url',
                     'nullable' => true,
+                    'required' => false,
                     'sample_data' => false,
                     'scopes' => [],
                     'subtype' => false,
@@ -169,6 +173,7 @@ class DataAnnotationTest extends AnnotationTest
                     'description' => 'MPAA rating',
                     'identifier' => 'content_rating',
                     'nullable' => false,
+                    'required' => false,
                     'sample_data' => 'G',
                     'scopes' => [],
                     'subtype' => false,
@@ -187,6 +192,25 @@ class DataAnnotationTest extends AnnotationTest
                     'version' => false
                 ]
             ],
+            'required' => [
+                'content' => '/**
+                  * @api-data tickets.url (string, required) - URL to purchase tickets
+                  */',
+                'version' => null,
+                'expected' => [
+                    'description' => 'URL to purchase tickets',
+                    'identifier' => 'tickets.url',
+                    'nullable' => false,
+                    'required' => true,
+                    'sample_data' => false,
+                    'scopes' => [],
+                    'subtype' => false,
+                    'type' => 'string',
+                    'values' => [],
+                    'vendor_tags' => [],
+                    'version' => false
+                ]
+            ],
             'scoped' => [
                 'content' => '/**
                   * @api-data tickets.url (string) - URL to purchase tickets
@@ -197,6 +221,7 @@ class DataAnnotationTest extends AnnotationTest
                     'description' => 'URL to purchase tickets',
                     'identifier' => 'tickets.url',
                     'nullable' => false,
+                    'required' => false,
                     'sample_data' => false,
                     'scopes' => [
                         [
@@ -220,6 +245,7 @@ class DataAnnotationTest extends AnnotationTest
                     'description' => 'URL to purchase tickets',
                     'identifier' => 'tickets.url',
                     'nullable' => false,
+                    'required' => false,
                     'sample_data' => false,
                     'scopes' => [],
                     'subtype' => false,
@@ -240,6 +266,7 @@ class DataAnnotationTest extends AnnotationTest
                     'description' => 'Is this user a staff member?',
                     'identifier' => 'is_staff',
                     'nullable' => false,
+                    'required' => false,
                     'sample_data' => '0',
                     'scopes' => [],
                     'subtype' => false,
