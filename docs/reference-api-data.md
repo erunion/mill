@@ -68,7 +68,7 @@ $representation = [
     ...
 
     /**
-     * @api-data uri (uri) - The canonical relative URI for the user.
+     * @api-data uri (uri, required) - The canonical relative URI for the user.
      */
     'uri' => sprintf('/users/%d', $user->id),
 
@@ -99,7 +99,7 @@ $representation = [
                 'options' => ['GET'],
 
                 /**
-                 * @api-data total (number) - Total number of items on
+                 * @api-data total (number, nullable) - Total number of items on
                  *     this connection.
                  */
                 'total' => $user->getAlbums()->total

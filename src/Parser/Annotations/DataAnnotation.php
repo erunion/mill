@@ -19,6 +19,7 @@ class DataAnnotation extends Annotation
         'description',
         'identifier',
         'nullable',
+        'required',
         'sample_data',
         'subtype',
         'type',
@@ -36,6 +37,9 @@ class DataAnnotation extends Annotation
 
     /** @var false|string Subtype of the type of data that this represents. */
     protected $subtype = false;
+
+    /** @var bool Flag designating if this data is always expected to be available (required). */
+    protected $required = false;
 
     /** @var bool Flag designating if this data is nullable. */
     protected $nullable = false;
@@ -67,6 +71,7 @@ class DataAnnotation extends Annotation
             'sample_data' => $mson->getSampleData(),
             'type' => $mson->getType(),
             'subtype' => $mson->getSubtype(),
+            'required' => $mson->isRequired(),
             'nullable' => $mson->isNullable(),
             'vendor_tags' => $mson->getVendorTags(),
             'description' => $mson->getDescription(),
@@ -115,6 +120,7 @@ class DataAnnotation extends Annotation
 
         $this->values = $this->optional('values');
         $this->vendor_tags = $this->optional('vendor_tags');
+        $this->required = $this->optional('required');
         $this->nullable = $this->optional('nullable');
     }
 
@@ -163,6 +169,24 @@ class DataAnnotation extends Annotation
     public function setIdentifierPrefix(string $prefix): self
     {
         $this->identifier = $prefix . '.' . $this->identifier;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRequired(): bool
+    {
+        return $this->required;
+    }
+
+    /**
+     * @param bool $required
+     * @return DataAnnotation
+     */
+    public function setRequired(bool $required): self
+    {
+        $this->required = $required;
         return $this;
     }
 

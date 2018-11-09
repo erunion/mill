@@ -599,6 +599,9 @@ components:
         error:
           description: 'User-friendly error message'
           type: string
+      required:
+        - error
+      type: object
     movie:
       title: Movie
       properties:
@@ -622,6 +625,7 @@ components:
           type: string
         description:
           description: Description
+          nullable: true
           type: string
         director:
           allOf:
@@ -644,6 +648,10 @@ components:
               trailer:
                 description: 'Trailer URL. This data requires a bearer token with the `public` scope.'
                 type: string
+            required:
+              - imdb
+              - tickets
+              - trailer
           type: array
         genres:
           description: Genres
@@ -664,6 +672,7 @@ components:
           properties:
             url:
               description: 'URL to purchase the film.'
+              nullable: true
               type: string
           type: object
         rotten_tomatoes_score:
@@ -685,6 +694,20 @@ components:
         uri:
           description: 'Movie URI'
           type: string
+      required:
+        - cast
+        - content_rating
+        - director
+        - genres
+        - id
+        - kid_friendly
+        - name
+        - rotten_tomatoes_score
+        - runtime
+        - showtimes
+        - theaters
+        - uri
+      type: object
     person:
       title: Person
       properties:
@@ -700,6 +723,7 @@ components:
         uri:
           description: 'Person URI'
           type: string
+      type: object
     theater:
       title: Theater
       properties:
@@ -728,6 +752,7 @@ components:
         uri:
           description: 'Theater URI'
           type: string
+      type: object
 security:
   -
     oauth2:

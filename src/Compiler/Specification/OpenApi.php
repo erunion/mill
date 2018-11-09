@@ -134,12 +134,17 @@ class OpenApi extends Compiler\Specification
                         continue;
                     }
 
+                    $properties = $this->processDataModel(DataAnnotation::PAYLOAD_FORMAT, [
+                        'properties' => $fields
+                    ]);
+
                     $schema_name = $representation->getLabel();
                     $identifier = $this->getReferenceName($schema_name);
                     $specification['components']['schemas'][$identifier] = [
-                        'title' => $schema_name,
-                        'properties' => $this->processDataModel(DataAnnotation::PAYLOAD_FORMAT, $fields)
+                        'title' => $schema_name
                     ];
+
+                    $specification['components']['schemas'][$identifier] += $properties['properties'];
                 }
 
                 ksort($specification['components']['schemas']);
@@ -598,10 +603,6 @@ class OpenApi extends Compiler\Specification
 
                 unset($spec['name']);
                 unset($spec['in']);
-
-                if ($payload_format === DataAnnotation::PAYLOAD_FORMAT) {
-                    unset($spec['required']);
-                }
             }
 
             // Process any exploded dot notation children of this field.
@@ -639,8 +640,8 @@ class OpenApi extends Compiler\Specification
                 }
             }
 
-            // Request body requirement definitions need to be separate from the item schema.
-            if ($payload_format === ParamAnnotation::PAYLOAD_FORMAT) {
+            // Request body and response schema requirement definitions need to be separate from the item schema.
+            if (in_array($payload_format, [DataAnnotation::PAYLOAD_FORMAT, ParamAnnotation::PAYLOAD_FORMAT])) {
                 $spec = $this->extractRequiredFields($spec);
             }
 
