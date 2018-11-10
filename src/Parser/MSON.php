@@ -9,6 +9,7 @@ use Mill\Exceptions\Config\UnconfiguredErrorRepresentationException;
 use Mill\Exceptions\Config\UnconfiguredRepresentationException;
 use Mill\Exceptions\MSON\ImproperlyWrittenEnumException;
 use Mill\Exceptions\MSON\MissingOptionsException;
+use Mill\Exceptions\MSON\MissingSubtypeException;
 
 class MSON implements Arrayable
 {
@@ -228,6 +229,8 @@ class MSON implements Arrayable
 
                         throw UnsupportedTypeException::create($content, $this->class, $this->method);
                 }
+            } elseif ($this->type === 'array') {
+                throw MissingSubtypeException::create($content, $this->class, $this->method);
             }
         }
 

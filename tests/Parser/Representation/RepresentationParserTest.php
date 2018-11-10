@@ -427,7 +427,7 @@ class RepresentationParserTest extends TestCase
                             'required' => true,
                             'sample_data' => false,
                             'scopes' => [],
-                            'subtype' => false,
+                            'subtype' => 'string',
                             'type' => 'array',
                             'values' => [],
                             'vendor_tags' => [],
