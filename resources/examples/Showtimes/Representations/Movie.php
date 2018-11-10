@@ -81,7 +81,7 @@ class Movie extends Representation
             'theaters' => $this->movie->getTheaters(),
 
             /**
-             * @api-data showtimes (array, required) - Non-theater specific showtimes
+             * @api-data showtimes (array<string>, required) - Non-theater specific showtimes
              */
             'showtimes' => $this->getShowtimes(),
 

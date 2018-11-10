@@ -4,6 +4,7 @@ namespace Mill\Tests\Parser;
 use Mill\Exceptions\Annotations\UnsupportedTypeException;
 use Mill\Exceptions\MSON\ImproperlyWrittenEnumException;
 use Mill\Exceptions\MSON\MissingOptionsException;
+use Mill\Exceptions\MSON\MissingSubtypeException;
 use Mill\Parser\MSON;
 use Mill\Tests\TestCase;
 
@@ -38,6 +39,14 @@ class MSONTest extends TestCase
                 - `PG` - PG rated
                 - `PG-13` - PG-13 rated';
 
+        (new MSON(__CLASS__, __METHOD__, $this->getConfig()))->parse($content);
+    }
+
+    public function testParseFailsOnArrayTypeWithoutASubtype(): void
+    {
+        $this->expectException(MissingSubtypeException::class);
+
+        $content = 'websites (array) - A list of websites.';
         (new MSON(__CLASS__, __METHOD__, $this->getConfig()))->parse($content);
     }
 
@@ -276,7 +285,7 @@ class MSONTest extends TestCase
                     'vendor_tags' => []
                 ]
             ],
-            'type-array-with-subytpe-representation' => [
+            'type-array-with-subtype-representation' => [
                 'content' => 'cast (array<\Mill\Examples\Showtimes\Representations\Person>) - Cast members',
                 'expected' => [
                     'description' => 'Cast members',

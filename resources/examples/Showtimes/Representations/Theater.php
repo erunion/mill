@@ -50,7 +50,7 @@ class Theater extends Representation
             'movies' => $this->theater->getMovies(),
 
             /**
-             * @api-data showtimes (array) - Non-movie specific showtimes
+             * @api-data showtimes (array<string>) - Non-movie specific showtimes
              */
             'showtimes' => $this->theater->getShowtimes()
         ];
