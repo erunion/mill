@@ -65,7 +65,10 @@ class DataAnnotation extends Annotation
         /** @var string $method */
         $method = $this->method;
 
-        $mson = (new MSON($this->class, $method, $this->application->getConfig()))->parse($content);
+        $mson = (new MSON($this->class, $method, $this->application->getConfig()))
+            ->requiredByDefault()
+            ->parse($content);
+
         $parsed = [
             'identifier' => $mson->getField(),
             'sample_data' => $mson->getSampleData(),

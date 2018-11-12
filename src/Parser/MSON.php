@@ -178,9 +178,11 @@ class MSON implements Arrayable
             $this->vendor_tags = $vendor_tags;
         }
 
-        if (isset($matches['required'])) {
-            if (!empty($matches['required']) && strtolower($matches['required']) == 'required') {
+        if (isset($matches['required']) && !empty($matches['required'])) {
+            if (strtolower($matches['required']) === 'required') {
                 $this->is_required = true;
+            } elseif (strtolower($matches['required']) === 'optional') {
+                $this->is_required = false;
             }
         }
 
@@ -385,6 +387,18 @@ class MSON implements Arrayable
     public function allowAllSubtypes(): self
     {
         $this->allow_all_subtypes = true;
+        return $this;
+    }
+
+    /**
+     * Force the default behavior of the `required|optional` flag to flag as required by default. Used for `@api-data`
+     * annotations to signal them as required by default, forcing a manual opt-in to flag it as optional.
+     *
+     * @return MSON
+     */
+    public function requiredByDefault(): self
+    {
+        $this->is_required = true;
         return $this;
     }
 

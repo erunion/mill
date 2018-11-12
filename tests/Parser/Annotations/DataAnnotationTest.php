@@ -53,7 +53,7 @@ class DataAnnotationTest extends AnnotationTest
         return [
             '_complete' => [
                 'content' => '/**
-                  * @api-data content_rating `G` (enum, required, nullable, tag:MOVIE_RATINGS) - MPAA rating
+                  * @api-data content_rating `G` (enum, nullable, tag:MOVIE_RATINGS) - MPAA rating
                   *  + Members
                   *    - `G`
                   *    - `PG`
@@ -99,7 +99,7 @@ class DataAnnotationTest extends AnnotationTest
             ],
             'bare' => [
                 'content' => '/**
-                  * @api-data content_rating (string) - MPAA rating
+                  * @api-data content_rating (string, optional) - MPAA rating
                   */',
                 'version' => null,
                 'expected' => [
@@ -118,7 +118,7 @@ class DataAnnotationTest extends AnnotationTest
             ],
             'versioned' => [
                 'content' => '/**
-                  * @api-data content_rating (string) - MPAA rating
+                  * @api-data content_rating (string, optional) - MPAA rating
                   * @api-version 1.0
                   */',
                 'version' => new Version('1.0', __CLASS__, __METHOD__),
@@ -138,7 +138,7 @@ class DataAnnotationTest extends AnnotationTest
             ],
             'nullable' => [
                 'content' => '/**
-                  * @api-data tickets.url (string, nullable) - URL to purchase tickets
+                  * @api-data tickets.url (string, optional, nullable) - URL to purchase tickets
                   */',
                 'version' => null,
                 'expected' => [
@@ -157,7 +157,7 @@ class DataAnnotationTest extends AnnotationTest
             ],
             'options' => [
                 'content' => '/**
-                  * @api-data content_rating (enum) - MPAA rating
+                  * @api-data content_rating (enum, optional) - MPAA rating
                   *  + Members
                   *    - `G`
                   *    - `PG`
@@ -194,6 +194,25 @@ class DataAnnotationTest extends AnnotationTest
             ],
             'required' => [
                 'content' => '/**
+                  * @api-data tickets.url (string) - URL to purchase tickets
+                  */',
+                'version' => null,
+                'expected' => [
+                    'description' => 'URL to purchase tickets',
+                    'identifier' => 'tickets.url',
+                    'nullable' => false,
+                    'required' => true,
+                    'sample_data' => false,
+                    'scopes' => [],
+                    'subtype' => false,
+                    'type' => 'string',
+                    'values' => [],
+                    'vendor_tags' => [],
+                    'version' => false
+                ]
+            ],
+            'required-explicit' => [
+                'content' => '/**
                   * @api-data tickets.url (string, required) - URL to purchase tickets
                   */',
                 'version' => null,
@@ -213,7 +232,7 @@ class DataAnnotationTest extends AnnotationTest
             ],
             'scoped' => [
                 'content' => '/**
-                  * @api-data tickets.url (string) - URL to purchase tickets
+                  * @api-data tickets.url (string, optional) - URL to purchase tickets
                   * @api-scope public
                   */',
                 'version' => null,
@@ -238,7 +257,7 @@ class DataAnnotationTest extends AnnotationTest
             ],
             'vendor-tag' => [
                 'content' => '/**
-                  * @api-data tickets.url (string, tag:BUY_TICKETS) - URL to purchase tickets
+                  * @api-data tickets.url (string, optional, tag:BUY_TICKETS) - URL to purchase tickets
                   */',
                 'version' => null,
                 'expected' => [
@@ -259,7 +278,7 @@ class DataAnnotationTest extends AnnotationTest
             ],
             'zeroed-out-sample_data' => [
                 'content' => '/**
-                  * @api-data is_staff `0` (boolean) - Is this user a staff member?
+                  * @api-data is_staff `0` (boolean, optional) - Is this user a staff member?
                   */',
                 'version' => null,
                 'expected' => [

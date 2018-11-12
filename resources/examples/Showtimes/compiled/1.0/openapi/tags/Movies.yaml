@@ -338,6 +338,11 @@ components:
         uri:
           description: 'Person URI'
           type: string
+      required:
+        - id
+        - imdb
+        - name
+        - uri
       type: object
     theater:
       title: Theater
@@ -370,6 +375,15 @@ components:
         website:
           description: Website
           type: string
+      required:
+        - address
+        - id
+        - movies
+        - name
+        - phone_number
+        - showtimes
+        - uri
+        - website
       type: object
 security:
   -
