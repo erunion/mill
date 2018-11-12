@@ -19,6 +19,8 @@ class Command extends \Symfony\Component\Console\Command\Command
      */
     protected function configure()
     {
+        parent::configure();
+
         $this->addOption(
             'config',
             null,
