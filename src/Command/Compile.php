@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class Compile extends \Mill\Command
+class Compile extends BaseCompiler
 {
     const FORMAT_API_BLUEPRINT = 'apiblueprint';
     const FORMAT_OPENAPI = 'openapi';
@@ -65,8 +65,7 @@ class Compile extends \Mill\Command
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Compile documentation for a specific server environment. Only available for `openapi` compilations.'
-            )
-            ->addArgument('output', InputArgument::REQUIRED, 'Directory to output your compiled documentation in.');
+            );
     }
 
     /**
@@ -87,10 +86,6 @@ class Compile extends \Mill\Command
         /** @var string $format */
         $format = $input->getOption('format');
         $format = strtolower($format);
-
-        /** @var string $output_dir */
-        $output_dir = $input->getArgument('output');
-        $output_dir = realpath($output_dir);
 
         if (!in_array($format, ['apiblueprint', 'openapi'])) {
             $output->writeLn('<error>`' . $format . '` is an unknown compilation format.</error>');
@@ -136,6 +131,9 @@ class Compile extends \Mill\Command
             }
         }
 
+        $compiler->setLoadPrivateDocs($this->private_docs);
+        $compiler->setLoadVendorTagDocs($this->vendor_tags);
+
         $output->writeln(
             sprintf(
                 '<comment>Compiling %s files...</comment>',
@@ -145,7 +143,7 @@ class Compile extends \Mill\Command
 
         $compiled = $compiler->getCompiled();
         foreach ($compiled as $version => $spec) {
-            $version_dir = $output_dir . DIRECTORY_SEPARATOR . $version . DIRECTORY_SEPARATOR;
+            $version_dir = $this->output_dir . DIRECTORY_SEPARATOR . $version . DIRECTORY_SEPARATOR;
 
             $output->writeLn('<comment> - API version: ' . $version . '</comment>');
 
@@ -172,7 +170,7 @@ class Compile extends \Mill\Command
      */
     private function saveApiBlueprint(OutputInterface $output, string $version_dir, array $spec): void
     {
-        $version_dir .= 'apiblueprint' . DIRECTORY_SEPARATOR;
+        $version_dir .= self::FORMAT_API_BLUEPRINT . DIRECTORY_SEPARATOR;
 
         // Save a, single, combined API Blueprint file.
         $this->filesystem->put($version_dir . 'api.apib', $spec['combined']);
@@ -212,7 +210,7 @@ class Compile extends \Mill\Command
      */
     private function saveOpenApi(OutputInterface $output, string $version_dir, array $spec): void
     {
-        $version_dir .= 'openapi' . DIRECTORY_SEPARATOR;
+        $version_dir .= self::FORMAT_OPENAPI . DIRECTORY_SEPARATOR;
 
         // Save the full specification.
         $this->filesystem->put($version_dir . 'api.yaml', OpenApi::getYaml($spec));
