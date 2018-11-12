@@ -508,6 +508,11 @@ components:
         uri:
           description: 'Person URI'
           type: string
+      required:
+        - id
+        - imdb
+        - name
+        - uri
       type: object
     theater:
       title: Theater
@@ -537,6 +542,14 @@ components:
         uri:
           description: 'Theater URI'
           type: string
+      required:
+        - address
+        - id
+        - movies
+        - name
+        - phone_number
+        - showtimes
+        - uri
       type: object
 security:
   -

@@ -276,16 +276,16 @@ This action requires a bearer token with the `create` scope.
 - `uri` (string, required) - Movie URI
 
 ## Person
-- `id` (number) - Unique ID
-- `imdb` (string) - IMDB URL
-- `name` (string) - Name
-- `uri` (string) - Person URI
+- `id` (number, required) - Unique ID
+- `imdb` (string, required) - IMDB URL
+- `name` (string, required) - Name
+- `uri` (string, required) - Person URI
 
 ## Theater
-- `address` (string) - Address
-- `id` (number) - Unique ID
-- `movies` (array[Movie]) - Movies currently playing
-- `name` (string) - Name
-- `phone_number` (string) - Phone number
-- `showtimes` (array[string]) - Non-movie specific showtimes
-- `uri` (string) - Theater URI
+- `address` (string, required) - Address
+- `id` (number, required) - Unique ID
+- `movies` (array[Movie], required) - Movies currently playing
+- `name` (string, required) - Name
+- `phone_number` (string, required) - Phone number
+- `showtimes` (array[string], required) - Non-movie specific showtimes
+- `uri` (string, required) - Theater URI
