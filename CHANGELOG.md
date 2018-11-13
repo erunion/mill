@@ -1,4 +1,20 @@
 # Changelog
+## [5.0.0] - 2018-11-13
+### Added
+* The [Contributor Covenant Code of Conduct](https://www.contributor-covenant.org/).
+* Human-friendly schema names are now compiled into the `schemas` section in OpenAPI specs. [#201](https://github.com/vimeo/mill/pull/201)
+* `@api-data` annotations now support `required` and `optional` flags for signaling that that piece of data is expected to always be returned in the response. The default behavior is for the annotation to be `required`. Signaling something as optional is opt-in and requires the `optional` flag. [#203](https://github.com/vimeo/mill/pull/203), [#204](https://github.com/vimeo/mill/issues/204)
+* The `compile` command now has the ability to compile specifications for public-only or vendor-tagged documentation. [#198](https://github.com/vimeo/mill/issues/198)
+
+### Changed
+* Eliminating the need for `@api-label` annotations on resources. [#194](https://github.com/vimeo/mill/pull/194)
+* Resource methods in compiled OpenAPI specs are now sorted alphabetically.
+* Compiler has been reworked to compile documentation from the resource level down. This resolves a security bug where representations that were only ever used in a private manner would be exposed to public doc generation. [#199](https://github.com/vimeo/mill/pull/199)
+* Subtypes are now required for `array` types. [#190](https://github.com/vimeo/mill/issues/190)
+
+### Fixed
+* Resolved a FQN parsing bug that sometimes occurred when there were long `use` statements at the top of a file. [#192](https://github.com/vimeo/mill/issues/192)
+
 ## [4.2.13] - 2018-07-26
 ## Fixed
 - Fixed a bug in OpenAPI compilation where subtyped-arrays were always compiled as `string`. [#191](https://github.com/vimeo/mill/pull/191)
@@ -326,6 +342,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[5.0.0]: https://github.com/vimeo/mill/compare/4.2.13...5.0.0
 [4.2.13]: https://github.com/vimeo/mill/compare/4.2.12...4.2.13
 [4.2.12]: https://github.com/vimeo/mill/compare/4.2.11...4.2.12
 [4.2.11]: https://github.com/vimeo/mill/compare/4.2.10...4.2.11
