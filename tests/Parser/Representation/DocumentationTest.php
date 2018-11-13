@@ -17,7 +17,7 @@ class DocumentationTest extends TestCase
      */
     public function testParseDocumentationReturnsRepresentation(string $class, string $method, array $expected): void
     {
-        $parsed = (new Documentation($class, $method))->parse();
+        $parsed = (new Documentation($class, $method, $this->getApplication()))->parse();
         $representation = $parsed->toArray();
 
         $this->assertSame($class, $parsed->getClass());
@@ -56,7 +56,7 @@ class DocumentationTest extends TestCase
     ): void {
         $this->expectException($exception);
 
-        (new Documentation($class, $method))->parse();
+        (new Documentation($class, $method, $this->getApplication()))->parse();
     }
 
     public function providerParseDocumentationReturnsRepresentation(): array
@@ -73,6 +73,7 @@ class DocumentationTest extends TestCase
                             'description' => 'Cast',
                             'identifier' => 'cast',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => false,
                             'scopes' => [
                                 [
@@ -90,6 +91,7 @@ class DocumentationTest extends TestCase
                             'description' => 'MPAA rating',
                             'identifier' => 'content_rating',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => 'G',
                             'scopes' => [],
                             'subtype' => false,
@@ -110,7 +112,8 @@ class DocumentationTest extends TestCase
                         'description' => [
                             'description' => 'Description',
                             'identifier' => 'description',
-                            'nullable' => false,
+                            'nullable' => true,
+                            'required' => false,
                             'sample_data' => false,
                             'scopes' => [],
                             'subtype' => false,
@@ -123,6 +126,7 @@ class DocumentationTest extends TestCase
                             'description' => 'Director',
                             'identifier' => 'director',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => false,
                             'scopes' => [
                                 [
@@ -140,6 +144,7 @@ class DocumentationTest extends TestCase
                             'description' => 'External URLs',
                             'identifier' => 'external_urls',
                             'nullable' => false,
+                            'required' => false,
                             'sample_data' => false,
                             'scopes' => [
                                 [
@@ -157,6 +162,7 @@ class DocumentationTest extends TestCase
                             'description' => 'IMDB URL',
                             'identifier' => 'external_urls.imdb',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => false,
                             'scopes' => [
                                 [
@@ -174,6 +180,7 @@ class DocumentationTest extends TestCase
                             'description' => 'Tickets URL',
                             'identifier' => 'external_urls.tickets',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => false,
                             'scopes' => [
                                 [
@@ -193,6 +200,7 @@ class DocumentationTest extends TestCase
                             'description' => 'Trailer URL',
                             'identifier' => 'external_urls.trailer',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => false,
                             'scopes' => [
                                 [
@@ -210,6 +218,7 @@ class DocumentationTest extends TestCase
                             'description' => 'Genres',
                             'identifier' => 'genres',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => false,
                             'scopes' => [],
                             'subtype' => 'uri',
@@ -222,6 +231,7 @@ class DocumentationTest extends TestCase
                             'description' => 'Unique ID',
                             'identifier' => 'id',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => false,
                             'scopes' => [],
                             'subtype' => false,
@@ -234,6 +244,7 @@ class DocumentationTest extends TestCase
                             'description' => 'Kid friendly?',
                             'identifier' => 'kid_friendly',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => '0',
                             'scopes' => [],
                             'subtype' => false,
@@ -246,6 +257,7 @@ class DocumentationTest extends TestCase
                             'description' => 'Name',
                             'identifier' => 'name',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => false,
                             'scopes' => [],
                             'subtype' => false,
@@ -257,7 +269,8 @@ class DocumentationTest extends TestCase
                         'purchase.url' => [
                             'description' => 'URL to purchase the film.',
                             'identifier' => 'purchase.url',
-                            'nullable' => false,
+                            'nullable' => true,
+                            'required' => false,
                             'sample_data' => false,
                             'scopes' => [],
                             'subtype' => false,
@@ -270,6 +283,7 @@ class DocumentationTest extends TestCase
                             'description' => 'Rotten Tomatoes score',
                             'identifier' => 'rotten_tomatoes_score',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => false,
                             'scopes' => [],
                             'subtype' => false,
@@ -282,6 +296,7 @@ class DocumentationTest extends TestCase
                             'description' => 'Runtime',
                             'identifier' => 'runtime',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => false,
                             'scopes' => [],
                             'subtype' => false,
@@ -294,9 +309,10 @@ class DocumentationTest extends TestCase
                             'description' => 'Non-theater specific showtimes',
                             'identifier' => 'showtimes',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => false,
                             'scopes' => [],
-                            'subtype' => false,
+                            'subtype' => 'string',
                             'type' => 'array',
                             'values' => [],
                             'vendor_tags' => [],
@@ -306,6 +322,7 @@ class DocumentationTest extends TestCase
                             'description' => 'Theaters the movie is currently showing in',
                             'identifier' => 'theaters',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => false,
                             'scopes' => [],
                             'subtype' => '\Mill\Examples\Showtimes\Representations\Theater',
@@ -318,6 +335,7 @@ class DocumentationTest extends TestCase
                             'description' => 'Movie URI',
                             'identifier' => 'uri',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => false,
                             'scopes' => [],
                             'subtype' => false,
@@ -333,6 +351,7 @@ class DocumentationTest extends TestCase
                                 'description' => 'Cast',
                                 'identifier' => 'cast',
                                 'nullable' => false,
+                                'required' => true,
                                 'sample_data' => false,
                                 'scopes' => [
                                     [
@@ -352,6 +371,7 @@ class DocumentationTest extends TestCase
                                 'description' => 'MPAA rating',
                                 'identifier' => 'content_rating',
                                 'nullable' => false,
+                                'required' => true,
                                 'sample_data' => 'G',
                                 'scopes' => [],
                                 'subtype' => false,
@@ -374,7 +394,8 @@ class DocumentationTest extends TestCase
                             '__NESTED_DATA__' => [
                                 'description' => 'Description',
                                 'identifier' => 'description',
-                                'nullable' => false,
+                                'nullable' => true,
+                                'required' => false,
                                 'sample_data' => false,
                                 'scopes' => [],
                                 'subtype' => false,
@@ -389,6 +410,7 @@ class DocumentationTest extends TestCase
                                 'description' => 'Director',
                                 'identifier' => 'director',
                                 'nullable' => false,
+                                'required' => true,
                                 'sample_data' => false,
                                 'scopes' => [
                                     [
@@ -408,6 +430,7 @@ class DocumentationTest extends TestCase
                                 'description' => 'External URLs',
                                 'identifier' => 'external_urls',
                                 'nullable' => false,
+                                'required' => false,
                                 'sample_data' => false,
                                 'scopes' => [
                                     [
@@ -426,6 +449,7 @@ class DocumentationTest extends TestCase
                                     'description' => 'IMDB URL',
                                     'identifier' => 'external_urls.imdb',
                                     'nullable' => false,
+                                    'required' => true,
                                     'sample_data' => false,
                                     'scopes' => [
                                         [
@@ -445,6 +469,7 @@ class DocumentationTest extends TestCase
                                     'description' => 'Tickets URL',
                                     'identifier' => 'external_urls.tickets',
                                     'nullable' => false,
+                                    'required' => true,
                                     'sample_data' => false,
                                     'scopes' => [
                                         [
@@ -466,6 +491,7 @@ class DocumentationTest extends TestCase
                                     'description' => 'Trailer URL',
                                     'identifier' => 'external_urls.trailer',
                                     'nullable' => false,
+                                    'required' => true,
                                     'sample_data' => false,
                                     'scopes' => [
                                         [
@@ -486,6 +512,7 @@ class DocumentationTest extends TestCase
                                 'description' => 'Genres',
                                 'identifier' => 'genres',
                                 'nullable' => false,
+                                'required' => true,
                                 'sample_data' => false,
                                 'scopes' => [],
                                 'subtype' => 'uri',
@@ -500,6 +527,7 @@ class DocumentationTest extends TestCase
                                 'description' => 'Unique ID',
                                 'identifier' => 'id',
                                 'nullable' => false,
+                                'required' => true,
                                 'sample_data' => false,
                                 'scopes' => [],
                                 'subtype' => false,
@@ -514,6 +542,7 @@ class DocumentationTest extends TestCase
                                 'description' => 'Kid friendly?',
                                 'identifier' => 'kid_friendly',
                                 'nullable' => false,
+                                'required' => true,
                                 'sample_data' => '0',
                                 'scopes' => [],
                                 'subtype' => false,
@@ -528,6 +557,7 @@ class DocumentationTest extends TestCase
                                 'description' => 'Name',
                                 'identifier' => 'name',
                                 'nullable' => false,
+                                'required' => true,
                                 'sample_data' => false,
                                 'scopes' => [],
                                 'subtype' => false,
@@ -542,7 +572,8 @@ class DocumentationTest extends TestCase
                                 '__NESTED_DATA__' => [
                                     'description' => 'URL to purchase the film.',
                                     'identifier' => 'purchase.url',
-                                    'nullable' => false,
+                                    'nullable' => true,
+                                    'required' => false,
                                     'sample_data' => false,
                                     'scopes' => [],
                                     'subtype' => false,
@@ -558,6 +589,7 @@ class DocumentationTest extends TestCase
                                 'description' => 'Rotten Tomatoes score',
                                 'identifier' => 'rotten_tomatoes_score',
                                 'nullable' => false,
+                                'required' => true,
                                 'sample_data' => false,
                                 'scopes' => [],
                                 'subtype' => false,
@@ -572,6 +604,7 @@ class DocumentationTest extends TestCase
                                 'description' => 'Runtime',
                                 'identifier' => 'runtime',
                                 'nullable' => false,
+                                'required' => true,
                                 'sample_data' => false,
                                 'scopes' => [],
                                 'subtype' => false,
@@ -586,9 +619,10 @@ class DocumentationTest extends TestCase
                                 'description' => 'Non-theater specific showtimes',
                                 'identifier' => 'showtimes',
                                 'nullable' => false,
+                                'required' => true,
                                 'sample_data' => false,
                                 'scopes' => [],
-                                'subtype' => false,
+                                'subtype' => 'string',
                                 'type' => 'array',
                                 'values' => [],
                                 'vendor_tags' => [],
@@ -600,6 +634,7 @@ class DocumentationTest extends TestCase
                                 'description' => 'Theaters the movie is currently showing in',
                                 'identifier' => 'theaters',
                                 'nullable' => false,
+                                'required' => true,
                                 'sample_data' => false,
                                 'scopes' => [],
                                 'subtype' => '\Mill\Examples\Showtimes\Representations\Theater',
@@ -614,6 +649,7 @@ class DocumentationTest extends TestCase
                                 'description' => 'Movie URI',
                                 'identifier' => 'uri',
                                 'nullable' => false,
+                                'required' => true,
                                 'sample_data' => false,
                                 'scopes' => [],
                                 'subtype' => false,

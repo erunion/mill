@@ -71,6 +71,7 @@ class DataAnnotationTest extends AnnotationTest
                     'description' => 'MPAA rating',
                     'identifier' => 'content_rating',
                     'nullable' => true,
+                    'required' => true,
                     'sample_data' => 'G',
                     'scopes' => [
                         [
@@ -98,13 +99,14 @@ class DataAnnotationTest extends AnnotationTest
             ],
             'bare' => [
                 'content' => '/**
-                  * @api-data content_rating (string) - MPAA rating
+                  * @api-data content_rating (string, optional) - MPAA rating
                   */',
                 'version' => null,
                 'expected' => [
                     'description' => 'MPAA rating',
                     'identifier' => 'content_rating',
                     'nullable' => false,
+                    'required' => false,
                     'sample_data' => false,
                     'scopes' => [],
                     'subtype' => false,
@@ -116,7 +118,7 @@ class DataAnnotationTest extends AnnotationTest
             ],
             'versioned' => [
                 'content' => '/**
-                  * @api-data content_rating (string) - MPAA rating
+                  * @api-data content_rating (string, optional) - MPAA rating
                   * @api-version 1.0
                   */',
                 'version' => new Version('1.0', __CLASS__, __METHOD__),
@@ -124,6 +126,7 @@ class DataAnnotationTest extends AnnotationTest
                     'description' => 'MPAA rating',
                     'identifier' => 'content_rating',
                     'nullable' => false,
+                    'required' => false,
                     'sample_data' => false,
                     'scopes' => [],
                     'subtype' => false,
@@ -135,13 +138,14 @@ class DataAnnotationTest extends AnnotationTest
             ],
             'nullable' => [
                 'content' => '/**
-                  * @api-data tickets.url (string, nullable) - URL to purchase tickets
+                  * @api-data tickets.url (string, optional, nullable) - URL to purchase tickets
                   */',
                 'version' => null,
                 'expected' => [
                     'description' => 'URL to purchase tickets',
                     'identifier' => 'tickets.url',
                     'nullable' => true,
+                    'required' => false,
                     'sample_data' => false,
                     'scopes' => [],
                     'subtype' => false,
@@ -153,7 +157,7 @@ class DataAnnotationTest extends AnnotationTest
             ],
             'options' => [
                 'content' => '/**
-                  * @api-data content_rating (enum) - MPAA rating
+                  * @api-data content_rating (enum, optional) - MPAA rating
                   *  + Members
                   *    - `G`
                   *    - `PG`
@@ -169,6 +173,7 @@ class DataAnnotationTest extends AnnotationTest
                     'description' => 'MPAA rating',
                     'identifier' => 'content_rating',
                     'nullable' => false,
+                    'required' => false,
                     'sample_data' => 'G',
                     'scopes' => [],
                     'subtype' => false,
@@ -187,9 +192,47 @@ class DataAnnotationTest extends AnnotationTest
                     'version' => false
                 ]
             ],
-            'scoped' => [
+            'required' => [
                 'content' => '/**
                   * @api-data tickets.url (string) - URL to purchase tickets
+                  */',
+                'version' => null,
+                'expected' => [
+                    'description' => 'URL to purchase tickets',
+                    'identifier' => 'tickets.url',
+                    'nullable' => false,
+                    'required' => true,
+                    'sample_data' => false,
+                    'scopes' => [],
+                    'subtype' => false,
+                    'type' => 'string',
+                    'values' => [],
+                    'vendor_tags' => [],
+                    'version' => false
+                ]
+            ],
+            'required-explicit' => [
+                'content' => '/**
+                  * @api-data tickets.url (string, required) - URL to purchase tickets
+                  */',
+                'version' => null,
+                'expected' => [
+                    'description' => 'URL to purchase tickets',
+                    'identifier' => 'tickets.url',
+                    'nullable' => false,
+                    'required' => true,
+                    'sample_data' => false,
+                    'scopes' => [],
+                    'subtype' => false,
+                    'type' => 'string',
+                    'values' => [],
+                    'vendor_tags' => [],
+                    'version' => false
+                ]
+            ],
+            'scoped' => [
+                'content' => '/**
+                  * @api-data tickets.url (string, optional) - URL to purchase tickets
                   * @api-scope public
                   */',
                 'version' => null,
@@ -197,6 +240,7 @@ class DataAnnotationTest extends AnnotationTest
                     'description' => 'URL to purchase tickets',
                     'identifier' => 'tickets.url',
                     'nullable' => false,
+                    'required' => false,
                     'sample_data' => false,
                     'scopes' => [
                         [
@@ -213,13 +257,14 @@ class DataAnnotationTest extends AnnotationTest
             ],
             'vendor-tag' => [
                 'content' => '/**
-                  * @api-data tickets.url (string, tag:BUY_TICKETS) - URL to purchase tickets
+                  * @api-data tickets.url (string, optional, tag:BUY_TICKETS) - URL to purchase tickets
                   */',
                 'version' => null,
                 'expected' => [
                     'description' => 'URL to purchase tickets',
                     'identifier' => 'tickets.url',
                     'nullable' => false,
+                    'required' => false,
                     'sample_data' => false,
                     'scopes' => [],
                     'subtype' => false,
@@ -233,13 +278,14 @@ class DataAnnotationTest extends AnnotationTest
             ],
             'zeroed-out-sample_data' => [
                 'content' => '/**
-                  * @api-data is_staff `0` (boolean) - Is this user a staff member?
+                  * @api-data is_staff `0` (boolean, optional) - Is this user a staff member?
                   */',
                 'version' => null,
                 'expected' => [
                     'description' => 'Is this user a staff member?',
                     'identifier' => 'is_staff',
                     'nullable' => false,
+                    'required' => false,
                     'sample_data' => '0',
                     'scopes' => [],
                     'subtype' => false,

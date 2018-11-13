@@ -4,6 +4,7 @@ namespace Mill\Tests\Parser;
 use Mill\Exceptions\Annotations\UnsupportedTypeException;
 use Mill\Exceptions\MSON\ImproperlyWrittenEnumException;
 use Mill\Exceptions\MSON\MissingOptionsException;
+use Mill\Exceptions\MSON\MissingSubtypeException;
 use Mill\Parser\MSON;
 use Mill\Tests\TestCase;
 
@@ -16,7 +17,7 @@ class MSONTest extends TestCase
      */
     public function testParse(string $content, array $expected): void
     {
-        $mson = (new MSON(__CLASS__, __METHOD__))->parse($content);
+        $mson = (new MSON(__CLASS__, __METHOD__, $this->getConfig()))->parse($content);
         $this->assertSame($expected, $mson->toArray());
     }
 
@@ -25,7 +26,7 @@ class MSONTest extends TestCase
         $this->expectException(MissingOptionsException::class);
 
         $content = 'content_rating (enum) - MPAA rating';
-        (new MSON(__CLASS__, __METHOD__))->parse($content);
+        (new MSON(__CLASS__, __METHOD__, $this->getConfig()))->parse($content);
     }
 
     public function testEnumFailsWhenWrittenAsAString(): void
@@ -38,7 +39,15 @@ class MSONTest extends TestCase
                 - `PG` - PG rated
                 - `PG-13` - PG-13 rated';
 
-        (new MSON(__CLASS__, __METHOD__))->parse($content);
+        (new MSON(__CLASS__, __METHOD__, $this->getConfig()))->parse($content);
+    }
+
+    public function testParseFailsOnArrayTypeWithoutASubtype(): void
+    {
+        $this->expectException(MissingSubtypeException::class);
+
+        $content = 'websites (array) - A list of websites.';
+        (new MSON(__CLASS__, __METHOD__, $this->getConfig()))->parse($content);
     }
 
     /**
@@ -48,7 +57,7 @@ class MSONTest extends TestCase
     public function testParseFailsOnInvalidTypes(string $content): void
     {
         $this->expectException(UnsupportedTypeException::class);
-        (new MSON(__CLASS__, __METHOD__))->parse($content);
+        (new MSON(__CLASS__, __METHOD__, $this->getConfig()))->parse($content);
     }
 
     public function providerTestParse(): array
@@ -276,7 +285,7 @@ class MSONTest extends TestCase
                     'vendor_tags' => []
                 ]
             ],
-            'type-array-with-subytpe-representation' => [
+            'type-array-with-subtype-representation' => [
                 'content' => 'cast (array<\Mill\Examples\Showtimes\Representations\Person>) - Cast members',
                 'expected' => [
                     'description' => 'Cast members',

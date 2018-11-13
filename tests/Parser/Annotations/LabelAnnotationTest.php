@@ -13,7 +13,7 @@ class LabelAnnotationTest extends AnnotationTest
      */
     public function testAnnotation(string $content, array $expected): void
     {
-        $annotation = new LabelAnnotation($content, __CLASS__, __METHOD__);
+        $annotation = new LabelAnnotation($this->getApplication(), $content, __CLASS__, __METHOD__);
         $annotation->process();
 
         $this->assertAnnotation($annotation, $expected);

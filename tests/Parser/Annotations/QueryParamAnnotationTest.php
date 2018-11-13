@@ -25,7 +25,7 @@ class QueryParamAnnotationTest extends ParamAnnotationTest
         bool $deprecated,
         array $expected
     ): void {
-        $annotation = new QueryParamAnnotation($content, __CLASS__, __METHOD__, $version);
+        $annotation = new QueryParamAnnotation($this->getApplication(), $content, __CLASS__, __METHOD__, $version);
         $annotation->process();
         $annotation->setVisibility($visible);
         $annotation->setDeprecated($deprecated);

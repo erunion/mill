@@ -230,11 +230,16 @@ components:
             public: Public
   schemas:
     error:
+      title: Error
       properties:
         error:
           description: 'User-friendly error message'
           type: string
+      required:
+        - error
+      type: object
     movie:
+      title: Movie
       properties:
         cast:
           description: 'Cast. This data requires a bearer token with the `public` scope.'
@@ -256,6 +261,7 @@ components:
           type: string
         description:
           description: Description
+          nullable: true
           type: string
         director:
           allOf:
@@ -281,6 +287,7 @@ components:
           properties:
             url:
               description: 'URL to purchase the film.'
+              nullable: true
               type: string
           type: object
         rotten_tomatoes_score:
@@ -302,7 +309,22 @@ components:
         uri:
           description: 'Movie URI'
           type: string
+      required:
+        - cast
+        - content_rating
+        - director
+        - genres
+        - id
+        - kid_friendly
+        - name
+        - rotten_tomatoes_score
+        - runtime
+        - showtimes
+        - theaters
+        - uri
+      type: object
     person:
+      title: Person
       properties:
         id:
           description: 'Unique ID'
@@ -316,7 +338,14 @@ components:
         uri:
           description: 'Person URI'
           type: string
+      required:
+        - id
+        - imdb
+        - name
+        - uri
+      type: object
     theater:
+      title: Theater
       properties:
         address:
           description: Address
@@ -346,6 +375,16 @@ components:
         website:
           description: Website
           type: string
+      required:
+        - address
+        - id
+        - movies
+        - name
+        - phone_number
+        - showtimes
+        - uri
+        - website
+      type: object
 security:
   -
     oauth2:

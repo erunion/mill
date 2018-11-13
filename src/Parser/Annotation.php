@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Parser;
 
+use Mill\Application;
 use Mill\Contracts\Arrayable;
 use Mill\Exceptions\Annotations\InvalidMSONSyntaxException;
 use Mill\Exceptions\Annotations\MissingRequiredFieldException;
@@ -27,6 +28,9 @@ abstract class Annotation implements Arrayable
 
     /** @var array An array of items that should be included in an array representation of this annotation. */
     const ARRAYABLE = [];
+
+    /** @var Application */
+    protected $application;
 
     /** @var string The raw annotation from the docblock. */
     protected $docblock;
@@ -56,13 +60,20 @@ abstract class Annotation implements Arrayable
     protected $parsed_data = [];
 
     /**
+     * @param Application $application
      * @param string $doc
      * @param string $class
      * @param null|string $method
      * @param null|Version $version
      */
-    public function __construct(string $doc, string $class, string $method = null, Version $version = null)
-    {
+    public function __construct(
+        Application $application,
+        string $doc,
+        string $class,
+        string $method = null,
+        Version $version = null
+    ) {
+        $this->application = $application;
         $this->docblock = $doc;
         $this->class = $class;
         $this->method = $method;
@@ -287,6 +298,7 @@ abstract class Annotation implements Arrayable
      * For example on `ParamAnnotation`, this returns `param`.
      *
      * @return string
+     * @psalm-suppress PossiblyFalseArgument
      */
     protected function getAnnotationName(): string
     {

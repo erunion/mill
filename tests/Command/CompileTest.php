@@ -4,6 +4,7 @@ namespace Mill\Tests\Command;
 use Mill\Command\Compile;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Yaml\Yaml;
 
 class CompileTest extends \PHPUnit\Framework\TestCase
 {
@@ -72,7 +73,7 @@ class CompileTest extends \PHPUnit\Framework\TestCase
             $this->assertFileEquals(
                 $control_dir . '/' . $version . '/openapi/api.yaml',
                 $output_dir . '/' . $version . '/openapi/api.yaml',
-                'Compiled OpenAPI spec for version `' . $version . ' does not match.'
+                'Compiled OpenAPI spec for version `' . $version . '` does not match.'
             );
 
             foreach (self::RESOURCES as $name) {
@@ -112,6 +113,80 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         }
     }
 
+    public function testCommandForOpenApiWithPublicOnlyDocs(): void
+    {
+        $output_dir = $this->getTempOutputDirectory('openapi-public-only');
+
+        $this->tester->execute([
+            'command' => $this->command->getName(),
+            '--config' => $this->config_file,
+            '--format' => Compile::FORMAT_OPENAPI,
+            '--private' => false,
+            'output' => $output_dir
+        ]);
+
+        $output = $this->tester->getDisplay();
+
+        foreach (self::VERSIONS as $version) {
+            $this->assertContains('API version: ' . $version, $output);
+
+            // No version should have `DELETE /movies/+id`.
+            $yaml = file_get_contents($output_dir . '/' . $version . '/openapi/api.yaml');
+            $spec = Yaml::parse($yaml);
+
+            $this->assertArrayNotHasKey(
+                'delete',
+                $spec['paths']['/movies/{id}'],
+                $version . ' should not have `DELETE /movies/+id'
+            );
+        }
+    }
+
+    public function testCommandForOpenApiWithPublicOnlyDocsAndAVendorTag(): void
+    {
+        $output_dir = $this->getTempOutputDirectory('openapi-public-only-with-vendor-tag');
+
+        $this->tester->execute([
+            'command' => $this->command->getName(),
+            '--config' => $this->config_file,
+            '--format' => Compile::FORMAT_OPENAPI,
+            '--private' => false,
+            '--vendor_tag' => [
+                'tag:DELETE_CONTENT'
+            ],
+            'output' => $output_dir
+        ]);
+
+        $output = $this->tester->getDisplay();
+
+        foreach (self::VERSIONS as $version) {
+            $this->assertContains('API version: ' . $version, $output);
+
+            $yaml = file_get_contents($output_dir . '/' . $version . '/openapi/api.yaml');
+            $spec = Yaml::parse($yaml);
+
+            // `DELETE /movies/{id}` isn't available on either of these versions, so it continue to not show up in our
+            // compiled OAS.
+            if ($version === '1.0' || $version === '1.1.3') {
+                $this->assertArrayNotHasKey(
+                    'delete',
+                    $spec['paths']['/movies/{id}'],
+                    $version . ' should not have `DELETE /movies/+id'
+                );
+
+                continue;
+            }
+
+            // While `DELETE /movies/{id}` is private, since we're looking for content that's public but also locked
+            // behind `tag:DELETE_CONTENT`, `DELETE /movies/{id}` should be present.
+            $this->assertArrayHasKey(
+                'delete',
+                $spec['paths']['/movies/{id}'],
+                $version . ' should not have `DELETE /movies/+id'
+            );
+        }
+    }
+
     public function testCommandForApiBlueprint(): void
     {
         $output_dir = $this->getTempOutputDirectory('apiblueprint');
@@ -135,9 +210,17 @@ class CompileTest extends \PHPUnit\Framework\TestCase
 
         foreach (self::VERSIONS as $version) {
             foreach (self::REPRESENTATIONS as $name) {
+                $output_file = $output_dir . '/' . $version . '/apiblueprint/representations/' . $name . '.apib';
+
+                // Coded error is not available under 1.1.2
+                if ($name === 'Coded error' && $version === '1.1.2') {
+                    $this->assertFileNotExists($output_file);
+                    continue;
+                }
+
                 $this->assertFileEquals(
                     $control_dir . '/' . $version . '/apiblueprint/representations/' . $name . '.apib',
-                    $output_dir . '/' . $version . '/apiblueprint/representations/' . $name . '.apib',
+                    $output_file,
                     'Compiled representation `' . $name . '.apib` for version `' . $version . '` does not match.'
                 );
             }
@@ -154,6 +237,8 @@ class CompileTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider providerFormats
+     * @param string $format
+     * @param string $format_name
      */
     public function testCommandWithDefaultVersion(string $format, string $format_name): void
     {
@@ -173,6 +258,8 @@ class CompileTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider providerFormats
+     * @param string $format
+     * @param string $format_name
      */
     public function testCommandWithSpecificConstraint(string $format, string $format_name): void
     {

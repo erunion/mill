@@ -56,11 +56,11 @@
             <directory name="resources/examples/Showtimes/Representations/" method="create" suffix=".php"  />
             <class name="\Mill\Examples\Showtimes\Representations\Movie" method="create" />
 
-            <excludes>
+            <!--excludes>
                 <exclude name="\Mill\Examples\Showtimes\Representations\Error" />
                 <exclude name="\Mill\Examples\Showtimes\Representations\CodedError" />
                 <exclude name="\Mill\Examples\Showtimes\Representations\Representation" />
-            </excludes>
+            </excludes-->
         </filter>
 
         <errors>

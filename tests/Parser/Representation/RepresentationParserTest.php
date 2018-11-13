@@ -20,7 +20,7 @@ class RepresentationParserTest extends TestCase
      */
     public function testParseAnnotations(string $class, string $method, array $expected): void
     {
-        $parser = new RepresentationParser($class);
+        $parser = new RepresentationParser($class, $this->getApplication());
         $annotations = $parser->getAnnotations($method);
 
         $this->assertCount(count($expected['annotations']), $annotations);
@@ -54,14 +54,15 @@ class RepresentationParserTest extends TestCase
 
         $this->overrideReadersWithFakeDocblockReturn($docblock);
 
-        $annotations = (new RepresentationParser(__CLASS__))->getAnnotations(__METHOD__);
+        $annotations = (new RepresentationParser(__CLASS__, $this->getApplication()))->getAnnotations(__METHOD__);
 
         $this->assertEmpty($annotations);
     }
 
     public function testRepresentationWithApiSee(): void
     {
-        $parser = new RepresentationParser('\Mill\Tests\Fixtures\Representations\RepresentationWithOnlyApiSee');
+        $class = '\Mill\Tests\Fixtures\Representations\RepresentationWithOnlyApiSee';
+        $parser = new RepresentationParser($class, $this->getApplication());
         $annotations = $parser->getAnnotations('create');
 
         // We're already asserting that the parser actually parses annotations, we just want to make sure that we
@@ -101,7 +102,7 @@ class RepresentationParserTest extends TestCase
         $this->overrideReadersWithFakeDocblockReturn($docblock);
 
         try {
-            (new RepresentationParser(__CLASS__))->getAnnotations(__METHOD__);
+            (new RepresentationParser(__CLASS__, $this->getApplication()))->getAnnotations(__METHOD__);
         } catch (BaseException $e) {
             if ('\\' . get_class($e) !== $exception) {
                 $this->fail('Unrecognized exception (' . get_class($e) . ') thrown.');
@@ -127,7 +128,7 @@ class RepresentationParserTest extends TestCase
         $this->expectException($exception);
 
         try {
-            (new RepresentationParser($class))->getAnnotations($method);
+            (new RepresentationParser($class, $this->getApplication()))->getAnnotations($method);
         } catch (BaseException $e) {
             if ('\\' . get_class($e) !== $exception) {
                 $this->fail('Unrecognized exception (' . get_class($e) . ') thrown.');
@@ -141,7 +142,7 @@ class RepresentationParserTest extends TestCase
     public function testRepresentationThatHasVersioningAcrossMultipleAnnotations(): void
     {
         $class = '\Mill\Tests\Fixtures\Representations\RepresentationWithVersioningAcrossMultipleAnnotations';
-        $parser = new RepresentationParser($class);
+        $parser = new RepresentationParser($class, $this->getApplication());
         $annotations = $parser->getAnnotations('create');
 
         $this->assertSame([
@@ -187,6 +188,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Cast',
                             'identifier' => 'cast',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => false,
                             'scopes' => [
                                 [
@@ -204,6 +206,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'MPAA rating',
                             'identifier' => 'content_rating',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => 'G',
                             'scopes' => [],
                             'subtype' => false,
@@ -224,7 +227,8 @@ class RepresentationParserTest extends TestCase
                         'description' => [
                             'description' => 'Description',
                             'identifier' => 'description',
-                            'nullable' => false,
+                            'nullable' => true,
+                            'required' => false,
                             'sample_data' => false,
                             'scopes' => [],
                             'subtype' => false,
@@ -237,6 +241,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Director',
                             'identifier' => 'director',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => false,
                             'scopes' => [
                                 [
@@ -254,6 +259,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'External URLs',
                             'identifier' => 'external_urls',
                             'nullable' => false,
+                            'required' => false,
                             'sample_data' => false,
                             'scopes' => [
                                 [
@@ -271,6 +277,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'IMDB URL',
                             'identifier' => 'external_urls.imdb',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => false,
                             'scopes' => [
                                 [
@@ -288,6 +295,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Tickets URL',
                             'identifier' => 'external_urls.tickets',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => false,
                             'scopes' => [
                                 [
@@ -307,6 +315,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Trailer URL',
                             'identifier' => 'external_urls.trailer',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => false,
                             'scopes' => [
                                 [
@@ -324,6 +333,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Genres',
                             'identifier' => 'genres',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => false,
                             'scopes' => [],
                             'subtype' => 'uri',
@@ -336,6 +346,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Unique ID',
                             'identifier' => 'id',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => false,
                             'scopes' => [],
                             'subtype' => false,
@@ -348,6 +359,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Kid friendly?',
                             'identifier' => 'kid_friendly',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => '0',
                             'scopes' => [],
                             'subtype' => false,
@@ -360,6 +372,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Name',
                             'identifier' => 'name',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => false,
                             'scopes' => [],
                             'subtype' => false,
@@ -371,7 +384,8 @@ class RepresentationParserTest extends TestCase
                         'purchase.url' => [
                             'description' => 'URL to purchase the film.',
                             'identifier' => 'purchase.url',
-                            'nullable' => false,
+                            'nullable' => true,
+                            'required' => false,
                             'sample_data' => false,
                             'scopes' => [],
                             'subtype' => false,
@@ -384,6 +398,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Rotten Tomatoes score',
                             'identifier' => 'rotten_tomatoes_score',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => false,
                             'scopes' => [],
                             'subtype' => false,
@@ -396,6 +411,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Runtime',
                             'identifier' => 'runtime',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => false,
                             'scopes' => [],
                             'subtype' => false,
@@ -408,9 +424,10 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Non-theater specific showtimes',
                             'identifier' => 'showtimes',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => false,
                             'scopes' => [],
-                            'subtype' => false,
+                            'subtype' => 'string',
                             'type' => 'array',
                             'values' => [],
                             'vendor_tags' => [],
@@ -420,6 +437,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Theaters the movie is currently showing in',
                             'identifier' => 'theaters',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => false,
                             'scopes' => [],
                             'subtype' => '\Mill\Examples\Showtimes\Representations\Theater',
@@ -432,6 +450,7 @@ class RepresentationParserTest extends TestCase
                             'description' => 'Movie URI',
                             'identifier' => 'uri',
                             'nullable' => false,
+                            'required' => true,
                             'sample_data' => false,
                             'scopes' => [],
                             'subtype' => false,

@@ -22,6 +22,9 @@ class OpenApi extends Compiler\Specification
     /** @var string|null */
     protected $environment = null;
 
+    /** @var string */
+    protected $current_content_type;
+
     /**
      * Take compiled API documentation and create a OpenAPI specification.
      *
@@ -29,17 +32,14 @@ class OpenApi extends Compiler\Specification
      * @psalm-suppress InvalidScalarArgument
      * @psalm-suppress PossiblyUndefinedVariable
      * @psalm-suppress PossiblyUndefinedArrayOffset
-     * @return array
      * @throws \Exception
      */
-    public function compile(): array
+    public function compile(): void
     {
         parent::compile();
 
         $group_excludes = $this->config->getCompilerGroupExclusions();
         $resources = $this->getResources();
-
-        $specifications = [];
 
         foreach ($resources as $version => $groups) {
             $this->version = $version;
@@ -74,53 +74,52 @@ class OpenApi extends Compiler\Specification
                 }
 
                 // Sort the resources so they're alphabetical.
-                ksort($data['resources']);
+                ksort($data['actions']);
 
-                /** @var array $resource */
-                foreach ($data['resources'] as $identifier => $resource) {
-                    /** @var Action\Documentation $action */
-                    foreach ($resource['actions'] as $action) {
-                        $path = $action->getPath();
-                        $method = strtolower($action->getMethod());
-                        $identifier = $path->getCleanPath();
-                        if (!isset($specification['paths'][$identifier])) {
-                            $specification['paths'][$identifier] = [];
-                        }
+                /** @var Action\Documentation $action */
+                foreach ($data['actions'] as $identifier => $action) {
+                    $this->current_content_type = $action->getContentType($this->version);
 
-                        $schema = [
-                            'deprecated' => $path->isDeprecated(),
-                            'summary' => $action->getLabel(),
-                            'description' => $action->getDescription(),
-                            'operationId' => $action->getOperationId(),
-                            'tags' => [
-                                $group
-                            ],
-                            'parameters' => $this->processParameters($action),
-                            'requestBody' => $this->processRequest($action),
-                            'responses' => $this->processResponses($action),
-                            'security' => $this->processSecurity($action)
-                        ];
-
-                        $schema += $this->processExtensions($action, $path);
-
-                        foreach ([
-                            'deprecated',
-                            'description',
-                            'parameters',
-                            'requestBody',
-                            'security',
-                            'x-mill-path-aliased',
-                            'x-mill-path-aliases',
-                            'x-mill-vendor-tags',
-                            'x-mill-visibility-private'
-                        ] as $key) {
-                            if (empty($schema[$key])) {
-                                unset($schema[$key]);
-                            }
-                        }
-
-                        $specification['paths'][$identifier][$method] = $schema;
+                    $path = $action->getPath();
+                    $method = strtolower($action->getMethod());
+                    $identifier = $path->getCleanPath();
+                    if (!isset($specification['paths'][$identifier])) {
+                        $specification['paths'][$identifier] = [];
                     }
+
+                    $schema = [
+                        'deprecated' => $path->isDeprecated(),
+                        'summary' => $action->getLabel(),
+                        'description' => $action->getDescription(),
+                        'operationId' => $action->getOperationId(),
+                        'tags' => [
+                            $group
+                        ],
+                        'parameters' => $this->processParameters($action),
+                        'requestBody' => $this->processRequest($action),
+                        'responses' => $this->processResponses($action),
+                        'security' => $this->processSecurity($action)
+                    ];
+
+                    $schema += $this->processExtensions($action, $path);
+
+                    foreach ([
+                        'deprecated',
+                        'description',
+                        'parameters',
+                        'requestBody',
+                        'security',
+                        'x-mill-path-aliased',
+                        'x-mill-path-aliases',
+                        'x-mill-vendor-tags',
+                        'x-mill-visibility-private'
+                    ] as $key) {
+                        if (empty($schema[$key])) {
+                            unset($schema[$key]);
+                        }
+                    }
+
+                    $specification['paths'][$identifier][$method] = $schema;
                 }
             }
 
@@ -128,25 +127,31 @@ class OpenApi extends Compiler\Specification
 
             // Process representation data structures.
             if (!empty($this->representations)) {
+                /** @var Documentation $representation */
                 foreach ($this->representations as $representation) {
                     $fields = $representation->getExplodedContentDotNotation();
                     if (empty($fields)) {
                         continue;
                     }
 
-                    $identifier = $this->getReferenceName($representation->getLabel());
+                    $properties = $this->processDataModel(DataAnnotation::PAYLOAD_FORMAT, [
+                        'properties' => $fields
+                    ]);
+
+                    $schema_name = $representation->getLabel();
+                    $identifier = $this->getReferenceName($schema_name);
                     $specification['components']['schemas'][$identifier] = [
-                        'properties' => $this->processDataModel(DataAnnotation::PAYLOAD_FORMAT, $fields)
+                        'title' => $schema_name
                     ];
+
+                    $specification['components']['schemas'][$identifier] += $properties['properties'];
                 }
 
                 ksort($specification['components']['schemas']);
             }
 
-            $specifications[$this->version] = $specification;
+            $this->specifications[$this->version] = $specification;
         }
-
-        return $specifications;
     }
 
     /**
@@ -301,8 +306,7 @@ class OpenApi extends Compiler\Specification
             'required' => !empty(
                 array_reduce(
                     $action->getParameters(),
-                    /** @param mixed $carry */
-                    function ($carry, ParamAnnotation $param): ?array {
+                    function (?array $carry, ParamAnnotation $param): ?array {
                         if ($param->isRequired()) {
                             $carry[] = $param->getField();
                         }
@@ -312,7 +316,7 @@ class OpenApi extends Compiler\Specification
                 )
             ),
             'content' => [
-                $action->getContentType($this->version) => [
+                $this->current_content_type => [
                     'schema' => (function () use ($params): array {
                         $spec = [
                             'type' => 'object',
@@ -341,10 +345,28 @@ class OpenApi extends Compiler\Specification
         /** @var ReturnAnnotation|ErrorAnnotation $response */
         foreach ($action->getResponses() as $response) {
             $http_code = substr($response->getHttpCode(), 0, 3);
-            $coded_responses[$http_code][] = $response;
+            if (!isset($coded_responses[$http_code])) {
+                $coded_responses[$http_code] = [
+                    'descriptions' => [],
+                    'responses' => []
+                ];
+            }
+
+            /** @var string $description */
+            $description = $response->getDescription();
+            if ($response instanceof ErrorAnnotation) {
+                $error_code = $response->getErrorCode();
+                if ($error_code) {
+                    $description .= sprintf(' Returns a unique error code of `%s`.', $error_code);
+                }
+            }
+
+            $coded_responses[$http_code]['descriptions'][] = $description;
+            $coded_responses[$http_code]['responses'][] = $response;
         }
 
-        foreach ($coded_responses as $http_code => $responses) {
+        foreach ($coded_responses as $http_code => $data) {
+            $responses = $data['responses'];
             $total_responses = count($responses);
 
             // OpenAPI doesn't have support for multiple responses of the same HTTP code, so let's mash them down
@@ -352,30 +374,19 @@ class OpenApi extends Compiler\Specification
             if ($total_responses > 1) {
                 $description = sprintf(
                     'There are %s ways that this status code can be encountered:',
-                    (new \NumberFormatter('en', \NumberFormatter::SPELLOUT))->format(count($responses))
+                    (new \NumberFormatter('en', \NumberFormatter::SPELLOUT))->format($total_responses)
                 );
 
                 $description .= $this->line();
+                $description .= implode(
+                    $this->line(),
+                    array_map(function (string $desc): string {
+                        return sprintf(' * %s', $desc);
+                    }, $data['descriptions'])
+                );
             } else {
                 /** @var string $description */
-                $description = current($responses)->getDescription();
-            }
-
-            /** @var ReturnAnnotation|ErrorAnnotation $response */
-            foreach ($responses as $response) {
-                $response_description = $response->getDescription();
-                if ($total_responses > 1) {
-                    $description .= sprintf(' * %s', $response_description);
-                }
-
-                if ($response instanceof ErrorAnnotation) {
-                    $error_code = $response->getErrorCode();
-                    if ($error_code) {
-                        $description .= sprintf(' Returns a unique error code of `%s`.', $error_code);
-                    }
-                }
-
-                $description .= $this->line();
+                $description = current($data['descriptions']);
             }
 
             $spec = [
@@ -385,11 +396,10 @@ class OpenApi extends Compiler\Specification
             /** @var ReturnAnnotation|ErrorAnnotation $response */
             $response = array_shift($responses);
             $representation = $response->getRepresentation();
-            $representations = $this->getRepresentations($this->version);
-            if (isset($representations[$representation])) {
+            if ($representation && isset($this->representations[$representation])) {
                 /** @var Documentation $docs */
-                $docs = $representations[$representation];
-                $fields = $docs->getExplodedContentDotNotation();
+                $docs = $this->representations[$representation];
+                $fields = $docs->getRawContent();
                 if (!empty($fields)) {
                     $ref_name = $this->getReferenceName($docs->getLabel());
                     $response_schema = [
@@ -406,7 +416,7 @@ class OpenApi extends Compiler\Specification
                     }
 
                     $spec['content'] = [
-                        $action->getContentType($this->version) => [
+                        $this->current_content_type => [
                             'schema' => $response_schema
                         ]
                     ];
@@ -593,10 +603,6 @@ class OpenApi extends Compiler\Specification
 
                 unset($spec['name']);
                 unset($spec['in']);
-
-                if ($payload_format === DataAnnotation::PAYLOAD_FORMAT) {
-                    unset($spec['required']);
-                }
             }
 
             // Process any exploded dot notation children of this field.
@@ -634,8 +640,8 @@ class OpenApi extends Compiler\Specification
                 }
             }
 
-            // Request body requirement definitions need to be separate from the item schema.
-            if ($payload_format === ParamAnnotation::PAYLOAD_FORMAT) {
+            // Request body and response schema requirement definitions need to be separate from the item schema.
+            if (in_array($payload_format, [DataAnnotation::PAYLOAD_FORMAT, ParamAnnotation::PAYLOAD_FORMAT])) {
                 $spec = $this->extractRequiredFields($spec);
             }
 

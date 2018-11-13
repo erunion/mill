@@ -1,13 +1,7 @@
 <?php
 namespace Mill;
 
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Formatter\OutputFormatterStyle;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class Application extends Command
+class Application
 {
     /**
      * When building out dot-notation annotation keys for compiling documentation we use this key to designate the
@@ -25,39 +19,42 @@ class Application extends Command
      */
     const DOT_NOTATION_ANNOTATION_PARAMETER_TYPE_KEY = '__PARAMETER_TYPE__';
 
-    /** @var \Pimple\Container */
+    /** @var Container */
     protected $container;
 
     /**
-     * @return void
+     * @param string $config_path
+     * @param bool $load_bootstrap
      */
-    protected function configure()
+    public function __construct(string $config_path, bool $load_bootstrap = true)
     {
-        $this->addOption(
-            'config',
-            null,
-            InputOption::VALUE_OPTIONAL,
-            'Path to your `mill.xml` config file.',
-            'mill.xml'
-        );
+        $this->container = new Container([
+            'config.path' => $config_path,
+            'config.load_bootstrap' => $load_bootstrap
+        ]);
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
+     * @return Container
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function getContainer(): Container
     {
-        $style = new OutputFormatterStyle('green', null, ['bold']);
-        $output->getFormatter()->setStyle('success', $style);
+        return $this->container;
+    }
 
-        $config_file = realpath($input->getOption('config'));
+    /**
+     * @param Container $container
+     */
+    public function setContainer(Container $container): void
+    {
+        $this->container = $container;
+    }
 
-        $this->container = new Container([
-            'config.path' => $config_file
-        ]);
-
-        return 0;
+    /**
+     * @return Config
+     */
+    public function getConfig(): Config
+    {
+        return $this->container->getConfig();
     }
 }

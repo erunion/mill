@@ -189,6 +189,38 @@ paths:
             - create
       x-mill-path-template: /movies
   '/movies/{id}':
+    delete:
+      summary: 'Delete a movie.'
+      description: 'Delete a movie.'
+      operationId: deleteMovie
+      tags:
+        - Movies
+      parameters:
+        -
+          description: 'Movie ID'
+          in: path
+          name: id
+          required: true
+          schema:
+            type: number
+            example: '1234'
+      responses:
+        204:
+          description: 'Standard request.'
+        404:
+          description: 'If the movie could not be found.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          oauth2:
+            - delete
+      x-mill-path-template: /movies/+id
+      x-mill-vendor-tags:
+        - 'tag:DELETE_CONTENT'
+      x-mill-visibility-private: true
     get:
       summary: 'Get a single movie.'
       description: "Return information on a specific movie.\n\nDonec id elit non mi porta gravida at eget metus. Cras mattis consectetur purus sit amet fermentum. Lorem\nipsum dolor sit amet, consectetur adipiscing elit. Etiam porta sem malesuada magna mollis euismod. Duis\nmollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Etiam porta\nsem malesuada magna mollis euismod.\n\n```\n[\n  {\"id\": \"fizzbuzz\"}\n]\n```"
@@ -330,38 +362,6 @@ paths:
           oauth2:
             - edit
       x-mill-path-template: /movies/+id
-    delete:
-      summary: 'Delete a movie.'
-      description: 'Delete a movie.'
-      operationId: deleteMovie
-      tags:
-        - Movies
-      parameters:
-        -
-          description: 'Movie ID'
-          in: path
-          name: id
-          required: true
-          schema:
-            type: number
-            example: '1234'
-      responses:
-        204:
-          description: 'Standard request.'
-        404:
-          description: 'If the movie could not be found.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error'
-      security:
-        -
-          oauth2:
-            - delete
-      x-mill-path-template: /movies/+id
-      x-mill-vendor-tags:
-        - 'tag:DELETE_CONTENT'
-      x-mill-visibility-private: true
   /theaters:
     get:
       summary: 'Get movie theaters.'
@@ -441,6 +441,36 @@ paths:
             - create
       x-mill-path-template: /theaters
   '/theaters/{id}':
+    delete:
+      summary: 'Delete a movie theater.'
+      description: 'Delete a movie theater.'
+      operationId: deleteTheater
+      tags:
+        - Theaters
+      parameters:
+        -
+          description: 'Theater ID'
+          in: path
+          name: id
+          required: true
+          schema:
+            type: number
+            example: '1234'
+      responses:
+        204:
+          description: 'Standard request.'
+        404:
+          description: 'If the movie theater could not be found.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      security:
+        -
+          oauth2:
+            - delete
+      x-mill-path-template: /theaters/+id
+      x-mill-visibility-private: true
     get:
       summary: 'Get a single movie theater.'
       description: 'Return information on a specific movie theater.'
@@ -540,36 +570,6 @@ paths:
           oauth2:
             - create
       x-mill-path-template: /theaters/+id
-    delete:
-      summary: 'Delete a movie theater.'
-      description: 'Delete a movie theater.'
-      operationId: deleteTheater
-      tags:
-        - Theaters
-      parameters:
-        -
-          description: 'Theater ID'
-          in: path
-          name: id
-          required: true
-          schema:
-            type: number
-            example: '1234'
-      responses:
-        204:
-          description: 'Standard request.'
-        404:
-          description: 'If the movie theater could not be found.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error'
-      security:
-        -
-          oauth2:
-            - delete
-      x-mill-path-template: /theaters/+id
-      x-mill-visibility-private: true
 components:
   securitySchemes:
     bearer:
@@ -596,6 +596,7 @@ components:
             public: Public
   schemas:
     coded-error:
+      title: 'Coded error'
       properties:
         error:
           description: 'User-friendly error message'
@@ -603,12 +604,21 @@ components:
         error_code:
           description: 'Error code'
           type: number
+      required:
+        - error
+        - error_code
+      type: object
     error:
+      title: Error
       properties:
         error:
           description: 'User-friendly error message'
           type: string
+      required:
+        - error
+      type: object
     movie:
+      title: Movie
       properties:
         cast:
           description: 'Cast. This data requires a bearer token with the `public` scope.'
@@ -630,6 +640,7 @@ components:
           type: string
         description:
           description: Description
+          nullable: true
           type: string
         director:
           allOf:
@@ -652,6 +663,10 @@ components:
               trailer:
                 description: 'Trailer URL. This data requires a bearer token with the `public` scope.'
                 type: string
+            required:
+              - imdb
+              - tickets
+              - trailer
           type: array
         genres:
           description: Genres
@@ -672,6 +687,7 @@ components:
           properties:
             url:
               description: 'URL to purchase the film.'
+              nullable: true
               type: string
           type: object
         rotten_tomatoes_score:
@@ -693,7 +709,22 @@ components:
         uri:
           description: 'Movie URI'
           type: string
+      required:
+        - cast
+        - content_rating
+        - director
+        - genres
+        - id
+        - kid_friendly
+        - name
+        - rotten_tomatoes_score
+        - runtime
+        - showtimes
+        - theaters
+        - uri
+      type: object
     person:
+      title: Person
       properties:
         id:
           description: 'Unique ID'
@@ -707,7 +738,14 @@ components:
         uri:
           description: 'Person URI'
           type: string
+      required:
+        - id
+        - imdb
+        - name
+        - uri
+      type: object
     theater:
+      title: Theater
       properties:
         address:
           description: Address
@@ -734,6 +772,15 @@ components:
         uri:
           description: 'Theater URI'
           type: string
+      required:
+        - address
+        - id
+        - movies
+        - name
+        - phone_number
+        - showtimes
+        - uri
+      type: object
 security:
   -
     oauth2:

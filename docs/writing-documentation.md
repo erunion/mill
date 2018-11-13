@@ -6,47 +6,7 @@ title: Documenting your API
 ## Resources
 Resources are a collection of actions (endpoints). These can generally be referred to as a "controller" in a standard MVC application structure.
 
-Documenting a resource is easy:
-
-```php
-<?php
-namespace MyApplication;
-
-/**
- * @api-label Search
- */
-class UsersController extends \MyApplication\Controller
-{
-    ...
-}
-
-```
-
-Here, you can see that we're using the [`@api-label`](reference-api-label.md) annotation to denote that this controller primarily handles "Search" actions.
-
-If you'd also like to include a full Markdown representation (or anything else, really) description along with this resource for your compiled documentation, you can do so by adding that content into the docblock:
-
-```php
-<?php
-namespace MyApplication;
-
-/**
- * Ham tri-tip labore tongue esse pastrami ipsum shank ullamco boudin pig
- * sausage. Sunt landjaeger id, venison incididunt ex pork belly ut eu.
- * Chuck frankfurter tenderloin sed ipsum turducken. Alcatra esse rump,
- * culpa laboris sausage ut dolor filet mignon frankfurter meatloaf strip
- * steak excepteur. Lorem tempor kevin eiusmod doner dolore ipsum ribeye
- * boudin dolore duis culpa non anim est. Capicola ea velit salami.
- * Leberkas capicola beef excepteur, aliquip brisket occaecat drumstick
- * elit short loin.
- *
- * @api-label Search
- */
-class UsersController extends \MyApplication\Controller
-{
-    ...
-}
-```
+As long as a resource contains resource actions, there is nothing you need to do to document a resource. Resource action documentation will handle everything automatically.
 
 ## Resource Actions
 A resource action (endpoint) is something that you can execute from your API.
@@ -56,9 +16,6 @@ Mill is currently a bit opinionated in how it expects the names of your action m
 Documenting a resource action is easy, however:
 
 ```php
-/**
- * @api-label Search
- */
 class UsersController extends \MyApplication\Controller
 {
     /**

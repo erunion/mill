@@ -18,7 +18,7 @@ class DocumentationTest extends TestCase
      */
     public function testDocumentation(string $class, array $expected): void
     {
-        $docs = (new Documentation($class))->parse();
+        $docs = new Documentation($class, $this->getApplication());
 
         $this->assertSame($class, $docs->getClass());
         $this->assertCount($expected['methods.size'], $docs->getMethods());
@@ -34,8 +34,6 @@ class DocumentationTest extends TestCase
         $class_docs = $docs->toArray();
 
         $this->assertSame($class_docs['class'], $class);
-        $this->assertSame($expected['label'], $class_docs['label']);
-        $this->assertSame($expected['description'], $class_docs['description']);
 
         foreach ($expected['methods.available'] as $method) {
             $this->assertInternalType('array', $class_docs['methods'][$method]);
@@ -52,30 +50,6 @@ class DocumentationTest extends TestCase
     }
 
     /**
-     * @dataProvider providerDocumentationFailsOnBadClasses
-     * @param string $docblock
-     * @param string $exception
-     * @param array $asserts
-     * @throws BaseException
-     */
-    public function testDocumentationFailsOnBadClasses(string $docblock, string $exception, array $asserts): void
-    {
-        $this->expectException($exception);
-        $this->overrideReadersWithFakeDocblockReturn($docblock);
-
-        try {
-            (new Documentation(__CLASS__))->parse();
-        } catch (BaseException $e) {
-            if ('\\' . get_class($e) !== $exception) {
-                $this->fail('Unrecognized exception (' . get_class($e) . ') thrown.');
-            }
-
-            $this->assertExceptionAsserts($e, __CLASS__, null, $asserts);
-            throw $e;
-        }
-    }
-
-    /**
      * This is to test that Documentation::getMethod() properly calls getMethods() the first time any method is
      * pulled off the current class.
      *
@@ -83,7 +57,7 @@ class DocumentationTest extends TestCase
     public function testDocumentationAndGetSpecificMethod(): void
     {
         $class = '\Mill\Examples\Showtimes\Controllers\Movie';
-        $docs = (new Documentation($class))->parse();
+        $docs = new Documentation($class, $this->getApplication());
 
         $this->assertSame($class, $docs->getClass());
         $this->assertInstanceOf('\Mill\Parser\Resource\Action\Documentation', $docs->getMethod('GET'));
@@ -96,41 +70,12 @@ class DocumentationTest extends TestCase
                 'class' => '\Mill\Examples\Showtimes\Controllers\Movie',
                 'expected' => [
                     'methods.size' => 3,
-                    'label' => 'Movies',
-                    'description' => 'Information on a specific movie.
-
-These actions will allow you to pull information on a specific movie.',
                     'methods.available' => [
                         'GET',
                         'PATCH',
                         'DELETE'
                     ],
                     'method.unavailable' => 'POST'
-                ]
-            ]
-        ];
-    }
-
-    public function providerDocumentationFailsOnBadClasses(): array
-    {
-        return [
-            'missing-required-label-annotation' => [
-                'docblock' => '/**
-                  *
-                  */',
-                'expected.exception' => '\Mill\Exceptions\Annotations\RequiredAnnotationException',
-                'expected.exception.asserts' => [
-                    'getAnnotation' => 'label'
-                ]
-            ],
-            'multiple-label-annotations' => [
-                'docblock' => '/**
-                  * @api-label Something
-                  * @api-label Something else
-                  */',
-                'expected.exception' => '\Mill\Exceptions\Annotations\MultipleAnnotationsException',
-                'expected.exception.asserts' => [
-                    'getAnnotation' => 'label'
                 ]
             ]
         ];

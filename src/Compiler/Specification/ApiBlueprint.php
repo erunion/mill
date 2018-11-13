@@ -19,17 +19,14 @@ class ApiBlueprint extends Compiler\Specification
      * @psalm-suppress InvalidScalarArgument
      * @psalm-suppress PossiblyUndefinedVariable
      * @psalm-suppress PossiblyUndefinedArrayOffset
-     * @return array
      * @throws \Exception
      */
-    public function compile(): array
+    public function compile(): void
     {
         parent::compile();
 
         $group_excludes = $this->config->getCompilerGroupExclusions();
         $resources = $this->getResources();
-
-        $specifications = [];
 
         foreach ($resources as $version => $groups) {
             $this->version = $version;
@@ -47,49 +44,45 @@ class ApiBlueprint extends Compiler\Specification
                 $contents .= $this->line();
 
                 // Sort the resources so they're alphabetical.
-                ksort($data['resources']);
+                ksort($data['actions']);
 
                 $resource_contents = [];
 
-                /** @var array $resource */
-                foreach ($data['resources'] as $identifier => $resource) {
-                    /** @var Action\Documentation $action */
-                    foreach ($resource['actions'] as $action) {
-                        $resource_key = sprintf('%s [%s]', $identifier, $action->getPath()->getCleanPath());
-                        if (!isset($resource_contents[$resource_key])) {
-                            $resource_contents[$resource_key] = [
-                                'description' => $resource['description'],
-                                'actions' => []
-                            ];
-                        }
-
-                        $action_contents = '';
-
-                        $description = $action->getDescription();
-                        if (!empty($description)) {
-                            $action_contents .= $description;
-                            $action_contents .= $this->line(2);
-                        }
-
-                        $action_contents .= $this->processScopes($action);
-                        $action_contents .= $this->processParameters($action);
-                        $action_contents .= $this->processRequest($action);
-
-                        $coded_responses = [];
-                        /** @var ReturnAnnotation|ErrorAnnotation $response */
-                        foreach ($action->getResponses() as $response) {
-                            $coded_responses[$response->getHttpCode()][] = $response;
-                        }
-
-                        ksort($coded_responses);
-
-                        foreach ($coded_responses as $http_code => $responses) {
-                            $action_contents .= $this->processResponses($action, $http_code, $responses);
-                        }
-
-                        $action_key = sprintf('%s [%s]', $action->getLabel(), $action->getMethod());
-                        $resource_contents[$resource_key]['actions'][$action_key] = $action_contents;
+                /** @var Action\Documentation $action */
+                foreach ($data['actions'] as $identifier => $action) {
+                    $resource_key = sprintf('%s [%s]', $group, $action->getPath()->getCleanPath());
+                    if (!isset($resource_contents[$resource_key])) {
+                        $resource_contents[$resource_key] = [
+                            'actions' => []
+                        ];
                     }
+
+                    $action_contents = '';
+
+                    $description = $action->getDescription();
+                    if (!empty($description)) {
+                        $action_contents .= $description;
+                        $action_contents .= $this->line(2);
+                    }
+
+                    $action_contents .= $this->processScopes($action);
+                    $action_contents .= $this->processParameters($action);
+                    $action_contents .= $this->processRequest($action);
+
+                    $coded_responses = [];
+                    /** @var ReturnAnnotation|ErrorAnnotation $response */
+                    foreach ($action->getResponses() as $response) {
+                        $coded_responses[$response->getHttpCode()][] = $response;
+                    }
+
+                    ksort($coded_responses);
+
+                    foreach ($coded_responses as $http_code => $responses) {
+                        $action_contents .= $this->processResponses($action, $http_code, $responses);
+                    }
+
+                    $action_key = sprintf('%s [%s]', $action->getLabel(), $action->getMethod());
+                    $resource_contents[$resource_key]['actions'][$action_key] = $action_contents;
                 }
 
                 // Since there are instances where the same resource might be used with multiple endpoints, and on the
@@ -100,11 +93,6 @@ class ApiBlueprint extends Compiler\Specification
                 foreach ($resource_contents as $identifier => $resource) {
                     $contents .= sprintf('## %s', $identifier);
                     $contents .= $this->line();
-
-                    if (!is_null($resource['description'])) {
-                        $contents .= $resource['description'];
-                        $contents .= $this->line();
-                    }
 
                     foreach ($resource['actions'] as $action_identifier => $markdown) {
                         $contents .= $this->line();
@@ -118,7 +106,7 @@ class ApiBlueprint extends Compiler\Specification
                 }
 
                 $contents = trim($contents);
-                $specifications[$this->version]['groups'][$group] = $contents;
+                $this->specifications[$this->version]['groups'][$group] = $contents;
             }
 
             // Process representation data structures.
@@ -137,18 +125,16 @@ class ApiBlueprint extends Compiler\Specification
                     $contents .= $this->processMSON($fields, 0);
 
                     $contents = trim($contents);
-                    $specifications[$this->version]['structures'][$identifier] = $contents;
+                    $this->specifications[$this->version]['structures'][$identifier] = $contents;
                 }
             }
 
             // Process the combined file.
-            $specifications[$this->version]['combined'] = $this->processCombinedFile(
-                $specifications[$this->version]['groups'],
-                $specifications[$this->version]['structures']
+            $this->specifications[$this->version]['combined'] = $this->processCombinedFile(
+                $this->specifications[$this->version]['groups'],
+                $this->specifications[$this->version]['structures']
             );
         }
-
-        return $specifications;
     }
 
     /**
@@ -309,25 +295,23 @@ class ApiBlueprint extends Compiler\Specification
         $response = array_shift($responses);
         $representation = $response->getRepresentation();
         $representations = $this->getRepresentations($this->version);
-        if (!isset($representations[$representation])) {
-            return $blueprint;
-        }
+        if ($representation && isset($representations[$representation])) {
+            /** @var Documentation $docs */
+            $docs = $representations[$representation];
+            $fields = $docs->getExplodedContentDotNotation();
+            if (!empty($fields)) {
+                $blueprint .= $this->tab();
 
-        /** @var Documentation $docs */
-        $docs = $representations[$representation];
-        $fields = $docs->getExplodedContentDotNotation();
-        if (!empty($fields)) {
-            $blueprint .= $this->tab();
-
-            $attribute_type = $docs->getLabel();
-            if ($response instanceof ReturnAnnotation) {
-                if ($response->getType() === 'collection') {
-                    $attribute_type = sprintf('array[%s]', $attribute_type);
+                $attribute_type = $docs->getLabel();
+                if ($response instanceof ReturnAnnotation) {
+                    if ($response->getType() === 'collection') {
+                        $attribute_type = sprintf('array[%s]', $attribute_type);
+                    }
                 }
-            }
 
-            $blueprint .= sprintf('+ Attributes (%s)', $attribute_type);
-            $blueprint .= $this->line();
+                $blueprint .= sprintf('+ Attributes (%s)', $attribute_type);
+                $blueprint .= $this->line();
+            }
         }
 
         return $blueprint;

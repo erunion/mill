@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Parser;
 
+use Mill\Application;
 use Mill\Exceptions\Annotations\MissingRequiredFieldException;
 use Mill\Tests\Fixtures\AnnotationStub;
 
@@ -11,7 +12,8 @@ class AnnotationTest extends \PHPUnit\Framework\TestCase
         $docblock = 'This is a test';
 
         try {
-            (new AnnotationStub($docblock, __CLASS__, __METHOD__))->process();
+            $application = new Application('junk.xml');
+            (new AnnotationStub($application, $docblock, __CLASS__, __METHOD__))->process();
             $this->fail('MissingRequiredFieldException not thrown.');
         } catch (MissingRequiredFieldException $e) {
             $this->assertSame('test', $e->getRequiredField());

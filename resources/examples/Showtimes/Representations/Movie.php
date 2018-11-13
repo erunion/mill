@@ -12,7 +12,7 @@ class Movie extends Representation
 
     public function create()
     {
-        return [
+        $response = [
             /**
              * @api-data uri (uri) - Movie URI
              */
@@ -29,9 +29,9 @@ class Movie extends Representation
             'name' => $this->movie->name,
 
             /**
-             * @api-data description (string) - Description
+             * @api-data description (string, optional, nullable) - Description
              */
-            'description' => $this->movie->description,
+            'description' => $this->movie->description ?: null,
 
             /**
              * @api-data runtime (string) - Runtime
@@ -81,13 +81,13 @@ class Movie extends Representation
             'theaters' => $this->movie->getTheaters(),
 
             /**
-             * @api-data showtimes (array) - Non-theater specific showtimes
+             * @api-data showtimes (array<string>) - Non-theater specific showtimes
              */
             'showtimes' => $this->getShowtimes(),
 
             /**
              * @api-scope public
-             * @api-data external_urls (array<object>) - External URLs
+             * @api-data external_urls (array<object>, optional) - External URLs
              * @api-version >=1.1
              * @api-see self::getExternalUrls external_urls
              */
@@ -101,15 +101,19 @@ class Movie extends Representation
             /**
              * @api-data rotten_tomatoes_score (number) - Rotten Tomatoes score
              */
-            'rotten_tomatoes_score' => $this->rotten_tomatoes_score,
-
-            'purchase' => [
-                /**
-                 * @api-data purchase.url (string) - URL to purchase the film.
-                 */
-                'url' => $this->purchase->digital->url,
-            ]
+            'rotten_tomatoes_score' => $this->rotten_tomatoes_score
         ];
+
+        if ($this->movie->is_for_sale) {
+            $response['purchase'] = [
+                /**
+                 * @api-data purchase.url (string, optional, nullable) - URL to purchase the film.
+                 */
+                'url' => $this->purchase->digital->url ?: null,
+            ];
+        }
+
+        return $response;
     }
 
     /**

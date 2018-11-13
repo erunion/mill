@@ -1,9 +1,6 @@
 <?php
 namespace Mill\Examples\Showtimes\Controllers;
 
-/**
- * @api-label Movies
- */
 class Movies
 {
     /**
@@ -59,7 +56,7 @@ class Movies
      *      - `X` - Rated X
      *      - `NR` - Not rated
      *      - `UR` - Unrated
-     * @api-param:public genres (array, optional) - Array of movie genres.
+     * @api-param:public genres (array<string>, optional) - Array of movie genres.
      * @api-param:public director `Lamberto Bava` (string, optional) - Name of the director.
      * @api-param:public cast (array<object>, optional) - Array of cast members.
      * @api-param:public cast.name `Natasha Hovey` (string, optional) - Cast member name.

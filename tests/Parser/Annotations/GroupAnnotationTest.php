@@ -13,7 +13,7 @@ class GroupAnnotationTest extends AnnotationTest
      */
     public function testAnnotation(string $content, array $expected): void
     {
-        $annotation = new GroupAnnotation($content, __CLASS__, __METHOD__);
+        $annotation = new GroupAnnotation($this->getApplication(), $content, __CLASS__, __METHOD__);
         $annotation->process();
 
         $this->assertAnnotation($annotation, $expected);

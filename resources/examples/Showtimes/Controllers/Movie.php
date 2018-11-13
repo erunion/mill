@@ -1,13 +1,6 @@
 <?php
 namespace Mill\Examples\Showtimes\Controllers;
 
-/**
- * Information on a specific movie.
- *
- * These actions will allow you to pull information on a specific movie.
- *
- * @api-label Movies
- */
 class Movie
 {
     /**
@@ -78,7 +71,7 @@ class Movie
      *      - `X` - Rated X
      *      - `NR` - Not rated
      *      - `UR` - Unrated
-     * @api-param:public genres (array, optional) - Array of movie genres.
+     * @api-param:public genres (array<string>, optional) - Array of movie genres.
      * @api-param:public trailer `https://www.youtube.com/watch?v=_cNjTdFHL8E` (string, optional, nullable) - Trailer
      *      URL
      * @api-param:public director `Lamberto Bava` (string, optional) - Name of the director.

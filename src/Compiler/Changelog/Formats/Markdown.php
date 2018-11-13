@@ -11,61 +11,62 @@ class Markdown extends Json
     /** @var string */
     protected $output_format = Changelog::FORMAT_MARKDOWN;
 
+    /** @var string */
+    protected $markdown = '';
+
     /**
      * Take compiled API documentation and convert it into a Markdown-based changelog over the life of the API.
      *
-     * @return array
+     * @throws \Exception
      */
-    public function compile(): array
+    public function compile(): void
     {
-        $markdown = '';
+        parent::compile();
 
         $api_name = $this->config->getName();
         if (!empty($api_name)) {
-            $markdown .= sprintf('# Changelog: %s', $api_name);
-            $markdown .= $this->line(2);
+            $this->markdown .= sprintf('# Changelog: %s', $api_name);
+            $this->markdown .= $this->line(2);
         } else {
-            $markdown .= sprintf('# Changelog', $api_name);
-            $markdown .= $this->line(2);
+            $this->markdown .= sprintf('# Changelog', $api_name);
+            $this->markdown .= $this->line(2);
         }
 
-        $changelog = parent::compile();
+        $changelog = parent::getCompiled();
         $changelog = array_shift($changelog);
         $changelog = json_decode($changelog, true);
         foreach ($changelog as $version => $data) {
-            $markdown .= sprintf('## %s (%s)', $version, $data['_details']['release_date']);
-            $markdown .= $this->line();
+            $this->markdown .= sprintf('## %s (%s)', $version, $data['_details']['release_date']);
+            $this->markdown .= $this->line();
 
             if (isset($data['_details']['description'])) {
-                $markdown .= sprintf('%s', $data['_details']['description']);
-                $markdown .= $this->line(2);
+                $this->markdown .= sprintf('%s', $data['_details']['description']);
+                $this->markdown .= $this->line(2);
             }
 
-            $markdown .= '### Reference';
-            $markdown .= $this->line();
+            $this->markdown .= '### Reference';
+            $this->markdown .= $this->line();
 
             foreach ($data as $definition => $changes) {
                 if ($definition === '_details') {
                     continue;
                 }
 
-                $markdown .= sprintf('#### %s', ucwords($definition));
-                $markdown .= $this->line();
+                $this->markdown .= sprintf('#### %s', ucwords($definition));
+                $this->markdown .= $this->line();
 
                 foreach ($changes as $type => $changesets) {
-                    $markdown .= sprintf('##### %s', ucwords($type));
-                    $markdown .= $this->line();
+                    $this->markdown .= sprintf('##### %s', ucwords($type));
+                    $this->markdown .= $this->line();
 
                     foreach ($changesets as $changeset) {
-                        $markdown .= $this->getChangesetMarkdown($changeset);
+                        $this->markdown .= $this->getChangesetMarkdown($changeset);
                     }
 
-                    $markdown .= $this->line();
+                    $this->markdown .= $this->line();
                 }
             }
         }
-
-        return [$markdown];
     }
 
     /**
@@ -107,5 +108,17 @@ class Markdown extends Json
         }
 
         return $markdown;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCompiled(): array
+    {
+        if (empty($this->markdown)) {
+            $this->compile();
+        }
+
+        return [$this->markdown];
     }
 }

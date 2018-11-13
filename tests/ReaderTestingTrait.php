@@ -12,7 +12,10 @@ trait ReaderTestingTrait
      */
     public function setUp()
     {
-        $container = Container::getInstance();
+        parent::setUp();
+
+        /** @var Container $container */
+        $container = $this->getApplication()->getContainer();
 
         // We're setting custom Readers in a number of tests, so let's just quickly reset it and re-register before
         // running any tests.
@@ -31,7 +34,8 @@ trait ReaderTestingTrait
      */
     protected function overrideReadersWithFakeDocblockReturn(string $docblock): void
     {
-        $container = Container::getInstance();
+        /** @var Container $container */
+        $container = $this->getApplication()->getContainer();
 
         $container->extend(
             'reader.annotations',

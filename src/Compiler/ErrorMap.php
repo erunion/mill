@@ -15,10 +15,9 @@ class ErrorMap extends Compiler
     /**
      * Take compiled API documentation and compile an error map over the life of the API.
      *
-     * @return array
      * @throws \Exception
      */
-    public function compile(): array
+    public function compile(): void
     {
         parent::compile();
 
@@ -31,29 +30,27 @@ class ErrorMap extends Compiler
                     $group = array_shift($parts);
                 }
 
-                foreach ($data['resources'] as $resource_name => $resource) {
-                    /** @var Action\Documentation $action */
-                    foreach ($resource['actions'] as $identifier => $action) {
-                        /** @var ReturnAnnotation|ErrorAnnotation $response */
-                        foreach ($action->getResponses() as $response) {
-                            if (!$response instanceof ErrorAnnotation) {
-                                continue;
-                            }
-
-                            $error_code = $response->getErrorCode();
-                            if (empty($error_code)) {
-                                continue;
-                            }
-
-                            $path = $action->getPath();
-                            $this->error_map[$version][$group][$error_code][] = [
-                                'path' => $path->getCleanPath(),
-                                'method' => $action->getMethod(),
-                                'http_code' => $response->getHttpCode(),
-                                'error_code' => $error_code,
-                                'description' => $response->getDescription()
-                            ];
+                /** @var Action\Documentation $action */
+                foreach ($data['actions'] as $identifier => $action) {
+                    /** @var ReturnAnnotation|ErrorAnnotation $response */
+                    foreach ($action->getResponses() as $response) {
+                        if (!$response instanceof ErrorAnnotation) {
+                            continue;
                         }
+
+                        $error_code = $response->getErrorCode();
+                        if (empty($error_code)) {
+                            continue;
+                        }
+
+                        $path = $action->getPath();
+                        $this->error_map[$version][$group][$error_code][] = [
+                            'path' => $path->getCleanPath(),
+                            'method' => $action->getMethod(),
+                            'http_code' => $response->getHttpCode(),
+                            'error_code' => $error_code,
+                            'description' => $response->getDescription()
+                        ];
                     }
                 }
             }
@@ -80,6 +77,16 @@ class ErrorMap extends Compiler
                 ksort($this->error_map[$version][$group]);
             }
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function getCompiled(): array
+    {
+        if (empty($this->error_map)) {
+            $this->compile();
+        }
 
         return $this->error_map;
     }
@@ -92,8 +99,10 @@ class ErrorMap extends Compiler
      */
     public function toMarkdown(): array
     {
-        $markdown = new Markdown($this->config);
-        $markdown->setErrorMap($this->compile());
-        return $markdown->compile();
+        $markdown = new Markdown($this->application, $this->version);
+        $markdown->setLoadPrivateDocs($this->load_private_docs);
+        $markdown->setLoadVendorTagDocs($this->load_vendor_tag_docs);
+
+        return $markdown->getCompiled();
     }
 }

@@ -1,37 +1,25 @@
 <?php
 namespace Mill\Compiler\Changelog\Formats;
 
-use Mill\Compiler;
 use Mill\Compiler\Changelog;
 use Mill\Compiler\Traits\ChangelogTemplate;
 
-class Json extends Compiler
+class Json extends Changelog
 {
     use ChangelogTemplate;
 
-    /** @var array Compiled changelog. */
-    protected $changelog = [];
-
-    /**
-     * Set the current changelog we're going to build a representation for.
-     *
-     * @param array $changelog
-     * @return Json
-     */
-    public function setChangelog(array $changelog = []): self
-    {
-        $this->changelog = $changelog;
-        return $this;
-    }
+    /** @var array Compiled JSON changelog. */
+    protected $json = [];
 
     /**
      * Take compiled API documentation and convert it into a JSON-encoded changelog over the life of the API.
      *
-     * @return array
      * @throws \Exception
      */
-    public function compile(): array
+    public function compile(): void
     {
+        parent::compile();
+
         $json = [];
 
         foreach ($this->changelog as $version => $version_changes) {
@@ -53,7 +41,7 @@ class Json extends Compiler
             }
         }
 
-        return [
+        $this->json = [
             json_encode($json)
         ];
     }
@@ -205,5 +193,17 @@ class Json extends Compiler
 
         $changeset->setOutputFormat($this->output_format);
         return $changeset->compileChangedChangeset($definition, $changes);
+    }
+
+    /**
+     * @return array
+     */
+    public function getCompiled(): array
+    {
+        if (empty($this->json)) {
+            $this->compile();
+        }
+
+        return $this->json;
     }
 }

@@ -10,6 +10,9 @@ class Specification extends Compiler
     /** @var array Current list of representations for the current API version we're working with. */
     protected $representations = [];
 
+    /** @var array */
+    protected $specifications = [];
+
     /**
      * Pull a representation from the current versioned set of representations.
      *
@@ -19,6 +22,18 @@ class Specification extends Compiler
     protected function getRepresentation(string $representation)
     {
         return (isset($this->representations[$representation])) ? $this->representations[$representation] : false;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCompiled(): array
+    {
+        if (empty($this->specifications)) {
+            $this->compile();
+        }
+
+        return $this->specifications;
     }
 
     /**

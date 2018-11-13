@@ -47,12 +47,12 @@ class ErrorAnnotation extends Annotation
      */
     protected function parser(): array
     {
-        $config = Container::getConfig();
+        $config = $this->application->getConfig();
         $content = trim($this->docblock);
 
         /** @var string $method */
         $method = $this->method;
-        $mson = (new MSON($this->class, $method))->allowAllSubtypes()->parse($content);
+        $mson = (new MSON($this->class, $method, $config))->allowAllSubtypes()->parse($content);
         $parsed = [
             'http_code' => $mson->getField(),
             'representation' => $mson->getType(),
@@ -74,6 +74,7 @@ class ErrorAnnotation extends Annotation
                 /** @return Annotation */
                 function (string $tag) use ($method) {
                     return (new VendorTagAnnotation(
+                        $this->application,
                         $tag,
                         $this->class,
                         $method

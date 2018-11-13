@@ -23,7 +23,7 @@ This describes a piece of data within a representation that a resource action ca
 | fieldName | × | The data in a representation that you're documenting. So if your representation has a `link`, `field_name` would be `link`. If you're documenting nested objects, you should use dot-notation to map out the field name. So say you have a `metadata[connections][albums]` array in your representation, the `field_name` would then be `metadata.connections.albums`. |
 | sampleData | ✓ | This is a sample of what the contents of the representation data can contain. For example, this returns a number, this can be "50". |
 | type | × | This describes the type of data that a representation data field contains. |
-| required&vert;optional | ✓ | A flag that indicates that the data is, well, optional. If nothing is supplied, it defaults to being `optional`. |
+| required&vert;optional | ✓ | A flag that indicates that the data is, well, optional. **If nothing is supplied, it defaults to being `required`.** |
 | nullable | ✓ | A flag that indicates that the data is nullable. If nothing is supplied, it defaults to being non-nullable. |
 | vendor:tagName | ✓ | Defined vendor tag. See the [`@api-vendortag`](reference/api-vendortag.md) documentation for more information. There is no limit to the amount of vendor tags you can specify on a parameter. |
 | Description | × | A description for that this data is. |
@@ -99,7 +99,7 @@ $representation = [
                 'options' => ['GET'],
 
                 /**
-                 * @api-label total (number) - Total number of items on
+                 * @api-data total (number, nullable) - Total number of items on
                  *     this connection.
                  */
                 'total' => $user->getAlbums()->total
@@ -142,7 +142,7 @@ $representation = [
     ...
 
     /**
-     * @api-data content_ratings (array<object>) - MPAA ratings
+     * @api-data content_ratings (array<object>, optional) - MPAA ratings
      */
     'content_ratings' => $content_ratings,
 

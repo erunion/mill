@@ -3,7 +3,7 @@ id: api-label
 title: @api-label
 ---
 
-A short description of what the resource, or resource action handles.
+A short description of what a representation, or resource action action, handles.
 
 ## Syntax
 ```php
@@ -21,13 +21,15 @@ A short description of what the resource, or resource action handles.
 | description | × | Description of what resource, or resource action handles. |
 
 ## Examples
-On a resource:
+On a representation:
 
 ```php
 /**
- * @api-label Videos
+ * Data representation for a specific movie.
+ *
+ * @api-label Movie
  */
-class Controller
+class Movie extends Representation
 {
     ...
 }

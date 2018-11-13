@@ -13,7 +13,7 @@ class DescriptionAnnotationTest extends AnnotationTest
      */
     public function testAnnotation(string $content, array $expected): void
     {
-        $annotation = new DescriptionAnnotation($content, __CLASS__, __METHOD__);
+        $annotation = new DescriptionAnnotation($this->getApplication(), $content, __CLASS__, __METHOD__);
         $annotation->process();
 
         $this->assertAnnotation($annotation, $expected);

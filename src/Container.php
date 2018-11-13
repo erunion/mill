@@ -7,9 +7,6 @@ use Mill\Provider\Reader;
 
 class Container extends \Pimple\Container
 {
-    /** @var Container|null */
-    protected static $instance = null;
-
     /**
      * Instantiate the container.
      *
@@ -33,25 +30,6 @@ class Container extends \Pimple\Container
         $this->register(new Filesystem);
         $this->register(new Config);
         $this->register(new Reader);
-
-        self::$instance = $this;
-    }
-
-    /**
-     * Return the current instance of the container.
-     *
-     * @codeCoverageIgnore
-     * @return Container
-     */
-    public static function getInstance(): self
-    {
-        if (!self::$instance instanceof Container) {
-            throw new \InvalidArgumentException(
-                'The Mill container must be set up before you can grab an instance of it.'
-            );
-        }
-
-        return self::$instance;
     }
 
     /**
@@ -59,9 +37,9 @@ class Container extends \Pimple\Container
      *
      * @return \Mill\Config
      */
-    public static function getConfig(): \Mill\Config
+    public function getConfig(): \Mill\Config
     {
-        return self::getInstance()['config'];
+        return $this['config'];
     }
 
     /**
@@ -69,9 +47,9 @@ class Container extends \Pimple\Container
      *
      * @return \League\Flysystem\Filesystem
      */
-    public static function getFilesystem(): \League\Flysystem\Filesystem
+    public function getFilesystem(): \League\Flysystem\Filesystem
     {
-        return self::getInstance()['filesystem'];
+        return $this['filesystem'];
     }
 
     /**
@@ -79,9 +57,9 @@ class Container extends \Pimple\Container
      *
      * @return \Closure
      */
-    public static function getAnnotationReader(): \Closure
+    public function getAnnotationReader(): \Closure
     {
-        return self::getInstance()['reader.annotations'];
+        return $this['reader.annotations'];
     }
 
     /**
@@ -89,8 +67,8 @@ class Container extends \Pimple\Container
      *
      * @return \Closure
      */
-    public static function getRepresentationAnnotationReader(): \Closure
+    public function getRepresentationAnnotationReader(): \Closure
     {
-        return self::getInstance()['reader.annotations.representation'];
+        return $this['reader.annotations.representation'];
     }
 }
