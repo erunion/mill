@@ -30,7 +30,7 @@ class ApiBlueprint extends Compiler\Specification
 
         foreach ($resources as $version => $groups) {
             $this->version = $version;
-            $this->representations = $this->getRepresentations($this->version);
+            $representations = $this->getRepresentations($this->version);
 
             // Process resource groups.
             /** @var array $data */
@@ -110,8 +110,8 @@ class ApiBlueprint extends Compiler\Specification
             }
 
             // Process representation data structures.
-            if (!empty($this->representations)) {
-                foreach ($this->representations as $representation) {
+            if (!empty($representations)) {
+                foreach ($representations as $representation) {
                     $fields = $representation->getExplodedContentDotNotation();
                     if (empty($fields)) {
                         continue;
@@ -493,7 +493,7 @@ class ApiBlueprint extends Compiler\Specification
 
             case 'array':
                 if ($subtype) {
-                    $representation = $this->getRepresentation($subtype);
+                    $representation = $this->getRepresentation($subtype, $this->version);
                     if ($representation) {
                         return 'array[' . $representation->getLabel() . ']';
                     } elseif ($subtype !== 'object') {
@@ -505,7 +505,7 @@ class ApiBlueprint extends Compiler\Specification
                 break;
 
             default:
-                $representation = $this->getRepresentation($type);
+                $representation = $this->getRepresentation($type, $this->version);
                 if ($representation) {
                     return $representation->getLabel();
                 }
