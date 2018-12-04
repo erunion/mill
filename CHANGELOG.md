@@ -1,7 +1,11 @@
 # Changelog
+## [5.1.0] - 2018-12-04
+### Added
+* Addition of a new `--for_public_consumption` argument to the `compile` command that lets you compile public API specifications for public consumption. [#214](https://github.com/vimeo/mill/pull/214)
+
 ## [5.0.2] - 2018-12-04
 ### Changed
-* The `bootstrap` declaration in `mill.xml` is no longer required.
+* The `bootstrap` declaration in `mill.xml` is no longer required. [#213](https://github.com/vimeo/mill/pull/213)
 
 ## [5.0.1] - 2018-11-15
 ### Fixed
@@ -350,6 +354,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[5.1.0]: https://github.com/vimeo/mill/compare/5.0.2...5.1.0
 [5.0.2]: https://github.com/vimeo/mill/compare/5.0.1...5.0.2
 [5.0.1]: https://github.com/vimeo/mill/compare/5.0.0...5.0.1
 [5.0.0]: https://github.com/vimeo/mill/compare/4.2.13...5.0.0
