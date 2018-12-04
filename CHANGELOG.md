@@ -1,7 +1,7 @@
 # Changelog
 ## [5.0.2] - 2018-12-04
 ### Changed
-* The `boostrap` declaration in `mill.xml` is no longer required.
+* The `bootstrap` declaration in `mill.xml` is no longer required.
 
 ## [5.0.1] - 2018-11-15
 ### Fixed
