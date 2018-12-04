@@ -130,15 +130,53 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         foreach (self::VERSIONS as $version) {
             $this->assertContains('API version: ' . $version, $output);
 
-            // No version should have `DELETE /movies/+id`.
             $yaml = file_get_contents($output_dir . '/' . $version . '/openapi/api.yaml');
             $spec = Yaml::parse($yaml);
 
+            // Since `DELETE /movies/+id` is a private endpoint, it should not be present under any version.
             $this->assertArrayNotHasKey(
                 'delete',
                 $spec['paths']['/movies/{id}'],
                 $version . ' should not have `DELETE /movies/+id'
             );
+        }
+    }
+
+    public function testCommandForOpenApiForPublicConsumption(): void
+    {
+        $output_dir = $this->getTempOutputDirectory('openapi-public-consumption');
+
+        $this->tester->execute([
+            'command' => $this->command->getName(),
+            '--config' => $this->config_file,
+            '--format' => Compile::FORMAT_OPENAPI,
+            '--for_public_consumption' => true,
+            'output' => $output_dir
+        ]);
+
+        $output = $this->tester->getDisplay();
+
+        foreach (self::VERSIONS as $version) {
+            $this->assertContains('API version: ' . $version, $output);
+
+            // Grouped specifications should not be present.
+            $this->assertDirectoryNotExists($output_dir . '/' . $version . '/openapi');
+
+            $yaml = file_get_contents($output_dir . '/' . $version . '/api.yaml');
+            $spec = Yaml::parse($yaml);
+
+            // Since `DELETE /movies/+id` is a private endpoint, it should not be present under any version.
+            $this->assertArrayNotHasKey(
+                'delete',
+                $spec['paths']['/movies/{id}'],
+                $version . ' should not have `DELETE /movies/+id'
+            );
+
+            // Vendor extensions should not be present anywhere within the spec.
+            $this->assertNotContains('x-mill-path-aliased', $yaml);
+            $this->assertNotContains('x-mill-path-aliases', $yaml);
+            $this->assertNotContains('x-mill-vendor-tags', $yaml);
+            $this->assertNotContains('x-mill-visibility-private', $yaml);
         }
     }
 
