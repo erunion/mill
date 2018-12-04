@@ -1,4 +1,8 @@
 # Changelog
+## [5.0.2] - 2018-12-04
+### Changed
+* The `boostrap` declaration in `mill.xml` is no longer required.
+
 ## [5.0.1] - 2018-11-15
 ### Fixed
 * Resolved an issue in the config FQN parser where it could improperly locate class names. [#210](https://github.com/vimeo/mill/pull/210)
@@ -346,6 +350,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[5.0.2]: https://github.com/vimeo/mill/compare/5.0.1...5.0.2
 [5.0.1]: https://github.com/vimeo/mill/compare/5.0.0...5.0.1
 [5.0.0]: https://github.com/vimeo/mill/compare/4.2.13...5.0.0
 [4.2.13]: https://github.com/vimeo/mill/compare/4.2.12...4.2.13
