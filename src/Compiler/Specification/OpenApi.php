@@ -456,6 +456,10 @@ class OpenApi extends Compiler\Specification
      */
     protected function processExtensions(Action\Documentation $action, PathAnnotation $path): array
     {
+        if (!$this->compile_with_extensions) {
+            return [];
+        }
+
         $schema = [
             'x-mill-path-aliased' => $path->isAliased(),
             'x-mill-path-aliases' => array_map(
@@ -581,7 +585,7 @@ class OpenApi extends Compiler\Specification
                     }
                 }
 
-                if (isset($data['vendor_tags']) && !empty($data['vendor_tags'])) {
+                if ($this->compile_with_extensions && (isset($data['vendor_tags']) && !empty($data['vendor_tags']))) {
                     $spec['x-mill-vendor-tags'] = $data['vendor_tags'];
                 }
             } else {

@@ -7,7 +7,6 @@ use Mill\Config;
 use Mill\Compiler\Specification\ApiBlueprint;
 use Mill\Exceptions\Version\UnrecognizedSchemaException;
 use Mill\Parser\Version;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -24,6 +23,9 @@ class Compile extends BaseCompiler
 
     /** @var Filesystem */
     private $filesystem;
+
+    /** @var bool */
+    private $for_public_consumption = false;
 
     /**
      * @return void
@@ -65,6 +67,15 @@ class Compile extends BaseCompiler
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Compile documentation for a specific server environment. Only available for `openapi` compilations.'
+            )
+            ->addOption(
+                'for_public_consumption',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Flag designating if you want compiled documentation be ready for the public to consume. This will ' .
+                    'forgo compiling in `x-mill-*` extensions, bypass creating group-specific specifications, as ' .
+                    'as not create specification-specific directories.',
+                false
             );
     }
 
@@ -90,6 +101,22 @@ class Compile extends BaseCompiler
         if (!in_array($format, ['apiblueprint', 'openapi'])) {
             $output->writeLn('<error>`' . $format . '` is an unknown compilation format.</error>');
             return 1;
+        }
+
+        $for_public_consumption = $input->getOption('for_public_consumption');
+        if (is_bool($for_public_consumption) && $for_public_consumption === true) {
+            $this->for_public_consumption = true;
+        } elseif (is_string($for_public_consumption) && strtolower($for_public_consumption) == 'true') {
+            $this->for_public_consumption = true;
+        } else {
+            $this->for_public_consumption = false;
+        }
+
+        // If we're compiling for public consumption, then ignore the `vendor_tag` and `private` arguments that may
+        // have been supplied.
+        if ($this->for_public_consumption) {
+            $this->vendor_tags = null;
+            $this->private_docs = false;
         }
 
         if ($input->getOption('default')) {
@@ -134,6 +161,10 @@ class Compile extends BaseCompiler
         $compiler->setLoadPrivateDocs($this->private_docs);
         $compiler->setLoadVendorTagDocs($this->vendor_tags);
 
+        if ($this->for_public_consumption) {
+            $compiler->setCompileWithExtensions(false);
+        }
+
         $output->writeln(
             sprintf(
                 '<comment>Compiling %s files...</comment>',
@@ -170,35 +201,42 @@ class Compile extends BaseCompiler
      */
     private function saveApiBlueprint(OutputInterface $output, string $version_dir, array $spec): void
     {
-        $version_dir .= self::FORMAT_API_BLUEPRINT . DIRECTORY_SEPARATOR;
+        // If we aren't compiling specifications for public consumption, then go ahead and put these specs under a
+        // specification-specific subdirectory.
+        if (!$this->for_public_consumption) {
+            $version_dir .= self::FORMAT_API_BLUEPRINT . DIRECTORY_SEPARATOR;
+        }
 
         // Save a, single, combined API Blueprint file.
         $this->filesystem->put($version_dir . 'api.apib', $spec['combined']);
 
-        // Process resource groups.
-        if (isset($spec['groups'])) {
-            foreach ($spec['groups'] as $group => $markdown) {
-                // Convert any nested groups, like `Me\Videos`, into a proper directory structure: `Me/Videos`.
-                $group = str_replace('\\', DIRECTORY_SEPARATOR, $group);
+        if (!$this->for_public_consumption) {
+            // Process resource groups.
+            if (isset($spec['groups'])) {
+                foreach ($spec['groups'] as $group => $markdown) {
+                    // Convert any nested groups, like `Users\Videos`, into a proper directory structure:
+                    // `Users/Videos`.
+                    $group = str_replace('\\', DIRECTORY_SEPARATOR, $group);
 
-                $this->filesystem->put(
-                    $version_dir . 'resources' . DIRECTORY_SEPARATOR . $group . '.apib',
-                    trim($markdown)
-                );
+                    $this->filesystem->put(
+                        $version_dir . 'resources' . DIRECTORY_SEPARATOR . $group . '.apib',
+                        trim($markdown)
+                    );
+                }
             }
-        }
 
-        // Process data structures.
-        if (isset($spec['structures'])) {
-            foreach ($spec['structures'] as $structure => $markdown) {
-                // Sanitize any structure names with forward slashes to avoid them from being nested in directories
-                // by Flysystem.
-                $structure = str_replace('/', '-', $structure);
+            // Process data structures.
+            if (isset($spec['structures'])) {
+                foreach ($spec['structures'] as $structure => $markdown) {
+                    // Sanitize any structure names with forward slashes to avoid them from being nested in directories
+                    // by Flysystem.
+                    $structure = str_replace('/', '-', $structure);
 
-                $this->filesystem->put(
-                    $version_dir . 'representations' . DIRECTORY_SEPARATOR . $structure . '.apib',
-                    trim($markdown)
-                );
+                    $this->filesystem->put(
+                        $version_dir . 'representations' . DIRECTORY_SEPARATOR . $structure . '.apib',
+                        trim($markdown)
+                    );
+                }
             }
         }
     }
@@ -210,23 +248,29 @@ class Compile extends BaseCompiler
      */
     private function saveOpenApi(OutputInterface $output, string $version_dir, array $spec): void
     {
-        $version_dir .= self::FORMAT_OPENAPI . DIRECTORY_SEPARATOR;
+        // If we aren't compiling specifications for public consumption, then go ahead and put these specs under a
+        // specification-specific subdirectory.
+        if (!$this->for_public_consumption) {
+            $version_dir .= self::FORMAT_OPENAPI . DIRECTORY_SEPARATOR;
+        }
 
         // Save the full specification.
         $this->filesystem->put($version_dir . 'api.yaml', OpenApi::getYaml($spec));
 
-        // Save individual specs for each tag.
-        $reducer = new OpenApi\TagReducer($spec);
-        $reduced = $reducer->reduce();
-        foreach ($reduced as $tag => $tagged_spec) {
-            // Convert any nested tags, like `Me\Videos`, into a proper directory structure: `Me/Videos`.
-            $tag = str_replace('\\', DIRECTORY_SEPARATOR, $tag);
-            $tag = str_replace('/', DIRECTORY_SEPARATOR, $tag);
+        if (!$this->for_public_consumption) {
+            // Save individual specs for each tag.
+            $reducer = new OpenApi\TagReducer($spec);
+            $reduced = $reducer->reduce();
+            foreach ($reduced as $tag => $tagged_spec) {
+                // Convert any nested tags, like `Users\Videos`, into a proper directory structure: `Users/Videos`.
+                $tag = str_replace('\\', DIRECTORY_SEPARATOR, $tag);
+                $tag = str_replace('/', DIRECTORY_SEPARATOR, $tag);
 
-            $this->filesystem->put(
-                $version_dir . 'tags' . DIRECTORY_SEPARATOR . $tag . '.yaml',
-                OpenApi::getYaml($tagged_spec)
-            );
+                $this->filesystem->put(
+                    $version_dir . 'tags' . DIRECTORY_SEPARATOR . $tag . '.yaml',
+                    OpenApi::getYaml($tagged_spec)
+                );
+            }
         }
     }
 }
