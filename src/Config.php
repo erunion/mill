@@ -139,7 +139,7 @@ class Config
         // Since this library is designed to be used in two cases (CLI and programmatically), if you use it
         // programmatically in your application, it'll automatically have access to your autoloader, and this'll be
         // unnecessary.
-        if ($load_bootstrap) {
+        if ($load_bootstrap && !empty($xml['bootstrap'])) {
             require_once $config->base_dir . $xml['bootstrap'];
         }
 

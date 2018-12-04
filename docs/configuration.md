@@ -64,7 +64,7 @@ In order to instruct Mill on where to look for documentation, and any constraint
 | Option | Optional |Description |
 | :--- | :--- | :--- |
 | name | ✓ | This is the canonical name of your API. |
-| bootstrap | × | Relative path to a PHP bootstrap file that will get loaded before Mill does any work. This is usually a [Composer](https://getcomposer.org/) `vendor/autoload.php` file. This is necessary so Mill can access, and parse your API classes for documentation. |
+| bootstrap | ✓ | Relative path to a PHP bootstrap file that will get loaded before Mill does any work. If running Mill programmatically, this can usually be a [Composer](https://getcomposer.org/) `vendor/autoload.php` file. |
 
 ## Settings
 > All directory paths should be relative to the location of your `mill.xml` configuration file.
