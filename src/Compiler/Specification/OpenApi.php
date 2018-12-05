@@ -787,4 +787,21 @@ class OpenApi extends Compiler\Specification
     {
         return Yaml::dump($specification, PHP_INT_MAX, 2);
     }
+
+    /**
+     * {{@inheritdoc}}
+     */
+    protected function convertSampleDataToCompatibleDataType($data, string $type)
+    {
+        // Booleans in OpenAPI specifications should be represented as booleans, not stringified versions of booleans.
+        if ($type === 'boolean') {
+            if ($data === '0') {
+                return false;
+            } elseif ($data === '1') {
+                return true;
+            }
+        }
+
+        return parent::convertSampleDataToCompatibleDataType($data, $type);
+    }
 }
