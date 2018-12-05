@@ -1,4 +1,11 @@
 # Changelog
+## [5.1.2] - 2018-12-04
+### Changed
+* Compiled OpenAPI specifications now target OpenAPI 3.0.2. [#216](https://github.com/vimeo/mill/pull/216)
+
+### Fixed
+* Examples in OpenAPI specifications will now match the associated type. Booleans will be booleans, ints ints, floats floats. [#215](https://github.com/vimeo/mill/pull/215)
+
 ## [5.1.1] - 2018-12-04
 ### Fixed
 * Fixed a bug where using the `--for_public_consumption` `compile` argument would include documentation that was vendor tag-bound. [5d417f0](https://github.com/vimeo/mill/commit/5d417f07b2dcdda3d8264c9556d9c4ee7ef63cfb)
@@ -358,6 +365,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[5.1.2]: https://github.com/vimeo/mill/compare/5.1.1...5.1.2
 [5.1.1]: https://github.com/vimeo/mill/compare/5.1.0...5.1.1
 [5.1.0]: https://github.com/vimeo/mill/compare/5.0.2...5.1.0
 [5.0.2]: https://github.com/vimeo/mill/compare/5.0.1...5.0.2
