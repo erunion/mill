@@ -110,7 +110,7 @@ paths:
           required: true
           schema:
             type: number
-            example: '1234'
+            example: 1234
       responses:
         204:
           description: 'Standard request.'
@@ -140,7 +140,7 @@ paths:
           required: true
           schema:
             type: number
-            example: '1234'
+            example: 1234
       responses:
         200:
           description: 'Standard request.'
@@ -171,7 +171,7 @@ paths:
           required: true
           schema:
             type: number
-            example: '1234'
+            example: 1234
       requestBody:
         required: true
         content:

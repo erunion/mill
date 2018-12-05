@@ -34,7 +34,7 @@ paths:
           required: true
           schema:
             type: number
-            example: '1234'
+            example: 1234
       responses:
         200:
           description: 'Standard request.'
@@ -156,7 +156,7 @@ paths:
                   type: string
                 rotten_tomatoes_score:
                   description: 'Rotten Tomatoes score'
-                  example: '56'
+                  example: 56
                   type: number
                 runtime:
                   description: 'Movie runtime, in `HHhr MMmin` format.'
@@ -203,7 +203,7 @@ paths:
           required: true
           schema:
             type: number
-            example: '1234'
+            example: 1234
       responses:
         204:
           description: 'Standard request.'
@@ -235,7 +235,7 @@ paths:
           required: true
           schema:
             type: number
-            example: '1234'
+            example: 1234
       responses:
         200:
           description: 'Standard request.'
@@ -268,7 +268,7 @@ paths:
           required: true
           schema:
             type: number
-            example: '1234'
+            example: 1234
       requestBody:
         required: true
         content:
@@ -324,7 +324,7 @@ paths:
                   type: string
                 rotten_tomatoes_score:
                   description: 'Rotten Tomatoes score'
-                  example: '56'
+                  example: 56
                   type: number
                 runtime:
                   description: 'Movie runtime, in `HHhr MMmin` format.'
@@ -455,7 +455,7 @@ paths:
           required: true
           schema:
             type: number
-            example: '1234'
+            example: 1234
       responses:
         204:
           description: 'Standard request.'
@@ -485,7 +485,7 @@ paths:
           required: true
           schema:
             type: number
-            example: '1234'
+            example: 1234
       responses:
         200:
           description: 'Standard request.'
@@ -516,7 +516,7 @@ paths:
           required: true
           schema:
             type: number
-            example: '1234'
+            example: 1234
       requestBody:
         required: true
         content:
