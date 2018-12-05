@@ -534,15 +534,11 @@ components:
               imdb:
                 description: 'IMDB URL. This data requires a bearer token with the `public` scope.'
                 type: string
-              tickets:
-                description: 'Tickets URL. This data requires a bearer token with the `public` scope.'
-                type: string
               trailer:
                 description: 'Trailer URL. This data requires a bearer token with the `public` scope.'
                 type: string
             required:
               - imdb
-              - tickets
               - trailer
           type: array
         genres:
