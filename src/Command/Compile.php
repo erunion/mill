@@ -115,7 +115,7 @@ class Compile extends BaseCompiler
         // If we're compiling for public consumption, then ignore the `vendor_tag` and `private` arguments that may
         // have been supplied.
         if ($this->for_public_consumption) {
-            $this->vendor_tags = null;
+            $this->vendor_tags = [];
             $this->private_docs = false;
         }
 
