@@ -46,7 +46,7 @@ class OpenApi extends Compiler\Specification
             $this->representations = $this->getRepresentations($this->version);
 
             $specification = [
-                'openapi' => '3.0.0',
+                'openapi' => '3.0.2',
                 'info' => [
                     'title' => $this->config->getName(),
                     'version' => $this->version,
