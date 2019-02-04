@@ -1,7 +1,4 @@
----
-id: installation
-title: Installation
----
+# Installation
 
 Mill was built for automatically generating the [Vimeo API](https://developer.vimeo.com/api/endpoints) documentation microsite. It can compile your API documentation down into an [OpenAPI 3.0](https://swagger.io/),  [API Blueprint](https://apiblueprint.org), specification, and also automatically generated [changelogs](https://developer.vimeo.com/api/changelog).
 

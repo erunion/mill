@@ -1,7 +1,4 @@
----
-id: generate-changelogs
-title: "Generating changelogs"
----
+# Generating changelogs
 
 Mill includes a `mill` command line application for doing various tasks on your API, including compiling your documentation into a Markdown-represented changelog.
 
