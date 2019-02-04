@@ -1,7 +1,4 @@
----
-id: compile-documentation
-title: Compiling documentation
----
+# Compiling documentation
 
 Mill includes a `mill` command line application for doing various tasks on your API, including compiling it down into versioned [OpenAPI](https://swagger.io/) or [API Blueprint](https://apiblueprint.org/) specifications.
 
