@@ -96,8 +96,6 @@ class Compile extends BaseCompiler
     {
         parent::execute($input, $output);
 
-        $version = $input->getOption('constraint');
-
         /** @var string $environment */
         $environment = $input->getOption('environment');
 
@@ -130,19 +128,24 @@ class Compile extends BaseCompiler
         $config = $this->container['config'];
 
         if ($input->getOption('default')) {
-            $version = $config->getDefaultApiVersion();
+            $version_opt = $config->getDefaultApiVersion();
         } elseif ($input->getOption('latest')) {
-            $version = $config->getLatestApiVersion();
+            $version_opt = $config->getLatestApiVersion();
+        } else {
+            /** @var string|null $version_opt */
+            $version_opt = $input->getOption('constraint');
         }
 
         // Validate the current version constraint.
-        if (!empty($version)) {
+        if (!empty($version_opt)) {
             try {
-                $version = new Version($version, __CLASS__, __METHOD__);
+                $version = new Version($version_opt, __CLASS__, __METHOD__);
             } catch (UnrecognizedSchemaException $e) {
                 $output->writeLn('<error>' . $e->getValidationMessage() . '</error>');
                 return 1;
             }
+        } else {
+            $version = null;
         }
 
         $this->filesystem = $this->container['filesystem'];
