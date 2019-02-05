@@ -1,7 +1,6 @@
 <?php
 namespace Mill\Tests\Parser\Resource;
 
-use Mill\Exceptions\BaseException;
 use Mill\Exceptions\MethodNotImplementedException;
 use Mill\Parser\Resource\Documentation;
 use Mill\Tests\ReaderTestingTrait;
@@ -36,7 +35,7 @@ class DocumentationTest extends TestCase
         $this->assertSame($class_docs['class'], $class);
 
         foreach ($expected['methods.available'] as $method) {
-            $this->assertInternalType('array', $class_docs['methods'][$method]);
+            $this->assertIsArray($class_docs['methods'][$method]);
             $this->assertInstanceOf('\Mill\Parser\Resource\Action\Documentation', $docs->getMethod($method));
         }
 
