@@ -63,6 +63,13 @@ class Compile extends BaseCompiler
                 false
             )
             ->addOption(
+                'latest',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Compile just the **latest** configured API version documentation.',
+                false
+            )
+            ->addOption(
                 'environment',
                 null,
                 InputOption::VALUE_OPTIONAL,
@@ -119,8 +126,13 @@ class Compile extends BaseCompiler
             $this->private_docs = false;
         }
 
+        /** @var Config $config */
+        $config = $this->container['config'];
+
         if ($input->getOption('default')) {
-            $version = $this->container['config']->getDefaultApiVersion();
+            $version = $config->getDefaultApiVersion();
+        } elseif ($input->getOption('latest')) {
+            $version = $config->getLatestApiVersion();
         }
 
         // Validate the current version constraint.
@@ -133,8 +145,6 @@ class Compile extends BaseCompiler
             }
         }
 
-        /** @var Config $config */
-        $config = $this->container['config'];
         $this->filesystem = $this->container['filesystem'];
 
         if (!empty($environment) && $format === self::FORMAT_OPENAPI) {
