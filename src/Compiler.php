@@ -69,6 +69,10 @@ class Compiler
         $this->supported_versions = $this->config->getApiVersions();
     }
 
+    /**
+     * Compile API documentation into a parseable collection.
+     *
+     */
     public function compile(): void
     {
         $controllers = $this->config->getControllers();

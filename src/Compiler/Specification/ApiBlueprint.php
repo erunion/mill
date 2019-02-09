@@ -12,6 +12,15 @@ use Mill\Parser\Resource\Action;
 
 class ApiBlueprint extends Compiler\Specification
 {
+    /** @var string */
+    protected $current_version;
+
+    /** @var array */
+    protected $transposed_actions = [];
+
+    /** @var array */
+    protected $transposed_representations = [];
+
     /**
      * Take compiled API documentation and create a API Blueprint specification.
      *
@@ -29,9 +38,6 @@ class ApiBlueprint extends Compiler\Specification
         $resources = $this->getResources();
 
         foreach ($resources as $version => $groups) {
-            $this->version = $version;
-            $representations = $this->getRepresentations($this->version);
-
             // Process resource groups.
             /** @var array $data */
             foreach ($groups as $group => $data) {
@@ -43,56 +49,18 @@ class ApiBlueprint extends Compiler\Specification
                 $contents = sprintf('# Group %s', $group);
                 $contents .= $this->line();
 
-                // Sort the resources so they're alphabetical.
-                ksort($data['actions']);
-
-                $resource_contents = [];
-
-                /** @var Action\Documentation $action */
-                foreach ($data['actions'] as $identifier => $action) {
-                    $resource_key = sprintf('%s [%s]', $group, $action->getPath()->getCleanPath());
-                    if (!isset($resource_contents[$resource_key])) {
-                        $resource_contents[$resource_key] = [
-                            'actions' => []
-                        ];
-                    }
-
-                    $action_contents = '';
-
-                    $description = $action->getDescription();
-                    if (!empty($description)) {
-                        $action_contents .= $description;
-                        $action_contents .= $this->line(2);
-                    }
-
-                    $action_contents .= $this->processScopes($action);
-                    $action_contents .= $this->processParameters($action);
-                    $action_contents .= $this->processRequest($action);
-
-                    $coded_responses = [];
-                    /** @var ReturnAnnotation|ErrorAnnotation $response */
-                    foreach ($action->getResponses() as $response) {
-                        $coded_responses[$response->getHttpCode()][] = $response;
-                    }
-
-                    ksort($coded_responses);
-
-                    foreach ($coded_responses as $http_code => $responses) {
-                        $action_contents .= $this->processResponses($action, $http_code, $responses);
-                    }
-
-                    $action_key = sprintf('%s [%s]', $action->getLabel(), $action->getMethod());
-                    $resource_contents[$resource_key]['actions'][$action_key] = $action_contents;
-                }
-
                 // Since there are instances where the same resource might be used with multiple endpoints, and on the
                 // same group, we need to abstract out the resource and action concatenation so we can compile unique
                 // resource and action headers for each resource action.
                 //
-                // It would be nice to clean this code up at some po as it's a... bit... messy.
+                // It would be nice to clean this code up at some point as it's a... bit... messy.
+                $resource_contents = $this->transposed_actions[$version][$group];
                 foreach ($resource_contents as $identifier => $resource) {
                     $contents .= sprintf('## %s', $identifier);
                     $contents .= $this->line();
+
+                    // Sort the resources so they're alphabetical.
+                    ksort($resource['actions']);
 
                     foreach ($resource['actions'] as $action_identifier => $markdown) {
                         $contents .= $this->line();
@@ -106,34 +74,97 @@ class ApiBlueprint extends Compiler\Specification
                 }
 
                 $contents = trim($contents);
-                $this->specifications[$this->version]['groups'][$group] = $contents;
+                $this->specifications[$version]['groups'][$group] = $contents;
             }
 
             // Process representation data structures.
-            if (!empty($representations)) {
-                foreach ($representations as $representation) {
-                    $fields = $representation->getExplodedContentDotNotation();
-                    if (empty($fields)) {
-                        continue;
-                    }
-
-                    $identifier = $representation->getLabel();
-
-                    $contents = sprintf('## %s', $identifier);
-                    $contents .= $this->line();
-
-                    $contents .= $this->processMSON($fields, 0);
-
-                    $contents = trim($contents);
-                    $this->specifications[$this->version]['structures'][$identifier] = $contents;
-                }
+            if (isset($this->transposed_representations[$version])) {
+                $this->specifications[$version]['structures'] = $this->transposed_representations[$version];
+            } else {
+                $this->specifications[$version]['structures'] = [];
             }
 
             // Process the combined file.
-            $this->specifications[$this->version]['combined'] = $this->processCombinedFile(
-                $this->specifications[$this->version]['groups'],
-                $this->specifications[$this->version]['structures']
+            $this->specifications[$version]['combined'] = $this->processCombinedFile(
+                $this->specifications[$version]['groups'],
+                $this->specifications[$version]['structures']
             );
+        }
+    }
+
+    /**
+     * {{@inheritdoc}}
+     */
+    protected function transposeAction(
+        string $version,
+        string $group,
+        string $identifier,
+        Action\Documentation $action
+    ): void {
+        $this->current_version = $version;
+
+        $specification = '';
+
+        $description = $action->getDescription();
+        if (!empty($description)) {
+            $specification .= $description;
+            $specification .= $this->line(2);
+        }
+
+        $specification .= $this->processScopes($action);
+        $specification .= $this->processParameters($action);
+        $specification .= $this->processRequest($action);
+
+        $coded_responses = [];
+        /** @var ReturnAnnotation|ErrorAnnotation $response */
+        foreach ($action->getResponses() as $response) {
+            $coded_responses[$response->getHttpCode()][] = $response;
+        }
+
+        ksort($coded_responses);
+
+        foreach ($coded_responses as $http_code => $responses) {
+            $specification .= $this->processResponses($action, $http_code, $responses);
+        }
+
+        $resource_key = sprintf('%s [%s]', $group, $action->getPath()->getCleanPath());
+        if (!isset($this->transposed_actions[$version][$group][$resource_key])) {
+            $this->transposed_actions[$version][$group][$resource_key] = [
+                'actions' => []
+            ];
+        }
+
+        $action_key = sprintf('%s [%s]', $action->getLabel(), $action->getMethod());
+        $this->transposed_actions[$version][$group][$resource_key]['actions'][$action_key] = $specification;
+    }
+
+    /**
+     * {{@inheritdoc}}
+     */
+    protected function transposeRepresentation(string $version, Documentation $representation): void
+    {
+        $representations = $this->getRepresentations($version);
+        if (empty($representations)) {
+            return;
+        }
+
+        $this->current_version = $version;
+
+        foreach ($representations as $representation) {
+            $fields = $representation->getExplodedContentDotNotation();
+            if (empty($fields)) {
+                continue;
+            }
+
+            $identifier = $representation->getLabel();
+
+            $specification = sprintf('## %s', $identifier);
+            $specification .= $this->line();
+
+            $specification .= $this->processMSON($fields, 0);
+
+            $specification = trim($specification);
+            $this->transposed_representations[$version][$identifier] = $specification;
         }
     }
 
@@ -141,13 +172,13 @@ class ApiBlueprint extends Compiler\Specification
      * Process an action and compile a scopes description.
      *
      * @param Action\Documentation $action
-     * @return false|string
+     * @return string
      */
-    protected function processScopes(Action\Documentation $action)
+    protected function processScopes(Action\Documentation $action): string
     {
         $scopes = $action->getScopes();
         if (empty($scopes)) {
-            return false;
+            return '';
         }
 
         $strings = [];
@@ -171,13 +202,13 @@ class ApiBlueprint extends Compiler\Specification
      * Process an action and compile a parameters Blueprint.
      *
      * @param Action\Documentation $action
-     * @return false|string
+     * @return string
      */
-    protected function processParameters(Action\Documentation $action)
+    protected function processParameters(Action\Documentation $action): string
     {
         $params = $action->getPathParameters();
         if (empty($params)) {
-            return false;
+            return '';
         }
 
         $blueprint = '+ Parameters';
@@ -257,7 +288,7 @@ class ApiBlueprint extends Compiler\Specification
     {
         $http_code = substr($http_code, 0, 3);
 
-        $blueprint = '+ Response ' . $http_code . ' (' . $action->getContentType($this->version) . ')';
+        $blueprint = '+ Response ' . $http_code . ' (' . $action->getContentType($this->current_version) . ')';
         $blueprint .= $this->line();
 
         $multiple_responses = count($responses) > 1;
@@ -294,7 +325,7 @@ class ApiBlueprint extends Compiler\Specification
         /** @var ReturnAnnotation|ErrorAnnotation $response */
         $response = array_shift($responses);
         $representation = $response->getRepresentation();
-        $representations = $this->getRepresentations($this->version);
+        $representations = $this->getRepresentations($this->current_version);
         if ($representation && isset($representations[$representation])) {
             /** @var Documentation $docs */
             $docs = $representations[$representation];
@@ -493,7 +524,7 @@ class ApiBlueprint extends Compiler\Specification
 
             case 'array':
                 if ($subtype) {
-                    $representation = $this->getRepresentation($subtype, $this->version);
+                    $representation = $this->getRepresentation($subtype, $this->current_version);
                     if ($representation) {
                         return 'array[' . $representation->getLabel() . ']';
                     } elseif ($subtype !== 'object') {
@@ -505,7 +536,7 @@ class ApiBlueprint extends Compiler\Specification
                 break;
 
             default:
-                $representation = $this->getRepresentation($type, $this->version);
+                $representation = $this->getRepresentation($type, $this->current_version);
                 if ($representation) {
                     return $representation->getLabel();
                 }

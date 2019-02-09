@@ -132,9 +132,6 @@ class OpenApi extends Compiler\Specification
         $path = $action->getPath();
         $method = strtolower($action->getMethod());
         $identifier = $path->getCleanPath();
-        if (!isset($specification['paths'][$identifier])) {
-            $specification['paths'][$identifier] = [];
-        }
 
         $schema = [
             'deprecated' => $path->isDeprecated(),
