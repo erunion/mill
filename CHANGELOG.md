@@ -1,4 +1,8 @@
 # Changelog
+## [5.1.3] - 2019-02-05
+### Added
+* Added a new `--latest` flag to the `compile` command for compiling only your latest specifications. [#222](https://github.com/vimeo/mill/pull/222)
+
 ## [5.1.2] - 2018-12-04
 ### Changed
 * Compiled OpenAPI specifications now target OpenAPI 3.0.2. [#216](https://github.com/vimeo/mill/pull/216)
@@ -365,6 +369,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[5.1.3]: https://github.com/vimeo/mill/compare/5.1.2...5.1.3
 [5.1.2]: https://github.com/vimeo/mill/compare/5.1.1...5.1.2
 [5.1.1]: https://github.com/vimeo/mill/compare/5.1.0...5.1.1
 [5.1.0]: https://github.com/vimeo/mill/compare/5.0.2...5.1.0

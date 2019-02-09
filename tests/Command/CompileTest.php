@@ -299,6 +299,27 @@ class CompileTest extends \PHPUnit\Framework\TestCase
      * @param string $format
      * @param string $format_name
      */
+    public function testCommandWithLatestVersion(string $format, string $format_name): void
+    {
+        $this->tester->execute([
+            'command' => $this->command->getName(),
+            '--config' => $this->config_file,
+            '--latest' => true,
+            '--format' => $format,
+            'output' => sys_get_temp_dir()
+        ]);
+
+        $output = $this->tester->getDisplay();
+        $this->assertContains($format_name, $output);
+        $this->assertNotContains('API version: 1.1.2', $output);
+        $this->assertContains('API version: 1.1.3', $output);
+    }
+
+    /**
+     * @dataProvider providerFormats
+     * @param string $format
+     * @param string $format_name
+     */
     public function testCommandWithSpecificConstraint(string $format, string $format_name): void
     {
         $this->tester->execute([

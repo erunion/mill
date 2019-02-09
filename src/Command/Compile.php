@@ -63,6 +63,13 @@ class Compile extends BaseCompiler
                 false
             )
             ->addOption(
+                'latest',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Compile just the **latest** configured API version documentation.',
+                false
+            )
+            ->addOption(
                 'environment',
                 null,
                 InputOption::VALUE_OPTIONAL,
@@ -88,8 +95,6 @@ class Compile extends BaseCompiler
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         parent::execute($input, $output);
-
-        $version = $input->getOption('constraint');
 
         /** @var string $environment */
         $environment = $input->getOption('environment');
@@ -119,22 +124,30 @@ class Compile extends BaseCompiler
             $this->private_docs = false;
         }
 
+        /** @var Config $config */
+        $config = $this->container['config'];
+
         if ($input->getOption('default')) {
-            $version = $this->container['config']->getDefaultApiVersion();
+            $version_opt = $config->getDefaultApiVersion();
+        } elseif ($input->getOption('latest')) {
+            $version_opt = $config->getLatestApiVersion();
+        } else {
+            /** @var string|null $version_opt */
+            $version_opt = $input->getOption('constraint');
         }
 
         // Validate the current version constraint.
-        if (!empty($version)) {
+        if (!empty($version_opt)) {
             try {
-                $version = new Version($version, __CLASS__, __METHOD__);
+                $version = new Version($version_opt, __CLASS__, __METHOD__);
             } catch (UnrecognizedSchemaException $e) {
                 $output->writeLn('<error>' . $e->getValidationMessage() . '</error>');
                 return 1;
             }
+        } else {
+            $version = null;
         }
 
-        /** @var Config $config */
-        $config = $this->container['config'];
         $this->filesystem = $this->container['filesystem'];
 
         if (!empty($environment) && $format === self::FORMAT_OPENAPI) {
