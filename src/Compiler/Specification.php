@@ -28,6 +28,8 @@ class Specification extends Compiler
      * @param bool|string $data
      * @param string $type
      * @return bool|string
+     *
+     * @psalm-suppress InvalidOperand Suppressing this because we're intentionally converting a string to an int/float.
      */
     protected function convertSampleDataToCompatibleDataType($data, string $type)
     {
@@ -37,6 +39,12 @@ class Specification extends Compiler
             } elseif ($data === '1') {
                 return 'true';
             }
+        } elseif ($type === 'number' && $data !== false) {
+            // This is really gross, but there's no standard way in PHP to take a string that can either be a float or
+            // an int and convert it into a strictly typed float or int.
+            //
+            // Adding zero to the string is the only real way to force this type conversion.
+            return $data + 0;
         }
 
         return $data;

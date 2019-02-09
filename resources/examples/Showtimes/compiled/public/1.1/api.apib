@@ -1,0 +1,238 @@
+FORMAT: 1A
+
+# Mill unit test API, Showtimes
+This is the API Blueprint file for Mill unit test API, Showtimes.
+
+# Group Movies
+## Movies [/movies/{id}]
+
+### Get a single movie. [GET]
+Return information on a specific movie.
+
+Donec id elit non mi porta gravida at eget metus. Cras mattis consectetur purus sit amet fermentum. Lorem
+ipsum dolor sit amet, consectetur adipiscing elit. Etiam porta sem malesuada magna mollis euismod. Duis
+mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Etiam porta
+sem malesuada magna mollis euismod.
+
+```
+[
+  {"id": "fizzbuzz"}
+]
+```
+
++ Parameters
+    - `id` (number, required) - Movie ID
++ Response 200 (application/json)
+    + Attributes (Movie)
++ Response 304 (application/json)
++ Response 404 (application/json)
+    + Attributes (Error)
+
+### Update a movie. [PATCH]
+Update a movies data.
+
+This action requires a bearer token with the `edit` scope.
+
++ Parameters
+    - `id` (number, required) - Movie ID
++ Request
+    + Attributes
+        - `cast` (array) - Array of cast members.
+             - (object)
+                - `name`: `Natasha Hovey` (string) - Cast member name.
+                - `role`: `Cheryl` (string) - Cast member role.
+        - `content_rating`: `NR` (enum[string]) - MPAA rating
+            + Members
+                + `G` - Rated G
+                + `NC-17` - Rated NC-17
+                + `NR` - Not rated
+                + `PG` - Rated PG
+                + `PG-13` - Rated PG-13
+                + `R` - Rated R
+                + `UR` - Unrated
+                + `X` - Rated X
+        - `description` (string, required) - Description, or tagline, for the movie.
+        - `director`: `Lamberto Bava` (string) - Name of the director.
+        - `genres` (array[string]) - Array of movie genres.
+        - `is_kid_friendly` (boolean) - Is this movie kid friendly?
+        - `name`: `Demons` (string, required) - Name of the movie.
+        - `rotten_tomatoes_score`: `56` (number) - Rotten Tomatoes score
+        - `runtime`: `1hr 20min` (string) - Movie runtime, in `HHhr MMmin` format.
+        - `trailer`: `https://www.youtube.com/watch?v=_cNjTdFHL8E` (string, nullable) - Trailer URL
++ Response 200 (application/json)
+    + Attributes (Movie)
++ Response 400 (application/json)
+    There are two ways that this status code can be encountered:
+         * If there is a problem with the request.
+         * If the IMDB URL could not be validated.
+    + Attributes (Error)
++ Response 404 (application/json)
+    + Attributes (Error)
+
+## Movies [/movies]
+
+### Get movies. [GET]
+Returns all movies for a specific location.
+
++ Request
+    + Attributes
+        - `location` (string, required) - Location you want movies for.
+        - `page` (number) - Page of results to pull.
++ Response 200 (application/json)
+    + Attributes (array[Movie])
++ Response 400 (application/json)
+    + Attributes (Error)
+
+### Create a movie. [POST]
+Create a new movie.
+
+This action requires a bearer token with the `create` scope.
+
++ Request
+    + Attributes
+        - `cast` (array) - Array of cast members.
+             - (object)
+                - `name`: `Natasha Hovey` (string) - Cast member name.
+                - `role`: `Cheryl` (string) - Cast member role.
+        - `content_rating`: `NR` (enum[string]) - MPAA rating
+            + Members
+                + `G` - Rated G
+                + `NC-17` - Rated NC-17
+                + `NR` - Not rated
+                + `PG` - Rated PG
+                + `PG-13` - Rated PG-13
+                + `R` - Rated R
+                + `UR` - Unrated
+                + `X` - Rated X
+        - `description` (string, required) - Description, or tagline, for the movie.
+        - `director`: `Lamberto Bava` (string) - Name of the director.
+        - `genres` (array[string]) - Array of movie genres.
+        - `imdb`: `https://www.imdb.com/title/tt0089013/` (string) - IMDB URL
+        - `is_kid_friendly` (boolean) - Is this movie kid friendly?
+        - `name`: `Demons` (string, required) - Name of the movie.
+        - `rotten_tomatoes_score`: `56` (number) - Rotten Tomatoes score
+        - `runtime`: `1hr 20min` (string) - Movie runtime, in `HHhr MMmin` format.
+        - `trailer`: `https://www.youtube.com/watch?v=_cNjTdFHL8E` (string, nullable) - Trailer URL
++ Response 200 (application/json)
+    + Attributes (Movie)
++ Response 400 (application/json)
+    There are two ways that this status code can be encountered:
+         * If there is a problem with the request.
+         * If the IMDB URL could not be validated.
+    + Attributes (Error)
+
+# Group Theaters
+## Theaters [/theaters/{id}]
+
+### Get a single movie theater. [GET]
+Return information on a specific movie theater.
+
++ Parameters
+    - `id` (number, required) - Theater ID
++ Response 200 (application/json)
+    + Attributes (Theater)
++ Response 304 (application/json)
++ Response 404 (application/json)
+    + Attributes (Error)
+
+### Update a movie theater. [PATCH]
+Update a movie theaters' data.
+
+This action requires a bearer token with the `create` scope.
+
++ Parameters
+    - `id` (number, required) - Theater ID
++ Request
+    + Attributes
+        - `address`: `2548 Central Park Ave, Yonkers, NY 10710` (string, required) - Theater address
+        - `name`: `Alamo Drafthouse Cinema - Yonkers` (string, required) - Name of the theater.
+        - `phone_number`: `(914) 226-3082` (string, required) - Theater phone number
++ Response 200 (application/json)
+    + Attributes (Theater)
++ Response 400 (application/json)
+    + Attributes (Error)
++ Response 403 (application/json)
+    + Attributes (Coded error)
++ Response 404 (application/json)
+    + Attributes (Error)
+
+## Theaters [/theaters]
+
+### Get movie theaters. [GET]
+Returns all movie theatres for a specific location.
+
++ Request
+    + Attributes
+        - `location` (string, required) - Location you want theaters in.
++ Response 200 (application/json)
+    + Attributes (array[Theater])
++ Response 400 (application/json)
+    + Attributes (Error)
+
+### Create a movie theater. [POST]
+Create a new movie theater.
+
+This action requires a bearer token with the `create` scope.
+
++ Request
+    + Attributes
+        - `address`: `2548 Central Park Ave, Yonkers, NY 10710` (string, required) - Theater address
+        - `name`: `Alamo Drafthouse Cinema - Yonkers` (string, required) - Name of the theater.
+        - `phone_number`: `(914) 226-3082` (string, required) - Theater phone number
++ Response 200 (application/json)
+    + Attributes (Theater)
++ Response 400 (application/json)
+    + Attributes (Error)
+
+# Data Structures
+## Coded error
+- `error` (string, required) - User-friendly error message
+- `error_code` (number, required) - Error code
+
+## Error
+- `error` (string, required) - User-friendly error message
+
+## Movie
+- `cast` (array[Person], required) - Cast. This data requires a bearer token with the `public` scope.
+- `content_rating`: `G` (enum[string], required) - MPAA rating
+    + Members
+        + `G`
+        + `NC-17`
+        + `NR`
+        + `PG`
+        + `PG-13`
+        + `R`
+        + `UR`
+        + `X`
+- `description` (string, nullable) - Description
+- `director` (Person, required) - Director. This data requires a bearer token with the `public` scope.
+- `external_urls` (array) - External URLs. This data requires a bearer token with the `public` scope.
+     - (object)
+        - `imdb` (string, required) - IMDB URL. This data requires a bearer token with the `public` scope.
+        - `trailer` (string, required) - Trailer URL. This data requires a bearer token with the `public` scope.
+- `genres` (array[string], required) - Genres
+- `id` (number, required) - Unique ID
+- `kid_friendly`: `false` (boolean, required) - Kid friendly?
+- `name` (string, required) - Name
+- `purchase` (object)
+    - `url` (string, nullable) - URL to purchase the film.
+- `rotten_tomatoes_score` (number, required) - Rotten Tomatoes score
+- `runtime` (string, required) - Runtime
+- `showtimes` (array[string], required) - Non-theater specific showtimes
+- `theaters` (array[Theater], required) - Theaters the movie is currently showing in
+- `uri` (string, required) - Movie URI
+
+## Person
+- `id` (number, required) - Unique ID
+- `imdb` (string, required) - IMDB URL
+- `name` (string, required) - Name
+- `uri` (string, required) - Person URI
+
+## Theater
+- `address` (string, required) - Address
+- `id` (number, required) - Unique ID
+- `movies` (array[Movie], required) - Movies currently playing
+- `name` (string, required) - Name
+- `phone_number` (string, required) - Phone number
+- `showtimes` (array[string], required) - Non-movie specific showtimes
+- `uri` (string, required) - Theater URI

@@ -37,7 +37,7 @@ class BaseCompiler extends \Mill\Command
             null,
             InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
             'The name of a vendor tag if you want to incorporate documentation that includes vendor tag-bound ' .
-                'annotations documentation.'
+                'annotations documentation. If omitted, all vendor tagged-documentation will be incorporated.'
         );
 
         $this->addArgument('output', InputArgument::REQUIRED, 'Directory to output into.');

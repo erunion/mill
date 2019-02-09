@@ -54,9 +54,11 @@
     },
     "scripts": {
         "build-docs-apiblueprint": [
+            "./bin/mill compile --config=resources/examples/mill.xml --format=apiblueprint --for_public_consumption=true resources/examples/Showtimes/compiled/public/",
             "./bin/mill compile --config=resources/examples/mill.xml --format=apiblueprint resources/examples/Showtimes/compiled/"
         ],
         "build-docs-openapi": [
+            "./bin/mill compile --config=resources/examples/mill.xml --format=openapi --for_public_consumption=true resources/examples/Showtimes/compiled/public/",
             "./bin/mill compile --config=resources/examples/mill.xml --format=openapi resources/examples/Showtimes/compiled/"
         ],
         "build-changelogs": [
@@ -95,6 +97,7 @@
         "build-resources": [
             "rm -rf resources/examples/Showtimes/compiled",
             "mkdir resources/examples/Showtimes/compiled",
+            "mkdir resources/examples/Showtimes/compiled/public",
             "composer build-docs-apiblueprint",
             "composer build-docs-openapi",
             "composer build-changelogs",

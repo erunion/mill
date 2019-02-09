@@ -36,6 +36,9 @@ class Compiler
     /** @var array */
     protected $parsed_representations = [];
 
+    /** @var bool A setting to compile specifications with `x-mill-*` extensions. */
+    protected $compile_with_extensions = true;
+
     /**
      * A setting to compile documentation for documentation that's been marked, through a `:private` decorator, as
      * private.
@@ -317,6 +320,18 @@ class Compiler
         }
 
         return $this->compiled_resources[$version];
+    }
+
+    /**
+     * Set if we should compile a specification with `x-mill-*` extensions.
+     *
+     * @param bool $with_extensions
+     * @return Compiler
+     */
+    public function setCompileWithExtensions(bool $with_extensions): self
+    {
+        $this->compile_with_extensions = $with_extensions;
+        return $this;
     }
 
     /**

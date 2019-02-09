@@ -1,4 +1,27 @@
 # Changelog
+## [5.1.3] - 2019-02-05
+### Added
+* Added a new `--latest` flag to the `compile` command for compiling only your latest specifications. [#222](https://github.com/vimeo/mill/pull/222)
+
+## [5.1.2] - 2018-12-04
+### Changed
+* Compiled OpenAPI specifications now target OpenAPI 3.0.2. [#216](https://github.com/vimeo/mill/pull/216)
+
+### Fixed
+* Examples in OpenAPI specifications will now match the associated type. Booleans will be booleans, ints ints, floats floats. [#215](https://github.com/vimeo/mill/pull/215)
+
+## [5.1.1] - 2018-12-04
+### Fixed
+* Fixed a bug where using the `--for_public_consumption` `compile` argument would include documentation that was vendor tag-bound. [5d417f0](https://github.com/vimeo/mill/commit/5d417f07b2dcdda3d8264c9556d9c4ee7ef63cfb)
+
+## [5.1.0] - 2018-12-04
+### Added
+* Addition of a new `--for_public_consumption` argument to the `compile` command that lets you compile public API specifications for public consumption. [#214](https://github.com/vimeo/mill/pull/214)
+
+## [5.0.2] - 2018-12-04
+### Changed
+* The `bootstrap` declaration in `mill.xml` is no longer required. [#213](https://github.com/vimeo/mill/pull/213)
+
 ## [5.0.1] - 2018-11-15
 ### Fixed
 * Resolved an issue in the config FQN parser where it could improperly locate class names. [#210](https://github.com/vimeo/mill/pull/210)
@@ -346,6 +369,11 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[5.1.3]: https://github.com/vimeo/mill/compare/5.1.2...5.1.3
+[5.1.2]: https://github.com/vimeo/mill/compare/5.1.1...5.1.2
+[5.1.1]: https://github.com/vimeo/mill/compare/5.1.0...5.1.1
+[5.1.0]: https://github.com/vimeo/mill/compare/5.0.2...5.1.0
+[5.0.2]: https://github.com/vimeo/mill/compare/5.0.1...5.0.2
 [5.0.1]: https://github.com/vimeo/mill/compare/5.0.0...5.0.1
 [5.0.0]: https://github.com/vimeo/mill/compare/4.2.13...5.0.0
 [4.2.13]: https://github.com/vimeo/mill/compare/4.2.12...4.2.13

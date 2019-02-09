@@ -53,7 +53,7 @@ class OpenApi extends Compiler\Specification
 
         foreach ($resources as $version => $groups) {
             $specification = [
-                'openapi' => '3.0.0',
+                'openapi' => '3.0.2',
                 'info' => [
                     'title' => $this->config->getName(),
                     'version' => $version,
@@ -511,6 +511,10 @@ class OpenApi extends Compiler\Specification
      */
     protected function processExtensions(Action\Documentation $action, PathAnnotation $path): array
     {
+        if (!$this->compile_with_extensions) {
+            return [];
+        }
+
         $schema = [
             'x-mill-path-aliased' => $path->isAliased(),
             'x-mill-path-aliases' => array_map(
@@ -637,7 +641,7 @@ class OpenApi extends Compiler\Specification
                     }
                 }
 
-                if (isset($data['vendor_tags']) && !empty($data['vendor_tags'])) {
+                if ($this->compile_with_extensions && (isset($data['vendor_tags']) && !empty($data['vendor_tags']))) {
                     $spec['x-mill-vendor-tags'] = $data['vendor_tags'];
                 }
             } else {
@@ -837,5 +841,22 @@ class OpenApi extends Compiler\Specification
     public static function getYaml(array $specification): string
     {
         return Yaml::dump($specification, PHP_INT_MAX, 2);
+    }
+
+    /**
+     * {{@inheritdoc}}
+     */
+    protected function convertSampleDataToCompatibleDataType($data, string $type)
+    {
+        // Booleans in OpenAPI specifications should be represented as booleans, not stringified versions of booleans.
+        if ($type === 'boolean') {
+            if ($data === '0') {
+                return false;
+            } elseif ($data === '1') {
+                return true;
+            }
+        }
+
+        return parent::convertSampleDataToCompatibleDataType($data, $type);
     }
 }

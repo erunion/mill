@@ -1,7 +1,4 @@
----
-id: writing-documentation
-title: Documenting your API
----
+# Documenting your API
 
 ## Resources
 Resources are a collection of actions (endpoints). These can generally be referred to as a "controller" in a standard MVC application structure.

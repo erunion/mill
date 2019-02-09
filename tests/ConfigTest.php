@@ -344,11 +344,10 @@ XML;
                 'exception' => [
                     'regex' => '/You must set/'
                 ],
-                'xml' => <<<XML
+                'xml' => '
 <versions>
     <version name="1.0" releaseDate="2017-01-01" />
-</versions>
-XML
+</versions>'
             ],
 
             'versions.multiple-defaults' => [
@@ -356,12 +355,11 @@ XML
                     'exception' => \InvalidArgumentException::class,
                     'regex' => '/Multiple default API versions/'
                 ],
-                'xml' => <<<XML
+                'xml' => '
 <versions>
     <version name="1.0" releaseDate="2017-01-01" default="true" />
     <version name="1.1" releaseDate="2017-02-01" default="true" />
-</versions>
-XML
+</versions>'
             ],
 
             /**
@@ -372,13 +370,12 @@ XML
                 'exception' => [
                     'regex' => '/invalid compiler group exclusion/'
                 ],
-                'xml' => <<<XML
+                'xml' => '
 <compilers>
     <excludes>
         <exclude group="" />
     </excludes>
-</compilers>
-XML
+</compilers>'
             ],
 
             /**
@@ -390,13 +387,12 @@ XML
                     'exception' => \InvalidArgumentException::class,
                     'regex' => '/does not exist/'
                 ],
-                'xml' => <<<XML
+                'xml' => '
 <controllers>
     <filter>
         <directory name="invalid/directory/" />
     </filter>
-</controllers>
-XML
+</controllers>'
             ],
 
             'controllers.none-found' => [
@@ -404,13 +400,12 @@ XML
                     'exception' => \InvalidArgumentException::class,
                     'regex' => '/requires a set of controllers/'
                 ],
-                'xml' => <<<XML
+                'xml' => '
 <controllers>
     <filter>
         <directory name="resources/examples/Showtimes/Controllers/" suffix=".phps" />
     </filter>
-</controllers>
-XML
+</controllers>'
             ],
 
             'controllers.class.uncallable' => [
@@ -418,13 +413,12 @@ XML
                     'exception' => \InvalidArgumentException::class,
                     'regex' => '/could not be called/'
                 ],
-                'xml' => <<<XML
+                'xml' => '
 <controllers>
     <filter>
         <class name="\UncallableClass" />
     </filter>
-</controllers>
-XML
+</controllers>'
             ],
 
             /**
@@ -436,39 +430,36 @@ XML
                     'exception' => \InvalidArgumentException::class,
                     'regex' => '/requires a set of representations/'
                 ],
-                'xml' => <<<XML
+                'xml' => '
 <representations>
     <filter>
         <directory name="resources/examples/Showtimes/Representations" suffix=".phps" method="create" />
     </filter>
-</representations>
-XML
+</representations>'
             ],
 
             'representations.class.missing-method' => [
                 'exception' => [
                     'regex' => '/missing a `method`/'
                 ],
-                'xml' => <<<XML
+                'xml' => '
 <representations>
     <filter>
         <class name="\Mill\Tests\Stubs\Representations\RepresentationStub" method="" />
     </filter>
-</representations>
-XML
+</representations>'
             ],
 
             'representations.class.uncallable' => [
                 'exception' => [
                     'exception' => UncallableRepresentationException::class
                 ],
-                'xml' => <<<XML
+                'xml' => '
 <representations>
     <filter>
         <class name="\UncallableClass" method="main" />
     </filter>
-</representations>
-XML
+</representations>'
             ],
 
             'representations.directory.invalid' => [
@@ -476,20 +467,19 @@ XML
                     'exception' => \InvalidArgumentException::class,
                     'regex' => '/does not exist/'
                 ],
-                'xml' => <<<XML
+                'xml' => '
 <representations>
     <filter>
         <directory name="invalid/directory" method="main" />
     </filter>
-</representations>
-XML
+</representations>'
             ],
 
             'representations.error.uncallable' => [
                 'exception' => [
                     'exception' => UncallableErrorRepresentationException::class
                 ],
-                'xml' => <<<XML
+                'xml' => '
 <representations>
     <filter>
         <class name="\Mill\Examples\Showtimes\Representations\Movie" method="create" />
@@ -498,15 +488,14 @@ XML
     <errors>
         <class name="\Uncallable" method="create" needsErrorCode="false" />
     </errors>
-</representations>
-XML
+</representations>'
             ],
 
             'representations.error.missing-method' => [
                 'exception' => [
                     'regex' => '/missing a `method`/'
                 ],
-                'xml' => <<<XML
+                'xml' => '
 <representations>
     <filter>
         <class name="\Mill\Examples\Showtimes\Representations\Movie" method="create" />
@@ -515,8 +504,7 @@ XML
     <errors>
         <class name="\Mill\Examples\Showtimes\Representations\Error" method="" needsErrorCode="false" />
     </errors>
-</representations>
-XML
+</representations>'
             ],
 
             /**
@@ -527,11 +515,10 @@ XML
                 'exception' => [
                     'regex' => '/invalid parameter token/'
                 ],
-                'xml' => <<<XML
+                'xml' => '
 <parameterTokens>
     <token name=""></token>
-</parameterTokens>
-XML
+</parameterTokens>'
             ],
 
             /**
@@ -542,13 +529,12 @@ XML
                 'exception' => [
                     'regex' => '/invalid translation text/'
                 ],
-                'xml' => <<<XML
+                'xml' => '
 <pathParams>
     <translations>
         <translation from="" to="" />
     </translations>
-</pathParams>
-XML
+</pathParams>'
             ]
         ];
     }
