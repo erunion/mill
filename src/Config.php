@@ -58,6 +58,9 @@ class Config
     /** @var array Array of API versions. */
     protected $api_versions = [];
 
+    /** @var array Allowable list of valid resource tags. */
+    protected $tags = [];
+
     /** @var array Allowable list of valid application vendor tags. */
     protected $vendor_tags = [];
 
@@ -152,10 +155,25 @@ class Config
         $config->loadPathParamTranslations($xml);
         $config->loadRepresentations($xml);
         $config->loadServers($xml);
+        $config->loadTags($xml);
         $config->loadVendorTags($xml);
         $config->loadVersions($xml);
 
         return $config;
+    }
+
+    /**
+     * @param SimpleXMLElement $xml
+     */
+    protected function loadTags(SimpleXMLElement $xml): void
+    {
+        /** @var SimpleXMLElement $tag */
+        foreach ($xml->tags->tag as $tag) {
+            $name = (string) $tag['name'];
+            $description = trim((string) $tag);
+
+            $this->tags[$name] = (!empty($description)) ? $description : null;
+        }
     }
 
     /**
@@ -657,6 +675,16 @@ class Config
         }
 
         throw new \Exception('The supplied version, `' . $version . '`` was not found to be configured.');
+    }
+
+    /**
+     * Get the array of configured resource tags.
+     *
+     * @return array
+     */
+    public function getTags(): array
+    {
+        return $this->tags;
     }
 
     /**

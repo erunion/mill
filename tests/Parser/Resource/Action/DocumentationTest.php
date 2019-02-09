@@ -948,7 +948,7 @@ DESCRIPTION;
                 'docblock' => '/**
                   * @api-label Update a piece of content.
                   * @api-operationid updateFoo
-                  * @api-group Foo\Bar
+                  * @api-group Movies
                   *
                   * @api-path:public /foo
                   * @api-path:private:alias /bar
@@ -993,7 +993,7 @@ DESCRIPTION;
                 'docblock' => '/**
                   * @api-label Update a piece of content.
                   * @api-operationid updateFoo
-                  * @api-group Foo\Bar
+                  * @api-group Movies
                   *
                   * @api-path:public /foo
                   * @api-path:private /bar
@@ -1030,7 +1030,7 @@ DESCRIPTION;
                 'docblock' => '/**
                   * @api-label Delete a piece of content.
                   * @api-operationid deleteFoo
-                  * @api-group Foo\Bar
+                  * @api-group Movies
                   *
                   * @api-path:private /foo
                   *
@@ -1117,7 +1117,7 @@ DESCRIPTION;
                   *
                   * @api-label Test Method
                   * @api-operationid testFoo
-                  * @api-group Something
+                  * @api-group Movies
                   * @api-path /some/page
                   */',
                 'expected.exception' => '\Mill\Exceptions\Annotations\RequiredAnnotationException',
@@ -1131,7 +1131,7 @@ DESCRIPTION;
                   *
                   * @api-label Test method
                   * @api-operationid testFoo
-                  * @api-group Root
+                  * @api-group Movies
                   * @api-path /
                   * @api-contenttype application/json
                   * @api-return:public {collection} \Mill\Examples\Showtimes\Representations\Representation
@@ -1147,7 +1147,7 @@ DESCRIPTION;
                   *
                   * @api-label Test method
                   * @api-operationid testFoo
-                  * @api-group Root
+                  * @api-group Movies
                   * @api-path:special /
                   * @api-contenttype application/json
                   * @api-return {collection} \Mill\Examples\Showtimes\Representations\Representation
@@ -1164,7 +1164,7 @@ DESCRIPTION;
                   *
                   * @api-label Test method
                   * @api-operationid testFoo
-                  * @api-group Something
+                  * @api-group Movies
                   * @api-contenttype application/json
                   * @api-param:public {page}
                   */',
@@ -1179,7 +1179,7 @@ DESCRIPTION;
                   *
                   * @api-label Test method
                   * @api-operationid testFoo
-                  * @api-group Search
+                  * @api-group Movies
                   * @api-path:private /search
                   * @api-contenttype application/json
                   * @api-scope public
@@ -1198,7 +1198,7 @@ DESCRIPTION;
                   *
                   * @api-label Test method
                   * @api-operationid testFoo
-                  * @api-group Search
+                  * @api-group Movies
                   * @api-path:private:alias /search
                   * @api-path:private:alias /search2
                   * @api-contenttype application/json

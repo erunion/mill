@@ -94,6 +94,12 @@ class ConfigTest extends TestCase
         ], $config->getVendorTags());
 
         $this->assertSame([
+            'Movies' => 'These resources help you handle movies.',
+            'Movies\Coming Soon' => null,
+            'Theaters' => null
+        ], $config->getTags());
+
+        $this->assertSame([
             'bearer' => [
                 'format' => 'bearer'
             ],
@@ -308,6 +314,11 @@ XML;
     $representations
     $authentication
     $xml
+
+    <tags>
+        <tag name="Movies">These resources help you handle movies.</tag>
+        <tag name="Theaters" />
+    </tags>
 </mill>
 XML;
 

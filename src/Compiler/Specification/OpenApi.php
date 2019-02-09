@@ -223,16 +223,24 @@ class OpenApi extends Compiler\Specification
      */
     protected function processTags(array $groups, array $group_excludes): array
     {
+        $configured_tags = $this->config->getTags();
+
         $tags = array_filter(
             array_map(
-                function (string $group) use ($group_excludes): ?array {
+                function (string $group) use ($group_excludes, $configured_tags): ?array {
                     if (in_array($group, $group_excludes)) {
                         return [];
                     }
 
-                    return [
+                    $tag = [
                         'name' => $group
                     ];
+
+                    if (!empty($configured_tags[$group])) {
+                        $tag['description'] = $configured_tags[$group];
+                    }
+
+                    return $tag;
                 },
                 array_keys($groups)
             )

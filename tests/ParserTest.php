@@ -46,7 +46,7 @@ class ParserTest extends TestCase
     {
         $this->overrideReadersWithFakeDocblockReturn('/**
           * @api-label Update a piece of content.
-          * @api-group Foo\Bar
+          * @api-group Movies
           *
           * @api-path:public /foo
           * @api-path:private:deprecated /bar

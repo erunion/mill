@@ -8,9 +8,10 @@ info:
     url: 'https://developer.example.com/help'
 tags:
   -
-    name: Movies
-  -
     name: Theaters
+  -
+    name: Movies
+    description: 'These resources help you handle movies.'
 servers:
   -
     url: 'https://api.example.com'
