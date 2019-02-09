@@ -1017,52 +1017,33 @@ class Config
      */
     private function getClassFQNFromFile(string $file): string
     {
-        /** @var resource $fp */
-        $fp = fopen($file, 'r');
-        $class = $namespace = $buffer = '';
-        $i = 0;
-        while (!$class) {
-            if (feof($fp)) {
-                break;
-            }
+        $class = $namespace = '';
+        $buffer = file_get_contents($file);
 
-            $buffer .= fread($fp, 512 * 2);
+        // Hide warnings from this that might arise from unterminated docblock comments.
+        $tokens = @token_get_all($buffer);
 
-            // Hide warnings from this that might arise from unterminated docblock comments.
-            $tokens = @token_get_all($buffer);
-
-            if (strpos($buffer, '{') === false) {
-                continue;
-            }
-
-            for (; $i<count($tokens); $i++) {
-                switch ($tokens[$i][0]) {
-                    case T_NAMESPACE:
-                        for ($j=$i+1; $j<count($tokens); $j++) {
-                            if ($tokens[$j][0] === T_STRING) {
-                                $namespace .= '\\' . $tokens[$j][1];
-                            } elseif ($tokens[$j] === '{' || $tokens[$j] === ';') {
-                                break;
-                            }
+        for ($i=1; $i<count($tokens); $i++) {
+            switch ($tokens[$i][0]) {
+                case T_NAMESPACE:
+                    for ($j=$i+1; $j<count($tokens); $j++) {
+                        if ($tokens[$j][0] === T_STRING) {
+                            $namespace .= '\\' . $tokens[$j][1];
+                        } elseif ($tokens[$j] === '{' || $tokens[$j] === ';') {
+                            break;
                         }
-                        break;
-
-                    case T_CLASS:
-                        $class = $tokens[$i+2][1];
-                        break;
-                }
-
-                if (!empty($namespace) && !empty($class)) {
+                    }
                     break;
-                }
+
+                case T_CLASS:
+                    $class = $tokens[$i+2][1];
+                    break;
             }
 
             if (!empty($namespace) && !empty($class)) {
                 break;
             }
         }
-
-        fclose($fp);
 
         return implode('\\', [$namespace, $class]);
     }
