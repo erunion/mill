@@ -21,40 +21,7 @@ class ErrorMap extends Compiler
     {
         parent::compile();
 
-        foreach ($this->getResources() as $version => $resources) {
-            foreach ($resources as $group => $data) {
-                // Groups can have children via the `\` delimiter, but for the error map we only care about the
-                // top-level group.
-                if (strpos($group, '\\') != false) {
-                    $parts = explode('\\', $group);
-                    $group = array_shift($parts);
-                }
-
-                /** @var Action\Documentation $action */
-                foreach ($data['actions'] as $identifier => $action) {
-                    /** @var ReturnAnnotation|ErrorAnnotation $response */
-                    foreach ($action->getResponses() as $response) {
-                        if (!$response instanceof ErrorAnnotation) {
-                            continue;
-                        }
-
-                        $error_code = $response->getErrorCode();
-                        if (empty($error_code)) {
-                            continue;
-                        }
-
-                        $path = $action->getPath();
-                        $this->error_map[$version][$group][$error_code][] = [
-                            'path' => $path->getCleanPath(),
-                            'method' => $action->getMethod(),
-                            'http_code' => $response->getHttpCode(),
-                            'error_code' => $error_code,
-                            'description' => $response->getDescription()
-                        ];
-                    }
-                }
-            }
-        }
+        ksort($this->error_map);
 
         foreach ($this->error_map as $version => $groups) {
             foreach ($groups as $group => $resources) {
@@ -76,6 +43,43 @@ class ErrorMap extends Compiler
 
                 ksort($this->error_map[$version][$group]);
             }
+        }
+    }
+
+    /**
+     * {{@inheritdoc}}
+     */
+    protected function transposeAction(
+        string $version,
+        string $group,
+        string $identifier,
+        Action\Documentation $action
+    ): void {
+        // Groups can have children via the `\` delimiter, but for the error map we only care about the top-level group.
+        if (strpos($group, '\\') != false) {
+            $parts = explode('\\', $group);
+            $group = array_shift($parts);
+        }
+
+        /** @var ReturnAnnotation|ErrorAnnotation $response */
+        foreach ($action->getResponses() as $response) {
+            if (!$response instanceof ErrorAnnotation) {
+                continue;
+            }
+
+            $error_code = $response->getErrorCode();
+            if (empty($error_code)) {
+                continue;
+            }
+
+            $path = $action->getPath();
+            $this->error_map[$version][$group][$error_code][] = [
+                'path' => $path->getCleanPath(),
+                'method' => $action->getMethod(),
+                'http_code' => $response->getHttpCode(),
+                'error_code' => $error_code,
+                'description' => $response->getDescription()
+            ];
         }
     }
 
