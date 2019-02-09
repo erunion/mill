@@ -9,6 +9,7 @@ info:
 tags:
   -
     name: Movies
+    description: 'These resources help you handle movies.'
 servers:
   -
     url: 'https://api.example.com'

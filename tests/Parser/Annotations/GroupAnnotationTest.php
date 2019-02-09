@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Tests\Parser\Annotations;
 
+use Mill\Exceptions\Annotations\InvalidGroupSuppliedException;
 use Mill\Exceptions\Annotations\MissingRequiredFieldException;
 use Mill\Parser\Annotations\GroupAnnotation;
 
@@ -55,6 +56,14 @@ class GroupAnnotationTest extends AnnotationTest
                     'getAnnotation' => 'group',
                     'getDocblock' => '',
                     'getValues' => []
+                ]
+            ],
+            'tag-was-not-configured' => [
+                'annotation' => GroupAnnotation::class,
+                'content' => 'Moviesss',
+                'expected.exception' => InvalidGroupSuppliedException::class,
+                'expected.exception.asserts' => [
+                    'getGroup' => 'Moviesss'
                 ]
             ]
         ];

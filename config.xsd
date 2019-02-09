@@ -264,6 +264,22 @@
                 </xs:complexType>
             </xs:element>
 
+            <xs:element name="tags" minOccurs="1" maxOccurs="1">
+                <xs:complexType>
+                    <xs:choice>
+                        <xs:element name="tag" minOccurs="1" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:simpleContent>
+                                    <xs:extension base="xs:string">
+                                        <xs:attribute name="name" type="xs:string" use="required" />
+                                    </xs:extension>
+                                </xs:simpleContent>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:choice>
+                </xs:complexType>
+            </xs:element>
+
             <xs:element name="vendorTags" minOccurs="0" maxOccurs="1">
                 <xs:complexType>
                     <xs:choice>

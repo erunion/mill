@@ -238,10 +238,21 @@ Here, `\ErrorRepresentation` would have `needsErrorCode="true"`.
 Configure your API servers with the `<servers>` element.
 
 ```xml
-    <servers>
-        <server environment="prod" url="https://api.example.com" description="Production" />
-        <server environment="dev" url="https://api.example.local" description="Development" />
-    </servers>
+<servers>
+    <server environment="prod" url="https://api.example.com" description="Production" />
+    <server environment="dev" url="https://api.example.local" description="Development" />
+</servers>
+```
+
+### Tags
+When building [resource actions](reference/resource-actions.md), you can use [`@api-group`](reference/annotations/group.md) to place your action within a specific group (or tag), that you can later use to reference. The `<tags>` config is here so you can configure your grouping tags, and potentially any additional metadata descriptions you'd like to attach to those in your compiled specifications.
+
+```xml
+<tags>
+    <tag name="Movies">These resources help you handle movies.</tag>
+    <tag name="Movies\Coming Soon" />
+    <tag name="Theaters" />
+</tags>
 ```
 
 ### Vendor tags

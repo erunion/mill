@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Parser\Annotations;
 
+use Mill\Exceptions\Annotations\InvalidGroupSuppliedException;
 use Mill\Parser\Annotation;
 
 class GroupAnnotation extends Annotation
@@ -17,8 +18,20 @@ class GroupAnnotation extends Annotation
      */
     protected function parser(): array
     {
+        $group = trim($this->docblock);
+
+        if (!empty($group)) {
+            // Validate the supplied vendor tag with what has been configured as allowable.
+            $tags = $this->application->getConfig()->getTags();
+            if (!array_key_exists($group, $tags)) {
+                /** @var string $method */
+                $method = $this->method;
+                throw InvalidGroupSuppliedException::create($group, $this->class, $method);
+            }
+        }
+
         return [
-            'group' => $this->docblock
+            'group' => $group
         ];
     }
 
