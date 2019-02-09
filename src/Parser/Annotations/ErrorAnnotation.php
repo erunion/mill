@@ -17,11 +17,6 @@ class ErrorAnnotation extends Annotation
     const SUPPORTS_VENDOR_TAGS = true;
     const SUPPORTS_VERSIONING = true;
 
-    const REGEX_ERROR_CODE = '/^(\(.*\))/';
-    const REGEX_ERROR_HTTP_CODE = '/{([\d]+)}/';
-    const REGEX_ERROR_TYPE = '/{([\w\s]+)}/';
-    const REGEX_ERROR_SUB_TYPE = '/{([\w\s]+),([\w\s]+)}/';
-
     const ARRAYABLE = [
         'description',
         'error_code',
@@ -82,14 +77,6 @@ class ErrorAnnotation extends Annotation
                 },
                 $parsed['vendor_tags']
             );
-        }
-
-        if (!empty($parsed['description'])) {
-            if (preg_match(self::REGEX_ERROR_SUB_TYPE, $parsed['description'], $matches)) {
-                $parsed['description'] = sprintf('If %s was not found in the %s.', $matches[1], $matches[2]);
-            } elseif (preg_match(self::REGEX_ERROR_TYPE, $parsed['description'], $matches)) {
-                $parsed['description'] = sprintf('If %s was not found.', $matches[1]);
-            }
         }
 
         // Now that we've parsed out both the representation and error code, make sure that a representation that
