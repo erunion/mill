@@ -22,23 +22,6 @@ This represents an exception that may be returned on a resource action.
 | vendor:tagName | ✓ | Defined vendor tag. See the [`@api-vendortag`](reference/annotations/vendortag.md) documentation for more information. There is no limit to the amount of vendor tags you can specify on a parameter. |
 | description | ✓ | A short description describing why, or what, this error is. |
 
-## Types and subtypes
-In addition to supporting straight descriptions, the [`@api-error`](reference/annotations/error.md) annotation also supports the concept of "types" and "subtypes". For example:
-
-```php
-@api-error:public 404 (\ErrorRepresentation) - {user}
-```
-
-In this case, this exception will be thrown when the `{user}` passed into the route (usually via the URI) is not found. The generated error message for this becomes: "If the user cannot be found."
-
-There also exist the concept of a subtype, represented as:
-
-```php
-@api-error:public 404 (\ErrorRepresentation) - {user,group}
-```
-
-This means that if the supplied group could not be found for the supplied user, an exception will be thrown. The generated error message for this is: "If the user cannot be found in the group."
-
 ## Examples
 Usage with a vendor tag and description type:
 

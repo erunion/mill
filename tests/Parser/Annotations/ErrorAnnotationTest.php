@@ -1,9 +1,7 @@
 <?php
 namespace Mill\Tests\Parser\Annotations;
 
-use Mill\Exceptions\Annotations\InvalidMSONSyntaxException;
 use Mill\Exceptions\Annotations\MissingRepresentationErrorCodeException;
-//use Mill\Exceptions\Annotations\MissingRequiredFieldException;
 use Mill\Exceptions\Annotations\UnknownErrorRepresentationException;
 use Mill\Exceptions\Annotations\UnknownReturnCodeException;
 use Mill\Parser\Annotations\ErrorAnnotation;
@@ -104,34 +102,6 @@ class ErrorAnnotationTest extends AnnotationTest
                     'visible' => true
                 ]
             ],
-            'description.error_type' => [
-                'content' => '404 (\Mill\Examples\Showtimes\Representations\Error) - {movie}',
-                'version' => null,
-                'visible' => true,
-                'expected' => [
-                    'description' => 'If movie was not found.',
-                    'error_code' => false,
-                    'http_code' => '404 Not Found',
-                    'representation' => '\Mill\Examples\Showtimes\Representations\Error',
-                    'vendor_tags' => [],
-                    'version' => false,
-                    'visible' => true
-                ]
-            ],
-            'description.error_type.suberror_type' => [
-                'content' => '404 (\Mill\Examples\Showtimes\Representations\Error) - {movie,theater}',
-                'version' => null,
-                'visible' => true,
-                'expected' => [
-                    'description' => 'If movie was not found in the theater.',
-                    'error_code' => false,
-                    'http_code' => '404 Not Found',
-                    'representation' => '\Mill\Examples\Showtimes\Representations\Error',
-                    'vendor_tags' => [],
-                    'version' => false,
-                    'visible' => true
-                ]
-            ],
             'error_code' => [
                 'content' => '403 (\Mill\Examples\Showtimes\Representations\CodedError<666>) - If the user is not ' .
                     'allowed to edit that movie.',
@@ -163,11 +133,11 @@ class ErrorAnnotationTest extends AnnotationTest
                 ]
             ],
             'private' => [
-                'content' => '404 (\Mill\Examples\Showtimes\Representations\Error) - {movie}',
+                'content' => '404 (\Mill\Examples\Showtimes\Representations\Error) - No such movie exists.',
                 'version' => null,
                 'visible' => false,
                 'expected' => [
-                    'description' => 'If movie was not found.',
+                    'description' => 'No such movie exists.',
                     'error_code' => false,
                     'http_code' => '404 Not Found',
                     'representation' => '\Mill\Examples\Showtimes\Representations\Error',
@@ -194,11 +164,11 @@ class ErrorAnnotationTest extends AnnotationTest
                 ]
             ],
             'versioned' => [
-                'content' => '404 (\Mill\Examples\Showtimes\Representations\Error) - {movie}',
+                'content' => '404 (\Mill\Examples\Showtimes\Representations\Error) - No such movie exists.',
                 'version' => new Version('1.1 - 1.2', __CLASS__, __METHOD__),
                 'visible' => false,
                 'expected' => [
-                    'description' => 'If movie was not found.',
+                    'description' => 'No such movie exists.',
                     'error_code' => false,
                     'http_code' => '404 Not Found',
                     'representation' => '\Mill\Examples\Showtimes\Representations\Error',
@@ -214,39 +184,6 @@ class ErrorAnnotationTest extends AnnotationTest
                 'visible' => true,
                 'expected' => [
                     'description' => 'If the tickets URL does not exist.',
-                    'error_code' => false,
-                    'http_code' => '404 Not Found',
-                    'representation' => '\Mill\Examples\Showtimes\Representations\Error',
-                    'vendor_tags' => [
-                        'tag:BUY_TICKETS'
-                    ],
-                    'version' => false,
-                    'visible' => true
-                ]
-            ],
-            '_complete.error_code' => [
-                'content' => '404 (\Mill\Examples\Showtimes\Representations\CodedError<666>, tag:BUY_TICKETS) - ' .
-                    '{movie,theater}',
-                'version' => null,
-                'visible' => true,
-                'expected' => [
-                    'description' => 'If movie was not found in the theater.',
-                    'error_code' => '666',
-                    'http_code' => '404 Not Found',
-                    'representation' => '\Mill\Examples\Showtimes\Representations\CodedError',
-                    'vendor_tags' => [
-                        'tag:BUY_TICKETS'
-                    ],
-                    'version' => false,
-                    'visible' => true
-                ]
-            ],
-            '_complete.type_subtype' => [
-                'content' => '404 (\Mill\Examples\Showtimes\Representations\Error, tag:BUY_TICKETS) - {movie,theater}',
-                'version' => null,
-                'visible' => true,
-                'expected' => [
-                    'description' => 'If movie was not found in the theater.',
                     'error_code' => false,
                     'http_code' => '404 Not Found',
                     'representation' => '\Mill\Examples\Showtimes\Representations\Error',
