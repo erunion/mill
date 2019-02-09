@@ -83,18 +83,6 @@ This action requires a bearer token with the `edit` scope.
 
 ## Movies [/movies]
 
-### Get movies. [GET]
-Returns all movies for a specific location.
-
-+ Request
-    + Attributes
-        - `location` (string, required) - Location you want movies for.
-        - `page` (number) - Page of results to pull.
-+ Response 200 (application/mill.example.movie+json)
-    + Attributes (array[Movie])
-+ Response 400 (application/mill.example.movie+json)
-    + Attributes (Error)
-
 ### Create a movie. [POST]
 Create a new movie.
 
@@ -134,6 +122,18 @@ This action requires a bearer token with the `create` scope.
          * If the IMDB URL could not be validated.
     + Attributes (Error)
 
+### Get movies. [GET]
+Returns all movies for a specific location.
+
++ Request
+    + Attributes
+        - `location` (string, required) - Location you want movies for.
+        - `page` (number) - Page of results to pull.
++ Response 200 (application/mill.example.movie+json)
+    + Attributes (array[Movie])
++ Response 400 (application/mill.example.movie+json)
+    + Attributes (Error)
+
 # Group Theaters
 ## Theaters [/theaters/{id}]
 
@@ -169,17 +169,6 @@ This action requires a bearer token with the `create` scope.
 
 ## Theaters [/theaters]
 
-### Get movie theaters. [GET]
-Returns all movie theatres for a specific location.
-
-+ Request
-    + Attributes
-        - `location` (string, required) - Location you want theaters in.
-+ Response 200 (application/mill.example.theater+json)
-    + Attributes (array[Theater])
-+ Response 400 (application/mill.example.theater+json)
-    + Attributes (Error)
-
 ### Create a movie theater. [POST]
 Create a new movie theater.
 
@@ -192,6 +181,17 @@ This action requires a bearer token with the `create` scope.
         - `phone_number`: `(914) 226-3082` (string, required) - Theater phone number
 + Response 200 (application/mill.example.theater+json)
     + Attributes (Theater)
++ Response 400 (application/mill.example.theater+json)
+    + Attributes (Error)
+
+### Get movie theaters. [GET]
+Returns all movie theatres for a specific location.
+
++ Request
+    + Attributes
+        - `location` (string, required) - Location you want theaters in.
++ Response 200 (application/mill.example.theater+json)
+    + Attributes (array[Theater])
 + Response 400 (application/mill.example.theater+json)
     + Attributes (Error)
 
