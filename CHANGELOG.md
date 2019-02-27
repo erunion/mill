@@ -1,4 +1,8 @@
 # Changelog
+## [5.1.4] - 2019-02-27
+### Added
+* Cleaned up how we document OpenAPI responses that have multiple descriptions. [#225](https://github.com/vimeo/mill/pull/225)
+
 ## [5.1.3] - 2019-02-05
 ### Added
 * Added a new `--latest` flag to the `compile` command for compiling only your latest specifications. [#222](https://github.com/vimeo/mill/pull/222)
@@ -369,6 +373,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[5.1.4]: https://github.com/vimeo/mill/compare/5.1.3...5.1.4
 [5.1.3]: https://github.com/vimeo/mill/compare/5.1.2...5.1.3
 [5.1.2]: https://github.com/vimeo/mill/compare/5.1.1...5.1.2
 [5.1.1]: https://github.com/vimeo/mill/compare/5.1.0...5.1.1
