@@ -357,7 +357,7 @@ class OpenApi extends Compiler\Specification
             if ($response instanceof ErrorAnnotation) {
                 $error_code = $response->getErrorCode();
                 if ($error_code) {
-                    $description .= sprintf(' Returns a unique error code of `%s`.', $error_code);
+                    $description = sprintf('Error code %s: %s', $error_code, $description);
                 }
             }
 
@@ -370,18 +370,12 @@ class OpenApi extends Compiler\Specification
             $total_responses = count($responses);
 
             // OpenAPI doesn't have support for multiple responses of the same HTTP code, so let's mash them down
-            // together, but document to the developer what's going on.
+            // into a Markdown list.
             if ($total_responses > 1) {
-                $description = sprintf(
-                    'There are %s ways that this status code can be encountered:',
-                    (new \NumberFormatter('en', \NumberFormatter::SPELLOUT))->format($total_responses)
-                );
-
-                $description .= $this->line();
-                $description .= implode(
+                $description = implode(
                     $this->line(),
                     array_map(function (string $desc): string {
-                        return sprintf(' * %s', $desc);
+                        return sprintf('* %s', $desc);
                     }, $data['descriptions'])
                 );
             } else {
