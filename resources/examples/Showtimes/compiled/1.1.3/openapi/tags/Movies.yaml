@@ -43,7 +43,7 @@ paths:
         304:
           description: 'If no content has been modified since the supplied Last-Modified header.'
         404:
-          description: "* If the movie could not be found.\n* For no reason.\n* For some other reason."
+          description: "If the movie could not be found.\n\nFor no reason.\n\nFor some other reason."
           content:
             application/mill.example.movie+json:
               schema:
@@ -178,7 +178,7 @@ paths:
         201:
           description: 'Standard request.'
         400:
-          description: "* If there is a problem with the request.\n* If the IMDB URL could not be validated."
+          description: "If there is a problem with the request.\n\nIf the IMDB URL could not be validated."
           content:
             application/mill.example.movie+json:
               schema:
@@ -214,7 +214,7 @@ paths:
         304:
           description: 'If no content has been modified since the supplied Last-Modified header.'
         404:
-          description: "* If the movie could not be found.\n* For no reason.\n* For some other reason."
+          description: "If the movie could not be found.\n\nFor no reason.\n\nFor some other reason."
           content:
             application/mill.example.movie+json:
               schema:
@@ -324,19 +324,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/movie'
         400:
-          description: "* If there is a problem with the request.\n* If the IMDB URL could not be validated."
+          description: "If there is a problem with the request.\n\nIf the IMDB URL could not be validated."
           content:
             application/mill.example.movie+json:
               schema:
                 $ref: '#/components/schemas/error'
         404:
-          description: "* If the movie could not be found.\n* If the trailer URL could not be validated."
+          description: "If the movie could not be found.\n\nIf the trailer URL could not be validated."
           content:
             application/mill.example.movie+json:
               schema:
                 $ref: '#/components/schemas/error'
         403:
-          description: "* Error code 1337: If something cool happened.\n* Error code 666: If the user is not allowed to edit that movie."
+          description: "Error code 1337: If something cool happened.\n\nError code 666: If the user is not allowed to edit that movie."
           content:
             application/mill.example.movie+json:
               schema:
