@@ -373,9 +373,9 @@ class OpenApi extends Compiler\Specification
             // into a Markdown list.
             if ($total_responses > 1) {
                 $description = implode(
-                    $this->line(),
+                    $this->line(2),
                     array_map(function (string $desc): string {
-                        return sprintf('* %s', $desc);
+                        return sprintf('%s', $desc);
                     }, $data['descriptions'])
                 );
             } else {
