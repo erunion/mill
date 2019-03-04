@@ -1,6 +1,10 @@
 # Changelog
+## [5.1.6] - 2019-03-04
+### Changed
+* Reverting changes made in [5.1.5]. [#227](https://github.com/vimeo/mill/pull/227)
+
 ## [5.1.5] - 2019-02-29
-## Changed
+### Changed
 * Some more minor changes to how we document OpenAPI responses that have multiple descriptions. [#226](https://github.com/vimeo/mill/pull/226)
 
 ## [5.1.4] - 2019-02-27
@@ -377,6 +381,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[5.1.6]: https://github.com/vimeo/mill/compare/5.1.5...5.1.6
 [5.1.5]: https://github.com/vimeo/mill/compare/5.1.4...5.1.5
 [5.1.4]: https://github.com/vimeo/mill/compare/5.1.3...5.1.4
 [5.1.3]: https://github.com/vimeo/mill/compare/5.1.2...5.1.3
