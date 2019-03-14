@@ -104,6 +104,7 @@
             "composer build-errors"
         ],
         "coverage": "phpunit --coverage-html reports/",
+        "docs": "docsify serve docs/",
         "phpcs": "phpcs --standard=PSR2 bin/ src/ tests/",
         "phpunit": "phpunit",
         "psalm": "psalm",
