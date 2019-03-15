@@ -617,7 +617,7 @@ components:
             - R
             - UR
             - X
-          example: G
+          example: NR
           type: string
         description:
           description: Description
@@ -635,6 +635,7 @@ components:
             properties:
               imdb:
                 description: 'IMDB URL. This data requires a bearer token with the `public` scope.'
+                example: 'https://www.imdb.com/title/tt0089013/'
                 type: string
               trailer:
                 description: 'Trailer URL. This data requires a bearer token with the `public` scope.'
@@ -650,13 +651,15 @@ components:
           type: array
         id:
           description: 'Unique ID'
+          example: 1234
           type: number
         kid_friendly:
           description: 'Kid friendly?'
-          example: false
+          example: 'false'
           type: boolean
         name:
           description: Name
+          example: Demons
           type: string
         purchase:
           properties:
@@ -667,9 +670,11 @@ components:
           type: object
         rotten_tomatoes_score:
           description: 'Rotten Tomatoes score'
+          example: 56
           type: number
         runtime:
           description: Runtime
+          example: '1hr 20min'
           type: string
         showtimes:
           description: 'Non-theater specific showtimes'
@@ -683,6 +688,7 @@ components:
           type: array
         uri:
           description: 'Movie URI'
+          example: /movies/1234
           type: string
       required:
         - cast
@@ -703,15 +709,19 @@ components:
       properties:
         id:
           description: 'Unique ID'
+          example: 1234
           type: number
         imdb:
           description: 'IMDB URL'
+          example: 'https://www.imdb.com/name/nm0000877/'
           type: string
         name:
           description: Name
+          example: 'Lamberto Bava'
           type: string
         uri:
           description: 'Person URI'
+          example: /person/1234
           type: string
       required:
         - id
@@ -724,9 +734,11 @@ components:
       properties:
         address:
           description: Address
+          example: '2548 Central Park Ave, Yonkers, NY 10710'
           type: string
         id:
           description: 'Unique ID'
+          example: 1234
           type: number
         movies:
           description: 'Movies currently playing'
@@ -735,9 +747,11 @@ components:
           type: array
         name:
           description: Name
+          example: 'Alamo Drafthouse Cinema - Yonkers'
           type: string
         phone_number:
           description: 'Phone number'
+          example: '(914) 226-3082'
           type: string
         showtimes:
           description: 'Non-movie specific showtimes'
@@ -746,6 +760,7 @@ components:
           type: array
         uri:
           description: 'Theater URI'
+          example: /theaters/1234
           type: string
       required:
         - address

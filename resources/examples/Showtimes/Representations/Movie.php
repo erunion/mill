@@ -14,17 +14,17 @@ class Movie extends Representation
     {
         $response = [
             /**
-             * @api-data uri (uri) - Movie URI
+             * @api-data uri `/movies/1234` (uri) - Movie URI
              */
             'uri' => $this->movie->uri,
 
             /**
-             * @api-data id (number) - Unique ID
+             * @api-data id `1234` (number) - Unique ID
              */
             'id' => $this->movie->id,
 
             /**
-             * @api-data name (string) - Name
+             * @api-data name `Demons` (string) - Name
              */
             'name' => $this->movie->name,
 
@@ -34,12 +34,12 @@ class Movie extends Representation
             'description' => $this->movie->description ?: null,
 
             /**
-             * @api-data runtime (string) - Runtime
+             * @api-data runtime `1hr 20min` (string) - Runtime
              */
             'runtime' => $this->movie->runtime,
 
             /**
-             * @api-data content_rating (enum) - MPAA rating
+             * @api-data content_rating `NR` (enum) - MPAA rating
              *      + Members
              *          - `G`
              *          - `PG`
@@ -70,7 +70,7 @@ class Movie extends Representation
             'cast' => $this->movie->getCast(),
 
             /**
-             * @api-data kid_friendly `0` (boolean) - Kid friendly?
+             * @api-data kid_friendly `false` (boolean) - Kid friendly?
              */
             'kid_friendly' => $this->movie->is_kid_friendly,
 
@@ -94,12 +94,12 @@ class Movie extends Representation
             'external_urls' => $this->getExternalUrls(),
 
             /**
-             * @api-data external_urls.imdb (string) - IMDB URL
+             * @api-data external_urls.imdb `https://www.imdb.com/title/tt0089013/` (string) - IMDB URL
              */
             'imdb' => $this->movie->imdb,
 
             /**
-             * @api-data rotten_tomatoes_score (number) - Rotten Tomatoes score
+             * @api-data rotten_tomatoes_score `56` (number) - Rotten Tomatoes score
              */
             'rotten_tomatoes_score' => $this->rotten_tomatoes_score
         ];
