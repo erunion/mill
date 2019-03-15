@@ -205,7 +205,7 @@ Returns all movie theatres for a specific location.
 
 ## Movie
 - `cast` (array[Person], required) - Cast. This data requires a bearer token with the `public` scope.
-- `content_rating`: `G` (enum[string], required) - MPAA rating
+- `content_rating`: `NR` (enum[string], required) - MPAA rating
     + Members
         + `G`
         + `NC-17`
@@ -219,31 +219,31 @@ Returns all movie theatres for a specific location.
 - `director` (Person, required) - Director. This data requires a bearer token with the `public` scope.
 - `external_urls` (array) - External URLs. This data requires a bearer token with the `public` scope.
      - (object)
-        - `imdb` (string, required) - IMDB URL. This data requires a bearer token with the `public` scope.
+        - `imdb`: `https://www.imdb.com/title/tt0089013/` (string, required) - IMDB URL. This data requires a bearer token with the `public` scope.
         - `trailer` (string, required) - Trailer URL. This data requires a bearer token with the `public` scope.
 - `genres` (array[string], required) - Genres
-- `id` (number, required) - Unique ID
+- `id`: `1234` (number, required) - Unique ID
 - `kid_friendly`: `false` (boolean, required) - Kid friendly?
-- `name` (string, required) - Name
+- `name`: `Demons` (string, required) - Name
 - `purchase` (object)
     - `url` (string, nullable) - URL to purchase the film.
-- `rotten_tomatoes_score` (number, required) - Rotten Tomatoes score
-- `runtime` (string, required) - Runtime
+- `rotten_tomatoes_score`: `56` (number, required) - Rotten Tomatoes score
+- `runtime`: `1hr 20min` (string, required) - Runtime
 - `showtimes` (array[string], required) - Non-theater specific showtimes
 - `theaters` (array[Theater], required) - Theaters the movie is currently showing in
-- `uri` (string, required) - Movie URI
+- `uri`: `/movies/1234` (string, required) - Movie URI
 
 ## Person
-- `id` (number, required) - Unique ID
-- `imdb` (string, required) - IMDB URL
-- `name` (string, required) - Name
-- `uri` (string, required) - Person URI
+- `id`: `1234` (number, required) - Unique ID
+- `imdb`: `https://www.imdb.com/name/nm0000877/` (string, required) - IMDB URL
+- `name`: `Lamberto Bava` (string, required) - Name
+- `uri`: `/person/1234` (string, required) - Person URI
 
 ## Theater
-- `address` (string, required) - Address
-- `id` (number, required) - Unique ID
+- `address`: `2548 Central Park Ave, Yonkers, NY 10710` (string, required) - Address
+- `id`: `1234` (number, required) - Unique ID
 - `movies` (array[Movie], required) - Movies currently playing
-- `name` (string, required) - Name
-- `phone_number` (string, required) - Phone number
+- `name`: `Alamo Drafthouse Cinema - Yonkers` (string, required) - Name
+- `phone_number`: `(914) 226-3082` (string, required) - Phone number
 - `showtimes` (array[string], required) - Non-movie specific showtimes
-- `uri` (string, required) - Theater URI
+- `uri`: `/theaters/1234` (string, required) - Theater URI
