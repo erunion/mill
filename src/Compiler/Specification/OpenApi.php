@@ -789,9 +789,9 @@ class OpenApi extends Compiler\Specification
     {
         // Booleans in OpenAPI specifications should be represented as booleans, not stringified versions of booleans.
         if ($type === 'boolean') {
-            if ($data === '0') {
+            if ($data === '0' || $data === 'false') {
                 return false;
-            } elseif ($data === '1') {
+            } elseif ($data === '1' || $data === 'true') {
                 return true;
             }
         }
