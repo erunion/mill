@@ -1,4 +1,8 @@
 # Changelog
+## [5.1.7] - 2019-03-29
+### Fixed
+* String boolean examples are now compiled as proper booleans into OpenAPI specs.
+
 ## [5.1.6] - 2019-03-04
 ### Changed
 * Reverting changes made in [5.1.5]. [#227](https://github.com/vimeo/mill/pull/227)
@@ -381,6 +385,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[5.1.7]: https://github.com/vimeo/mill/compare/5.1.6...5.1.7
 [5.1.6]: https://github.com/vimeo/mill/compare/5.1.5...5.1.6
 [5.1.5]: https://github.com/vimeo/mill/compare/5.1.4...5.1.5
 [5.1.4]: https://github.com/vimeo/mill/compare/5.1.3...5.1.4
