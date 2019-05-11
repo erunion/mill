@@ -636,6 +636,12 @@ class OpenApi extends Compiler\Specification
                         'type' => 'string'
                     ];
                 }
+
+                // Array examples should be at the level of `items`, not `schema`.
+                if (isset($spec['example'])) {
+                    $spec['items']['example'] = $spec['example'];
+                    unset($spec['example']);
+                }
             }
 
             // Request body and response schema requirement definitions need to be separate from the item schema.
