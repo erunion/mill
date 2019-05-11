@@ -1,4 +1,8 @@
 # Changelog
+## [5.1.8] - 2019-05-11
+### Fixed
+* Array examples were being compiled into the wrong spot in JSON Schema objects in OpenAPI specs. [#231](https://github.com/vimeo/mill/pull/231)
+
 ## [5.1.7] - 2019-03-29
 ### Fixed
 * String boolean examples are now compiled as proper booleans into OpenAPI specs.
@@ -385,6 +389,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[5.1.8]: https://github.com/vimeo/mill/compare/5.1.7...5.1.8
 [5.1.7]: https://github.com/vimeo/mill/compare/5.1.6...5.1.7
 [5.1.6]: https://github.com/vimeo/mill/compare/5.1.5...5.1.6
 [5.1.5]: https://github.com/vimeo/mill/compare/5.1.4...5.1.5
