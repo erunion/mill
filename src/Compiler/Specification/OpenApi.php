@@ -415,7 +415,7 @@ class OpenApi extends Compiler\Specification
             if ($response instanceof ErrorAnnotation) {
                 $error_code = $response->getErrorCode();
                 if ($error_code) {
-                    $description .= sprintf(' Returns a unique error code of `%s`.', $error_code);
+                    $description = sprintf('Error code %s: %s', $error_code, $description);
                 }
             }
 
@@ -428,18 +428,12 @@ class OpenApi extends Compiler\Specification
             $total_responses = count($responses);
 
             // OpenAPI doesn't have support for multiple responses of the same HTTP code, so let's mash them down
-            // together, but document to the developer what's going on.
+            // into a Markdown list.
             if ($total_responses > 1) {
-                $description = sprintf(
-                    'There are %s ways that this status code can be encountered:',
-                    (new \NumberFormatter('en', \NumberFormatter::SPELLOUT))->format($total_responses)
-                );
-
-                $description .= $this->line();
-                $description .= implode(
+                $description = implode(
                     $this->line(),
                     array_map(function (string $desc): string {
-                        return sprintf(' * %s', $desc);
+                        return sprintf('* %s', $desc);
                     }, $data['descriptions'])
                 );
             } else {
@@ -702,6 +696,12 @@ class OpenApi extends Compiler\Specification
                         'type' => 'string'
                     ];
                 }
+
+                // Array examples should be at the level of `items`, not `schema`.
+                if (isset($spec['example'])) {
+                    $spec['items']['example'] = $spec['example'];
+                    unset($spec['example']);
+                }
             }
 
             // Request body and response schema requirement definitions need to be separate from the item schema.
@@ -855,9 +855,9 @@ class OpenApi extends Compiler\Specification
     {
         // Booleans in OpenAPI specifications should be represented as booleans, not stringified versions of booleans.
         if ($type === 'boolean') {
-            if ($data === '0') {
+            if ($data === '0' || $data === 'false') {
                 return false;
-            } elseif ($data === '1') {
+            } elseif ($data === '1' || $data === 'true') {
                 return true;
             }
         }

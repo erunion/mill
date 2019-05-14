@@ -1,4 +1,24 @@
 # Changelog
+## [5.1.8] - 2019-05-11
+### Fixed
+* Array examples were being compiled into the wrong spot in JSON Schema objects in OpenAPI specs. [#231](https://github.com/vimeo/mill/pull/231)
+
+## [5.1.7] - 2019-03-29
+### Fixed
+* String boolean examples are now compiled as proper booleans into OpenAPI specs.
+
+## [5.1.6] - 2019-03-04
+### Changed
+* Reverting changes made in [5.1.5]. [#227](https://github.com/vimeo/mill/pull/227)
+
+## [5.1.5] - 2019-02-29
+### Changed
+* Some more minor changes to how we document OpenAPI responses that have multiple descriptions. [#226](https://github.com/vimeo/mill/pull/226)
+
+## [5.1.4] - 2019-02-27
+### Changed
+* Cleaned up how we document OpenAPI responses that have multiple descriptions. [#225](https://github.com/vimeo/mill/pull/225)
+
 ## [5.1.3] - 2019-02-05
 ### Added
 * Added a new `--latest` flag to the `compile` command for compiling only your latest specifications. [#222](https://github.com/vimeo/mill/pull/222)
@@ -369,6 +389,11 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[5.1.8]: https://github.com/vimeo/mill/compare/5.1.7...5.1.8
+[5.1.7]: https://github.com/vimeo/mill/compare/5.1.6...5.1.7
+[5.1.6]: https://github.com/vimeo/mill/compare/5.1.5...5.1.6
+[5.1.5]: https://github.com/vimeo/mill/compare/5.1.4...5.1.5
+[5.1.4]: https://github.com/vimeo/mill/compare/5.1.3...5.1.4
 [5.1.3]: https://github.com/vimeo/mill/compare/5.1.2...5.1.3
 [5.1.2]: https://github.com/vimeo/mill/compare/5.1.1...5.1.2
 [5.1.1]: https://github.com/vimeo/mill/compare/5.1.0...5.1.1

@@ -177,7 +177,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/movie'
         400:
-          description: "There are two ways that this status code can be encountered:\n * If there is a problem with the request.\n * If the IMDB URL could not be validated."
+          description: "* If there is a problem with the request.\n* If the IMDB URL could not be validated."
           content:
             application/json:
               schema:
@@ -345,7 +345,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/movie'
         400:
-          description: "There are two ways that this status code can be encountered:\n * If there is a problem with the request.\n * If the IMDB URL could not be validated."
+          description: "* If there is a problem with the request.\n* If the IMDB URL could not be validated."
           content:
             application/json:
               schema:
