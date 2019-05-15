@@ -119,41 +119,72 @@ class MSON implements Arrayable
     }
 
     /**
+     * This is the regex to match a Mill-flavored MSON string.
+     *
+     * Examples:
+     *
+     *  - content_rating (string) - MPAA rating
+     *  - content_rating `G` (string, required) - MPAA rating
+     *  - content_rating `G` (string, required, nullable) - MPAA rating
+     *  - content_rating `G` (string, optional, tag:MOVIE_RATINGS) - MPAA rating
+     *  - content_rating `G` (string, optional, nullable, tag:MOVIE_RATINGS) - MPAA rating
+     *  - content_rating `G` (string, tag:MOVIE_RATINGS) - MPAA rating
+     *  - content_rating `G` (string, tag:MOVIE_RATINGS, needs:validUser) - MPAA rating
+     *  - websites.description (string) - The websites' description
+     *  - websites (array<object>) - The users' list of websites.
+     *  - cast (array<\Mill\Examples\Showtimes\Representations\Person>) - Cast
+     *  - director (\Mill\Examples\Showtimes\Representations\Person) - Director
+     *
+     * This can also match strings where a type and/or description may be optional, like in the case of an
+     * `@api-return` annotation:
+     *
+     *  - collection (\Mill\Examples\Showtimes\Representations\Movie) - A collection of movies.
+     *  - notmodified - If no data has been changed.
+     *  - collection (\Mill\Examples\Showtimes\Representations\Movie)
+     *  - ok
+     *
+     * @return string
+     */
+    private function getRegex(): string
+    {
+        // There's a "fun" (read: not fun) issue with this regex where matching a content string that is just a field
+        // and description that it thinks that a `sample_data` of `` is present. For example:
+        // `notmodified - If no data has been changed`.
+        return '/(' .
+            '(?P<field>[\w.\*]+)' . # Field name
+            '(' .
+                '(' .
+                    '\s' .
+                    '(`(?P<sample_data>.+)` )?' .                   # Sample data
+                    '\(' .
+                        '(?P<type>[\w\\\]+)' .                      # Type
+                        '(<(?P<subtype>[\w\\\]+)>)?' .              # An optional `<subtype>`
+                        '(, (?P<required>required|optional))?' .    # Required or optional flag
+                        '(, (?P<nullable>nullable))?' .             # Nullable flag
+                        '(?P<vendor_tag>(, ([\w]+:[\w]+))*?)' .     # List of vendor tags
+                    '\)' .
+                ')?' .                                              # Sample data and type information can be optional.
+                '(' .
+                    '(\n|\s)+-(\n|\s)+(?P<description>.+)' .        # Description
+                ')?' .                                              # Description can be optional
+            ')?' .                                                  # All non-field information can be optional.
+        ')/uis';
+    }
+
+    /**
      * Given a piece of Mill-flavored MSON content, parse it out.
      *
      * @param string $content
      * @return MSON
      * @throws ImproperlyWrittenEnumException
      * @throws MissingOptionsException
+     * @throws MissingSubtypeException
      * @throws UnknownErrorRepresentationException
      * @throws UnsupportedTypeException
      */
     public function parse(string $content): self
     {
-        /**
-         * This is the regex to match a Mill-flavored MSON string.
-         *
-         * Examples:
-         *
-         *  - content_rating (string) - MPAA rating
-         *  - content_rating `G` (string, required) - MPAA rating
-         *  - content_rating `G` (string, required, nullable) - MPAA rating
-         *  - content_rating `G` (string, optional, tag:MOVIE_RATINGS) - MPAA rating
-         *  - content_rating `G` (string, optional, nullable, tag:MOVIE_RATINGS) - MPAA rating
-         *  - content_rating `G` (string, tag:MOVIE_RATINGS) - MPAA rating
-         *  - content_rating `G` (string, tag:MOVIE_RATINGS, needs:validUser) - MPAA rating
-         *  - websites.description (string) - The websites' description
-         *  - websites (array<object>) - The users' list of websites.
-         *  - cast (array<\Mill\Examples\Showtimes\Representations\Person>) - Cast
-         *  - director (\Mill\Examples\Showtimes\Representations\Person) - Director
-         *
-         * @var string
-         */
-        $regex_mson = '/((?P<field>[\w.\*]+) (`(?P<sample_data>.+)` )?' .
-            '\((?P<type>[\w\\\]+)(<(?P<subtype>[\w\\\]+)>)?(, (?P<required>required|optional))?(, ' .
-            '(?P<nullable>nullable))?(?P<vendor_tag>(, ([\w]+:[\w]+))*?)\)(\n|\s)+-(\n|\s)+(?P<description>.+))/uis';
-
-        preg_match($regex_mson, $content, $matches);
+        preg_match($this->getRegex(), $content, $matches);
 
         foreach (['field', 'type', 'description', 'sample_data', 'subtype'] as $name) {
             if (isset($matches[$name])) {

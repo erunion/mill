@@ -25,8 +25,8 @@ class Movie
      * @api-path:public /movies/+movie_id
      * @api-pathparam movie_id `1234` (integer) - Movie ID
      *
-     * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Movie
-     * @api-return:public {notmodified} If no content has been modified since the supplied Last-Modified header.
+     * @api-return:public object (\Mill\Examples\Showtimes\Representations\Movie)
+     * @api-return:public notmodified - If no content has been modified since the supplied Last-Modified header.
      *
      * @api-error:public 404 (\Mill\Examples\Showtimes\Representations\Error) - If the movie could not be found.
      *
@@ -81,7 +81,7 @@ class Movie
      * @api-param:public is_kid_friendly (boolean, optional) - Is this movie kid friendly?
      * @api-param:public rotten_tomatoes_score `56` (integer, optional) - Rotten Tomatoes score
      *
-     * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Movie
+     * @api-return:public object (\Mill\Examples\Showtimes\Representations\Movie)
      *
      * @api-error:public 400 (\Mill\Examples\Showtimes\Representations\Error) - If there is a problem with the request.
      * @api-error:public 400 (\Mill\Examples\Showtimes\Representations\Error) - If the IMDB URL could not be validated.
@@ -97,7 +97,7 @@ class Movie
      * @api-param:public imdb `https://www.imdb.com/title/tt0089013/` (string, optional) - IMDB URL
      *
      * @api-version >=1.1.3
-     * @api-return:public {accepted} \Mill\Examples\Showtimes\Representations\Movie
+     * @api-return:public accepted (\Mill\Examples\Showtimes\Representations\Movie)
      * @api-error:public 404 (\Mill\Examples\Showtimes\Representations\Error) - If the trailer URL could not be
      *      validated.
      * @api-error:private 403 (\Mill\Examples\Showtimes\Representations\CodedError<1337>) - If something cool happened.
@@ -125,7 +125,7 @@ class Movie
      * @api-minVersion 1.1
      * @api-maxVersion 1.1.2
      *
-     * @api-return:private {deleted}
+     * @api-return:private deleted
      *
      * @api-error:private 404 (\Mill\Examples\Showtimes\Representations\Error) - If the movie could not be found.
      */

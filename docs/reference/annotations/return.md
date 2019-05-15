@@ -9,7 +9,7 @@ The return type should be indicative of the HTTP code that will be delivered (ex
 
 ## Syntax
 ```php
-@api-return:visibility {return type} \Representation description
+@api-return:visibility returnType (\Representation) - Description
 ```
 
 ## Requirements
@@ -21,9 +21,9 @@ The return type should be indicative of the HTTP code that will be delivered (ex
 | Tag | Optional | Description |
 | :--- | :--- | :--- |
 | :visibility | ✓ | [Visibility decorator](reference/visibility.md) |
-| {return type} | × | The type of response that will be returned. Example: `{ok}`, `{accepted}`, `{notmodified}`, etc. |
+| returnType | × | The type of response that will be returned. Example: `ok`, `accepted`, `notmodified`, etc. |
 | \Representation | ✓ | The fully qualified class name for a representation that will be returned. If your action is handling things like a `{delete}` or `{notmodified}` call, that normally don't return any data, you can exclude this. |
-| description | * | A short description describing why, or what, this response is. A description is only required when the returning HTTP code for this return is non-200. |
+| Description | * | A short description describing why, or what, this response is. A description is only required when the returning HTTP code for this return is non-200. |
 
 ## Available return types
 | HTTP Code | Designator |
@@ -47,7 +47,7 @@ The return type should be indicative of the HTTP code that will be delivered (ex
 /**
  * ...
  *
- * @api-return:private {accepted} \Some\Representation
+ * @api-return:private accepted (\Some\Representation)
  */
 public function PATCH()
 {
@@ -59,7 +59,7 @@ public function PATCH()
 /**
  * ...
  *
- * @api-return:public {notmodified} If no content has changed since the last modified date.
+ * @api-return:public notmodified - If no content has changed since the last modified date.
  */
 public function GET()
 {

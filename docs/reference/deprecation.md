@@ -20,7 +20,7 @@ You might have instances where you need to deprecate a resource action request p
  * @api-contenttype application/json
  * @api-scope public
  *
- * @api-return:public {object} \MyApplication\Representations\Movie
+ * @api-return:public object (\MyApplication\Representations\Movie)
  *
  * @api-error:public 404 (\MyApplicationRepresentations\Error) - If the movie
  *     could not be found.

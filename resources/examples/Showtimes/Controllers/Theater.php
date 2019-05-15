@@ -13,8 +13,8 @@ class Theater
      * @api-path:public /theaters/+id
      * @api-pathparam id `1234` (integer) - Theater ID
      *
-     * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Theater
-     * @api-return:public {notmodified} If no content has been modified since the supplied Last-Modified header.
+     * @api-return:public object (\Mill\Examples\Showtimes\Representations\Theater)
+     * @api-return:public notmodified - If no content has been modified since the supplied Last-Modified header.
      *
      * @api-error:public 404 (\Mill\Examples\Showtimes\Representations\Error) - If the movie theater could not be found.
      *
@@ -45,7 +45,7 @@ class Theater
      * @api-param:public address `2548 Central Park Ave, Yonkers, NY 10710` (string, required) - Theater address
      * @api-param:public phone_number `(914) 226-3082` (string, required) - Theater phone number
      *
-     * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Theater
+     * @api-return:public object (\Mill\Examples\Showtimes\Representations\Theater)
      *
      * @api-error:public 400 (\Mill\Examples\Showtimes\Representations\Error) - If there is a problem with the request.
      * @api-error:public 404 (\Mill\Examples\Showtimes\Representations\Error) - If the movie movie could not be found.
@@ -75,7 +75,7 @@ class Theater
      * @api-contenttype application/json
      * @api-scope delete
      *
-     * @api-return:private {deleted}
+     * @api-return:private deleted
      *
      * @api-error:private 404 (\Mill\Examples\Showtimes\Representations\Error) - If the movie theater could not be
      *      found.
