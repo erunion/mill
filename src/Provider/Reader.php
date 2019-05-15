@@ -16,15 +16,23 @@ class Reader implements \Pimple\ServiceProviderInterface
     public function register(Container $container)
     {
         $container['reader.annotations'] = function (Container $c): Closure {
-            return function (string $class, string $method = null) {
-                return (new \Mill\Reader)->getAnnotations($class, $method);
-            };
+            return
+                /**
+                 * @psalm-param class-string $class
+                 */
+                function (string $class, string $method = null) {
+                    return (new \Mill\Reader)->getAnnotations($class, $method);
+                };
         };
 
         $container['reader.annotations.representation'] = function (Container $c): Closure {
-            return function (string $class, string $method): string {
-                return (new \Mill\Reader)->getRepresentationAnnotations($class, $method);
-            };
+            return
+                /**
+                 * @psalm-param class-string $class
+                 */
+                function (string $class, string $method): string {
+                    return (new \Mill\Reader)->getRepresentationAnnotations($class, $method);
+                };
         };
     }
 }

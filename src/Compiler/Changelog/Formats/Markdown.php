@@ -24,13 +24,9 @@ class Markdown extends Json
         parent::compile();
 
         $api_name = $this->config->getName();
-        if (!empty($api_name)) {
-            $this->markdown .= sprintf('# Changelog: %s', $api_name);
-            $this->markdown .= $this->line(2);
-        } else {
-            $this->markdown .= sprintf('# Changelog', $api_name);
-            $this->markdown .= $this->line(2);
-        }
+
+        $this->markdown .= sprintf('# Changelog: %s', (!empty($api_name)) ? $api_name : '');
+        $this->markdown .= $this->line(2);
 
         $changelog = parent::getCompiled();
         $changelog = array_shift($changelog);

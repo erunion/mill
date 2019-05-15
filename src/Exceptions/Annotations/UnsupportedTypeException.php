@@ -16,10 +16,10 @@ class UnsupportedTypeException extends BaseException
     public static function create(string $annotation, string $class, ?string $method): UnsupportedTypeException
     {
         $message = sprintf(
-            'The type on `%s` in %s::%s is unsupported. Please check the documentation for supported types.',
+            'The type on `%s` in %s%s is unsupported. Please check the documentation for supported types.',
             $annotation,
             $class,
-            $method
+            (!is_null($method)) ? sprintf('::%s', $method) : ''
         );
 
         $exception = new self($message);

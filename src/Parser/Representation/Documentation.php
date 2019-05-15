@@ -11,7 +11,10 @@ use Mill\Parser;
 
 class Documentation implements Arrayable
 {
-    /** @var string Name of the representation class that we're going to be parsing for documentation. */
+    /**
+     * @psalm-var class-string
+     * @var string Name of the representation class that we're going to be parsing for documentation.
+     */
     protected $class;
 
     /** @var string Name of the representation class method that we're going to be parsing for documentation. */
@@ -34,6 +37,7 @@ class Documentation implements Arrayable
     protected $representation = [];
 
     /**
+     * @psalm-param class-string $class
      * @param string $class
      * @param string $method
      * @param Application $application
@@ -116,7 +120,6 @@ class Documentation implements Arrayable
     /**
      * Filter down, and return, all annotations on this representation that match a specific vendor tag.
      *
-     * @psalm-suppress RedundantCondition
      * @param array|null $only_vendor_tags
      * @return array
      */
@@ -133,7 +136,7 @@ class Documentation implements Arrayable
             $vendor_tags = $annotation->getVendorTags();
             if (!empty($vendor_tags)) {
                 // If we don't even have vendor tags to look for, then filter this annotation out completely.
-                if (!is_null($only_vendor_tags) && empty($only_vendor_tags)) {
+                if (empty($only_vendor_tags)) {
                     unset($this->representation[$name]);
                     continue;
                 }
@@ -144,7 +147,7 @@ class Documentation implements Arrayable
                 foreach ($vendor_tags as $vendor_tag) {
                     $vendor_tag = $vendor_tag->getVendorTag();
 
-                    if (!is_null($only_vendor_tags) && !in_array($vendor_tag, $only_vendor_tags)) {
+                    if (!in_array($vendor_tag, $only_vendor_tags)) {
                         $all_found = false;
                     }
                 }

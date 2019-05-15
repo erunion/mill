@@ -582,7 +582,7 @@ class OpenApi extends Compiler\Specification
                         '`' . implode('`, `', array_map(function (array $scope): string {
                             return $scope['scope'];
                         }, $data['scopes'])) . '`',
-                        (count($data['scopes']) > 1) ? 's' : null
+                        (count($data['scopes']) > 1) ? 's' : ''
                     );
                 }
 

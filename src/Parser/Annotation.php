@@ -145,6 +145,10 @@ abstract class Annotation implements Arrayable
      */
     protected function optional(string $field, $allow_zero = false)
     {
+        if (!array_key_exists($field, $this->parsed_data)) {
+            return false;
+        }
+
         if ($allow_zero && $this->parsed_data[$field] === '0') {
             return $this->parsed_data[$field];
         } elseif (empty($this->parsed_data[$field])) {

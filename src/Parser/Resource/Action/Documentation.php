@@ -39,7 +39,10 @@ class Documentation implements Arrayable
         'vendortag'
     ];
 
-    /** @var string Class we're parsing. */
+    /**
+     * @psalm-var class-string
+     * @var string Class we're parsing.
+     */
     protected $class;
 
     /** @var string Class method we're parsing. */
@@ -67,6 +70,7 @@ class Documentation implements Arrayable
     protected $annotations = [];
 
     /**
+     * @psalm-param class-string $class
      * @param string $class
      * @param string $method
      * @param Application $application

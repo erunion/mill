@@ -9,6 +9,7 @@ class Reader
     /**
      * Load, and pull, the annotations for a class or class method.
      *
+     * @psalm-param class-string $class
      * @param string $class
      * @param string|null $method
      * @return bool|string
@@ -37,6 +38,7 @@ class Reader
     /**
      * Given a class and method, pull out any code annotation docblocks that may exist within it.
      *
+     * @psalm-param class-string $class
      * @param string $class
      * @param string $method
      * @return string

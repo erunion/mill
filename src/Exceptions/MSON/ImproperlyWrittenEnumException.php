@@ -17,10 +17,10 @@ class ImproperlyWrittenEnumException extends BaseException
     public static function create(string $annotation, string $class, ?string $method): ImproperlyWrittenEnumException
     {
         $message = sprintf(
-            'The type on `%s` in %s::%s should be written as `enum`.',
+            'The type on `%s` in %s%s should be written as `enum`.',
             $annotation,
             $class,
-            $method
+            (!is_null($method)) ? sprintf('::%s', $method) : ''
         );
 
         $exception = new self($message);
