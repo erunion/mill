@@ -34,6 +34,6 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
         $config = new Config();
         $config->register($container);
 
-        $this->assertInstanceOf('Mill\Config', $container['config']);
+        $this->assertInstanceOf(\Mill\Config::class, $container['config']);
     }
 }

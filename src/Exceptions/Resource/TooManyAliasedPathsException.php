@@ -15,10 +15,10 @@ class TooManyAliasedPathsException extends BaseException
     public static function create(string $class, ?string $method): TooManyAliasedPathsException
     {
         $message = sprintf(
-            'In %s::%s, you have too many path aliases set. If you have an alias present, there must be exactly one ' .
+            'In %s%s, you have too many path aliases set. If you have an alias present, there must be exactly one ' .
                 'that is not.',
             $class,
-            $method
+            (!is_null($method)) ? sprintf('::%', $method) : ''
         );
 
         $exception = new self($message);

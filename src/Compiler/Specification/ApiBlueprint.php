@@ -190,7 +190,7 @@ class ApiBlueprint extends Compiler\Specification
         $blueprint = sprintf(
             'This action requires a bearer token with the %s scope%s.',
             '`' . implode(', ', $strings) . '`',
-            (count($strings) > 1) ? 's' : null
+            (count($strings) > 1) ? 's' : ''
         );
 
         $blueprint .= $this->line(2);
@@ -388,17 +388,17 @@ class ApiBlueprint extends Compiler\Specification
                     $description .= sprintf(
                         ' This data requires a bearer token with the %s scope%s.',
                         '`' . implode(', ', $strings) . '`',
-                        (count($strings) > 1) ? 's' : null
+                        (count($strings) > 1) ? 's' : ''
                     );
                 }
 
                 $blueprint .= sprintf(
                     '- `%s`%s (%s%s%s) - %s',
                     $field_name,
-                    ($sample_data !== false) ? sprintf(': `%s`', $sample_data) : '',
+                    ($sample_data !== false) ? sprintf(': `%s`', (string)$sample_data) : '',
                     $type,
-                    (isset($data['required']) && $data['required']) ? ', required' : null,
-                    ($data['nullable']) ? ', nullable' : null,
+                    (isset($data['required']) && $data['required']) ? ', required' : '',
+                    ($data['nullable']) ? ', nullable' : '',
                     $description
                 );
 

@@ -123,6 +123,7 @@ class RepresentationParser extends Parser
         // If we matched an `@api-see` annotation, then let's parse it out into viable annotations.
         if (!empty($see_pointers)) {
             foreach ($see_pointers as $pointer) {
+                /** @psalm-var class-string $see_class */
                 list($see_class, $see_method) = explode('::', array_shift($pointer));
                 if (in_array(strtolower($see_class), ['self', 'static'])) {
                     $see_class = $this->class;

@@ -275,6 +275,7 @@ class Changelog extends Compiler
     /**
      * Record an entry into the changelog.
      *
+     * @psalm-suppress InvalidPropertyAssignmentValue
      * @param string $definition
      * @param false|string $version
      * @param string $change_type
@@ -370,6 +371,7 @@ class Changelog extends Compiler
             return false;
         }
 
+        /** @var int $recent_version_key */
         $recent_version_key = key(
             array_filter($this->supported_versions, function (array $supported) use ($recent_version) {
                 return $supported['version'] == $recent_version;

@@ -20,16 +20,11 @@ class Markdown extends Compiler\ErrorMap
         parent::compile();
 
         foreach ($this->error_map as $version => $groups) {
-            $content = '';
-
             $api_name = $this->config->getName();
-            if (!empty($api_name)) {
-                $content .= sprintf('# Errors: %s', $api_name);
-                $content .= $this->line(2);
-            } else {
-                $content .= sprintf('# Errors', $api_name);
-                $content .= $this->line(2);
-            }
+
+            $content = '';
+            $content .= sprintf('# Errors: %s', (!empty($api_name)) ? $api_name : '');
+            $content .= $this->line(2);
 
             foreach ($groups as $group => $actions) {
                 $content .= sprintf('## %s', $group);

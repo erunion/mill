@@ -462,7 +462,7 @@ components:
           type: number
         kid_friendly:
           description: 'Kid friendly?'
-          example: 'false'
+          example: false
           type: boolean
         name:
           description: Name

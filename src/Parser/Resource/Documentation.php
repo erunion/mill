@@ -10,7 +10,10 @@ use Mill\Parser;
 
 class Documentation implements Arrayable
 {
-    /** @var string Class that we're parsing for documentation. */
+    /**
+     * @psalm-var class-string
+     * @var string Class that we're parsing for documentation.
+     */
     protected $class;
 
     /** @var array Array of parsed method documentation for the current resource. */
@@ -23,6 +26,7 @@ class Documentation implements Arrayable
     protected $parser;
 
     /**
+     * @psalm-param class-string $class
      * @param string $class
      * @param Application $application
      */

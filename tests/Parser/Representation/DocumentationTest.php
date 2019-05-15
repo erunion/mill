@@ -5,12 +5,17 @@ use Mill\Exceptions\Annotations\MultipleAnnotationsException;
 use Mill\Exceptions\Annotations\RequiredAnnotationException;
 use Mill\Exceptions\Resource\NoAnnotationsException;
 use Mill\Parser\Representation\Documentation;
+use Mill\Tests\Fixtures\Representations\RepresentationWithNoAnnotations;
+use Mill\Tests\Fixtures\Representations\RepresentationWithNoClassAnnotations;
+use Mill\Tests\Fixtures\Representations\RepresentationWithRequiredLabelAnnotationMissing;
+use Mill\Tests\Fixtures\Representations\RepresentationWithMultipleLabelAnnotations;
 use Mill\Tests\TestCase;
 
 class DocumentationTest extends TestCase
 {
     /**
      * @dataProvider providerParseDocumentationReturnsRepresentation
+     * @psalm-param class-string $class
      * @param string $class
      * @param string $method
      * @param array $expected
@@ -45,6 +50,8 @@ class DocumentationTest extends TestCase
 
     /**
      * @dataProvider providerParseDocumentationFailsOnBadRepresentations
+     * @psalm-param class-string $class
+     * @psalm-param class-string<\Throwable> $exception
      * @param string $class
      * @param string $method
      * @param string $exception
@@ -669,17 +676,17 @@ class DocumentationTest extends TestCase
     {
         return [
             'no-annotations' => [
-                'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithNoAnnotations',
+                'class' => RepresentationWithNoAnnotations::class,
                 'method' => 'create',
                 'expected.exception' => NoAnnotationsException::class
             ],
             'no-annotations-on-the-class' => [
-                'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithNoClassAnnotations',
+                'class' => RepresentationWithNoClassAnnotations::class,
                 'method' => 'create',
                 'expected.exception' => NoAnnotationsException::class
             ],
             'missing-a-required-label-annotation' => [
-                'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithRequiredLabelAnnotationMissing',
+                'class' => RepresentationWithRequiredLabelAnnotationMissing::class,
                 'method' => 'create',
                 'expected.exception' => RequiredAnnotationException::class,
                 'asserts' => [
@@ -687,7 +694,7 @@ class DocumentationTest extends TestCase
                 ]
             ],
             'multiple-label-annotations' => [
-                'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithMultipleLabelAnnotations',
+                'class' => RepresentationWithMultipleLabelAnnotations::class,
                 'method' => 'create',
                 'expected.exception' => MultipleAnnotationsException::class
             ]

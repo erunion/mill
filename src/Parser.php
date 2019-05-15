@@ -14,7 +14,10 @@ class Parser
 {
     const REGEX_DECORATOR = '/^(?P<decorator>(:\w+)+)?/u';
 
-    /** @var string The current class that we're going to be parsing. */
+    /**
+     * @psalm-var class-string
+     * @var string The current class that we're going to be parsing.
+     */
     protected $class;
 
     /** @var null|string The current class method that we're parsing. Used to give better error messaging. */
@@ -24,6 +27,7 @@ class Parser
     protected $application;
 
     /**
+     * @psalm-param class-string $class
      * @param string $class
      * @param Application $application
      */
@@ -97,7 +101,10 @@ class Parser
         $parser = self::getAnnotationsFromDocblock($docblock);
         $tags = $parser->getTags();
 
-        /** @var UnknownTag $tag */
+        /**
+         * @psalm-suppress InternalMethod "phootwork\collection\AbstractCollection::current has been marked as internal"
+         * @var UnknownTag $tag
+         */
         foreach ($tags as $tag) {
             // If this isn't a Mill annotation, then ignore it.
             $annotation = $tag->getTagName();
@@ -183,6 +190,7 @@ class Parser
     /**
      * Build up an array of annotation data.
      *
+     * @psalm-suppress InvalidStringClass getAnnotationClass returning a string is funky.
      * @param string $name
      * @param null|string $decorators
      * @param string $content

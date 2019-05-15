@@ -22,7 +22,7 @@ class MultipleAnnotationsException extends BaseException
             'Multiple `@api-%s` annotations were found on %s%s. Only one is permissible.',
             $annotation,
             $class,
-            (!empty($method)) ? '::' . $method : null
+            (!empty($method)) ? sprintf('::%s', $method) : ''
         );
 
         $exception = new self($message);

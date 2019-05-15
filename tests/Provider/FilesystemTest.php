@@ -12,6 +12,6 @@ class FilesystemTest extends \PHPUnit\Framework\TestCase
         $filesystem = new Filesystem;
         $filesystem->register($container);
 
-        $this->assertInstanceOf('League\Flysystem\Filesystem', $container['filesystem']);
+        $this->assertInstanceOf(\League\Flysystem\Filesystem::class, $container['filesystem']);
     }
 }
