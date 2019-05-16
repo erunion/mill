@@ -12,6 +12,11 @@ class ConfigTest extends TestCase
         $config = $this->getConfig();
 
         $this->assertSame('Mill unit test API, Showtimes', $config->getName());
+        $this->assertSame(
+            'This is an example API for the purposes of showing how Mill works.',
+            $config->getDescription()
+        );
+
         $this->assertSame('https://example.com/terms', $config->getTerms());
 
         $this->assertSame([
@@ -92,6 +97,12 @@ class ConfigTest extends TestCase
             'tag:FEATURE_FLAG',
             'tag:MOVIE_RATINGS'
         ], $config->getVendorTags());
+
+        $this->assertSame([
+            'Movies' => 'These resources help you handle movies.',
+            'Movies\Coming Soon' => null,
+            'Theaters' => null
+        ], $config->getTags());
 
         $this->assertSame([
             'bearer' => [
@@ -224,6 +235,8 @@ XML;
         if (strpos($provider, 'info.') === false) {
             $info = <<<XML
 <info>
+    <description>This is an example API for the purposes of showing how Mill works.</description>
+
     <terms url="https://example.com/terms" />
 
     <contact
@@ -308,6 +321,11 @@ XML;
     $representations
     $authentication
     $xml
+
+    <tags>
+        <tag name="Movies">These resources help you handle movies.</tag>
+        <tag name="Theaters" />
+    </tags>
 </mill>
 XML;
 

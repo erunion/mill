@@ -83,12 +83,12 @@ class CompilerTest extends TestCase
                 $identifier = $expected['path'] . '::' . $expected['method'];
                 $this->assertArrayHasKey($identifier, $actual_group['actions']);
 
-                /** @var Documentation $actual */
                 $actual = $actual_group['actions'][$identifier];
                 $this->assertInstanceOf(Documentation::class, $actual);
 
                 // We don't need to test every facet of the compiled MethodDocumentation, because we're doing that in
                 // other tests, we just want to make sure that these actions were grouped and compiled properly.
+                /** @var Documentation $actual */
                 $annotations = $actual->toArray()['annotations'];
 
                 $this->assertSame($expected['method'], $actual->getMethod());

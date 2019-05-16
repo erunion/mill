@@ -6,6 +6,8 @@ website/ export-ignore
 .gitattributes export-ignore
 .styleci.yml export-ignore
 .travis.yml export-ignore
+CHANGELOG.MD export-ignore
+CODE-OF-CONDUCT.md export-ignore
 package.json export-ignore
 package-lock.json export-ignore
 phpunit.xml export-ignore

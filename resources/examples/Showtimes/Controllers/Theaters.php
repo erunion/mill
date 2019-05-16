@@ -14,7 +14,7 @@ class Theaters
      *
      * @api-queryparam:public location (string, required) - Location you want theaters in.
      *
-     * @api-return:public {collection} \Mill\Examples\Showtimes\Representations\Theater
+     * @api-return:public collection (\Mill\Examples\Showtimes\Representations\Theater)
      *
      * @api-error:public 400 (\Mill\Examples\Showtimes\Representations\Error) - If the location is invalid.
      *
@@ -44,7 +44,7 @@ class Theaters
      * @api-param:public address `2548 Central Park Ave, Yonkers, NY 10710` (string, required) - Theater address
      * @api-param:public phone_number `(914) 226-3082` (string, required) - Theater phone number
      *
-     * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Theater
+     * @api-return:public object (\Mill\Examples\Showtimes\Representations\Theater)
      *
      * @api-error:public 400 (\Mill\Examples\Showtimes\Representations\Error) - If there is a problem with the request.
      *

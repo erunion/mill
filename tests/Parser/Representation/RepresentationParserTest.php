@@ -1,10 +1,17 @@
 <?php
 namespace Mill\Tests\Parser\Representation;
 
+use Mill\Examples\Showtimes\Representations\Movie;
+use Mill\Exceptions\Annotations\InvalidMSONSyntaxException;
 use Mill\Exceptions\BaseException;
+use Mill\Exceptions\MethodNotImplementedException;
+use Mill\Exceptions\MethodNotSuppliedException;
+use Mill\Exceptions\Representation\DuplicateFieldException;
 use Mill\Parser\Annotation;
 use Mill\Parser\Annotations\DataAnnotation;
 use Mill\Parser\Representation\RepresentationParser;
+use Mill\Tests\Fixtures\Representations\RepresentationWithOnlyApiSee;
+use Mill\Tests\Fixtures\Representations\RepresentationWithVersioningAcrossMultipleAnnotations;
 use Mill\Tests\ReaderTestingTrait;
 use Mill\Tests\TestCase;
 
@@ -14,6 +21,7 @@ class RepresentationParserTest extends TestCase
 
     /**
      * @dataProvider providerParseAnnotations
+     * @psalm-param class-string $class
      * @param string $class
      * @param string $method
      * @param array $expected
@@ -61,7 +69,7 @@ class RepresentationParserTest extends TestCase
 
     public function testRepresentationWithApiSee(): void
     {
-        $class = '\Mill\Tests\Fixtures\Representations\RepresentationWithOnlyApiSee';
+        $class = RepresentationWithOnlyApiSee::class;
         $parser = new RepresentationParser($class, $this->getApplication());
         $annotations = $parser->getAnnotations('create');
 
@@ -91,6 +99,7 @@ class RepresentationParserTest extends TestCase
 
     /**
      * @dataProvider providerRepresentationsThatWillFailParsing
+     * @psalm-param class-string<\Throwable> $exception
      * @param string $docblock
      * @param string $exception
      * @param array $asserts
@@ -104,7 +113,7 @@ class RepresentationParserTest extends TestCase
         try {
             (new RepresentationParser(__CLASS__, $this->getApplication()))->getAnnotations(__METHOD__);
         } catch (BaseException $e) {
-            if ('\\' . get_class($e) !== $exception) {
+            if (get_class($e) !== $exception) {
                 $this->fail('Unrecognized exception (' . get_class($e) . ') thrown.');
             }
 
@@ -115,6 +124,8 @@ class RepresentationParserTest extends TestCase
 
     /**
      * @dataProvider providerRepresentationMethodsThatWillFailParsing
+     * @psalm-param class-string $class
+     * @psalm-param class-string<\Throwable> $exception
      * @param string $class
      * @param null|string $method
      * @param string $exception
@@ -130,7 +141,7 @@ class RepresentationParserTest extends TestCase
         try {
             (new RepresentationParser($class, $this->getApplication()))->getAnnotations($method);
         } catch (BaseException $e) {
-            if ('\\' . get_class($e) !== $exception) {
+            if (get_class($e) !== $exception) {
                 $this->fail('Unrecognized exception (' . get_class($e) . ') thrown.');
             }
 
@@ -141,7 +152,7 @@ class RepresentationParserTest extends TestCase
 
     public function testRepresentationThatHasVersioningAcrossMultipleAnnotations(): void
     {
-        $class = '\Mill\Tests\Fixtures\Representations\RepresentationWithVersioningAcrossMultipleAnnotations';
+        $class = RepresentationWithVersioningAcrossMultipleAnnotations::class;
         $parser = new RepresentationParser($class, $this->getApplication());
         $annotations = $parser->getAnnotations('create');
 
@@ -180,7 +191,7 @@ class RepresentationParserTest extends TestCase
     {
         return [
             'movie' => [
-                'class' => '\Mill\Examples\Showtimes\Representations\Movie',
+                'class' => Movie::class,
                 'method' => 'create',
                 'expected' => [
                     'annotations' => [
@@ -207,7 +218,7 @@ class RepresentationParserTest extends TestCase
                             'identifier' => 'content_rating',
                             'nullable' => false,
                             'required' => true,
-                            'sample_data' => 'G',
+                            'sample_data' => 'NR',
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'enum',
@@ -278,7 +289,7 @@ class RepresentationParserTest extends TestCase
                             'identifier' => 'external_urls.imdb',
                             'nullable' => false,
                             'required' => true,
-                            'sample_data' => false,
+                            'sample_data' => 'https://www.imdb.com/title/tt0089013/',
                             'scopes' => [
                                 [
                                     'description' => false,
@@ -347,7 +358,7 @@ class RepresentationParserTest extends TestCase
                             'identifier' => 'id',
                             'nullable' => false,
                             'required' => true,
-                            'sample_data' => false,
+                            'sample_data' => '1234',
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'number',
@@ -360,7 +371,7 @@ class RepresentationParserTest extends TestCase
                             'identifier' => 'kid_friendly',
                             'nullable' => false,
                             'required' => true,
-                            'sample_data' => '0',
+                            'sample_data' => 'false',
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'boolean',
@@ -373,7 +384,7 @@ class RepresentationParserTest extends TestCase
                             'identifier' => 'name',
                             'nullable' => false,
                             'required' => true,
-                            'sample_data' => false,
+                            'sample_data' => 'Demons',
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'string',
@@ -399,7 +410,7 @@ class RepresentationParserTest extends TestCase
                             'identifier' => 'rotten_tomatoes_score',
                             'nullable' => false,
                             'required' => true,
-                            'sample_data' => false,
+                            'sample_data' => '56',
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'number',
@@ -412,7 +423,7 @@ class RepresentationParserTest extends TestCase
                             'identifier' => 'runtime',
                             'nullable' => false,
                             'required' => true,
-                            'sample_data' => false,
+                            'sample_data' => '1hr 20min',
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'string',
@@ -451,7 +462,7 @@ class RepresentationParserTest extends TestCase
                             'identifier' => 'uri',
                             'nullable' => false,
                             'required' => true,
-                            'sample_data' => false,
+                            'sample_data' => '/movies/1234',
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'uri',
@@ -472,7 +483,7 @@ class RepresentationParserTest extends TestCase
                 'docblocks' => '/**
                   * @api-data this is not parseable mson
                   */',
-                'expected.exception' => '\Mill\Exceptions\Annotations\InvalidMSONSyntaxException',
+                'expected.exception' => InvalidMSONSyntaxException::class,
                 'expected.exception.asserts' => []
             ],
             'duplicate-fields' => [
@@ -483,7 +494,7 @@ class RepresentationParserTest extends TestCase
                  /**
                   * @api-data uri (uri) - Canonical relative URI
                   */',
-                'expected.exception' => '\Mill\Exceptions\Representation\DuplicateFieldException',
+                'expected.exception' => DuplicateFieldException::class,
                 'expected.exception.asserts' => [
                     'getField' => 'uri'
                 ]
@@ -495,14 +506,14 @@ class RepresentationParserTest extends TestCase
     {
         return [
             'no-method-supplied' => [
-                'class' => '\Mill\Examples\Showtimes\Representations\Movie',
+                'class' => Movie::class,
                 'method' => null,
-                'expected.exception' => '\Mill\Exceptions\MethodNotSuppliedException',
+                'expected.exception' => MethodNotSuppliedException::class
             ],
             'method-that-doesnt-exist' => [
-                'class' => '\Mill\Examples\Showtimes\Representations\Movie',
+                'class' => Movie::class,
                 'method' => 'invalid_method',
-                'expected.exception' => '\Mill\Exceptions\MethodNotImplementedException',
+                'expected.exception' => MethodNotImplementedException::class
             ]
         ];
     }

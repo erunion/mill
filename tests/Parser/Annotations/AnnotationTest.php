@@ -9,6 +9,8 @@ abstract class AnnotationTest extends TestCase
 {
     /**
      * @dataProvider providerAnnotationFailsOnInvalidContent
+     * @psalm-param class-string<\Mill\Parser\Annotation> $annotation
+     * @psalm-param class-string<\Throwable> $exception
      * @param string $annotation
      * @param string $content
      * @param string $exception

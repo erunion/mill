@@ -14,32 +14,32 @@ class Theater extends Representation
     {
         return [
             /**
-             * @api-data uri (uri) - Theater URI
+             * @api-data uri `/theaters/1234` (uri) - Theater URI
              */
             'uri' => $this->theater->uri,
 
             /**
-             * @api-data id (number) - Unique ID
+             * @api-data id `1234` (number) - Unique ID
              */
             'id' => $this->theater->id,
 
             /**
-             * @api-data name (string) - Name
+             * @api-data name `Alamo Drafthouse Cinema - Yonkers` (string) - Name
              */
             'name' => $this->theater->name,
 
             /**
-             * @api-data address (string) - Address
+             * @api-data address `2548 Central Park Ave, Yonkers, NY 10710` (string) - Address
              */
             'address' => $this->theater->address,
 
             /**
-             * @api-data phone_number (string) - Phone number
+             * @api-data phone_number `(914) 226-3082` (string) - Phone number
              */
             'phone_number' => $this->theater->phone_number,
 
             /**
-             * @api-data website (string) - Website
+             * @api-data website `https://drafthouse.com/yonkers` (string) - Website
              * @api-version <1.1
              */
             'website' => $this->theater->website,

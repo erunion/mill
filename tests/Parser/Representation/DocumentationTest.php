@@ -5,12 +5,17 @@ use Mill\Exceptions\Annotations\MultipleAnnotationsException;
 use Mill\Exceptions\Annotations\RequiredAnnotationException;
 use Mill\Exceptions\Resource\NoAnnotationsException;
 use Mill\Parser\Representation\Documentation;
+use Mill\Tests\Fixtures\Representations\RepresentationWithNoAnnotations;
+use Mill\Tests\Fixtures\Representations\RepresentationWithNoClassAnnotations;
+use Mill\Tests\Fixtures\Representations\RepresentationWithRequiredLabelAnnotationMissing;
+use Mill\Tests\Fixtures\Representations\RepresentationWithMultipleLabelAnnotations;
 use Mill\Tests\TestCase;
 
 class DocumentationTest extends TestCase
 {
     /**
      * @dataProvider providerParseDocumentationReturnsRepresentation
+     * @psalm-param class-string $class
      * @param string $class
      * @param string $method
      * @param array $expected
@@ -45,6 +50,8 @@ class DocumentationTest extends TestCase
 
     /**
      * @dataProvider providerParseDocumentationFailsOnBadRepresentations
+     * @psalm-param class-string $class
+     * @psalm-param class-string<\Throwable> $exception
      * @param string $class
      * @param string $method
      * @param string $exception
@@ -92,7 +99,7 @@ class DocumentationTest extends TestCase
                             'identifier' => 'content_rating',
                             'nullable' => false,
                             'required' => true,
-                            'sample_data' => 'G',
+                            'sample_data' => 'NR',
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'enum',
@@ -163,7 +170,7 @@ class DocumentationTest extends TestCase
                             'identifier' => 'external_urls.imdb',
                             'nullable' => false,
                             'required' => true,
-                            'sample_data' => false,
+                            'sample_data' => 'https://www.imdb.com/title/tt0089013/',
                             'scopes' => [
                                 [
                                     'description' => false,
@@ -232,7 +239,7 @@ class DocumentationTest extends TestCase
                             'identifier' => 'id',
                             'nullable' => false,
                             'required' => true,
-                            'sample_data' => false,
+                            'sample_data' => '1234',
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'number',
@@ -245,7 +252,7 @@ class DocumentationTest extends TestCase
                             'identifier' => 'kid_friendly',
                             'nullable' => false,
                             'required' => true,
-                            'sample_data' => '0',
+                            'sample_data' => 'false',
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'boolean',
@@ -258,7 +265,7 @@ class DocumentationTest extends TestCase
                             'identifier' => 'name',
                             'nullable' => false,
                             'required' => true,
-                            'sample_data' => false,
+                            'sample_data' => 'Demons',
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'string',
@@ -284,7 +291,7 @@ class DocumentationTest extends TestCase
                             'identifier' => 'rotten_tomatoes_score',
                             'nullable' => false,
                             'required' => true,
-                            'sample_data' => false,
+                            'sample_data' => '56',
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'number',
@@ -297,7 +304,7 @@ class DocumentationTest extends TestCase
                             'identifier' => 'runtime',
                             'nullable' => false,
                             'required' => true,
-                            'sample_data' => false,
+                            'sample_data' => '1hr 20min',
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'string',
@@ -336,7 +343,7 @@ class DocumentationTest extends TestCase
                             'identifier' => 'uri',
                             'nullable' => false,
                             'required' => true,
-                            'sample_data' => false,
+                            'sample_data' => '/movies/1234',
                             'scopes' => [],
                             'subtype' => false,
                             'type' => 'uri',
@@ -372,7 +379,7 @@ class DocumentationTest extends TestCase
                                 'identifier' => 'content_rating',
                                 'nullable' => false,
                                 'required' => true,
-                                'sample_data' => 'G',
+                                'sample_data' => 'NR',
                                 'scopes' => [],
                                 'subtype' => false,
                                 'type' => 'enum',
@@ -450,7 +457,7 @@ class DocumentationTest extends TestCase
                                     'identifier' => 'external_urls.imdb',
                                     'nullable' => false,
                                     'required' => true,
-                                    'sample_data' => false,
+                                    'sample_data' => 'https://www.imdb.com/title/tt0089013/',
                                     'scopes' => [
                                         [
                                             'description' => false,
@@ -528,7 +535,7 @@ class DocumentationTest extends TestCase
                                 'identifier' => 'id',
                                 'nullable' => false,
                                 'required' => true,
-                                'sample_data' => false,
+                                'sample_data' => '1234',
                                 'scopes' => [],
                                 'subtype' => false,
                                 'type' => 'number',
@@ -543,7 +550,7 @@ class DocumentationTest extends TestCase
                                 'identifier' => 'kid_friendly',
                                 'nullable' => false,
                                 'required' => true,
-                                'sample_data' => '0',
+                                'sample_data' => 'false',
                                 'scopes' => [],
                                 'subtype' => false,
                                 'type' => 'boolean',
@@ -558,7 +565,7 @@ class DocumentationTest extends TestCase
                                 'identifier' => 'name',
                                 'nullable' => false,
                                 'required' => true,
-                                'sample_data' => false,
+                                'sample_data' => 'Demons',
                                 'scopes' => [],
                                 'subtype' => false,
                                 'type' => 'string',
@@ -590,7 +597,7 @@ class DocumentationTest extends TestCase
                                 'identifier' => 'rotten_tomatoes_score',
                                 'nullable' => false,
                                 'required' => true,
-                                'sample_data' => false,
+                                'sample_data' => '56',
                                 'scopes' => [],
                                 'subtype' => false,
                                 'type' => 'number',
@@ -605,7 +612,7 @@ class DocumentationTest extends TestCase
                                 'identifier' => 'runtime',
                                 'nullable' => false,
                                 'required' => true,
-                                'sample_data' => false,
+                                'sample_data' => '1hr 20min',
                                 'scopes' => [],
                                 'subtype' => false,
                                 'type' => 'string',
@@ -650,7 +657,7 @@ class DocumentationTest extends TestCase
                                 'identifier' => 'uri',
                                 'nullable' => false,
                                 'required' => true,
-                                'sample_data' => false,
+                                'sample_data' => '/movies/1234',
                                 'scopes' => [],
                                 'subtype' => false,
                                 'type' => 'uri',
@@ -669,17 +676,17 @@ class DocumentationTest extends TestCase
     {
         return [
             'no-annotations' => [
-                'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithNoAnnotations',
+                'class' => RepresentationWithNoAnnotations::class,
                 'method' => 'create',
                 'expected.exception' => NoAnnotationsException::class
             ],
             'no-annotations-on-the-class' => [
-                'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithNoClassAnnotations',
+                'class' => RepresentationWithNoClassAnnotations::class,
                 'method' => 'create',
                 'expected.exception' => NoAnnotationsException::class
             ],
             'missing-a-required-label-annotation' => [
-                'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithRequiredLabelAnnotationMissing',
+                'class' => RepresentationWithRequiredLabelAnnotationMissing::class,
                 'method' => 'create',
                 'expected.exception' => RequiredAnnotationException::class,
                 'asserts' => [
@@ -687,7 +694,7 @@ class DocumentationTest extends TestCase
                 ]
             ],
             'multiple-label-annotations' => [
-                'class' => '\Mill\Tests\Fixtures\Representations\RepresentationWithMultipleLabelAnnotations',
+                'class' => RepresentationWithMultipleLabelAnnotations::class,
                 'method' => 'create',
                 'expected.exception' => MultipleAnnotationsException::class
             ]

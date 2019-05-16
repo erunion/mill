@@ -1,7 +1,4 @@
----
-id: configuration
-title: Configuration
----
+# Configuration
 
 In order to instruct Mill on where to look for documentation, and any constraints you may have, Mill requires the use of an XML configuration file: `mill.xml`
 
@@ -100,7 +97,7 @@ Currently supported authentication flows are `bearer` and `oauth2`.
 #### Scopes
 If your API has an authentication system that requires a specific scope(s) for using an API endpoint, use this to document those.
 
-You can find usage details for scopes in the [`@api-scope`](reference-api-scope.md) documentation.
+You can find usage details for scopes in the [`@api-scope`](reference/annotations/scope.md) documentation.
 
 ### Compilers
 The `<compilers>` element lets you control the documentation compilers that Mill supports from the [`compile`](compile-documentation.md) command.
@@ -158,7 +155,7 @@ The `<info>` element allows you to configure some information about your API:
 ```
 
 ### Parameter Tokens
-Parameter tokens allow you to create an [`@api-param`](reference-api-param.md) or [`@api-queryparam`](reference-api-queryparam.md)  shortcode to save time for common elements in your API (like paging or sorting).
+Parameter tokens allow you to create an [`@api-param`](reference/annotations/param.md) or [`@api-queryparam`](reference/annotations/queryparam.md)  shortcode to save time for common elements in your API (like paging or sorting).
 
 Example:
 
@@ -170,11 +167,11 @@ Example:
 </parameterTokens>
 ```
 
-You can find usage details for parameter tokens in the [`@api-param`](reference-api-param.md#tokens) and [`@api-queryparam`](reference-api-queryparam.md#tokens) documentation.
+You can find usage details for parameter tokens in the [`@api-param`](reference/annotations/param.md#tokens) and [`@api-queryparam`](reference/annotations/queryparam.md#tokens) documentation.
 
 ### Path Parameters
 #### Translations
-The path parameters translations section allows you to set up translation elements for [`@api-pathparam`](reference-api-pathparam.md) annotations. Say, in your code, the route for a video is at `/videos/+video_id`, but in your documentation, you want it to just say `/videos/+id`, this is the place to do that.
+The path parameters translations section allows you to set up translation elements for [`@api-pathparam`](reference/annotations/pathparam.md) annotations. Say, in your code, the route for a video is at `/videos/+video_id`, but in your documentation, you want it to just say `/videos/+id`, this is the place to do that.
 
 Example:
 
@@ -215,7 +212,7 @@ The `<representations`> setting lets you inform Mill on where your API data repr
 ```
 
 #### Errors
-The representation `<errors>` setting lets you tell Mill where your error representations are (the content that is returned from [`@api-error`](reference-api-error.md) annotations. Here you can specify a `<class>` with a fully-qualified class name.
+The representation `<errors>` setting lets you tell Mill where your error representations are (the content that is returned from [`@api-error`](reference/annotations/error.md) annotations. Here you can specify a `<class>` with a fully-qualified class name.
 
 Required attributes for the `<class>` element are:
 
@@ -241,10 +238,21 @@ Here, `\ErrorRepresentation` would have `needsErrorCode="true"`.
 Configure your API servers with the `<servers>` element.
 
 ```xml
-    <servers>
-        <server environment="prod" url="https://api.example.com" description="Production" />
-        <server environment="dev" url="https://api.example.local" description="Development" />
-    </servers>
+<servers>
+    <server environment="prod" url="https://api.example.com" description="Production" />
+    <server environment="dev" url="https://api.example.local" description="Development" />
+</servers>
+```
+
+### Tags
+When building [resource actions](reference/resource-actions.md), you can use [`@api-group`](reference/annotations/group.md) to place your action within a specific group (or tag), that you can later use to reference. The `<tags>` config is here so you can configure your grouping tags, and potentially any additional metadata descriptions you'd like to attach to those in your compiled specifications.
+
+```xml
+<tags>
+    <tag name="Movies">These resources help you handle movies.</tag>
+    <tag name="Movies\Coming Soon" />
+    <tag name="Theaters" />
+</tags>
 ```
 
 ### Vendor tags
@@ -258,7 +266,7 @@ If you'd like to add additional metadata (that you can eventually filter your do
 </vendorTags>
 ```
 
-You can find usage details for vendor tags in the [`@api-vendortag`](reference-api-vendortag.md), [`@api-param`](reference-api-param.md), [`@api-queryparam`](reference-api-queryparam.md), [`@api-return`](reference-api-return.md), and [`@api-error`](reference-api-error.md) documentation.
+You can find usage details for vendor tags in the [`@api-vendortag`](reference/annotations/vendortag.md), [`@api-param`](reference/annotations/param.md), [`@api-queryparam`](reference/annotations/queryparam.md), [`@api-return`](reference/annotations/return.md), and [`@api-error`](reference/annotations/error.md) documentation.
 
 ### Versions
 The `<versions>` setting lets you inform Mill on the various version of your API that exist. From here, Mill will then know what versions to compile documentation for.

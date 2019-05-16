@@ -14,7 +14,7 @@ class Movies
      *
      * @api-queryparam:public location (string, required) - Location you want movies for.
      *
-     * @api-return:public {collection} \Mill\Examples\Showtimes\Representations\Movie
+     * @api-return:public collection (\Mill\Examples\Showtimes\Representations\Movie)
      *
      * @api-error:public 400 (\Mill\Examples\Showtimes\Representations\Error) - If the location is invalid.
      *
@@ -64,7 +64,7 @@ class Movies
      * @api-param:public is_kid_friendly (boolean, optional) - Is this movie kid friendly?
      * @api-param:public rotten_tomatoes_score `56` (integer, optional) - Rotten Tomatoes score
      *
-     * @api-return:public {object} \Mill\Examples\Showtimes\Representations\Movie
+     * @api-return:public object (\Mill\Examples\Showtimes\Representations\Movie)
      *
      * @api-error:public 400 (\Mill\Examples\Showtimes\Representations\Error) - If there is a problem with the request.
      * @api-error:public 400 (\Mill\Examples\Showtimes\Representations\Error) - If the IMDB URL could not be validated.
@@ -81,7 +81,7 @@ class Movies
      *      URL
      *
      * @api-version >=1.1.3
-     * @api-return:public {created}
+     * @api-return:public created
      */
     public function POST()
     {

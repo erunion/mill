@@ -49,17 +49,6 @@ sem malesuada magna mollis euismod.
 
 ## Movies [/movies]
 
-### Get movies. [GET]
-Returns all movies for a specific location.
-
-+ Request
-    + Attributes
-        - `location` (string, required) - Location you want movies for.
-+ Response 200 (application/json)
-    + Attributes (array[Movie])
-+ Response 400 (application/json)
-    + Attributes (Error)
-
 ### Create a movie. [POST]
 Create a new movie.
 
@@ -94,4 +83,15 @@ This action requires a bearer token with the `create` scope.
     There are two ways that this status code can be encountered:
          * If there is a problem with the request.
          * If the IMDB URL could not be validated.
+    + Attributes (Error)
+
+### Get movies. [GET]
+Returns all movies for a specific location.
+
++ Request
+    + Attributes
+        - `location` (string, required) - Location you want movies for.
++ Response 200 (application/json)
+    + Attributes (array[Movie])
++ Response 400 (application/json)
     + Attributes (Error)

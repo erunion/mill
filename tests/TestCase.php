@@ -10,6 +10,7 @@ use Mill\Exceptions\BaseException;
 use Mill\Parser;
 use Mill\Parser\Annotations\DataAnnotation;
 use Mill\Parser\Representation\RepresentationParser;
+use Mill\Tests\Parser\Annotations\DataAnnotationTest;
 
 class TestCase extends \PHPUnit\Framework\TestCase
 {
@@ -87,6 +88,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
     /**
      * Given a full response field docblock, return a `DataAnnotation` object.
      *
+     * @psalm-param class-string $class
      * @param string $docblock
      * @param string $class
      * @return DataAnnotation
@@ -114,7 +116,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
 
         // `@api-data` annotation tests don't set up a RepresentationParser with a method, so we don't need to worry
         // about asserting this.
-        if (get_class($this) !== 'Mill\Tests\Parser\Annotations\DataAnnotationTest') {
+        if (get_class($this) !== DataAnnotationTest::class) {
             $this->assertSame($method, $exception->getMethod());
         }
 

@@ -1,6 +1,7 @@
 <?php
 namespace Mill\Tests;
 
+use Mill\Examples\Showtimes\Controllers\Movie;
 use Mill\Exceptions\MethodNotImplementedException;
 use Mill\Parser;
 
@@ -10,7 +11,7 @@ class ParserTest extends TestCase
 
     public function testParseAnnotationsOnClassWithNoMethod(): void
     {
-        $class = '\Mill\Examples\Showtimes\Controllers\Movie';
+        $class = Movie::class;
         $docs = (new Parser($class, $this->getApplication()))->getAnnotations();
 
         $this->assertCount(0, $docs);
@@ -23,15 +24,17 @@ class ParserTest extends TestCase
      */
     public function testParseAnnotationsOnClassMethod(string $method, array $expected): void
     {
-        $class = '\Mill\Examples\Showtimes\Controllers\Movie';
+        $class = Movie::class;
         $annotations = (new Parser($class, $this->getApplication()))->getAnnotations($method);
         if (empty($annotations)) {
             $this->fail('No parsed annotations for ' . $class);
+            return;
         }
 
         foreach ($annotations as $annotation => $data) {
             if (!isset($expected[$annotation])) {
                 $this->fail('A parsed `' . $annotation . '` annotation was not present in the expected data.');
+                return;
             }
 
             $this->assertCount($expected[$annotation]['count'], $data, '`' . $annotation . '` mismatch');
@@ -46,7 +49,7 @@ class ParserTest extends TestCase
     {
         $this->overrideReadersWithFakeDocblockReturn('/**
           * @api-label Update a piece of content.
-          * @api-group Foo\Bar
+          * @api-group Movies
           *
           * @api-path:public /foo
           * @api-path:private:deprecated /bar
@@ -54,7 +57,7 @@ class ParserTest extends TestCase
           * @api-contenttype application/json
           * @api-scope public
           *
-          * @api-return:public {ok}
+          * @api-return:public ok
           */');
 
         $annotations = (new Parser(__CLASS__, $this->getApplication()))->getAnnotations(__METHOD__);
@@ -66,7 +69,7 @@ class ParserTest extends TestCase
 
     public function testParseAnnotationsOnClassMethodThatDoesntExist(): void
     {
-        $class = '\Mill\Examples\Showtimes\Controllers\Movie';
+        $class = Movie::class;
 
         try {
             (new Parser($class, $this->getApplication()))->getAnnotations('POST');

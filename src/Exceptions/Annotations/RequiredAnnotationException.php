@@ -19,7 +19,7 @@ class RequiredAnnotationException extends BaseException
             'A required annotation, `@api-%s`, is missing from %s%s.',
             $annotation,
             $class,
-            (!empty($method)) ? '::' . $method : null
+            (!empty($method)) ? sprintf('::%s', $method) : ''
         );
 
         $exception = new self($message);

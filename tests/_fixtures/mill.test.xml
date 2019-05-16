@@ -4,6 +4,8 @@
     bootstrap="vendor/autoload.php"
 >
     <info>
+        <description>This is an example API for the purposes of showing how Mill works.</description>
+
         <terms url="https://example.com/terms" />
 
         <contact
@@ -99,6 +101,12 @@
             <translation from="theater_id" to="id" />
         </translations>
     </pathParams>
+
+    <tags>
+        <tag name="Movies">These resources help you handle movies.</tag>
+        <tag name="Movies\Coming Soon" />
+        <tag name="Theaters" />
+    </tags>
 
     <vendorTags>
         <vendorTag name="tag:BUY_TICKETS" />

@@ -13,6 +13,7 @@ use Mill\Parser\Annotations\QueryParamAnnotation;
 use Mill\Parser\Annotations\ReturnAnnotation;
 use Mill\Parser\Annotations\ScopeAnnotation;
 use Mill\Parser\Annotations\VendorTagAnnotation;
+use Mill\Parser\Representation;
 use Mill\Parser\Representation\Documentation;
 use Mill\Parser\Resource\Action;
 use Symfony\Component\Yaml\Yaml;
@@ -24,6 +25,15 @@ class OpenApi extends Compiler\Specification
 
     /** @var string */
     protected $current_content_type;
+
+    /** @var string */
+    protected $current_version;
+
+    /** @var array */
+    protected $transposed_actions = [];
+
+    /** @var array */
+    protected $transposed_representations = [];
 
     /**
      * Take compiled API documentation and create a OpenAPI specification.
@@ -42,14 +52,12 @@ class OpenApi extends Compiler\Specification
         $resources = $this->getResources();
 
         foreach ($resources as $version => $groups) {
-            $this->version = $version;
-            $this->representations = $this->getRepresentations($this->version);
-
             $specification = [
                 'openapi' => '3.0.2',
                 'info' => [
                     'title' => $this->config->getName(),
-                    'version' => $this->version,
+                    'description' => $this->config->getDescription(),
+                    'version' => $version,
                     'contact' => $this->processContact()
                 ],
                 'tags' => $this->processTags($groups, $group_excludes),
@@ -78,46 +86,11 @@ class OpenApi extends Compiler\Specification
 
                 /** @var Action\Documentation $action */
                 foreach ($data['actions'] as $identifier => $action) {
-                    $this->current_content_type = $action->getContentType($this->version);
-
                     $path = $action->getPath();
                     $method = strtolower($action->getMethod());
                     $identifier = $path->getCleanPath();
-                    if (!isset($specification['paths'][$identifier])) {
-                        $specification['paths'][$identifier] = [];
-                    }
 
-                    $schema = [
-                        'deprecated' => $path->isDeprecated(),
-                        'summary' => $action->getLabel(),
-                        'description' => $action->getDescription(),
-                        'operationId' => $action->getOperationId(),
-                        'tags' => [
-                            $group
-                        ],
-                        'parameters' => $this->processParameters($action),
-                        'requestBody' => $this->processRequest($action),
-                        'responses' => $this->processResponses($action),
-                        'security' => $this->processSecurity($action)
-                    ];
-
-                    $schema += $this->processExtensions($action, $path);
-
-                    foreach ([
-                        'deprecated',
-                        'description',
-                        'parameters',
-                        'requestBody',
-                        'security',
-                        'x-mill-path-aliased',
-                        'x-mill-path-aliases',
-                        'x-mill-vendor-tags',
-                        'x-mill-visibility-private'
-                    ] as $key) {
-                        if (empty($schema[$key])) {
-                            unset($schema[$key]);
-                        }
-                    }
+                    $schema = $this->transposed_actions[$version][$identifier][$method];
 
                     $specification['paths'][$identifier][$method] = $schema;
                 }
@@ -126,32 +99,104 @@ class OpenApi extends Compiler\Specification
             ksort($specification['paths']);
 
             // Process representation data structures.
-            if (!empty($this->representations)) {
+            $representations = $this->getRepresentations($version);
+            if (!empty($representations)) {
                 /** @var Documentation $representation */
-                foreach ($this->representations as $representation) {
-                    $fields = $representation->getExplodedContentDotNotation();
-                    if (empty($fields)) {
-                        continue;
-                    }
-
-                    $properties = $this->processDataModel(DataAnnotation::PAYLOAD_FORMAT, [
-                        'properties' => $fields
-                    ]);
-
+                foreach ($representations as $representation) {
                     $schema_name = $representation->getLabel();
                     $identifier = $this->getReferenceName($schema_name);
-                    $specification['components']['schemas'][$identifier] = [
-                        'title' => $schema_name
-                    ];
 
-                    $specification['components']['schemas'][$identifier] += $properties['properties'];
+                    $schema = $this->transposed_representations[$version][$identifier];
+
+                    $specification['components']['schemas'][$identifier] = $schema;
                 }
 
                 ksort($specification['components']['schemas']);
             }
 
-            $this->specifications[$this->version] = $specification;
+            $this->specifications[$version] = $specification;
         }
+    }
+
+    /**
+     * {{@inheritdoc}}
+     */
+    protected function transposeAction(
+        string $version,
+        string $group,
+        string $identifier,
+        Action\Documentation $action
+    ): void {
+        $this->current_version = $version;
+        $this->current_content_type = $action->getContentType($version);
+
+        $path = $action->getPath();
+        $method = strtolower($action->getMethod());
+        $identifier = $path->getCleanPath();
+
+        $schema = [
+            'deprecated' => $path->isDeprecated(),
+            'summary' => $action->getLabel(),
+            'description' => $action->getDescription(),
+            'operationId' => $action->getOperationId(),
+            'tags' => [
+                $group
+            ],
+            'parameters' => $this->processParameters($action),
+            'requestBody' => $this->processRequest($action),
+            'responses' => $this->processResponses($action),
+            'security' => $this->processSecurity($action)
+        ];
+
+        $schema += $this->processExtensions($action, $path);
+
+        foreach ([
+            'deprecated',
+            'description',
+            'parameters',
+            'requestBody',
+            'security',
+            'x-mill-path-aliased',
+            'x-mill-path-aliases',
+            'x-mill-vendor-tags',
+            'x-mill-visibility-private'
+        ] as $key) {
+            if (empty($schema[$key])) {
+                unset($schema[$key]);
+            }
+        }
+
+        $this->transposed_actions[$version][$identifier][$method] = $schema;
+    }
+
+    /**
+     * {{@inheritdoc}}
+     */
+    protected function transposeRepresentation(string $version, Representation\Documentation $representation): void
+    {
+        $fields = $representation->getExplodedContentDotNotation();
+        if (empty($fields)) {
+            return;
+        }
+
+        $properties = $this->processDataModel(
+            $version,
+            DataAnnotation::PAYLOAD_FORMAT,
+            [
+                'properties' => $fields
+            ]
+        );
+
+        $schema_name = $representation->getLabel();
+        $identifier = $this->getReferenceName($schema_name);
+
+        $schema = [
+            'title' => $schema_name
+        ];
+
+        $schema += $properties['properties'];
+
+        $this->transposed_representations[$version][$identifier] = $schema;
     }
 
     /**
@@ -179,16 +224,24 @@ class OpenApi extends Compiler\Specification
      */
     protected function processTags(array $groups, array $group_excludes): array
     {
+        $configured_tags = $this->config->getTags();
+
         $tags = array_filter(
             array_map(
-                function (string $group) use ($group_excludes): ?array {
+                function (string $group) use ($group_excludes, $configured_tags): ?array {
                     if (in_array($group, $group_excludes)) {
                         return [];
                     }
 
-                    return [
+                    $tag = [
                         'name' => $group
                     ];
+
+                    if (!empty($configured_tags[$group])) {
+                        $tag['description'] = $configured_tags[$group];
+                    }
+
+                    return $tag;
                 },
                 array_keys($groups)
             )
@@ -280,10 +333,12 @@ class OpenApi extends Compiler\Specification
     {
         return array_merge(
             $this->processDataModel(
+                $this->current_version,
                 PathParamAnnotation::PAYLOAD_FORMAT,
                 $action->getExplodedPathParameterDotNotation()
             ),
             $this->processDataModel(
+                $this->current_version,
                 QueryParamAnnotation::PAYLOAD_FORMAT,
                 $action->getExplodedQueryParameterDotNotation()
             )
@@ -320,7 +375,11 @@ class OpenApi extends Compiler\Specification
                     'schema' => (function () use ($params): array {
                         $spec = [
                             'type' => 'object',
-                            'properties' => $this->processDataModel(ParamAnnotation::PAYLOAD_FORMAT, $params)
+                            'properties' => $this->processDataModel(
+                                $this->current_version,
+                                ParamAnnotation::PAYLOAD_FORMAT,
+                                $params
+                            )
                         ];
 
                         $spec = $this->extractRequiredFields($spec);
@@ -390,9 +449,11 @@ class OpenApi extends Compiler\Specification
             /** @var ReturnAnnotation|ErrorAnnotation $response */
             $response = array_shift($responses);
             $representation = $response->getRepresentation();
-            if ($representation && isset($this->representations[$representation])) {
+            $representations = $this->getRepresentations($this->current_version);
+
+            if ($representation && isset($representations[$representation])) {
                 /** @var Documentation $docs */
-                $docs = $this->representations[$representation];
+                $docs = $representations[$representation];
                 $fields = $docs->getRawContent();
                 if (!empty($fields)) {
                     $ref_name = $this->getReferenceName($docs->getLabel());
@@ -487,11 +548,12 @@ class OpenApi extends Compiler\Specification
     }
 
     /**
+     * @param string $version
      * @param string $payload_format
      * @param array $fields
      * @return array
      */
-    private function processDataModel(string $payload_format, array $fields = []): array
+    private function processDataModel(string $version, string $payload_format, array $fields = []): array
     {
         $schema = [];
 
@@ -521,7 +583,7 @@ class OpenApi extends Compiler\Specification
                         '`' . implode('`, `', array_map(function (array $scope): string {
                             return $scope['scope'];
                         }, $data['scopes'])) . '`',
-                        (count($data['scopes']) > 1) ? 's' : null
+                        (count($data['scopes']) > 1) ? 's' : ''
                     );
                 }
 
@@ -537,7 +599,7 @@ class OpenApi extends Compiler\Specification
                 }
 
                 if ($spec['schema']['type'] === 'object') {
-                    $representation = $this->getRepresentation($data['type']);
+                    $representation = $this->getRepresentation($data['type'], $version);
                     if ($representation) {
                         $ref = '#/components/schemas/' . $this->getReferenceName($representation->getLabel());
 
@@ -607,21 +669,20 @@ class OpenApi extends Compiler\Specification
             unset($field[Application::DOT_NOTATION_ANNOTATION_DATA_KEY]);
             if (!empty($field)) {
                 if (empty($data)) {
-                    $spec['properties'] = $this->processDataModel($payload_format, $field);
+                    $spec['properties'] = $this->processDataModel($version, $payload_format, $field);
                 } elseif ($data['type'] === 'array' && $data['subtype'] === 'object') {
                     $spec['items'] = [
                         'type' => 'object',
-                        'properties' => $this->processDataModel($payload_format, $field)
+                        'properties' => $this->processDataModel($version, $payload_format, $field)
                     ];
                 } elseif ($data['type'] === 'object') {
-                    $spec['properties'] = $this->processDataModel($payload_format, $field);
+                    $spec['properties'] = $this->processDataModel($version, $payload_format, $field);
                 } else {
-                    $spec['items'] = $this->processDataModel($payload_format, $field);
+                    $spec['items'] = $this->processDataModel($version, $payload_format, $field);
                 }
             } elseif ($data['type'] === 'array') {
-                // @todo Array subtypes are not yet required. https://github.com/vimeo/mill/issues/190
                 if (!empty($data['subtype'])) {
-                    $representation = $this->getRepresentation($data['subtype']);
+                    $representation = $this->getRepresentation($data['subtype'], $version);
                     if ($representation) {
                         $ref = '#/components/schemas/' . $this->getReferenceName($representation->getLabel());
 

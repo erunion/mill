@@ -16,10 +16,10 @@ class RestrictedFieldNameException extends BaseException
     public static function create(string $class, ?string $method): RestrictedFieldNameException
     {
         $message = sprintf(
-            '`%s` is a reserved `@api-field` name, and cannot be used in %s::%s.',
+            '`%s` is a reserved `@api-field` name, and cannot be used in %s%s.',
             Application::DOT_NOTATION_ANNOTATION_DATA_KEY,
             $class,
-            $method
+            (!is_null($method)) ? sprintf('::%s', $method) : ''
         );
 
         $exception = new self($message);

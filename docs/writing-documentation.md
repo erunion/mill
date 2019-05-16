@@ -1,7 +1,4 @@
----
-id: writing-documentation
-title: Documenting your API
----
+# Documenting your API
 
 ## Resources
 Resources are a collection of actions (endpoints). These can generally be referred to as a "controller" in a standard MVC application structure.
@@ -34,9 +31,9 @@ class UsersController extends \MyApplication\Controller
      *     each page. Max 100.
      * @api-queryparam:public query (string, required) - Search query.
      *
-     * @api-return:public {collection} \MyApplication\Representation\User
+     * @api-return:public collection (\MyApplication\Representation\User)
      *
-     * @api-error:public {503} \MyApplication\Representation\Error If search
+     * @api-error:public 503 (\MyApplication\Representation\Error) - If search
      *     is disabled.
      */
     public function GET()

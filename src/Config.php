@@ -28,8 +28,11 @@ class Config
     /** @var string The base directory for this configuration file. */
     protected $base_dir;
 
-    /** @var null|string The name of your API. */
-    protected $name = null;
+    /** @var string The name of your API. */
+    protected $name;
+
+    /** @var string The description of your API. */
+    protected $description;
 
     /** @var null|string The terms of service URL for your API. */
     protected $terms = null;
@@ -57,6 +60,9 @@ class Config
 
     /** @var array Array of API versions. */
     protected $api_versions = [];
+
+    /** @var array Allowable list of valid resource tags. */
+    protected $tags = [];
 
     /** @var array Allowable list of valid application vendor tags. */
     protected $vendor_tags = [];
@@ -152,10 +158,25 @@ class Config
         $config->loadPathParamTranslations($xml);
         $config->loadRepresentations($xml);
         $config->loadServers($xml);
+        $config->loadTags($xml);
         $config->loadVendorTags($xml);
         $config->loadVersions($xml);
 
         return $config;
+    }
+
+    /**
+     * @param SimpleXMLElement $xml
+     */
+    protected function loadTags(SimpleXMLElement $xml): void
+    {
+        /** @var SimpleXMLElement $tag */
+        foreach ($xml->tags->tag as $tag) {
+            $name = (string) $tag['name'];
+            $description = trim((string) $tag);
+
+            $this->tags[$name] = (!empty($description)) ? $description : null;
+        }
     }
 
     /**
@@ -288,6 +309,10 @@ class Config
      */
     protected function loadInfo(SimpleXMLElement $xml): void
     {
+        if (isset($xml->info->description)) {
+            $this->description = (string) $xml->info->description;
+        }
+
         if (isset($xml->info->terms)) {
             $this->terms = (string) $xml->info->terms['url'];
         }
@@ -525,11 +550,21 @@ class Config
     /**
      * Get the name of your API.
      *
-     * @return null|string
+     * @return string
      */
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
+    }
+
+    /**
+     * Get the description of your API.
+     *
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
     }
 
     /**
@@ -657,6 +692,16 @@ class Config
         }
 
         throw new \Exception('The supplied version, `' . $version . '`` was not found to be configured.');
+    }
+
+    /**
+     * Get the array of configured resource tags.
+     *
+     * @return array
+     */
+    public function getTags(): array
+    {
+        return $this->tags;
     }
 
     /**
@@ -1017,52 +1062,33 @@ class Config
      */
     private function getClassFQNFromFile(string $file): string
     {
-        /** @var resource $fp */
-        $fp = fopen($file, 'r');
-        $class = $namespace = $buffer = '';
-        $i = 0;
-        while (!$class) {
-            if (feof($fp)) {
-                break;
-            }
+        $class = $namespace = '';
+        $buffer = file_get_contents($file);
 
-            $buffer .= fread($fp, 512 * 2);
+        // Hide warnings from this that might arise from unterminated docblock comments.
+        $tokens = @token_get_all($buffer);
 
-            // Hide warnings from this that might arise from unterminated docblock comments.
-            $tokens = @token_get_all($buffer);
-
-            if (strpos($buffer, '{') === false) {
-                continue;
-            }
-
-            for (; $i<count($tokens); $i++) {
-                switch ($tokens[$i][0]) {
-                    case T_NAMESPACE:
-                        for ($j=$i+1; $j<count($tokens); $j++) {
-                            if ($tokens[$j][0] === T_STRING) {
-                                $namespace .= '\\' . $tokens[$j][1];
-                            } elseif ($tokens[$j] === '{' || $tokens[$j] === ';') {
-                                break;
-                            }
+        for ($i=1; $i<count($tokens); $i++) {
+            switch ($tokens[$i][0]) {
+                case T_NAMESPACE:
+                    for ($j=$i+1; $j<count($tokens); $j++) {
+                        if ($tokens[$j][0] === T_STRING) {
+                            $namespace .= '\\' . $tokens[$j][1];
+                        } elseif ($tokens[$j] === '{' || $tokens[$j] === ';') {
+                            break;
                         }
-                        break;
-
-                    case T_CLASS:
-                        $class = $tokens[$i+2][1];
-                        break;
-                }
-
-                if (!empty($namespace) && !empty($class)) {
+                    }
                     break;
-                }
+
+                case T_CLASS:
+                    $class = $tokens[$i+2][1];
+                    break;
             }
 
             if (!empty($namespace) && !empty($class)) {
                 break;
             }
         }
-
-        fclose($fp);
 
         return implode('\\', [$namespace, $class]);
     }

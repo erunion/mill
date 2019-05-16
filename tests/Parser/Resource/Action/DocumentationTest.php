@@ -1,6 +1,14 @@
 <?php
 namespace Mill\Tests\Parser\Resource\Action;
 
+use Mill\Examples\Showtimes\Controllers\Movie;
+use Mill\Exceptions\Annotations\MultipleAnnotationsException;
+use Mill\Exceptions\Annotations\RequiredAnnotationException;
+use Mill\Exceptions\Resource\MissingVisibilityDecoratorException;
+use Mill\Exceptions\Resource\NoAnnotationsException;
+use Mill\Exceptions\Resource\PublicDecoratorOnPrivateActionException;
+use Mill\Exceptions\Resource\TooManyAliasedPathsException;
+use Mill\Exceptions\Resource\UnsupportedDecoratorException;
 use Mill\Exceptions\BaseException;
 use Mill\Parser\Annotations\MaxVersionAnnotation;
 use Mill\Parser\Annotations\MinVersionAnnotation;
@@ -20,7 +28,7 @@ class DocumentationTest extends TestCase
      */
     public function testParseMethodDocumentation(string $method, array $expected): void
     {
-        $class_stub = '\Mill\Examples\Showtimes\Controllers\Movie';
+        $class_stub = Movie::class;
         $parser = (new Documentation($class_stub, $method, $this->getApplication()))->parse();
 
         $this->assertMethodDocumentation($parser, $class_stub, $method, $expected);
@@ -52,7 +60,7 @@ class DocumentationTest extends TestCase
 
         $this->assertCount($expected['vendor_tags.total'], $parser->getVendorTags());
 
-        /** @var \Mill\Parser\Annotations\MinVersionAnnotation $min_version */
+        /** @var \Mill\Parser\Annotations\MinVersionAnnotation|null $min_version */
         $min_version = $parser->getMinimumVersion();
         if ($expected['minimum_version']) {
             $this->assertInstanceOf(MinVersionAnnotation::class, $min_version);
@@ -61,7 +69,7 @@ class DocumentationTest extends TestCase
             $this->assertNull($min_version);
         }
 
-        /** @var \Mill\Parser\Annotations\MaxVersionAnnotation $max_version */
+        /** @var \Mill\Parser\Annotations\MaxVersionAnnotation|null $max_version */
         $max_version = $parser->getMaximumVersion();
         if ($expected['maximum_version']) {
             $this->assertInstanceOf(MaxVersionAnnotation::class, $max_version);
@@ -155,6 +163,7 @@ class DocumentationTest extends TestCase
 
     /**
      * @dataProvider providerMethodsThatWillFailParsing
+     * @psalm-param class-string<\Throwable> $exception
      * @param string $docblock
      * @param string $exception
      * @param array $asserts
@@ -168,7 +177,7 @@ class DocumentationTest extends TestCase
         try {
             (new Documentation(__CLASS__, __METHOD__, $this->getApplication()))->parse()->toArray();
         } catch (BaseException $e) {
-            if ('\\' . get_class($e) !== $exception) {
+            if (get_class($e) !== $exception) {
                 $this->fail('Unrecognized exception (' . get_class($e) . ') thrown.');
             }
 
@@ -948,7 +957,7 @@ DESCRIPTION;
                 'docblock' => '/**
                   * @api-label Update a piece of content.
                   * @api-operationid updateFoo
-                  * @api-group Foo\Bar
+                  * @api-group Movies
                   *
                   * @api-path:public /foo
                   * @api-path:private:alias /bar
@@ -956,7 +965,7 @@ DESCRIPTION;
                   * @api-contenttype application/json
                   * @api-scope public
                   *
-                  * @api-return:public {ok}
+                  * @api-return:public ok
                   */',
                 'asserts' => [
                     'getPaths' => [
@@ -993,7 +1002,7 @@ DESCRIPTION;
                 'docblock' => '/**
                   * @api-label Update a piece of content.
                   * @api-operationid updateFoo
-                  * @api-group Foo\Bar
+                  * @api-group Movies
                   *
                   * @api-path:public /foo
                   * @api-path:private /bar
@@ -1001,7 +1010,7 @@ DESCRIPTION;
                   * @api-contenttype application/json
                   * @api-scope public
                   *
-                  * @api-return:public {ok}
+                  * @api-return:public ok
                   */',
                 'asserts' => [
                     'getPaths' => [
@@ -1030,7 +1039,7 @@ DESCRIPTION;
                 'docblock' => '/**
                   * @api-label Delete a piece of content.
                   * @api-operationid deleteFoo
-                  * @api-group Foo\Bar
+                  * @api-group Movies
                   *
                   * @api-path:private /foo
                   *
@@ -1038,7 +1047,7 @@ DESCRIPTION;
                   * @api-scope delete
                   * @api-vendortag tag:DELETE_CONTENT
                   *
-                  * @api-return:private {deleted}
+                  * @api-return:private deleted
                   */',
                 'asserts' => [
                     'getVendorTags' => [
@@ -1060,7 +1069,7 @@ DESCRIPTION;
         return [
             'no-parsed-annotations' => [
                 'docblock' => '',
-                'expected.exception' => '\Mill\Exceptions\Resource\NoAnnotationsException',
+                'expected.exception' => NoAnnotationsException::class,
                 'expected.exception.asserts' => []
             ],
             'missing-required-operation-id-annotation' => [
@@ -1069,7 +1078,7 @@ DESCRIPTION;
                   *
                   * @api-path /some/page
                   */',
-                'expected.exception' => '\Mill\Exceptions\Annotations\RequiredAnnotationException',
+                'expected.exception' => RequiredAnnotationException::class,
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'operationid'
                 ]
@@ -1081,7 +1090,7 @@ DESCRIPTION;
                   * @api-operationid testFoo
                   * @api-operationid testFoo
                   */',
-                'expected.exception' => '\Mill\Exceptions\Annotations\MultipleAnnotationsException',
+                'expected.exception' => MultipleAnnotationsException::class,
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'operationid'
                 ]
@@ -1093,7 +1102,7 @@ DESCRIPTION;
                   * @api-operationid testFoo
                   * @api-path /some/page
                   */',
-                'expected.exception' => '\Mill\Exceptions\Annotations\RequiredAnnotationException',
+                'expected.exception' => RequiredAnnotationException::class,
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'label'
                 ]
@@ -1106,7 +1115,7 @@ DESCRIPTION;
                   * @api-label Test method
                   * @api-label Test method
                   */',
-                'expected.exception' => '\Mill\Exceptions\Annotations\MultipleAnnotationsException',
+                'expected.exception' => MultipleAnnotationsException::class,
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'label'
                 ]
@@ -1117,10 +1126,10 @@ DESCRIPTION;
                   *
                   * @api-label Test Method
                   * @api-operationid testFoo
-                  * @api-group Something
+                  * @api-group Movies
                   * @api-path /some/page
                   */',
-                'expected.exception' => '\Mill\Exceptions\Annotations\RequiredAnnotationException',
+                'expected.exception' => RequiredAnnotationException::class,
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'contenttype'
                 ]
@@ -1131,12 +1140,12 @@ DESCRIPTION;
                   *
                   * @api-label Test method
                   * @api-operationid testFoo
-                  * @api-group Root
+                  * @api-group Movies
                   * @api-path /
                   * @api-contenttype application/json
-                  * @api-return:public {collection} \Mill\Examples\Showtimes\Representations\Representation
+                  * @api-return:public collection (\Mill\Examples\Showtimes\Representations\Representation)
                   */',
-                'expected.exception' => '\Mill\Exceptions\Resource\MissingVisibilityDecoratorException',
+                'expected.exception' => MissingVisibilityDecoratorException::class,
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'path'
                 ]
@@ -1147,12 +1156,12 @@ DESCRIPTION;
                   *
                   * @api-label Test method
                   * @api-operationid testFoo
-                  * @api-group Root
+                  * @api-group Movies
                   * @api-path:special /
                   * @api-contenttype application/json
-                  * @api-return {collection} \Mill\Examples\Showtimes\Representations\Representation
+                  * @api-return collection (\Mill\Examples\Showtimes\Representations\Representation)
                   */',
-                'expected.exception' => '\Mill\Exceptions\Resource\UnsupportedDecoratorException',
+                'expected.exception' => UnsupportedDecoratorException::class,
                 'expected.exception.asserts' => [
                     'getDecorator' => 'special',
                     'getAnnotation' => 'path'
@@ -1164,11 +1173,11 @@ DESCRIPTION;
                   *
                   * @api-label Test method
                   * @api-operationid testFoo
-                  * @api-group Something
+                  * @api-group Movies
                   * @api-contenttype application/json
                   * @api-param:public {page}
                   */',
-                'expected.exception' => '\Mill\Exceptions\Annotations\RequiredAnnotationException',
+                'expected.exception' => RequiredAnnotationException::class,
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'path'
                 ]
@@ -1179,15 +1188,15 @@ DESCRIPTION;
                   *
                   * @api-label Test method
                   * @api-operationid testFoo
-                  * @api-group Search
+                  * @api-group Movies
                   * @api-path:private /search
                   * @api-contenttype application/json
                   * @api-scope public
-                  * @api-return:private {collection} \Mill\Examples\Showtimes\Representations\Representation
+                  * @api-return:private collection (\Mill\Examples\Showtimes\Representations\Representation)
                   * @api-error:public 403 (\Mill\Examples\Showtimes\Representations\CodedError<666>) - If the user
                   *     isn\'t allowed to do something.
                   */',
-                'expected.exception' => '\Mill\Exceptions\Resource\PublicDecoratorOnPrivateActionException',
+                'expected.exception' => PublicDecoratorOnPrivateActionException::class,
                 'expected.exception.asserts' => [
                     'getAnnotation' => 'error'
                 ]
@@ -1198,16 +1207,16 @@ DESCRIPTION;
                   *
                   * @api-label Test method
                   * @api-operationid testFoo
-                  * @api-group Search
+                  * @api-group Movies
                   * @api-path:private:alias /search
                   * @api-path:private:alias /search2
                   * @api-contenttype application/json
                   * @api-scope public
-                  * @api-return:private {collection} \Mill\Examples\Showtimes\Representations\Representation
+                  * @api-return:private collection (\Mill\Examples\Showtimes\Representations\Representation)
                   * @api-error:public 403 (\Mill\Examples\Showtimes\Representations\CodedError<666>) - If the user
                   *     isn\'t allowed to do something.
                   */',
-                'expected.exception' => '\Mill\Exceptions\Resource\TooManyAliasedPathsException',
+                'expected.exception' => TooManyAliasedPathsException::class,
                 'expected.exception.asserts' => []
             ]
         ];

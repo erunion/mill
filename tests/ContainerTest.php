@@ -1,6 +1,8 @@
 <?php
 namespace Mill\Tests;
 
+use League\Flysystem\Filesystem;
+use Mill\Config;
 use Mill\Container;
 
 class ContainerTest extends TestCase
@@ -9,11 +11,10 @@ class ContainerTest extends TestCase
     {
         $container = $this->getContainer();
 
-        $this->assertInstanceOf('Mill\Container', $container);
-        $this->assertInstanceOf('Mill\Config', $container['config']);
-        $this->assertInstanceOf('Mill\Config', $container->getConfig());
-        $this->assertInstanceOf('League\Flysystem\Filesystem', $container['filesystem']);
-        $this->assertInstanceOf('League\Flysystem\Filesystem', $container->getFilesystem());
+        $this->assertInstanceOf(Config::class, $container['config']);
+        $this->assertInstanceOf(Config::class, $container->getConfig());
+        $this->assertInstanceOf(Filesystem::class, $container['filesystem']);
+        $this->assertInstanceOf(Filesystem::class, $container->getFilesystem());
     }
 
     /**
