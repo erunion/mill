@@ -4,6 +4,8 @@
     bootstrap="vendor/autoload.php"
 >
     <info>
+        <description>This is an example API for the purposes of showing how Mill works.</description>
+
         <terms url="https://example.com/terms" />
 
         <contact

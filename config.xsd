@@ -17,6 +17,8 @@
             <xs:element name="info" minOccurs="1" maxOccurs="1">
                 <xs:complexType>
                     <xs:sequence>
+                        <xs:element name="description" minOccurs="1" maxOccurs="unbounded" />
+
                         <xs:element name="terms" minOccurs="0" maxOccurs="1">
                             <xs:complexType>
                                 <xs:attribute name="url" type="xs:string" use="required" />
