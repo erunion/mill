@@ -1,4 +1,20 @@
 # Changelog
+## [6.0.0] - 2019-05-16
+### Added
+* A new `<tags>` setting in the XML config for defining available `@api-group` group names, along with an additional description. [#224](https://github.com/vimeo/mill/pull/224)
+* A new `<description />` setting in the `<info>` XML config section for setting the `info.description` section of compiled OpenAPI specifications. [#237](https://github.com/vimeo/mill/pull/237)
+
+### Changed
+* New documentation website. [#219](https://github.com/vimeo/mill/pull/219)
+* New hook-based compiling engine. [#211](https://github.com/vimeo/mill/pull/211)
+    * This also speeds up changelog generation. [#209](https://github.com/vimeo/mill/issues/209)
+* Refined syntax for `@api-return` annotations. [#236](https://github.com/vimeo/mill/pull/236)
+* Removal of support for `@api-error` message string templates. [#223](https://github.com/vimeo/mill/pull/223)
+* Updates to the `@api-group` annotation so it's now configured through a `<tags>` setting in the XML config. [#224](https://github.com/vimeo/mill/pull/224)
+
+### Fixed
+* Now loading the full contents of a file in order to determine the FQN of the file/class. This resolves a bug where we'd pull file partials, and end up finding bad FQNs that would break documentation generation. [#192](https://github.com/vimeo/mill/issues/192)
+
 ## [5.1.8] - 2019-05-11
 ### Fixed
 * Array examples were being compiled into the wrong spot in JSON Schema objects in OpenAPI specs. [#231](https://github.com/vimeo/mill/pull/231)
@@ -389,6 +405,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[6.0.0]: https://github.com/vimeo/mill/compare/5.1.8...6.0.0
 [5.1.8]: https://github.com/vimeo/mill/compare/5.1.7...5.1.8
 [5.1.7]: https://github.com/vimeo/mill/compare/5.1.6...5.1.7
 [5.1.6]: https://github.com/vimeo/mill/compare/5.1.5...5.1.6
