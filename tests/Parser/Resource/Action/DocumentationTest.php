@@ -965,7 +965,7 @@ DESCRIPTION;
                   * @api-contenttype application/json
                   * @api-scope public
                   *
-                  * @api-return:public {ok}
+                  * @api-return:public ok
                   */',
                 'asserts' => [
                     'getPaths' => [
@@ -1010,7 +1010,7 @@ DESCRIPTION;
                   * @api-contenttype application/json
                   * @api-scope public
                   *
-                  * @api-return:public {ok}
+                  * @api-return:public ok
                   */',
                 'asserts' => [
                     'getPaths' => [
@@ -1047,7 +1047,7 @@ DESCRIPTION;
                   * @api-scope delete
                   * @api-vendortag tag:DELETE_CONTENT
                   *
-                  * @api-return:private {deleted}
+                  * @api-return:private deleted
                   */',
                 'asserts' => [
                     'getVendorTags' => [
@@ -1143,7 +1143,7 @@ DESCRIPTION;
                   * @api-group Movies
                   * @api-path /
                   * @api-contenttype application/json
-                  * @api-return:public {collection} \Mill\Examples\Showtimes\Representations\Representation
+                  * @api-return:public collection (\Mill\Examples\Showtimes\Representations\Representation)
                   */',
                 'expected.exception' => MissingVisibilityDecoratorException::class,
                 'expected.exception.asserts' => [
@@ -1159,7 +1159,7 @@ DESCRIPTION;
                   * @api-group Movies
                   * @api-path:special /
                   * @api-contenttype application/json
-                  * @api-return {collection} \Mill\Examples\Showtimes\Representations\Representation
+                  * @api-return collection (\Mill\Examples\Showtimes\Representations\Representation)
                   */',
                 'expected.exception' => UnsupportedDecoratorException::class,
                 'expected.exception.asserts' => [
@@ -1192,7 +1192,7 @@ DESCRIPTION;
                   * @api-path:private /search
                   * @api-contenttype application/json
                   * @api-scope public
-                  * @api-return:private {collection} \Mill\Examples\Showtimes\Representations\Representation
+                  * @api-return:private collection (\Mill\Examples\Showtimes\Representations\Representation)
                   * @api-error:public 403 (\Mill\Examples\Showtimes\Representations\CodedError<666>) - If the user
                   *     isn\'t allowed to do something.
                   */',
@@ -1212,7 +1212,7 @@ DESCRIPTION;
                   * @api-path:private:alias /search2
                   * @api-contenttype application/json
                   * @api-scope public
-                  * @api-return:private {collection} \Mill\Examples\Showtimes\Representations\Representation
+                  * @api-return:private collection (\Mill\Examples\Showtimes\Representations\Representation)
                   * @api-error:public 403 (\Mill\Examples\Showtimes\Representations\CodedError<666>) - If the user
                   *     isn\'t allowed to do something.
                   */',

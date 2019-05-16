@@ -57,7 +57,7 @@ class ParserTest extends TestCase
           * @api-contenttype application/json
           * @api-scope public
           *
-          * @api-return:public {ok}
+          * @api-return:public ok
           */');
 
         $annotations = (new Parser(__CLASS__, $this->getApplication()))->getAnnotations(__METHOD__);

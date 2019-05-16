@@ -31,9 +31,9 @@ class UsersController extends \MyApplication\Controller
      *     each page. Max 100.
      * @api-queryparam:public query (string, required) - Search query.
      *
-     * @api-return:public {collection} \MyApplication\Representation\User
+     * @api-return:public collection (\MyApplication\Representation\User)
      *
-     * @api-error:public {503} \MyApplication\Representation\Error If search
+     * @api-error:public 503 (\MyApplication\Representation\Error) - If search
      *     is disabled.
      */
     public function GET()

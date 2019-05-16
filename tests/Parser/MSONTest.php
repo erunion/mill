@@ -88,22 +88,6 @@ class MSONTest extends TestCase
                     ]
                 ]
             ],
-            'vendor-tag' => [
-                'content' => 'content_rating `G` (string, REQUIRED, tag:MOVIE_RATINGS) - MPAA rating',
-                'expected' => [
-                    'description' => 'MPAA rating',
-                    'field' => 'content_rating',
-                    'nullable' => false,
-                    'required' => true,
-                    'sample_data' => 'G',
-                    'subtype' => false,
-                    'type' => 'string',
-                    'values' => [],
-                    'vendor_tags' => [
-                        'tag:MOVIE_RATINGS'
-                    ]
-                ]
-            ],
             'description-long' => [
                 'content' => 'content_rating `G` (string, required) - Voluptate culpa ex, eiusmod rump sint id. Venison
                     non ribeye landjaeger laboris, enim jowl culpa meatloaf dolore mollit anim. Bacon shankle eiusmod
@@ -145,6 +129,48 @@ class MSONTest extends TestCase
                     'vendor_tags' => [
                         'tag:MOVIE_RATINGS'
                     ]
+                ]
+            ],
+            'description-only' => [
+                'content' => 'notmodified - If no data has been changed.',
+                'expected' => [
+                    'description' => 'If no data has been changed.',
+                    'field' => 'notmodified',
+                    'nullable' => false,
+                    'required' => false,
+                    'sample_data' => '', // @todo should be `false`, see `MSON::getRegex()`
+                    'subtype' => false,
+                    'type' => null,
+                    'values' => [],
+                    'vendor_tags' => []
+                ]
+            ],
+            'description-optional' => [
+                'content' => 'content_rating `G` (string, required)',
+                'expected' => [
+                    'description' => null,
+                    'field' => 'content_rating',
+                    'nullable' => false,
+                    'required' => true,
+                    'sample_data' => 'G',
+                    'subtype' => false,
+                    'type' => 'string',
+                    'values' => [],
+                    'vendor_tags' => []
+                ]
+            ],
+            'description-optional-variant' => [
+                'content' => 'collection (\Mill\Examples\Showtimes\Representations\Movie)',
+                'expected' => [
+                    'description' => null,
+                    'field' => 'collection',
+                    'nullable' => false,
+                    'required' => false,
+                    'sample_data' => '', // @todo should be `false`, see `MSON::getRegex()`
+                    'subtype' => false,
+                    'type' => '\Mill\Examples\Showtimes\Representations\Movie',
+                    'values' => [],
+                    'vendor_tags' => []
                 ]
             ],
             'description-starts-on-new-line' => [
@@ -271,6 +297,20 @@ class MSONTest extends TestCase
                     'vendor_tags' => []
                 ]
             ],
+            'field-only' => [
+                'content' => 'content.rating',
+                'expected' => [
+                    'description' => null,
+                    'field' => 'content.rating',
+                    'nullable' => false,
+                    'required' => false,
+                    'sample_data' => false,
+                    'subtype' => false,
+                    'type' => null,
+                    'values' => [],
+                    'vendor_tags' => []
+                ]
+            ],
             'type-array-with-subtype-object' => [
                 'content' => 'websites (array<object>) - The users\' list of websites.',
                 'expected' => [
@@ -311,6 +351,22 @@ class MSONTest extends TestCase
                     'type' => '\Mill\Examples\Showtimes\Representations\Person',
                     'values' => [],
                     'vendor_tags' => []
+                ]
+            ],
+            'vendor-tag' => [
+                'content' => 'content_rating `G` (string, REQUIRED, tag:MOVIE_RATINGS) - MPAA rating',
+                'expected' => [
+                    'description' => 'MPAA rating',
+                    'field' => 'content_rating',
+                    'nullable' => false,
+                    'required' => true,
+                    'sample_data' => 'G',
+                    'subtype' => false,
+                    'type' => 'string',
+                    'values' => [],
+                    'vendor_tags' => [
+                        'tag:MOVIE_RATINGS'
+                    ]
                 ]
             ],
             'without-defined-requirement-but-vendor-tags' => [
