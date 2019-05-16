@@ -12,7 +12,11 @@ class ConfigTest extends TestCase
         $config = $this->getConfig();
 
         $this->assertSame('Mill unit test API, Showtimes', $config->getName());
-        $this->assertSame('This is an example API for the purposes of showing how Mill works.', $config->getDescription());
+        $this->assertSame(
+            'This is an example API for the purposes of showing how Mill works.',
+            $config->getDescription()
+        );
+
         $this->assertSame('https://example.com/terms', $config->getTerms());
 
         $this->assertSame([

@@ -29,10 +29,10 @@ class Config
     protected $base_dir;
 
     /** @var string The name of your API. */
-    protected $name = null;
+    protected $name;
 
     /** @var string The description of your API. */
-    protected $description = null;
+    protected $description;
 
     /** @var null|string The terms of service URL for your API. */
     protected $terms = null;
