@@ -28,8 +28,11 @@ class Config
     /** @var string The base directory for this configuration file. */
     protected $base_dir;
 
-    /** @var null|string The name of your API. */
+    /** @var string The name of your API. */
     protected $name = null;
+
+    /** @var string The description of your API. */
+    protected $description = null;
 
     /** @var null|string The terms of service URL for your API. */
     protected $terms = null;
@@ -306,6 +309,10 @@ class Config
      */
     protected function loadInfo(SimpleXMLElement $xml): void
     {
+        if (isset($xml->info->description)) {
+            $this->description = (string) $xml->info->description;
+        }
+
         if (isset($xml->info->terms)) {
             $this->terms = (string) $xml->info->terms['url'];
         }
@@ -543,11 +550,21 @@ class Config
     /**
      * Get the name of your API.
      *
-     * @return null|string
+     * @return string
      */
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
+    }
+
+    /**
+     * Get the description of your API.
+     *
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
     }
 
     /**

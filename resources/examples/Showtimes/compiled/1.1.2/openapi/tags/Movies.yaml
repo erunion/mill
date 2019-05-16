@@ -1,6 +1,7 @@
 openapi: 3.0.2
 info:
   title: 'Mill unit test API, Showtimes'
+  description: 'This is an example API for the purposes of showing how Mill works.'
   version: 1.1.2
   contact:
     name: 'Get help!'

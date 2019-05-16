@@ -56,6 +56,7 @@ class OpenApi extends Compiler\Specification
                 'openapi' => '3.0.2',
                 'info' => [
                     'title' => $this->config->getName(),
+                    'description' => $this->config->getDescription(),
                     'version' => $version,
                     'contact' => $this->processContact()
                 ],
