@@ -6,6 +6,6 @@
   },
   "devDependencies": {
     "api-blueprint-validator-module": "^1.2.2",
-    "speccy": "^0.9.0"
+    "speccy": "^0.10.1"
   }
 }
