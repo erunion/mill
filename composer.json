@@ -17,7 +17,7 @@
     "require": {
         "php": ">=7.1.0",
         "ext-xml": "*",
-        "dflydev/dot-access-data": "^1.0",
+        "dflydev/dot-access-data": "^2.0",
         "pimple/pimple": "^3.0",
         "league/flysystem": "^1.0",
         "composer/semver": "^1.4",
