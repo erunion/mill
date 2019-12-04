@@ -2,7 +2,7 @@
 ===
 
 [![Packagist](https://img.shields.io/packagist/v/vimeo/mill.svg)](https://packagist.org/packages/vimeo/mill)
-[![Travis CI](http://img.shields.io/travis/vimeo/mill.svg?style=flat)](https://travis-ci.org/vimeo/mill)
+[![Build](https://github.com/erunion/mill/workflows/CI/badge.svg)](https://github.com/erunion/mill)
 
 Mill is an annotation-based DSL for documenting a REST API.
 
