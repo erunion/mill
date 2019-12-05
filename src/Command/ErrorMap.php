@@ -46,9 +46,11 @@ class ErrorMap extends BaseCompiler
     {
         parent::execute($input, $output);
 
+        /** @var string|null */
         $version = $input->getOption('constraint');
 
         if ($input->getOption('default')) {
+            /** @var string|null */
             $version = $this->container['config']->getDefaultApiVersion();
         }
 
@@ -67,6 +69,7 @@ class ErrorMap extends BaseCompiler
 
         $output->writeln('<comment>Compiling an error map...</comment>');
 
+        /** @psalm-suppress PossiblyInvalidArgument */
         $error_map = new Compiler\ErrorMap($this->app, $version);
         $error_map->setLoadPrivateDocs($this->private_docs);
         $error_map->setLoadVendorTagDocs($this->vendor_tags);

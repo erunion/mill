@@ -214,6 +214,7 @@ class Compiler
 
         $representation = $representations[$representation];
 
+        /** @var class-string */
         $class = $representation['class'];
         $method = $representation['method'];
 
