@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
-    - run: sudo apt install php{$php-version}-intl
+    - run: php -v
 
     - name: Validate composer.json and composer.lock
       run: composer validate
