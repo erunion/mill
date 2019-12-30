@@ -2,4 +2,3 @@ docs/_site
 node_modules/
 reports/
 vendor/
-composer.lock
