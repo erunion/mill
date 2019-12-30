@@ -1,6 +1,6 @@
 # Visibility
 
-> **Note:** Visibility status is not currently being used when compiling specifications, however support is on the Mill [roadmap](https://github.com/vimeo/mill/milestones).
+> **Note:** Visibility status is not currently being used when compiling specifications, however support is on the Mill [roadmap](https://github.com/erunion/mill/milestones).
 
 We have the concept of an annotation visibility "decorator" that allows you to set certain annotations as private, or explicitly public. With this additional metadata, you can do cool things like only show certain endpoints or parameters to privileged developers in your documentation.
 

@@ -16,5 +16,5 @@ See the [Documenting your API](writing-documentation.md) for more details.
 
 ## Installation
 ```
-composer require vimeo/mill
+composer require erunion/mill
 ```

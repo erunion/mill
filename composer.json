@@ -1,5 +1,5 @@
 {
-    "name": "vimeo/mill",
+    "name": "erunion/mill",
     "description": "☴ An annotation-based DSL for documenting a REST API.",
     "license": "MIT",
     "authors": [

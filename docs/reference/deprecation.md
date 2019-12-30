@@ -1,6 +1,6 @@
 # Deprecation
 
-> **Note:** Deprecated status is not currently being used when compiling documentation, however there are [plans](https://github.com/vimeo/mill/milestones) to make this available.
+> **Note:** Deprecated status is not currently being used when compiling documentation, however there are [plans](https://github.com/erunion/mill/milestones) to make this available.
 
 ## Usage
 You might have instances where you need to deprecate a resource action request parameter or path, you can use the `:deprecated` "decorator".

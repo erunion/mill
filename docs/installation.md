@@ -7,5 +7,5 @@ As it was built specifically for the Vimeo API, it may come off as opinionated, 
 You can install Mill through the use of [Composer](https://getcomposer.org).
 
 ```shell
-$ composer require vimeo/mill
+$ composer require erunion/mill
 ```

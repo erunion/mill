@@ -282,4 +282,4 @@ To set a "default" API version, use the `default="true"` attribute. You **must**
 ```
 
 ## XML Schema Definition
-If you wish to use it for a reference, Mill has an included [XML schema definition](https://github.com/vimeo/mill/blob/master/config.xsd).
+If you wish to use it for a reference, Mill has an included [XML schema definition](https://github.com/erunion/mill/blob/master/config.xsd).

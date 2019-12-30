@@ -3,7 +3,7 @@ Contributing
 
 Contributions are **welcome** and will be fully **credited**.
 
-We accept contributions via Pull Requests on [Github](https://github.com/vimeo/mill).
+We accept contributions via Pull Requests on [Github](https://github.com/erunion/mill).
 
 ## Pull Requests
 
@@ -11,7 +11,7 @@ We accept contributions via Pull Requests on [Github](https://github.com/vimeo/m
 
 - **Add tests!** - Your patch won't be accepted if it doesn't have tests.
 
-- **Document any change in behaviour** - Make sure the `README.md` and our [documentation](https://github.com/vimeo/mill/master/docs) are kept up-to-date.
+- **Document any change in behaviour** - Make sure the `README.md` and our [documentation](https://github.com/erunion/mill/master/docs) are kept up-to-date.
 
 - **Consider our release cycle** - We try to follow [SemVer v2.0.0](http://semver.org/). Randomly breaking public APIs is not an option.
 

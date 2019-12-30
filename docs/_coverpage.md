@@ -8,5 +8,5 @@
 - Automatic API changelog generation
 - API Blueprint compatible
 
-[GitHub](https://github.com/vimeo/mill/)
+[GitHub](https://github.com/erunion/mill/)
 [Get started](#installation)

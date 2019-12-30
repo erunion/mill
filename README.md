@@ -1,7 +1,7 @@
 &#9780; Mill
 ===
 
-[![Packagist](https://img.shields.io/packagist/v/vimeo/mill.svg)](https://packagist.org/packages/vimeo/mill)
+[![Packagist](https://img.shields.io/packagist/v/erunion/mill.svg)](https://packagist.org/packages/erunion/mill)
 [![Build](https://github.com/erunion/mill/workflows/CI/badge.svg)](https://github.com/erunion/mill)
 
 Mill is an annotation-based DSL for documenting a REST API.
@@ -12,5 +12,5 @@ As it was built specifically for the Vimeo API, it is **very** opinionated, and 
 
 ### Installation
 ```
-composer require vimeo/mill
+composer require erunion/mill
 ```

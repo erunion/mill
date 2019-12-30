@@ -388,7 +388,7 @@ class Documentation implements Arrayable
         /** @var Parser\Annotations\ContentTypeAnnotation $annotation */
         foreach ($this->content_types as $annotation) {
             $annotation_version = $annotation->getVersion();
-            if (!$annotation_version || ($version && $annotation_version->matches($version))) {
+            if (!$annotation_version || $annotation_version->matches($version)) {
                 return $annotation->getContentType();
             }
         }
