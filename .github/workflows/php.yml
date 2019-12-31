@@ -10,6 +10,13 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
+    # Using this because intl isn't available by default right now.
+    # https://github.com/actions/virtual-environments/issues/3
+    - uses: shivammathur/setup-php@master
+      with:
+        php-version: '7.3'
+        extensions: intl
+
     - name: Validate composer.json and composer.lock
       run: composer validate
 
