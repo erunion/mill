@@ -22,29 +22,51 @@ If we look at the versioned directories that it created, `docs/1.1`, we'll see t
 
 ```shell
 $ ls specs/1.1
-api.yaml tags
+api.json tags
 
-$ cat specs/1.1/api.yaml | less
-openapi: 3.0.0
-info:
-    title: 'Mill unit test API, Showtimes'
-    version: '1.1'
-tags:
-    -
-        name: Movies
-    -
-        name: Theaters
-paths:
-    '/movie/{id}':
-        get:
-            summary: 'Get a single movie.'
+$ cat specs/1.1/api.json | less
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "Mill unit test API, Showtimes",
+        "description": "This is an example API for the purposes of showing how Mill works.",
+        "version": "1.1",
+        "contact": {
+            "name": "Get help!",
+            "email": "support@example.com",
+            "url": "https:\/\/developer.example.com\/help"
+        }
+    },
+    "tags": [
+        {
+            "name": "Theaters"
+        },
+        {
+            "name": "Movies",
+            "description": "These resources help you handle movies."
+        }
+    ],
+    "servers": [
+        {
+            "url": "https:\/\/api.example.com",
+            "description": "Production"
+        },
+        {
+            "url": "https:\/\/api.example.local",
+            "description": "Development"
+        }
+    ],
+    "paths": {
+        "\/movie\/{id}": {
+            "get": {
+                "summary": "Get a single movie.",
 ```
 
 Mill also generates individual specifications for each of your tags.
 
 ```shell
 $ ls specs/1.1/tags
-Movies.yaml   Theaters.yaml
+Movies.json   Theaters.json
 ```
 
 These tagged specifications contain only resources and representations that are incorporated within that tag.
