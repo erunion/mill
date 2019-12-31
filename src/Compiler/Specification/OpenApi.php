@@ -16,7 +16,6 @@ use Mill\Parser\Annotations\VendorTagAnnotation;
 use Mill\Parser\Representation;
 use Mill\Parser\Representation\Documentation;
 use Mill\Parser\Resource\Action;
-use Symfony\Component\Yaml\Yaml;
 
 class OpenApi extends Compiler\Specification
 {
@@ -247,8 +246,6 @@ class OpenApi extends Compiler\Specification
             )
         );
 
-        // Excluding some groups and filtering off empty arrays will leave gaps in the keys of the tags array,
-        // resulting in some funky looking compiled YAML.
         sort($tags);
 
         return $tags;
@@ -844,9 +841,9 @@ class OpenApi extends Compiler\Specification
      * @param array $specification
      * @return string
      */
-    public static function getYaml(array $specification): string
+    public static function getJson(array $specification): string
     {
-        return Yaml::dump($specification, PHP_INT_MAX, 2);
+        return json_encode($specification, JSON_PRETTY_PRINT);
     }
 
     /**
