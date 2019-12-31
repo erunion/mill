@@ -4,7 +4,6 @@ namespace Mill\Tests\Command;
 use Mill\Command\Compile;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
-use Symfony\Component\Yaml\Yaml;
 
 class CompileTest extends \PHPUnit\Framework\TestCase
 {
@@ -71,16 +70,16 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         $control_dir = __DIR__ . '/../../resources/examples/Showtimes/compiled/';
         foreach (self::VERSIONS as $version) {
             $this->assertFileEquals(
-                $control_dir . '/' . $version . '/openapi/api.yaml',
-                $output_dir . '/' . $version . '/openapi/api.yaml',
+                $control_dir . '/' . $version . '/openapi/api.json',
+                $output_dir . '/' . $version . '/openapi/api.json',
                 'Compiled OpenAPI spec for version `' . $version . '` does not match.'
             );
 
             foreach (self::RESOURCES as $name) {
                 $this->assertFileEquals(
-                    $control_dir . '/' . $version . '/openapi/tags/' . $name . '.yaml',
-                    $output_dir . '/' . $version . '/openapi/tags/' . $name . '.yaml',
-                    'Compiled OpenAPI tag spec `' . $name . '.yaml` for version `' . $version . '` does not match.'
+                    $control_dir . '/' . $version . '/openapi/tags/' . $name . '.json',
+                    $output_dir . '/' . $version . '/openapi/tags/' . $name . '.json',
+                    'Compiled OpenAPI tag spec `' . $name . '.json` for version `' . $version . '` does not match.'
                 );
             }
         }
@@ -103,12 +102,12 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         $this->assertContains('`prod` environment', $output);
 
         foreach (self::VERSIONS as $version) {
-            $output = file_get_contents($output_dir . '/' . $version . '/openapi/api.yaml');
+            $output = file_get_contents($output_dir . '/' . $version . '/openapi/api.json');
 
-            $this->assertContains("url: 'https://api.example.com'", $output);
+            $this->assertContains('"url": "https:\/\/api.example.com"', $output);
             $this->assertContains('Production', $output);
 
-            $this->assertNotContains("url: 'https://api.example.local'", $output);
+            $this->assertNotContains('"url": "https:\/\/api.example.local"', $output);
             $this->assertNotContains('Development', $output);
         }
     }
@@ -130,8 +129,8 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         foreach (self::VERSIONS as $version) {
             $this->assertContains('API version: ' . $version, $output);
 
-            $yaml = file_get_contents($output_dir . '/' . $version . '/openapi/api.yaml');
-            $spec = Yaml::parse($yaml);
+            $json = file_get_contents($output_dir . '/' . $version . '/openapi/api.json');
+            $spec = json_decode($json, true);
 
             // Since `DELETE /movies/+id` is a private endpoint, it should not be present under any version.
             $this->assertArrayNotHasKey(
@@ -162,8 +161,8 @@ class CompileTest extends \PHPUnit\Framework\TestCase
             // Grouped specifications should not be present.
             $this->assertDirectoryNotExists($output_dir . '/' . $version . '/openapi');
 
-            $yaml = file_get_contents($output_dir . '/' . $version . '/api.yaml');
-            $spec = Yaml::parse($yaml);
+            $json = file_get_contents($output_dir . '/' . $version . '/api.json');
+            $spec = json_decode($json, true);
 
             // Since `DELETE /movies/+id` is a private endpoint, it should not be present under any version.
             $this->assertArrayNotHasKey(
@@ -173,10 +172,10 @@ class CompileTest extends \PHPUnit\Framework\TestCase
             );
 
             // Vendor extensions should not be present anywhere within the spec.
-            $this->assertNotContains('x-mill-path-aliased', $yaml);
-            $this->assertNotContains('x-mill-path-aliases', $yaml);
-            $this->assertNotContains('x-mill-vendor-tags', $yaml);
-            $this->assertNotContains('x-mill-visibility-private', $yaml);
+            $this->assertNotContains('x-mill-path-aliased', $json);
+            $this->assertNotContains('x-mill-path-aliases', $json);
+            $this->assertNotContains('x-mill-vendor-tags', $json);
+            $this->assertNotContains('x-mill-visibility-private', $json);
         }
     }
 
@@ -200,8 +199,8 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         foreach (self::VERSIONS as $version) {
             $this->assertContains('API version: ' . $version, $output);
 
-            $yaml = file_get_contents($output_dir . '/' . $version . '/openapi/api.yaml');
-            $spec = Yaml::parse($yaml);
+            $json = file_get_contents($output_dir . '/' . $version . '/openapi/api.json');
+            $spec = json_decode($json, true);
 
             // `DELETE /movies/{id}` isn't available on either of these versions, so it continue to not show up in our
             // compiled OAS.

@@ -268,7 +268,7 @@ class Compile extends BaseCompiler
         }
 
         // Save the full specification.
-        $this->filesystem->put($version_dir . 'api.yaml', OpenApi::getYaml($spec));
+        $this->filesystem->put($version_dir . 'api.json', OpenApi::getJson($spec));
 
         if (!$this->for_public_consumption) {
             // Save individual specs for each tag.
@@ -280,8 +280,8 @@ class Compile extends BaseCompiler
                 $tag = str_replace('/', DIRECTORY_SEPARATOR, $tag);
 
                 $this->filesystem->put(
-                    $version_dir . 'tags' . DIRECTORY_SEPARATOR . $tag . '.yaml',
-                    OpenApi::getYaml($tagged_spec)
+                    $version_dir . 'tags' . DIRECTORY_SEPARATOR . $tag . '.json',
+                    OpenApi::getJson($tagged_spec)
                 );
             }
         }

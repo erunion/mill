@@ -16,8 +16,8 @@ class OpenApiTest extends TestCase
         foreach ($compiled as $version => $spec) {
             $version_dir = $control_dir . $version . DIRECTORY_SEPARATOR . 'openapi';
 
-            $expected = file_get_contents($version_dir . DIRECTORY_SEPARATOR . 'api.yaml');
-            $content = OpenApi::getYaml($spec);
+            $expected = file_get_contents($version_dir . DIRECTORY_SEPARATOR . 'api.json');
+            $content = OpenApi::getJson($spec);
 
             $this->assertSame(
                 $expected,
@@ -35,9 +35,9 @@ class OpenApiTest extends TestCase
                 $tag = str_replace('/', DIRECTORY_SEPARATOR, $tag);
 
                 $file = $version_dir . DIRECTORY_SEPARATOR . 'tags' . DIRECTORY_SEPARATOR . $tag;
-                $expected = file_get_contents($file . '.yaml');
+                $expected = file_get_contents($file . '.json');
 
-                $content = OpenApi::getYaml($content);
+                $content = OpenApi::getJson($content);
 
                 $this->assertSame(
                     $expected,
