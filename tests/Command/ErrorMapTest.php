@@ -68,9 +68,9 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
 
         $output = $this->tester->getDisplay();
 
-        $this->assertNotContains('API version: 1.1.2', $output);
+        $this->assertStringNotContainsString('API version: 1.1.2', $output);
         foreach ($versions as $version) {
-            $this->assertContains('API version: ' . $version, $output);
+            $this->assertStringContainsString('API version: ' . $version, $output);
 
             $control_dir = __DIR__ . '/../../resources/examples/Showtimes/compiled/' . $version;
             $this->assertFileEquals(
@@ -94,7 +94,7 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
 
         // In our test cases, there's no error codes under the default API version, so this shouldn't be creating error
         // maps.
-        $this->assertNotContains('API version', $output);
+        $this->assertStringNotContainsString('API version', $output);
     }
 
     public function testCommandWithSpecificConstraint(): void
@@ -107,16 +107,15 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $output = $this->tester->getDisplay();
-        $this->assertContains('API version: 1.0', $output);
-        $this->assertNotContains('API version: 1.1', $output);
+        $this->assertStringContainsString('API version: 1.0', $output);
+        $this->assertStringNotContainsString('API version: 1.1', $output);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The supplied Mill configuration file does not exist.
-     */
     public function testCommandFailsOnInvalidConfigFile(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The supplied Mill configuration file does not exist.');
+
         $this->tester->execute([
             'command' => $this->command->getName(),
             'output' => sys_get_temp_dir()
@@ -133,8 +132,8 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $output = $this->tester->getDisplay();
-        $this->assertContains('1.^', $output);
-        $this->assertContains('unrecognized schema', $output);
+        $this->assertStringContainsString('1.^', $output);
+        $this->assertStringContainsString('unrecognized schema', $output);
     }
 
     public function providerTestCommand(): array

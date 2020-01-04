@@ -62,7 +62,7 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         $output = $this->tester->getDisplay();
 
         foreach (self::VERSIONS as $version) {
-            $this->assertContains('API version: ' . $version, $output);
+            $this->assertStringContainsString('API version: ' . $version, $output);
         }
 
         $this->assertSame(array_merge(['.', '..'], self::VERSIONS), scandir($output_dir));
@@ -99,16 +99,16 @@ class CompileTest extends \PHPUnit\Framework\TestCase
 
         $output = $this->tester->getDisplay();
 
-        $this->assertContains('`prod` environment', $output);
+        $this->assertStringContainsString('`prod` environment', $output);
 
         foreach (self::VERSIONS as $version) {
             $output = file_get_contents($output_dir . '/' . $version . '/openapi/api.json');
 
-            $this->assertContains('"url": "https:\/\/api.example.com"', $output);
-            $this->assertContains('Production', $output);
+            $this->assertStringContainsString('"url": "https:\/\/api.example.com"', $output);
+            $this->assertStringContainsString('Production', $output);
 
-            $this->assertNotContains('"url": "https:\/\/api.example.local"', $output);
-            $this->assertNotContains('Development', $output);
+            $this->assertStringNotContainsString('"url": "https:\/\/api.example.local"', $output);
+            $this->assertStringNotContainsString('Development', $output);
         }
     }
 
@@ -127,7 +127,7 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         $output = $this->tester->getDisplay();
 
         foreach (self::VERSIONS as $version) {
-            $this->assertContains('API version: ' . $version, $output);
+            $this->assertStringContainsString('API version: ' . $version, $output);
 
             $json = file_get_contents($output_dir . '/' . $version . '/openapi/api.json');
             $spec = json_decode($json, true);
@@ -156,7 +156,7 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         $output = $this->tester->getDisplay();
 
         foreach (self::VERSIONS as $version) {
-            $this->assertContains('API version: ' . $version, $output);
+            $this->assertStringContainsString('API version: ' . $version, $output);
 
             // Grouped specifications should not be present.
             $this->assertDirectoryNotExists($output_dir . '/' . $version . '/openapi');
@@ -172,10 +172,10 @@ class CompileTest extends \PHPUnit\Framework\TestCase
             );
 
             // Vendor extensions should not be present anywhere within the spec.
-            $this->assertNotContains('x-mill-path-aliased', $json);
-            $this->assertNotContains('x-mill-path-aliases', $json);
-            $this->assertNotContains('x-mill-vendor-tags', $json);
-            $this->assertNotContains('x-mill-visibility-private', $json);
+            $this->assertStringNotContainsString('x-mill-path-aliased', $json);
+            $this->assertStringNotContainsString('x-mill-path-aliases', $json);
+            $this->assertStringNotContainsString('x-mill-vendor-tags', $json);
+            $this->assertStringNotContainsString('x-mill-visibility-private', $json);
         }
     }
 
@@ -197,7 +197,7 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         $output = $this->tester->getDisplay();
 
         foreach (self::VERSIONS as $version) {
-            $this->assertContains('API version: ' . $version, $output);
+            $this->assertStringContainsString('API version: ' . $version, $output);
 
             $json = file_get_contents($output_dir . '/' . $version . '/openapi/api.json');
             $spec = json_decode($json, true);
@@ -238,7 +238,7 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         $output = $this->tester->getDisplay();
 
         foreach (self::VERSIONS as $version) {
-            $this->assertContains('API version: ' . $version, $output);
+            $this->assertStringContainsString('API version: ' . $version, $output);
         }
 
         $this->assertSame(array_merge(['.', '..'], self::VERSIONS), scandir($output_dir));
@@ -288,9 +288,9 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $output = $this->tester->getDisplay();
-        $this->assertContains($format_name, $output);
-        $this->assertNotContains('API version: 1.0', $output);
-        $this->assertContains('API version: 1.1', $output);
+        $this->assertStringContainsString($format_name, $output);
+        $this->assertStringNotContainsString('API version: 1.0', $output);
+        $this->assertStringContainsString('API version: 1.1', $output);
     }
 
     /**
@@ -309,9 +309,9 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $output = $this->tester->getDisplay();
-        $this->assertContains($format_name, $output);
-        $this->assertNotContains('API version: 1.1.2', $output);
-        $this->assertContains('API version: 1.1.3', $output);
+        $this->assertStringContainsString($format_name, $output);
+        $this->assertStringNotContainsString('API version: 1.1.2', $output);
+        $this->assertStringContainsString('API version: 1.1.3', $output);
     }
 
     /**
@@ -330,17 +330,16 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $output = $this->tester->getDisplay();
-        $this->assertContains($format_name, $output);
-        $this->assertContains('API version: 1.0', $output);
-        $this->assertNotContains('API version: 1.1', $output);
+        $this->assertStringContainsString($format_name, $output);
+        $this->assertStringContainsString('API version: 1.0', $output);
+        $this->assertStringNotContainsString('API version: 1.1', $output);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The supplied Mill configuration file does not exist.
-     */
     public function testCommandFailsOnInvalidConfigFile(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The supplied Mill configuration file does not exist.');
+
         $this->tester->execute([
             'command' => $this->command->getName(),
             'output' => sys_get_temp_dir()
@@ -357,8 +356,8 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $output = $this->tester->getDisplay();
-        $this->assertContains('1.^', $output);
-        $this->assertContains('unrecognized schema', $output);
+        $this->assertStringContainsString('1.^', $output);
+        $this->assertStringContainsString('unrecognized schema', $output);
     }
 
     public function testCommandFailsOnInvalidFormat(): void
@@ -371,8 +370,8 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $output = $this->tester->getDisplay();
-        $this->assertContains('raml', $output);
-        $this->assertContains('unknown compilation format', $output);
+        $this->assertStringContainsString('raml', $output);
+        $this->assertStringContainsString('unknown compilation format', $output);
     }
 
     public function testCommandFailsOnInvalidEnvironment(): void
@@ -386,7 +385,7 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $output = $this->tester->getDisplay();
-        $this->assertContains('environment has not been configured', $output);
+        $this->assertStringContainsString('environment has not been configured', $output);
     }
 
     /**

@@ -2,3 +2,4 @@ docs/_site
 node_modules/
 reports/
 vendor/
+.phpunit.result.cache
