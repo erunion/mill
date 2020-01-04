@@ -1,4 +1,10 @@
 # Changelog
+## [7.0.0] - 2020-01-03
+### Changed
+* **[Breaking Change]** Dropped support for PHP 7.1. [#257](https://github.com/erunion/mill/pull/257)
+* **[Breaking Change]** Dropped support for outputting compiled OpenAPI definitions to YAML in favor of simple JSON files. [#258](https://github.com/erunion/mill/pull/258)
+* Upgraded `cocur/slugify` to ^4.0. [#255](https://github.com/erunion/mill/pull/255)
+
 ## [6.0.0] - 2019-05-16
 ### Added
 * A new `<tags>` setting in the XML config for defining available `@api-group` group names, along with an additional description. [#224](https://github.com/erunion/mill/pull/224)
@@ -405,6 +411,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[7.0.0]: https://github.com/erunion/mill/compare/6.0.0...7.0.0
 [6.0.0]: https://github.com/erunion/mill/compare/5.1.8...6.0.0
 [5.1.8]: https://github.com/erunion/mill/compare/5.1.7...5.1.8
 [5.1.7]: https://github.com/erunion/mill/compare/5.1.6...5.1.7
