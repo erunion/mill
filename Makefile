@@ -8,9 +8,6 @@ EXAMPLES_DIR_PUBLIC := $(EXAMPLES_DIR)/public
 code-coverage: ## Run code coverage.
 	./vendor/bin/phpunit --coverage-html reports/
 
-docs: ## Serve documentation locally.
-	docsify serve docs/
-
 phpcs: ## Verify code standards.
 	./vendor/bin/phpcs --standard=PSR2 bin/ src/ tests/
 
