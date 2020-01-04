@@ -4,14 +4,16 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Aaron Hedges",
-            "email": "aaron@dashron.com"
-        },
-        {
             "name": "Jon Ursenbach",
             "email": "jon@ursenba.ch"
         }
     ],
+    "homepage": "https://github.com/erunion/mill",
+    "support": {
+        "issues": "https://github.com/erunion/mill/issues",
+        "source": "https://github.com/erunion/mill",
+        "wiki": "https://github.com/erunion/mill/wiki"
+    },
     "minimum-stability": "RC",
     "bin": ["bin/mill"],
     "require": {
