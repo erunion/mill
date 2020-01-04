@@ -1,8 +1,8 @@
 {
   "scripts": {
     "test": "npm run test-openapi; npm run test-apiblueprint",
-    "test-openapi": "find resources/examples/Showtimes/compiled/ -name '*.json' -exec spectral lint --verbose {} true \\;",
-    "test-apiblueprint": "find resources/examples/Showtimes/compiled/ -name 'api.apib' -exec api-blueprint-validator-module {} true \\;"
+    "test-openapi": "find examples/Showtimes/compiled/ -name '*.json' -exec spectral lint --verbose {} true \\;",
+    "test-apiblueprint": "find examples/Showtimes/compiled/ -name 'api.apib' -exec api-blueprint-validator-module {} true \\;"
   },
   "devDependencies": {
     "@stoplight/spectral": "^5.0.0",

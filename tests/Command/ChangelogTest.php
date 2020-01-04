@@ -24,7 +24,7 @@ class ChangelogTest extends \PHPUnit\Framework\TestCase
         $this->command = $application->find('changelog');
         $this->tester = new CommandTester($this->command);
 
-        $this->config_file = __DIR__ . '/../../resources/examples/mill.xml';
+        $this->config_file = __DIR__ . '/../../examples/mill.xml';
     }
 
     /**
@@ -59,7 +59,7 @@ class ChangelogTest extends \PHPUnit\Framework\TestCase
 
         $this->tester->execute($params);
 
-        $control_dir = __DIR__ . '/../../resources/examples/Showtimes/compiled';
+        $control_dir = __DIR__ . '/../../examples/Showtimes/compiled';
         $this->assertFileEquals(
             $control_dir . '/' . $expected_file,
             $output_dir . '/changelog.md',

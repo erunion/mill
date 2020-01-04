@@ -115,7 +115,7 @@ Information on a specific movie.
 Mill also generates individual parts of your documentation for you. This is helpful if you have people working on API design work, but just want to work on the API Blueprint files (and have someone else do the backend work).
 
 ```shell
-$ cat specs/1.1/resources/Movies.apib | less
+$ cat specs/1.1/tags/Movies.apib | less
 # Group Movies
 ## Movies [/movies/{id}]
 Information on a specific movie.

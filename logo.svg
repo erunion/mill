@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid meet" width="415" height="340">
+<defs>
+    <text id="logo" y="210" font-size="533" font-family="Arial" transform="matrix(1 0 0 1 -158.92291291776044 -349.15680659399436)" dominant-baseline="text-before-edge">
+        <tspan x="125">☴</tspan>
+    </text>
+</defs>
+<g>
+    <g>
+        <g id="a1xGbeQR1g">
+            <use xlink:href="#logo" opacity="1" fill="#000" fill-opacity="1"></use>
+            <g>
+                <use xlink:href="#logo" opacity="1" fill-opacity="0" stroke="#000" stroke-width="0" stroke-opacity="1"></use>
+            </g>
+        </g>
+    </g>
+</g>
+</svg>

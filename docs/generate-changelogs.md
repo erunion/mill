@@ -39,7 +39,7 @@ This will compile a `changelog.md` file into the `specs/` directory.
 Looking at that file, we can see that we have changelog!
 
 ```shell
-$ cat resources/examples/Showtimes/specs/changelog.md | less
+$ cat examples/Showtimes/specs/changelog.md | less
 # Changelog: Mill unit test API, Showtimes
 
 ## 1.1.3

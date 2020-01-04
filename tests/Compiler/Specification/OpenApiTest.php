@@ -8,7 +8,7 @@ class OpenApiTest extends TestCase
 {
     public function testCompilation(): void
     {
-        $control_dir = static::RESOURCES_DIR . 'examples/Showtimes/compiled/';
+        $control_dir = static::EXAMPLES_DIR . 'Showtimes/compiled/';
 
         $compiler = new OpenApi($this->getApplication());
         $compiled = $compiler->getCompiled();
