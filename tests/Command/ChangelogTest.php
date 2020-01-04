@@ -67,12 +67,11 @@ class ChangelogTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The supplied Mill configuration file does not exist.
-     */
     public function testCommandFailsOnInvalidConfigFile(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The supplied Mill configuration file does not exist.');
+
         $this->tester->execute([
             'command' => $this->command->getName(),
             'output' => sys_get_temp_dir()

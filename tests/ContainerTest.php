@@ -17,11 +17,9 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf(Filesystem::class, $container->getFilesystem());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testContainerFailsIfNoConfigPathWasSupplied(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
         new Container;
     }
 }

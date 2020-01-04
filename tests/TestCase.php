@@ -20,10 +20,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
     /** @var Application */
     protected static $application;
 
-    /**
-     * @psalm-suppress MissingReturnType
-     */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 

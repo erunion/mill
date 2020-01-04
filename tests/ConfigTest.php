@@ -4,6 +4,8 @@ namespace Mill\Tests;
 use Mill\Config;
 use Mill\Exceptions\Config\UncallableErrorRepresentationException;
 use Mill\Exceptions\Config\UncallableRepresentationException;
+use Mill\Exceptions\Config\UnconfiguredRepresentationException;
+use Mill\Exceptions\Config\ValidationException;
 
 class ConfigTest extends TestCase
 {
@@ -168,33 +170,30 @@ class ConfigTest extends TestCase
         ], $config->getPathParamTranslations());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessageRegExp /does not exist/
-     */
     public function testLoadFromXMLFailsIfConfigFileDoesNotExist(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessageMatches('/does not exist/');
+
         $filesystem = $this->getContainer()->getFilesystem();
         Config::loadFromXML($filesystem, 'non-existent.xml');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessageRegExp /is invalid/
-     */
     public function testLoadFromXMLFailsIfConfigFileIsInvalid(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessageMatches('/is invalid/');
+
         $filesystem = $this->getContainer()->getFilesystem();
         $filesystem->write('empty.xml', '');
 
         Config::loadFromXML($filesystem, 'empty.xml');
     }
 
-    /**
-     * @expectedException \Mill\Exceptions\Config\ValidationException
-     */
     public function testXSDValidation(): void
     {
+        $this->expectException(ValidationException::class);
+
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <mill>
@@ -220,14 +219,13 @@ XML;
      */
     public function testLoadFromXMLFailuresOnVariousBadXMLFiles(array $exception_details, string $xml): void
     {
-        /** @var string $provider */
-        $provider = $this->getName();
+        $provider = $this->toString();
 
         if (isset($exception_details['exception'])) {
             $this->expectException($exception_details['exception']);
         } else {
             $this->expectException(\DomainException::class);
-            $this->expectExceptionMessageRegExp($exception_details['regex']);
+            $this->expectExceptionMessageMatches($exception_details['regex']);
         }
 
         // Customize the provider XML so we don't need to have a bunch of DRY'd XML everywhere.
@@ -340,11 +338,9 @@ XML;
         }
     }
 
-    /**
-     * @expectedException \Mill\Exceptions\Config\UnconfiguredRepresentationException
-     */
     public function testDoesRepresentationExistFailsIfRepresentationIsNotConfigured(): void
     {
+        $this->expectException(UnconfiguredRepresentationException::class);
         $this->getConfig()->doesRepresentationExist('UnconfiguredClass');
     }
 
