@@ -14,8 +14,8 @@ use Mill\Tests\Parser\Annotations\DataAnnotationTest;
 
 class TestCase extends \PHPUnit\Framework\TestCase
 {
+    const EXAMPLES_DIR = __DIR__ . '/../examples/';
     const FIXTURES_DIR = __DIR__ . '/../tests/_fixtures/';
-    const RESOURCES_DIR = __DIR__ . '/../resources/';
 
     /** @var Application */
     protected static $application;

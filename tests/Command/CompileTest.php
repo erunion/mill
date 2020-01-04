@@ -45,7 +45,7 @@ class CompileTest extends \PHPUnit\Framework\TestCase
         $this->command = $application->find('compile');
         $this->tester = new CommandTester($this->command);
 
-        $this->config_file = __DIR__ . '/../../resources/examples/mill.xml';
+        $this->config_file = __DIR__ . '/../../examples/mill.xml';
     }
 
     public function testCommandForOpenApi(): void
@@ -67,7 +67,7 @@ class CompileTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(array_merge(['.', '..'], self::VERSIONS), scandir($output_dir));
 
-        $control_dir = __DIR__ . '/../../resources/examples/Showtimes/compiled/';
+        $control_dir = __DIR__ . '/../../examples/Showtimes/compiled/';
         foreach (self::VERSIONS as $version) {
             $this->assertFileEquals(
                 $control_dir . '/' . $version . '/openapi/api.json',
@@ -243,7 +243,7 @@ class CompileTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(array_merge(['.', '..'], self::VERSIONS), scandir($output_dir));
 
-        $control_dir = __DIR__ . '/../../resources/examples/Showtimes/compiled/';
+        $control_dir = __DIR__ . '/../../examples/Showtimes/compiled/';
 
         foreach (self::VERSIONS as $version) {
             foreach (self::REPRESENTATIONS as $name) {

@@ -421,7 +421,7 @@ XML;
                 'xml' => '
 <controllers>
     <filter>
-        <directory name="resources/examples/Showtimes/Controllers/" suffix=".phps" />
+        <directory name="examples/Showtimes/Controllers/" suffix=".phps" />
     </filter>
 </controllers>'
             ],
@@ -451,7 +451,7 @@ XML;
                 'xml' => '
 <representations>
     <filter>
-        <directory name="resources/examples/Showtimes/Representations" suffix=".phps" method="create" />
+        <directory name="examples/Showtimes/Representations" suffix=".phps" method="create" />
     </filter>
 </representations>'
             ],

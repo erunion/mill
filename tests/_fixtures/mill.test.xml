@@ -43,7 +43,7 @@
 
     <controllers>
         <filter>
-            <directory name="resources/examples/Showtimes/Controllers/" suffix=".php" />
+            <directory name="examples/Showtimes/Controllers/" suffix=".php" />
 
             <excludes>
                 <!-- This is here just for code coverage purposes, and to verify that we're able to exclude controllers
@@ -55,7 +55,7 @@
 
     <representations>
         <filter>
-            <directory name="resources/examples/Showtimes/Representations/" method="create" suffix=".php"  />
+            <directory name="examples/Showtimes/Representations/" method="create" suffix=".php"  />
             <class name="\Mill\Examples\Showtimes\Representations\Movie" method="create" />
 
             <!--excludes>

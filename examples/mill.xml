@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mill
     name="Mill unit test API, Showtimes"
-    bootstrap="../../vendor/autoload.php"
+    bootstrap="../vendor/autoload.php"
 >
     <info>
         <description>This is an example API for the purposes of showing how Mill works.</description>

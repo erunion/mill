@@ -48,7 +48,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Mill\\Examples\\": "resources/examples",
+            "Mill\\Examples\\": "examples",
             "Mill\\Tests\\": "tests/",
             "Mill\\Tests\\Fixtures\\": "tests/_fixtures"
         }

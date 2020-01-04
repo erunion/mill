@@ -24,7 +24,7 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
         $this->command = $application->find('errors');
         $this->tester = new CommandTester($this->command);
 
-        $this->config_file = __DIR__ . '/../../resources/examples/mill.xml';
+        $this->config_file = __DIR__ . '/../../examples/mill.xml';
     }
 
     /**
@@ -72,7 +72,7 @@ class ErrorMapTest extends \PHPUnit\Framework\TestCase
         foreach ($versions as $version) {
             $this->assertContains('API version: ' . $version, $output);
 
-            $control_dir = __DIR__ . '/../../resources/examples/Showtimes/compiled/' . $version;
+            $control_dir = __DIR__ . '/../../examples/Showtimes/compiled/' . $version;
             $this->assertFileEquals(
                 $control_dir . '/' . $expected_file,
                 $output_dir . '/' . $version . '/errors.md',
