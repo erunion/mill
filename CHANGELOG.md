@@ -1,4 +1,7 @@
 # Changelog
+## [7.1.0] - 2020-01-24
+* Allowing `symfony/console` 5. [#264](https://github.com/erunion/mill/pull/264)
+
 ## [7.0.0] - 2020-01-03
 ### Changed
 * **[Breaking Change]** Dropped support for PHP 7.1. [#257](https://github.com/erunion/mill/pull/257)
@@ -411,6 +414,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[7.1.0]: https://github.com/erunion/mill/compare/7.0.0...7.1.0
 [7.0.0]: https://github.com/erunion/mill/compare/6.0.0...7.0.0
 [6.0.0]: https://github.com/erunion/mill/compare/5.1.8...6.0.0
 [5.1.8]: https://github.com/erunion/mill/compare/5.1.7...5.1.8
