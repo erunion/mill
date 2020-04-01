@@ -5,7 +5,7 @@
     "test-apiblueprint": "find examples/Showtimes/compiled/ -name 'api.apib' -exec api-blueprint-validator-module {} true \\;"
   },
   "devDependencies": {
-    "@stoplight/spectral": "^5.0.0",
+    "@stoplight/spectral": "^5.2.0",
     "api-blueprint-validator-module": "^1.2.2"
   }
 }
