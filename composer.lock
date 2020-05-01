@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "84e5658ae5d6a2e2956f54499b1c8518",
+    "content-hash": "20560fcc7fcbefe565ccf7d4925b9317",
     "packages": [
         {
             "name": "cocur/slugify",
@@ -198,30 +198,32 @@
         },
         {
             "name": "gossi/docblock",
-            "version": "v1.6",
+            "version": "v2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gossi/docblock.git",
-                "reference": "d7e2f299279f5aebbfddeef1c119e26bef4bc7e9"
+                "reference": "70beb47cab8ded7e068548b78deba33cf71dc205"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gossi/docblock/zipball/d7e2f299279f5aebbfddeef1c119e26bef4bc7e9",
-                "reference": "d7e2f299279f5aebbfddeef1c119e26bef4bc7e9",
+                "url": "https://api.github.com/repos/gossi/docblock/zipball/70beb47cab8ded7e068548b78deba33cf71dc205",
+                "reference": "70beb47cab8ded7e068548b78deba33cf71dc205",
                 "shasum": ""
             },
             "require": {
-                "phootwork/collection": "^1.5",
-                "php": ">=5.6"
+                "phootwork/collection": "^2.0",
+                "phootwork/lang": "^2.0",
+                "php": ">=7.2"
             },
             "require-dev": {
-                "phpunit/phpunit": "^5.7",
-                "sami/sami": "^4|^3"
+                "phootwork/php-cs-fixer-config": "^0.2.2",
+                "phpunit/phpunit": "^8.0",
+                "vimeo/psalm": "^3.7"
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "gossi\\docblock\\": "src"
+                    "gossi\\docblock\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -240,7 +242,7 @@
                 "generator",
                 "parser"
             ],
-            "time": "2017-07-01T18:10:54+00:00"
+            "time": "2020-04-09T07:05:50+00:00"
         },
         {
             "name": "league/flysystem",
@@ -419,30 +421,26 @@
         },
         {
             "name": "phootwork/collection",
-            "version": "v1.6.1",
+            "version": "v2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phootwork/collection.git",
-                "reference": "87def4453e84b98ce516d647bf23e4c497d4b95c"
+                "reference": "bcb40b96a9d8ac48078d67d4dc46302692554862"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phootwork/collection/zipball/87def4453e84b98ce516d647bf23e4c497d4b95c",
-                "reference": "87def4453e84b98ce516d647bf23e4c497d4b95c",
+                "url": "https://api.github.com/repos/phootwork/collection/zipball/bcb40b96a9d8ac48078d67d4dc46302692554862",
+                "reference": "bcb40b96a9d8ac48078d67d4dc46302692554862",
                 "shasum": ""
             },
             "require": {
-                "phootwork/lang": "~0",
-                "php": ">=5.6"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^5.7",
-                "sami/sami": "^4|^3"
+                "phootwork/lang": "^2.0",
+                "php": ">=7.2"
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "phootwork\\collection\\": "src"
+                    "phootwork\\collection\\": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -455,44 +453,45 @@
                     "homepage": "http://gos.si"
                 }
             ],
-            "description": "PHP Collections library (List, Set, Map, Queue & Stack)",
+            "description": "The phootwork library fills gaps in the php language and provides better solutions than the existing ones php offers.",
+            "homepage": "https://phootwork.github.io/collection/",
             "keywords": [
+                "Array object",
+                "Text object",
                 "collection",
                 "collections",
+                "json",
                 "list",
                 "map",
                 "queue",
                 "set",
-                "stack"
+                "stack",
+                "xml"
             ],
-            "time": "2018-09-15T11:41:17+00:00"
+            "time": "2020-02-05T06:21:39+00:00"
         },
         {
             "name": "phootwork/lang",
-            "version": "v0.9",
+            "version": "v2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phootwork/lang.git",
-                "reference": "752482b0c8f60d005414b0cb81646f72bf929724"
+                "reference": "637577f250ec25457fa44f6f1171079ee4c55da9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phootwork/lang/zipball/752482b0c8f60d005414b0cb81646f72bf929724",
-                "reference": "752482b0c8f60d005414b0cb81646f72bf929724",
+                "url": "https://api.github.com/repos/phootwork/lang/zipball/637577f250ec25457fa44f6f1171079ee4c55da9",
+                "reference": "637577f250ec25457fa44f6f1171079ee4c55da9",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.6",
-                "symfony/polyfill-mbstring": "~1.8"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^5.7",
-                "sami/sami": "^4.1.0"
+                "php": ">=7.2",
+                "symfony/polyfill-mbstring": "^1.12"
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "phootwork\\lang\\": "src"
+                    "phootwork\\lang\\": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -506,13 +505,14 @@
                 }
             ],
             "description": "Missing PHP language constructs",
+            "homepage": "https://phootwork.github.io/lang/",
             "keywords": [
                 "array",
                 "comparator",
                 "comparison",
                 "string"
             ],
-            "time": "2018-08-04T14:22:05+00:00"
+            "time": "2020-01-08T16:32:36+00:00"
         },
         {
             "name": "pimple/pimple",
@@ -691,16 +691,16 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.13.1",
+            "version": "v1.15.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "7b4aab9743c30be783b73de055d24a39cf4b954f"
+                "reference": "81ffd3a9c6d707be22e3012b827de1c9775fc5ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/7b4aab9743c30be783b73de055d24a39cf4b954f",
-                "reference": "7b4aab9743c30be783b73de055d24a39cf4b954f",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/81ffd3a9c6d707be22e3012b827de1c9775fc5ac",
+                "reference": "81ffd3a9c6d707be22e3012b827de1c9775fc5ac",
                 "shasum": ""
             },
             "require": {
@@ -712,7 +712,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.13-dev"
+                    "dev-master": "1.15-dev"
                 }
             },
             "autoload": {
@@ -746,7 +746,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2019-11-27T14:18:11+00:00"
+            "time": "2020-03-09T19:04:49+00:00"
         },
         {
             "name": "symfony/polyfill-php73",
