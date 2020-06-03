@@ -7,6 +7,8 @@ updates:
   open-pull-requests-limit: 10
   reviewers:
   - erunion
+  labels:
+  - dependencies
 - package-ecosystem: composer
   directory: "/"
   schedule:
@@ -14,3 +16,5 @@ updates:
   open-pull-requests-limit: 10
   reviewers:
   - erunion
+  labels:
+  - dependencies
