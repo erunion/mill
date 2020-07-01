@@ -276,6 +276,7 @@ class Changelog extends Compiler
      * Record an entry into the changelog.
      *
      * @psalm-suppress InvalidPropertyAssignmentValue
+     * @psalm-suppress PossiblyNullArrayOffset
      * @param string $definition
      * @param false|string $version
      * @param string $change_type
