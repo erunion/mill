@@ -1,4 +1,6 @@
 # Changelog
+## [7.1.2] - 2020-07-01
+
 ## [7.1.1] - 2020-02-08
 
 ## [7.1.0] - 2020-01-24
@@ -416,6 +418,7 @@ Fixed a PHP 5.4 incompatibility with a class constant being broken up on multipl
 ### Added
 - First release!
 
+[7.1.2]: https://github.com/erunion/mill/compare/7.1.1...7.1.2
 [7.1.1]: https://github.com/erunion/mill/compare/7.1.0...7.1.1
 [7.1.0]: https://github.com/erunion/mill/compare/7.0.0...7.1.0
 [7.0.0]: https://github.com/erunion/mill/compare/6.0.0...7.0.0
