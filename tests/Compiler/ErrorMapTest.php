@@ -4,7 +4,7 @@ namespace Mill\Tests\Compiler;
 use Mill\Compiler\ErrorMap;
 use Mill\Tests\TestCase;
 
-class ErrorMapTestTest extends TestCase
+class ErrorMapTest extends TestCase
 {
     /**
      * @dataProvider providerTestCompilation
