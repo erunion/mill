@@ -78,16 +78,16 @@
         },
         {
             "name": "composer/semver",
-            "version": "3.0.0",
+            "version": "3.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/semver.git",
-                "reference": "3426bd5efa8a12d230824536c42a8a4ad30b7940"
+                "reference": "4089fddb67bcf6bf860d91b979e95be303835002"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/semver/zipball/3426bd5efa8a12d230824536c42a8a4ad30b7940",
-                "reference": "3426bd5efa8a12d230824536c42a8a4ad30b7940",
+                "url": "https://api.github.com/repos/composer/semver/zipball/4089fddb67bcf6bf860d91b979e95be303835002",
+                "reference": "4089fddb67bcf6bf860d91b979e95be303835002",
                 "shasum": ""
             },
             "require": {
@@ -100,7 +100,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.x-dev"
+                    "dev-main": "3.x-dev"
                 }
             },
             "autoload": {
@@ -150,7 +150,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-05-26T18:22:04+00:00"
+            "time": "2020-10-14T08:51:15+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
@@ -2534,6 +2534,7 @@
             "keywords": [
                 "tokenizer"
             ],
+            "abandoned": true,
             "time": "2019-09-17T06:23:10+00:00"
         },
         {
