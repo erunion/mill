@@ -92,7 +92,7 @@ class DocumentationTest extends TestCase
             $this->assertCount(count($expected['annotations']['param']), $parser->getParameters());
         }
 
-        $this->assertSame($expected['responses.length'], count($parser->getResponses()));
+        $this->assertCount($expected['responses.length'], $parser->getResponses());
 
         $docs = $parser->toArray();
         $this->assertSame($class, $docs['class']);
