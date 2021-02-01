@@ -22,7 +22,7 @@
         "ext-xml": "*",
         "composer/semver": "^3.0",
         "cocur/slugify": "^4.0",
-        "dflydev/dot-access-data": "^2.0",
+        "dflydev/dot-access-data": "^3.0",
         "gossi/docblock": "^2.0",
         "league/flysystem": "^1.0",
         "nicmart/string-template": "^0.1.1",
