@@ -216,16 +216,16 @@
         },
         {
             "name": "gossi/docblock",
-            "version": "v2.0",
+            "version": "v2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gossi/docblock.git",
-                "reference": "70beb47cab8ded7e068548b78deba33cf71dc205"
+                "reference": "b96e2c9a14a6014fd8d932643c95b4d20638756a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gossi/docblock/zipball/70beb47cab8ded7e068548b78deba33cf71dc205",
-                "reference": "70beb47cab8ded7e068548b78deba33cf71dc205",
+                "url": "https://api.github.com/repos/gossi/docblock/zipball/b96e2c9a14a6014fd8d932643c95b4d20638756a",
+                "reference": "b96e2c9a14a6014fd8d932643c95b4d20638756a",
                 "shasum": ""
             },
             "require": {
@@ -236,7 +236,7 @@
             "require-dev": {
                 "phootwork/php-cs-fixer-config": "^0.2.2",
                 "phpunit/phpunit": "^8.0",
-                "vimeo/psalm": "^3.7"
+                "psalm/phar": "^4.3"
             },
             "type": "library",
             "autoload": {
@@ -260,7 +260,7 @@
                 "generator",
                 "parser"
             ],
-            "time": "2020-04-09T07:05:50+00:00"
+            "time": "2021-02-17T11:36:51+00:00"
         },
         {
             "name": "league/flysystem",
@@ -445,16 +445,16 @@
         },
         {
             "name": "phootwork/collection",
-            "version": "v2.0.1",
+            "version": "v2.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phootwork/collection.git",
-                "reference": "bcb40b96a9d8ac48078d67d4dc46302692554862"
+                "reference": "d58a0d7186074b601b016b9878b6fb65f6c23648"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phootwork/collection/zipball/bcb40b96a9d8ac48078d67d4dc46302692554862",
-                "reference": "bcb40b96a9d8ac48078d67d4dc46302692554862",
+                "url": "https://api.github.com/repos/phootwork/collection/zipball/d58a0d7186074b601b016b9878b6fb65f6c23648",
+                "reference": "d58a0d7186074b601b016b9878b6fb65f6c23648",
                 "shasum": ""
             },
             "require": {
@@ -492,20 +492,20 @@
                 "stack",
                 "xml"
             ],
-            "time": "2020-02-05T06:21:39+00:00"
+            "time": "2020-09-17T16:04:53+00:00"
         },
         {
             "name": "phootwork/lang",
-            "version": "v2.0.1",
+            "version": "v2.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phootwork/lang.git",
-                "reference": "637577f250ec25457fa44f6f1171079ee4c55da9"
+                "reference": "77402690535452da745cf11df33adc51a4ad89a1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phootwork/lang/zipball/637577f250ec25457fa44f6f1171079ee4c55da9",
-                "reference": "637577f250ec25457fa44f6f1171079ee4c55da9",
+                "url": "https://api.github.com/repos/phootwork/lang/zipball/77402690535452da745cf11df33adc51a4ad89a1",
+                "reference": "77402690535452da745cf11df33adc51a4ad89a1",
                 "shasum": ""
             },
             "require": {
@@ -536,7 +536,7 @@
                 "comparison",
                 "string"
             ],
-            "time": "2020-01-08T16:32:36+00:00"
+            "time": "2021-02-15T17:24:43+00:00"
         },
         {
             "name": "pimple/pimple",
@@ -967,20 +967,20 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.18.0",
+            "version": "v1.22.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "a6977d63bf9a0ad4c65cd352709e230876f9904a"
+                "reference": "5232de97ee3b75b0360528dae24e73db49566ab1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/a6977d63bf9a0ad4c65cd352709e230876f9904a",
-                "reference": "a6977d63bf9a0ad4c65cd352709e230876f9904a",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/5232de97ee3b75b0360528dae24e73db49566ab1",
+                "reference": "5232de97ee3b75b0360528dae24e73db49566ab1",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3"
+                "php": ">=7.1"
             },
             "suggest": {
                 "ext-mbstring": "For best performance"
@@ -988,7 +988,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.18-dev"
+                    "dev-main": "1.22-dev"
                 },
                 "thanks": {
                     "name": "symfony/polyfill",
@@ -1040,7 +1040,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-07-14T12:35:20+00:00"
+            "time": "2021-01-22T09:19:47+00:00"
         },
         {
             "name": "symfony/polyfill-php73",
@@ -2534,6 +2534,7 @@
             "keywords": [
                 "tokenizer"
             ],
+            "abandoned": true,
             "time": "2019-09-17T06:23:10+00:00"
         },
         {
@@ -3484,12 +3485,12 @@
             "version": "1.9.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/webmozart/assert.git",
+                "url": "https://github.com/webmozarts/assert.git",
                 "reference": "9dc4f203e36f2b486149058bade43c851dd97451"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/assert/zipball/9dc4f203e36f2b486149058bade43c851dd97451",
+                "url": "https://api.github.com/repos/webmozarts/assert/zipball/9dc4f203e36f2b486149058bade43c851dd97451",
                 "reference": "9dc4f203e36f2b486149058bade43c851dd97451",
                 "shasum": ""
             },
@@ -3533,12 +3534,12 @@
             "version": "4.1.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/webmozart/glob.git",
+                "url": "https://github.com/webmozarts/glob.git",
                 "reference": "3cbf63d4973cf9d780b93d2da8eec7e4a9e63bbe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/glob/zipball/3cbf63d4973cf9d780b93d2da8eec7e4a9e63bbe",
+                "url": "https://api.github.com/repos/webmozarts/glob/zipball/3cbf63d4973cf9d780b93d2da8eec7e4a9e63bbe",
                 "reference": "3cbf63d4973cf9d780b93d2da8eec7e4a9e63bbe",
                 "shasum": ""
             },
