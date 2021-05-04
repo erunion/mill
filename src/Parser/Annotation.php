@@ -66,7 +66,7 @@ abstract class Annotation implements Arrayable
      * @param null|string $method
      * @param null|Version $version
      */
-    public function __construct(
+    final public function __construct(
         Application $application,
         string $doc,
         string $class,

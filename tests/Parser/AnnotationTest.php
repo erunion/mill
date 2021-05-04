@@ -1,5 +1,5 @@
 <?php
-namespace Mill\Parser;
+namespace Mill\Tests\Parser;
 
 use Mill\Application;
 use Mill\Exceptions\Annotations\MissingRequiredFieldException;

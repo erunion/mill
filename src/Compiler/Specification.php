@@ -27,7 +27,7 @@ class Specification extends Compiler
      *
      * @param bool|string $data
      * @param string $type
-     * @return bool|string
+     * @return bool|int|float|string
      *
      * @psalm-suppress InvalidOperand Suppressing this because we're intentionally converting a string to an int/float.
      */
